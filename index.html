@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.6.2/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>DataStar</title>
+  </head>
+  <body data-theme="cupcake">
+    <div class="p-4 min-h-screen flex flex-col gap-2" data-signal-count="0">
+      <div class="flex flex-col gap-4">
+        <button class="btn btn-primary" data-on-click="$count++">
+          Increment +
+        </button>
+        <button class="btn btn-primary" data-on-click="$count--">
+          Decrement -
+        </button>
+      </div>
+      <div class="flex justify-center items-center w-full flex-1">
+        <div class="flex flex-col justify-center items-center">
+          <span class="text-9xl font-bold font-mono" data-text="$count"></span>
+          <span class="alert alert-info" data-show="$count >= 5"
+            >Count is greater or equal to 5</span
+          >
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
