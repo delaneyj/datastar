@@ -7,8 +7,8 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: path.resolve(__dirname, 'src/lib/index.ts'),
-      name: 'Headlight',
-      fileName: 'headlight',
+      name: 'DataStar',
+      fileName: 'data-star',
       formats: ['es', 'umd', 'iife'],
     },
   },
