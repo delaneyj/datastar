@@ -1,7 +1,4 @@
-export function walkDownDOM(
-  el: Element | null,
-  callback: (el: Element) => void,
-) {
+export function walkDownDOM(el: Element | null, callback: (el: Element) => void) {
   if (!el) return
   callback(el)
 

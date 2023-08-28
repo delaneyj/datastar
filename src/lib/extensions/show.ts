@@ -4,13 +4,7 @@ import { addDataExtension } from '../core'
 export function addShowDataExtension() {
   addDataExtension('show', {
     allowedModifiers: ['important'],
-    withExpression: ({
-      el,
-      dataStack,
-      expression,
-      modifiers,
-      reactivity: { effect },
-    }) => {
+    withExpression: ({ el, dataStack, expression, modifiers, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 
       if (!(el instanceof HTMLElement || el instanceof SVGElement)) {

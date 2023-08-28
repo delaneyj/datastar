@@ -1,61 +1,13 @@
 import morphdom from 'morphdom'
 import { functionEval } from '..'
-import {
-  WithExpressionArgs,
-  addDataExtension,
-  toHTMLorSVGElement,
-} from '../core'
+import { WithExpressionArgs, addDataExtension, toHTMLorSVGElement } from '../core'
 
 const p = new DOMParser()
 const loadingClass = 'datastar-loading'
 
-// type mergeMode = 'replace' | 'appendChild' | 'morph'
-
-const allowedModifiers = ['replace', 'appendChild']
-
-export function addGetExtension() {
-  addDataExtension('get', {
-    allowedModifiers,
-    withExpression: (args) => fetcher('GET', args),
-  })
-}
-
-export function addPostExtension() {
-  addDataExtension('post', {
-    allowedModifiers,
-    withExpression: (args) => fetcher('POST', args),
-  })
-}
-
-export function addPutExtension() {
-  addDataExtension('put', {
-    allowedModifiers,
-    withExpression: (args) => fetcher('PUT', args),
-  })
-}
-
-export function addPatchExtension() {
-  addDataExtension('patch', {
-    allowedModifiers,
-    withExpression: (args) => fetcher('PATCH', args),
-  })
-}
-
-export function addDeleteExtension() {
-  addDataExtension('delete', {
-    allowedModifiers,
-    withExpression: (args) => fetcher('DELETE', args),
-  })
-}
-
 export function addHeadersExtension() {
   addDataExtension('header', {
-    withExpression: ({
-      name,
-      expression,
-      dataStack,
-      reactivity: { computed },
-    }) => {
+    withExpression: ({ name, expression, dataStack, reactivity: { computed } }) => {
       const headers = functionEval(dataStack, expression)
       if (typeof headers !== 'object') {
         throw new Error('Headers must be an object')
@@ -70,15 +22,23 @@ export function addHeadersExtension() {
   })
 }
 
-function fetcher(
-  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE',
-  args: WithExpressionArgs,
-) {
+export const addGetExtension = () => addFetchMethod('GET')
+export const addPostExtension = () => addFetchMethod('POST')
+export const addPutExtension = () => addFetchMethod('PUT')
+export const addPatchExtension = () => addFetchMethod('PATCH')
+export const addDeleteExtension = () => addFetchMethod('DELETE')
+
+function addFetchMethod(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE') {
+  addDataExtension(method.toLowerCase(), {
+    withExpression: (args) => fetcher(method, args),
+  })
+}
+
+function fetcher(method: string, args: WithExpressionArgs) {
   const {
     el: elRaw,
     dataStack,
     expression,
-    modifiers,
     reactivity: { computed },
   } = args
 
@@ -123,15 +83,26 @@ function fetcher(
       const id = frag.getAttribute('id')
       if (!id) throw new Error('No id')
 
-      const el = document.getElementById(id)
-      if (!el) throw new Error('No element')
+      const fragElement = toHTMLorSVGElement(frag)
 
-      if (modifiers.has('replace')) {
-        el.replaceWith(frag)
-      } else if (modifiers.has('appendChild')) {
-        el.appendChild(frag)
-      } else {
-        morphdom(el, frag)
+      const targetSelector = fragElement?.dataset?.[`fragmentTargetSelector`] || `#${id}`
+
+      const target = targetSelector ? document.querySelector(targetSelector) : elRaw
+      if (!target) throw new Error('No target element')
+
+      const merge = fragElement?.dataset?.[`fragmentMergeMode`] || 'morph'
+      switch (merge) {
+        case 'replace':
+          el.replaceWith(frag)
+          break
+        case 'appendChild':
+          el.appendChild(frag)
+          break
+        case 'morph':
+          morphdom(target, frag)
+          break
+        default:
+          throw new Error('Invalid merge mode')
       }
     }
 

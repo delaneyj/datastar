@@ -3,13 +3,7 @@ import { addDataExtension } from '../core'
 
 export function addOnDataExtension() {
   addDataExtension('on', {
-    withExpression: ({
-      name,
-      el,
-      dataStack,
-      expression,
-      reactivity: { effect, onCleanup },
-    }) => {
+    withExpression: ({ name, el, dataStack, expression, reactivity: { effect, onCleanup } }) => {
       const signalFn = functionGenerator(expression)
       const fn = () => signalFn(dataStack)
 

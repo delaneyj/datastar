@@ -1,9 +1,7 @@
 import { functionEval } from '..'
 import { addDataExtension } from '../core'
 
-const signalRexep = new RegExp(
-  /(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g,
-)
+const signalRexep = new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g)
 
 export function addSignalDataExtension() {
   addDataExtension('signal', {

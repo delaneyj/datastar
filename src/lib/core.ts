@@ -40,9 +40,7 @@ export function addDataExtension(
     allowedModifiers?: Iterable<string>
     isPreprocessGlobal?: boolean
     preprocessExpression?: (raw: string) => string
-    withExpression?: (
-      args: WithExpressionArgs,
-    ) => NamespacedReactiveRecords | void
+    withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
     requiredExtensions?: Set<string>
   },
 ) {
