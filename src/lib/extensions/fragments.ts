@@ -78,6 +78,7 @@ function fetcher(
     el: elRaw,
     dataStack,
     expression,
+    modifiers,
     reactivity: { computed },
   } = args
 
@@ -125,7 +126,13 @@ function fetcher(
       const el = document.getElementById(id)
       if (!el) throw new Error('No element')
 
-      morphdom(el, frag.outerHTML)
+      if (modifiers.has('replace')) {
+        el.replaceWith(frag)
+      } else if (modifiers.has('appendChild')) {
+        el.appendChild(frag)
+      } else {
+        morphdom(el, frag)
+      }
     }
 
     el.classList.remove(loadingClass)
