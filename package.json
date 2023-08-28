@@ -11,10 +11,12 @@
   "devDependencies": {
     "@types/node": "^20.5.7",
     "prettier": "^3.0.2",
+    "terser": "^5.19.2",
     "typescript": "^5.0.2",
     "vite": "^4.4.5"
   },
   "dependencies": {
-    "@reactively/core": "^0.0.8"
+    "@reactively/core": "^0.0.8",
+    "morphdom": "^2.7.0"
   }
 }

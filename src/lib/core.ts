@@ -20,28 +20,40 @@ type PreprocessExpression = (raw: string) => string
 const extensionPreprocessStack = new Array<PreprocessExpression>()
 const data = new Map<Element, NamespacedReactiveRecords>()
 
+export type WithExpressionArgs = {
+  name: string
+  expression: string
+  modifiers: Set<string>
+  el: Element
+  dataStack: NamespacedReactiveRecords
+  reactivity: {
+    signal<T>(initialValue: T): Reactive<T>
+    computed<T>(fn: () => T): Reactive<T>
+    effect(fn: () => void): Reactive<void>
+    onCleanup(fn: () => void): void
+  }
+}
+
 export function addDataExtension(
   prefix: string,
-  args?: {
+  args: {
     allowedModifiers?: Iterable<string>
+    isPreprocessGlobal?: boolean
     preprocessExpression?: (raw: string) => string
-    withExpression?: (args: {
-      name: string
-      expression: string
-      modifiers?: Set<string>
-      el: Element
-      dataStack: NamespacedReactiveRecords
-      reactivity: {
-        signal<T>(initialValue: T): Reactive<T>
-        computed<T>(fn: () => T): Reactive<T>
-        effect(fn: () => void): Reactive<void>
-        onCleanup(fn: () => void): void
-      }
-    }) => NamespacedReactiveRecords
+    withExpression?: (
+      args: WithExpressionArgs,
+    ) => NamespacedReactiveRecords | void
     requiredExtensions?: Set<string>
   },
 ) {
-  if (args?.preprocessExpression) {
+  if (!args) {
+    args = {}
+  }
+  if (typeof args?.isPreprocessGlobal === 'undefined') {
+    args.isPreprocessGlobal = true
+  }
+
+  if (args?.preprocessExpression && args.isPreprocessGlobal) {
     extensionPreprocessStack.push(args.preprocessExpression)
   }
 
@@ -52,10 +64,9 @@ export function addDataExtension(
     }
   }
 
-  walkDownDOM(document.body, (el) => {
-    if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
-      return
-    }
+  walkDownDOM(document.body, (element) => {
+    const el = toHTMLorSVGElement(element)
+    if (!el) return
 
     for (var d in el.dataset) {
       if (!d.startsWith(prefix)) continue
@@ -80,6 +91,10 @@ export function addDataExtension(
         expression = preprocess(expression)
       }
 
+      if (args?.preprocessExpression && !args?.isPreprocessGlobal) {
+        expression = args.preprocessExpression(expression)
+      }
+
       const elementData = data.get(el) || {}
       if (args?.withExpression) {
         const postExpression = args.withExpression({
@@ -95,7 +110,9 @@ export function addDataExtension(
             onCleanup,
           },
         })
-        Object.assign(elementData, postExpression)
+        if (postExpression) {
+          Object.assign(elementData, postExpression)
+        }
       }
       data.set(el, elementData)
 
@@ -116,4 +133,11 @@ function loadDataStack(el: Element): NamespacedReactiveRecords {
 
   const dataStack = Object.assign({}, ...stack)
   return dataStack
+}
+
+export function toHTMLorSVGElement(el: Element) {
+  if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
+    return null
+  }
+  return el
 }
