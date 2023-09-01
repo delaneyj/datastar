@@ -1,17 +1,17 @@
 import { NamespacedReactiveRecords, functionGenerator } from '..'
 import { addDataExtension } from '../core'
 
-export function addTextDataExtension() {
-  addDataExtension('text', {
-    withExpression: ({ name, el, expression, dataStack, reactivity: { effect } }) => {
+export function addBindDataExtension() {
+  addDataExtension('bind', {
+    withExpression: ({ el, name, expression, dataStack, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 
       const elementData: NamespacedReactiveRecords = {
-        text: {
+        bind: {
           [name]: effect(() => {
             if (!dataStack?.signals) return
             const res = signalFn(dataStack)
-            el.textContent = `${res}`
+            el.setAttribute(name, `${res}`)
           }),
         },
       }

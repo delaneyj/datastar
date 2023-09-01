@@ -1,31 +1,35 @@
 import { NamespacedReactiveRecords, functionGenerator } from '..'
 import { addDataExtension } from '../core'
 
+const IMPORTANT = 'important',
+  DISPLAY = 'display',
+  NONE = 'none'
+
 export function addShowDataExtension() {
   addDataExtension('show', {
-    allowedModifiers: ['important'],
-    withExpression: ({ el, dataStack, expression, modifiers, reactivity: { effect } }) => {
+    allowedModifiers: [IMPORTANT],
+    withExpression: ({ el, name, dataStack, expression, hasMod, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 
       if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
         throw new Error('Element must have a style property')
       }
 
-      const isImportant = modifiers?.has('important')
-      const priority = isImportant ? 'important' : undefined
+      const isImportant = hasMod(IMPORTANT)
+      const priority = isImportant ? IMPORTANT : undefined
 
       const elementData: NamespacedReactiveRecords = {
         show: {
-          name: effect(() => {
+          [name]: effect(() => {
             const shouldShow = !!signalFn(dataStack)
             if (shouldShow) {
-              if (el.style.length === 1 && el.style.display === 'none') {
-                el.style.removeProperty('display')
+              if (el.style.length === 1 && el.style.display === NONE) {
+                el.style.removeProperty(DISPLAY)
               } else {
-                el.style.setProperty('display', '', priority)
+                el.style.setProperty(DISPLAY, '', priority)
               }
             } else {
-              el.style.setProperty('display', 'none', priority)
+              el.style.setProperty(DISPLAY, NONE, priority)
             }
           }),
         },

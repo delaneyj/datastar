@@ -1,8 +1,18 @@
 {
-  "name": "datastar",
-  "private": true,
+  "name": "@delaneyj/datastar",
   "version": "0.0.0",
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/datastar.js",
+  "module": "dist/datastar.js",
+  "exports": {
+    ".": {
+      "import": "./dist/datastar.js",
+      "require": "./dist/datastar.js"
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

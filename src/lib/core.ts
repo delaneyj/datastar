@@ -1,6 +1,6 @@
 import { Reactive, autoStabilize, onCleanup, reactive } from '@reactively/core'
 import { walkDownDOM, walkUpDOM } from './dom'
-import { NamespacedReactiveRecords } from './types'
+import { Modifier, NamespacedReactiveRecords } from './types'
 
 autoStabilize()
 
@@ -23,7 +23,6 @@ const data = new Map<Element, NamespacedReactiveRecords>()
 export type WithExpressionArgs = {
   name: string
   expression: string
-  modifiers: Set<string>
   el: Element
   dataStack: NamespacedReactiveRecords
   reactivity: {
@@ -32,6 +31,8 @@ export type WithExpressionArgs = {
     effect(fn: () => void): Reactive<void>
     onCleanup(fn: () => void): void
   }
+  withMod(label: string): Modifier | undefined
+  hasMod(label: string): boolean
 }
 
 export function addDataExtension(
@@ -69,17 +70,18 @@ export function addDataExtension(
     for (var d in el.dataset) {
       if (!d.startsWith(prefix)) continue
 
-      let [name, ...modifiersArr] = d.split('.')
+      let [name, ...modifiersWithArgsArr] = d.split('.')
 
       const pl = prefix.length
       const pl1 = pl + 1
       name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
 
-      const modifiers = new Set(modifiersArr)
-      modifiers.forEach((m) => {
-        if (!allAllowedModifiers.has(m)) {
-          throw new Error(`Modifier ${m} is not allowed for ${name}`)
+      const modifiers = modifiersWithArgsArr.map((m) => {
+        const [label, ...args] = m.split(':')
+        if (!allAllowedModifiers.has(label)) {
+          throw new Error(`Modifier ${label} is not allowed for ${name}`)
         }
+        return { label, args }
       })
 
       const dataStack = loadDataStack(el)
@@ -98,7 +100,6 @@ export function addDataExtension(
         const postExpression = args.withExpression({
           name,
           expression,
-          modifiers,
           el,
           dataStack,
           reactivity: {
@@ -107,6 +108,8 @@ export function addDataExtension(
             effect,
             onCleanup,
           },
+          withMod: (label: string) => withModifier(modifiers, label),
+          hasMod: (label: string) => hasModifier(modifiers, label),
         })
         if (postExpression) {
           Object.assign(elementData, postExpression)
@@ -138,4 +141,12 @@ export function toHTMLorSVGElement(el: Element) {
     return null
   }
   return el
+}
+
+export function hasModifier(modifiers: Modifier[], label: string) {
+  return modifiers.some((m) => m.label === label)
+}
+
+export function withModifier(modifiers: Modifier[], label: string) {
+  return modifiers.find((m) => m.label === label)
 }

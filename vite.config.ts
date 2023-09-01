@@ -1,4 +1,4 @@
-import path from 'path'
+import { resolve } from 'path'
 import { defineConfig } from 'vite'
 
 export default defineConfig({
@@ -6,9 +6,9 @@ export default defineConfig({
     minify: 'esbuild',
     sourcemap: true,
     lib: {
-      entry: path.resolve(__dirname, 'src/lib/index.ts'),
-      name: 'DataStar',
-      fileName: 'data-star',
+      entry: resolve(__dirname, 'src/lib/index.ts'),
+      name: 'Datastar',
+      fileName: 'datastar',
       formats: ['es', 'umd', 'iife'],
     },
   },

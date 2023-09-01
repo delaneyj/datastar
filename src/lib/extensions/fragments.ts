@@ -2,8 +2,13 @@ import morphdom from 'morphdom'
 import { functionEval } from '..'
 import { WithExpressionArgs, addDataExtension, toHTMLorSVGElement } from '../core'
 
-const p = new DOMParser()
-const loadingClass = 'datastar-loading'
+const p = new DOMParser(),
+  LOADING_CLASS = 'datastar-loading',
+  GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete'
 
 export function addHeadersExtension() {
   addDataExtension('header', {
@@ -15,20 +20,28 @@ export function addHeadersExtension() {
 
       return {
         headers: {
-          [name.toUpperCase()]: computed(() => headers),
+          [name]: computed(() => headers),
         },
       }
     },
   })
 }
 
-export const addGetExtension = () => addFetchMethod('GET')
-export const addPostExtension = () => addFetchMethod('POST')
-export const addPutExtension = () => addFetchMethod('PUT')
-export const addPatchExtension = () => addFetchMethod('PATCH')
-export const addDeleteExtension = () => addFetchMethod('DELETE')
+export const addGetExtension = () => addFetchMethod(GET)
+export const addPostExtension = () => addFetchMethod(POST)
+export const addPutExtension = () => addFetchMethod(PUT)
+export const addPatchExtension = () => addFetchMethod(PATCH)
+export const addDeleteExtension = () => addFetchMethod(DELETE)
 
-function addFetchMethod(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE') {
+export const addAllFragmentExtensions = () => {
+  addGetExtension()
+  addPostExtension()
+  addPutExtension()
+  addPatchExtension()
+  addDeleteExtension()
+}
+
+function addFetchMethod(method: typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE) {
   addDataExtension(method.toLowerCase(), {
     withExpression: (args) => fetcher(method, args),
   })
@@ -49,7 +62,7 @@ function fetcher(method: string, args: WithExpressionArgs) {
     const el = toHTMLorSVGElement(elRaw)
     if (!el) throw new Error('Element must be an HTMLElement or SVGElement')
 
-    el.classList.add(loadingClass)
+    el.classList.add(LOADING_CLASS)
 
     const url = new URL(urlRaw)
     const headers = new Headers()
@@ -106,6 +119,6 @@ function fetcher(method: string, args: WithExpressionArgs) {
       }
     }
 
-    el.classList.remove(loadingClass)
+    el.classList.remove(LOADING_CLASS)
   })
 }

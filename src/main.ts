@@ -1,3 +1,3 @@
-import { addDefaultExtensions } from './lib'
+import { addAllIncludedExtensions } from './lib'
 
-addDefaultExtensions()
+addAllIncludedExtensions()
