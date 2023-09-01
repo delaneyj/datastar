@@ -3,25 +3,27 @@ import { addDataExtension } from '../core'
 
 const signalRexep = new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g)
 
-const persistKey = 'persist'
+const PERSIST_KEY = 'persist'
+
+export const SIGNAL = Symbol('signal')
 export function addSignalDataExtension() {
-  addDataExtension('signal', {
+  const dataSignalPrefix = `data.${SIGNAL.description}s`
+  addDataExtension(SIGNAL, {
     preprocessExpression: (str) => {
       // turn $signal into data.signals.signal.value
       const matches = [...str.matchAll(signalRexep)]
-      console.log({ matches })
       for (const match of matches) {
         if (!match.groups) continue
         const { whole, signal } = match.groups
-        str = str.replace(whole, `data.signals.${signal}.value`)
+        str = str.replace(whole, `${dataSignalPrefix}.${signal}.value`)
       }
       return str
     },
-    allowedModifiers: [persistKey],
+    allowedModifiers: [PERSIST_KEY],
     withExpression: ({ name, expression, reactivity, hasMod }) => {
       const signal = reactivity.signal(functionEval({}, expression))
 
-      if (hasMod(persistKey)) {
+      if (hasMod(PERSIST_KEY)) {
         const value = localStorage.getItem(name)
         if (value) {
           const parsedValue = JSON.parse(value)

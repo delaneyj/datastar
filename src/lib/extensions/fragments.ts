@@ -1,17 +1,18 @@
 import morphdom from 'morphdom'
-import { functionEval } from '..'
+import { SIGNAL, functionEval } from '..'
 import { WithExpressionArgs, addDataExtension, toHTMLorSVGElement } from '../core'
 
 const p = new DOMParser(),
   LOADING_CLASS = 'datastar-loading',
-  GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete'
+  TEXT_HTML = 'text/html',
+  REPLACE = 'replace',
+  APPEND_CHILD = 'appendChild',
+  MORPH = 'morph'
 
+export const HEADER = Symbol('header')
 export function addHeadersExtension() {
-  addDataExtension('header', {
+  addDataExtension(HEADER, {
+    requiredExtensions: [SIGNAL],
     withExpression: ({ name, expression, dataStack, reactivity: { computed } }) => {
       const headers = functionEval(dataStack, expression)
       if (typeof headers !== 'object') {
@@ -27,10 +28,15 @@ export function addHeadersExtension() {
   })
 }
 
+export const GET = Symbol('get')
 export const addGetExtension = () => addFetchMethod(GET)
+export const POST = Symbol('post')
 export const addPostExtension = () => addFetchMethod(POST)
+export const PUT = Symbol('put')
 export const addPutExtension = () => addFetchMethod(PUT)
+export const PATCH = Symbol('patch')
 export const addPatchExtension = () => addFetchMethod(PATCH)
+export const DELETE = Symbol('delete')
 export const addDeleteExtension = () => addFetchMethod(DELETE)
 
 export const addAllFragmentExtensions = () => {
@@ -41,13 +47,14 @@ export const addAllFragmentExtensions = () => {
   addDeleteExtension()
 }
 
-function addFetchMethod(method: typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE) {
-  addDataExtension(method.toLowerCase(), {
+function addFetchMethod(method: Symbol) {
+  addDataExtension(method, {
+    requiredExtensions: [SIGNAL],
     withExpression: (args) => fetcher(method, args),
   })
 }
 
-function fetcher(method: string, args: WithExpressionArgs) {
+function fetcher(methodSymbol: Symbol, args: WithExpressionArgs) {
   const {
     el: elRaw,
     dataStack,
@@ -66,7 +73,7 @@ function fetcher(method: string, args: WithExpressionArgs) {
 
     const url = new URL(urlRaw)
     const headers = new Headers()
-    headers.append('Accept', 'text/html')
+    headers.append('Accept', TEXT_HTML)
     headers.append('Content-Type', 'application/json')
 
     if (dataStack?.headers) {
@@ -76,9 +83,10 @@ function fetcher(method: string, args: WithExpressionArgs) {
       }
     }
 
+    const method = methodSymbol.toString().toUpperCase()
     const req: RequestInit = { method, headers }
     const dataStackJSON = JSON.stringify(dataStack)
-    if (method !== 'GET') {
+    if (methodSymbol !== GET) {
       const b64 = atob(dataStackJSON)
       url.searchParams.append('dataStack', b64)
     } else {
@@ -89,7 +97,7 @@ function fetcher(method: string, args: WithExpressionArgs) {
     if (!res.ok) throw new Error('Network response was not ok.')
     const html = await res.text()
 
-    const dom = p.parseFromString(html, 'text/html').body.childNodes
+    const dom = p.parseFromString(html, TEXT_HTML).body.childNodes
     for (const frag of dom) {
       if (!(frag instanceof Element)) throw new Error('Not an element')
 
@@ -103,15 +111,15 @@ function fetcher(method: string, args: WithExpressionArgs) {
       const target = targetSelector ? document.querySelector(targetSelector) : elRaw
       if (!target) throw new Error('No target element')
 
-      const merge = fragElement?.dataset?.[`fragmentMergeMode`] || 'morph'
+      const merge = fragElement?.dataset?.[`fragmentMergeMode`] || MORPH
       switch (merge) {
-        case 'replace':
+        case REPLACE:
           el.replaceWith(frag)
           break
-        case 'appendChild':
+        case APPEND_CHILD:
           el.appendChild(frag)
           break
-        case 'morph':
+        case MORPH:
           morphdom(target, frag)
           break
         default:

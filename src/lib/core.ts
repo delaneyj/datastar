@@ -16,6 +16,8 @@ function effect(fn: () => void) {
   return reactive(fn, { effect: true })
 }
 
+const extensionsRegistered = new Set<Symbol>()
+
 type PreprocessExpression = (raw: string) => string
 const extensionPreprocessStack = new Array<PreprocessExpression>()
 const data = new Map<Element, NamespacedReactiveRecords>()
@@ -36,18 +38,37 @@ export type WithExpressionArgs = {
 }
 
 export function addDataExtension(
-  prefix: string,
+  prefix: Symbol,
   args: {
     allowedModifiers?: Iterable<string>
     isPreprocessGlobal?: boolean
     preprocessExpression?: (raw: string) => string
     withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
-    requiredExtensions?: Set<string>
+    requiredExtensions?: Iterable<Symbol>
   },
 ) {
+  if (!prefix.description) throw Error()
+  if (prefix.description.toLowerCase() !== prefix.description)
+    throw Error(`Data extension 'data-${prefix.description}' must be lowercase`)
+
   if (!args) {
     args = {}
   }
+
+  if (extensionsRegistered.has(prefix)) {
+    throw new Error(`Data extension 'data-${prefix}' already registered`)
+  }
+
+  if (args?.requiredExtensions) {
+    for (const requiredExtension of args.requiredExtensions) {
+      if (!extensionsRegistered.has(requiredExtension)) {
+        throw new Error(
+          `Data extension 'data-${prefix.description}' requires 'data-${requiredExtension}' to be registered first`,
+        )
+      }
+    }
+  }
+
   if (typeof args?.isPreprocessGlobal === 'undefined') {
     args.isPreprocessGlobal = true
   }
@@ -64,15 +85,17 @@ export function addDataExtension(
   }
 
   walkDownDOM(document.body, (element) => {
+    if (!prefix.description) throw Error()
+
     const el = toHTMLorSVGElement(element)
     if (!el) return
 
     for (var d in el.dataset) {
-      if (!d.startsWith(prefix)) continue
+      if (!d.startsWith(prefix?.description)) continue
 
       let [name, ...modifiersWithArgsArr] = d.split('.')
 
-      const pl = prefix.length
+      const pl = prefix.description.length
       const pl1 = pl + 1
       name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
 
@@ -116,10 +139,11 @@ export function addDataExtension(
         }
       }
       data.set(el, elementData)
-
-      console.log({ name, modifiers, elementData })
     }
   })
+
+  extensionsRegistered.add(prefix)
+  console.log(`Registered data extension: data-${prefix.description}`)
 }
 
 function loadDataStack(el: Element): NamespacedReactiveRecords {

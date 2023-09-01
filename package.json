@@ -23,7 +23,8 @@
     "prettier": "^3.0.2",
     "terser": "^5.19.2",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-plugin-compression": "^0.5.1"
   },
   "dependencies": {
     "@reactively/core": "^0.0.8",

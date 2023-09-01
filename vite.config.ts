@@ -1,8 +1,15 @@
 import { resolve } from 'path'
 import { defineConfig } from 'vite'
+import compress from 'vite-plugin-compression'
 
 export default defineConfig({
+  plugins: [
+    compress({
+      algorithm: 'brotliCompress',
+    }),
+  ],
   build: {
+    target: 'esnext',
     minify: 'esbuild',
     sourcemap: true,
     lib: {

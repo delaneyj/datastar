@@ -1,13 +1,15 @@
-import { NamespacedReactiveRecords, functionGenerator } from '..'
+import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
 import { addDataExtension, toHTMLorSVGElement } from '../core'
 
-const PREPENG = 'prepend',
+const PREPEND = 'prepend',
   APPEND = 'append',
   MUST_PARENT_ERR = 'Target element must have a parent if using prepend or append'
 
+export const TELEPORT = Symbol('teleport')
 export function addTeleportDataExtension() {
-  addDataExtension('teleport', {
-    allowedModifiers: [PREPENG, APPEND],
+  addDataExtension(TELEPORT, {
+    requiredExtensions: [SIGNAL],
+    allowedModifiers: [PREPEND, APPEND],
     withExpression: ({ name, el, expression, dataStack, reactivity: { effect }, hasMod }) => {
       if (!(el instanceof HTMLTemplateElement)) {
         throw new Error('Element must be a template')
@@ -28,7 +30,7 @@ export function addTeleportDataExtension() {
             const nEl = toHTMLorSVGElement(n as Element)
             if (nEl?.firstElementChild) throw new Error('Empty template')
 
-            if (hasMod(PREPENG)) {
+            if (hasMod(PREPEND)) {
               if (!target.parentNode) throw new Error(MUST_PARENT_ERR)
               target.parentNode.insertBefore(n, target)
             } else if (hasMod(APPEND)) {

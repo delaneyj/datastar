@@ -1,13 +1,16 @@
-import { NamespacedReactiveRecords, functionGenerator } from '..'
+import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
 import { addDataExtension } from '../core'
 
 const THROTTLE = 'throttle',
   DEBOUNCE = 'debounce',
+  LEADING = 'leading',
   ONCE = 'once',
   IDLE = 'idle'
 
+export const ON = Symbol('on')
 export function addOnDataExtension() {
-  addDataExtension('on', {
+  addDataExtension(ON, {
+    requiredExtensions: [SIGNAL],
     allowedModifiers: [THROTTLE, DEBOUNCE, ONCE, IDLE],
     withExpression: ({
       name,
@@ -23,6 +26,7 @@ export function addOnDataExtension() {
       const hasOnce = hasMod(ONCE)
       const throttleMod = withMod(THROTTLE)
       const debounceMod = withMod(DEBOUNCE)
+      const hasLeading = hasMod(LEADING)
 
       const fn = () => signalFn(dataStack)
       let wrappedFnCallback: Function = fn
@@ -54,10 +58,16 @@ export function addOnDataExtension() {
         const [debounceTimeRaw] = debounceMod.args
         const debounceTime = debounceTimeRaw ? Number(debounceTimeRaw) : 1000
 
-        let timerID: ReturnType<typeof setTimeout>
+        let timerID: ReturnType<typeof setTimeout> | undefined
         const debouncedFn = computed(() => {
+          if (hasLeading && !timerID) {
+            fn()
+          }
           clearTimeout(timerID)
-          timerID = setTimeout(() => fn(), debounceTime)
+          timerID = setTimeout(() => {
+            if (hasLeading) timerID = undefined
+            else fn()
+          }, debounceTime)
         })
 
         wrappedFnCallback = () => debouncedFn.value
