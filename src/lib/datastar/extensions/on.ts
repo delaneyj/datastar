@@ -1,25 +1,25 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
 import { addDataExtension } from '../core'
 
-const THROTTLE = 'throttle',
-  DEBOUNCE = 'debounce',
-  LEADING = 'leading',
-  ONCE = 'once',
-  IDLE = 'idle'
-
 export const ON = Symbol('on')
+
+const ONCE = 'once',
+  THROTTLE = 'throttle',
+  DEBOUNCE = 'debounce',
+  LEADING = 'leading'
+
 export function addOnDataExtension() {
   addDataExtension(ON, {
     requiredExtensions: [SIGNAL],
-    allowedModifiers: [THROTTLE, DEBOUNCE, ONCE, IDLE],
+    allowedModifiers: [ONCE, THROTTLE, DEBOUNCE, LEADING],
     withExpression: ({
-      name,
       el,
-      dataStack,
+      name,
       hasMod,
       withMod,
       expression,
-      reactivity: { effect, onCleanup, computed },
+      dataStack,
+      reactivity: { computed, effect, onCleanup },
     }) => {
       const signalFn = functionGenerator(expression)
 

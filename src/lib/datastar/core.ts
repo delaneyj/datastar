@@ -1,6 +1,6 @@
 import { Reactive, autoStabilize, onCleanup, reactive } from '@reactively/core'
 import { walkDownDOM, walkUpDOM } from './dom'
-import { Modifier, NamespacedReactiveRecords } from './types'
+import { Modifier, NamespacedReactiveRecords, Reactivity } from './types'
 
 autoStabilize()
 
@@ -18,23 +18,38 @@ function effect(fn: () => void) {
 
 const extensionsRegistered = new Set<Symbol>()
 
-type PreprocessExpression = (raw: string) => string
-const extensionPreprocessStack = new Array<PreprocessExpression>()
+export interface Preprocesser {
+  name: string
+  description: string
+  regexp: RegExp
+  replacer: (groups: Record<string, string>) => string
+}
+export function useProcessor({ regexp, replacer }: Preprocesser, str: string): string {
+  // console.log(`preprocess with ${name}. ${description}`)
+  const matches = [...str.matchAll(regexp)]
+  if (!matches.length) return str
+  for (const match of matches) {
+    if (!match.groups) continue
+    const { groups } = match
+    const { whole } = groups
+    str = str.replace(whole, replacer(groups))
+  }
+  return str
+}
+
+const extensionPreprocessStack = new Array<Preprocesser>()
 const data = new Map<Element, NamespacedReactiveRecords>()
+const actions = new Map<string, Function>()
 
 export type WithExpressionArgs = {
   name: string
   expression: string
   el: Element
   dataStack: NamespacedReactiveRecords
-  reactivity: {
-    signal<T>(initialValue: T): Reactive<T>
-    computed<T>(fn: () => T): Reactive<T>
-    effect(fn: () => void): Reactive<void>
-    onCleanup(fn: () => void): void
-  }
+  reactivity: Reactivity
   withMod(label: string): Modifier | undefined
   hasMod(label: string): boolean
+  actions: Map<string, Function>
 }
 
 export function addDataExtension(
@@ -42,9 +57,10 @@ export function addDataExtension(
   args: {
     allowedModifiers?: Iterable<string>
     isPreprocessGlobal?: boolean
-    preprocessExpression?: (raw: string) => string
+    preprocessExpressions?: Iterable<Preprocesser>
     withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
     requiredExtensions?: Iterable<Symbol>
+    actionsAdded?: Record<string, Function>
   },
 ) {
   if (!prefix.description) throw Error()
@@ -73,14 +89,21 @@ export function addDataExtension(
     args.isPreprocessGlobal = true
   }
 
-  if (args?.preprocessExpression && args.isPreprocessGlobal) {
-    extensionPreprocessStack.push(args.preprocessExpression)
+  if (args?.preprocessExpressions && args.isPreprocessGlobal) {
+    extensionPreprocessStack.push(...args.preprocessExpressions)
   }
 
   const allAllowedModifiers = new Set()
   if (args?.allowedModifiers) {
     for (const modifier of args.allowedModifiers) {
       allAllowedModifiers.add(modifier)
+    }
+  }
+
+  if (args?.actionsAdded) {
+    for (const [name, fn] of Object.entries(args.actionsAdded)) {
+      if (actions.has(name)) throw new Error(`Action '${name}' already registered`)
+      actions.set(name, fn)
     }
   }
 
@@ -110,12 +133,14 @@ export function addDataExtension(
       const dataStack = loadDataStack(el)
       let expression = el.dataset[d] || ''
 
-      for (const preprocess of extensionPreprocessStack) {
-        expression = preprocess(expression)
+      for (const preprocessor of extensionPreprocessStack) {
+        expression = useProcessor(preprocessor, expression)
       }
 
-      if (args?.preprocessExpression && !args?.isPreprocessGlobal) {
-        expression = args.preprocessExpression(expression)
+      if (args?.preprocessExpressions && !args?.isPreprocessGlobal) {
+        for (const preprocessor of args.preprocessExpressions) {
+          expression = useProcessor(preprocessor, expression)
+        }
       }
 
       const elementData = data.get(el) || {}
@@ -133,6 +158,7 @@ export function addDataExtension(
           },
           withMod: (label: string) => withModifier(modifiers, label),
           hasMod: (label: string) => hasModifier(modifiers, label),
+          actions,
         })
         if (postExpression) {
           Object.assign(elementData, postExpression)

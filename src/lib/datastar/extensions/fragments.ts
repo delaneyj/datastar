@@ -4,29 +4,14 @@ import { WithExpressionArgs, addDataExtension, toHTMLorSVGElement } from '../cor
 
 const p = new DOMParser(),
   LOADING_CLASS = 'datastar-loading',
-  TEXT_HTML = 'text/html',
   REPLACE = 'replace',
   APPEND_CHILD = 'appendChild',
-  MORPH = 'morph'
-
-export const HEADER = Symbol('header')
-export function addHeadersExtension() {
-  addDataExtension(HEADER, {
-    requiredExtensions: [SIGNAL],
-    withExpression: ({ name, expression, dataStack, reactivity: { computed } }) => {
-      const headers = functionEval(dataStack, expression)
-      if (typeof headers !== 'object') {
-        throw new Error('Headers must be an object')
-      }
-
-      return {
-        headers: {
-          [name]: computed(() => headers),
-        },
-      }
-    },
-  })
-}
+  MORPH = 'morph',
+  ACCEPT = 'Accept',
+  TEXT_HTML = 'text/html',
+  CONTENT_TYPE = 'Content-Type',
+  APPLICATION_JSON = 'application/json',
+  DATA_STACK = 'dataStack'
 
 export const GET = Symbol('get')
 export const addGetExtension = () => addFetchMethod(GET)
@@ -59,10 +44,10 @@ function fetcher(methodSymbol: Symbol, args: WithExpressionArgs) {
     el: elRaw,
     dataStack,
     expression,
-    reactivity: { computed },
+    reactivity: { effect },
   } = args
 
-  computed(async () => {
+  effect(async () => {
     const urlRaw = functionEval(dataStack, expression)
     if (urlRaw !== 'string') throw new Error('url must be a string')
 
@@ -73,8 +58,9 @@ function fetcher(methodSymbol: Symbol, args: WithExpressionArgs) {
 
     const url = new URL(urlRaw)
     const headers = new Headers()
-    headers.append('Accept', TEXT_HTML)
-    headers.append('Content-Type', 'application/json')
+
+    headers.append(ACCEPT, TEXT_HTML)
+    headers.append(CONTENT_TYPE, APPLICATION_JSON)
 
     if (dataStack?.headers) {
       for (let name in dataStack.headers) {
@@ -88,7 +74,7 @@ function fetcher(methodSymbol: Symbol, args: WithExpressionArgs) {
     const dataStackJSON = JSON.stringify(dataStack)
     if (methodSymbol !== GET) {
       const b64 = atob(dataStackJSON)
-      url.searchParams.append('dataStack', b64)
+      url.searchParams.append(DATA_STACK, b64)
     } else {
       req.body = dataStackJSON
     }

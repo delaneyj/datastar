@@ -1,24 +1,25 @@
 import { functionEval } from '..'
 import { addDataExtension } from '../core'
 
-const signalRexep = new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g)
+export const SIGNAL = Symbol('signal')
 
 const PERSIST_KEY = 'persist'
-
-export const SIGNAL = Symbol('signal')
 export function addSignalDataExtension() {
-  const dataSignalPrefix = `data.${SIGNAL.description}s`
   addDataExtension(SIGNAL, {
-    preprocessExpression: (str) => {
-      // turn $signal into data.signals.signal.value
-      const matches = [...str.matchAll(signalRexep)]
-      for (const match of matches) {
-        if (!match.groups) continue
-        const { whole, signal } = match.groups
-        str = str.replace(whole, `${dataSignalPrefix}.${signal}.value`)
-      }
-      return str
-    },
+    preprocessExpressions: [
+      {
+        name: 'signal',
+        description: 'turns $signal into data.signals.signal.value',
+        regexp: new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g),
+        replacer: ({ signal }) => `data.${SIGNAL.description}s.${signal}.value`,
+      },
+      {
+        name: 'action',
+        description: 'turns @action(args) into actions.action(args)',
+        regexp: new RegExp(/(?<whole>\@(?<action>[a-zA-Z_$][0-9a-zA-Z_$]*))\((?<args>.*)\)/g),
+        replacer: ({ action, args }) => `actions.${action}(${args})`,
+      },
+    ],
     allowedModifiers: [PERSIST_KEY],
     withExpression: ({ name, expression, reactivity, hasMod }) => {
       const signal = reactivity.signal(functionEval({}, expression))
