@@ -1,3 +1,4 @@
+import { addActionDataExtension } from './actions.js'
 import { addBindDataExtension } from './bind.js'
 import { addFocusDataExtension } from './focus.js'
 import { addAllFragmentExtensions } from './fragments.js'
@@ -20,6 +21,7 @@ export * from './teleport.js'
 export * from './text.js'
 
 export function addAllIncludedExtensions() {
+  addActionDataExtension()
   addSignalDataExtension()
   addBindDataExtension()
   addFocusDataExtension()

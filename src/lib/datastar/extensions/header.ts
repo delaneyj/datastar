@@ -6,8 +6,8 @@ export const HEADER = Symbol('header')
 export function addHeadersExtension() {
   addDataExtension(HEADER, {
     requiredExtensions: [SIGNAL],
-    withExpression: ({ name, expression, dataStack, reactivity: { computed } }) => {
-      const headers = functionEval(dataStack, expression)
+    withExpression: ({ name, expression, dataStack, actions, el, reactivity: { computed } }) => {
+      const headers = functionEval(el, dataStack, actions, expression)
       if (typeof headers !== 'object') {
         throw new Error('Headers must be an object')
       }

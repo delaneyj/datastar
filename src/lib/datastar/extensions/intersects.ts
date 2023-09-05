@@ -10,9 +10,9 @@ export function addIntersectsExtension() {
   addDataExtension(INTERSECTS, {
     requiredExtensions: [SIGNAL],
     allowedModifiers: [once, full, half],
-    withExpression: ({ name, el, expression, dataStack, hasMod, reactivity: { effect, onCleanup } }) => {
+    withExpression: ({ name, el, expression, dataStack, actions, hasMod, reactivity: { effect, onCleanup } }) => {
       const signalFn = functionGenerator(expression)
-      const fn = () => signalFn(dataStack)
+      const fn = () => signalFn(el, dataStack, actions)
 
       const options = { threshold: 0 }
       if (hasMod(full)) options.threshold = 1

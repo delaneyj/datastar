@@ -7,10 +7,10 @@ export function addCircuitBreakerDataExtension() {
   addDataExtension(CIRCUIT_BREAKER, {
     requiredExtensions: [SIGNAL],
 
-    withExpression: ({ name, expression, dataStack, reactivity: { computed } }) => {
+    withExpression: ({ name, el, expression, dataStack, actions, reactivity: { computed } }) => {
       return {
         circuitBreaker: {
-          [name]: computed(() => functionEval(dataStack, expression)),
+          [name]: computed(() => functionEval(el, dataStack, actions, expression)),
         },
       }
     },

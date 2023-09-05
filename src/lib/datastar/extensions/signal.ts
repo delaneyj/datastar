@@ -1,28 +1,24 @@
 import { functionEval } from '..'
 import { addDataExtension } from '../core'
+import { ACTION } from './actions'
 
 export const SIGNAL = Symbol('signal')
 
 const PERSIST_KEY = 'persist'
 export function addSignalDataExtension() {
   addDataExtension(SIGNAL, {
+    requiredExtensions: [ACTION],
     preprocessExpressions: [
       {
         name: 'signal',
-        description: 'turns $signal into data.signals.signal.value',
+        description: 'turns $signal into dataStack.signals.signal.value',
         regexp: new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g),
-        replacer: ({ signal }) => `data.${SIGNAL.description}s.${signal}.value`,
-      },
-      {
-        name: 'action',
-        description: 'turns @action(args) into actions.action(args)',
-        regexp: new RegExp(/(?<whole>\@(?<action>[a-zA-Z_$][0-9a-zA-Z_$]*))\((?<args>.*)\)/g),
-        replacer: ({ action, args }) => `actions.${action}(${args})`,
+        replacer: ({ signal }) => `dataStack.${SIGNAL.description}s.${signal}.value`,
       },
     ],
     allowedModifiers: [PERSIST_KEY],
-    withExpression: ({ name, expression, reactivity, hasMod }) => {
-      const signal = reactivity.signal(functionEval({}, expression))
+    withExpression: ({ name, el, expression, reactivity, hasMod, actions }) => {
+      const signal = reactivity.signal(functionEval(el, {}, actions, expression))
 
       if (hasMod(PERSIST_KEY)) {
         const value = localStorage.getItem(name)

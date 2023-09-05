@@ -10,7 +10,7 @@ export function addTeleportDataExtension() {
   addDataExtension(TELEPORT, {
     requiredExtensions: [SIGNAL],
     allowedModifiers: [PREPEND, APPEND],
-    withExpression: ({ name, el, expression, dataStack, reactivity: { effect }, hasMod }) => {
+    withExpression: ({ name, el, expression, dataStack, reactivity: { effect }, hasMod, actions }) => {
       if (!(el instanceof HTMLTemplateElement)) {
         throw new Error('Element must be a template')
       }
@@ -20,7 +20,7 @@ export function addTeleportDataExtension() {
       const elementData: NamespacedReactiveRecords = {
         text: {
           [name]: effect(() => {
-            const res = signalFn(dataStack)
+            const res = signalFn(el, dataStack, actions)
             if (typeof res !== 'string') throw new Error('Selector must be a string')
             const target = document.querySelector(res)
             if (!target) throw new Error(`Target element not found: ${res}`)

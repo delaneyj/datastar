@@ -1,10 +1,16 @@
-import { NamespacedReactiveRecordCallback, NamespacedReactiveRecords } from './types'
+import { ActionsMap, NamespacedReactiveRecordCallback, NamespacedReactiveRecords } from './types'
 
 export function functionGenerator<T>(str: string): NamespacedReactiveRecordCallback<T> {
-  return Function('data', `return ${str}`) as NamespacedReactiveRecordCallback<T>
+  const fnContents = `return ${str}`
+  const fn = new Function('el', 'dataStack', 'actions', fnContents)
+  return fn as NamespacedReactiveRecordCallback<T>
 }
 
-export function functionEval(data: NamespacedReactiveRecords, str: string) {
+export function functionEval(el: Element, dataStack: NamespacedReactiveRecords, actions: ActionsMap, str: string) {
   const fn = functionGenerator(str)
-  return fn(data)
+  try {
+    return fn(el, dataStack, actions)
+  } catch (e) {
+    console.error(`Error evaluating expression: ${str}`)
+  }
 }

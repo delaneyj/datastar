@@ -5,14 +5,14 @@ export const BIND = Symbol('bind')
 export function addBindDataExtension() {
   addDataExtension(BIND, {
     requiredExtensions: [SIGNAL],
-    withExpression: ({ el, name, expression, dataStack, reactivity: { effect } }) => {
+    withExpression: ({ el, name, expression, dataStack, actions, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 
       const elementData: NamespacedReactiveRecords = {
         bind: {
           [name]: effect(() => {
             if (!dataStack?.signals) return
-            const res = signalFn(dataStack)
+            const res = signalFn(el, dataStack, actions)
             el.setAttribute(name, `${res}`)
           }),
         },

@@ -1,7 +1,8 @@
-import { Reactive, autoStabilize, onCleanup, reactive } from '@reactively/core'
+import { camelCase } from 'change-case'
 import { walkDownDOM, walkUpDOM } from './dom'
-import { Modifier, NamespacedReactiveRecords, Reactivity } from './types'
-
+import { ACTION } from './extensions/actions'
+import { Reactive, autoStabilize, onCleanup, reactive } from './reactively/core'
+import { ActionFn, ActionsMap, Modifier, NamespacedReactiveRecords, WithExpressionArgs } from './types'
 autoStabilize()
 
 function signal<T>(initialValue: T): Reactive<T> {
@@ -39,28 +40,17 @@ export function useProcessor({ regexp, replacer }: Preprocesser, str: string): s
 
 const extensionPreprocessStack = new Array<Preprocesser>()
 const data = new Map<Element, NamespacedReactiveRecords>()
-const actions = new Map<string, Function>()
 
-export type WithExpressionArgs = {
-  name: string
-  expression: string
-  el: Element
-  dataStack: NamespacedReactiveRecords
-  reactivity: Reactivity
-  withMod(label: string): Modifier | undefined
-  hasMod(label: string): boolean
-  actions: Map<string, Function>
-}
+const actions: ActionsMap = {}
 
 export function addDataExtension(
   prefix: Symbol,
   args: {
-    allowedModifiers?: Iterable<string>
+    allowedModifiers?: Iterable<string | RegExp>
     isPreprocessGlobal?: boolean
     preprocessExpressions?: Iterable<Preprocesser>
     withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
     requiredExtensions?: Iterable<Symbol>
-    actionsAdded?: Record<string, Function>
   },
 ) {
   if (!prefix.description) throw Error()
@@ -74,14 +64,15 @@ export function addDataExtension(
   if (extensionsRegistered.has(prefix)) {
     throw new Error(`Data extension 'data-${prefix}' already registered`)
   }
+  for (const extension of args.requiredExtensions || []) {
+    if (extension.description === prefix.description) {
+      throw new Error(`Data extension 'data-${prefix.description}' cannot require itself`)
+    }
+  }
 
-  if (args?.requiredExtensions) {
-    for (const requiredExtension of args.requiredExtensions) {
-      if (!extensionsRegistered.has(requiredExtension)) {
-        throw new Error(
-          `Data extension 'data-${prefix.description}' requires 'data-${requiredExtension}' to be registered first`,
-        )
-      }
+  for (const requiredExtension of args.requiredExtensions || []) {
+    if (!extensionsRegistered.has(requiredExtension)) {
+      throw new Error(`Data extension 'data-${prefix.description}' can't be a duplicate`)
     }
   }
 
@@ -93,17 +84,11 @@ export function addDataExtension(
     extensionPreprocessStack.push(...args.preprocessExpressions)
   }
 
-  const allAllowedModifiers = new Set()
+  const allAllowedModifiers = new Set<RegExp>()
   if (args?.allowedModifiers) {
     for (const modifier of args.allowedModifiers) {
-      allAllowedModifiers.add(modifier)
-    }
-  }
-
-  if (args?.actionsAdded) {
-    for (const [name, fn] of Object.entries(args.actionsAdded)) {
-      if (actions.has(name)) throw new Error(`Action '${name}' already registered`)
-      actions.set(name, fn)
+      const m = modifier instanceof RegExp ? modifier : new RegExp(modifier)
+      allAllowedModifiers.add(m)
     }
   }
 
@@ -182,7 +167,16 @@ function loadDataStack(el: Element): NamespacedReactiveRecords {
 
   stack.reverse()
 
-  const dataStack = Object.assign({}, ...stack)
+  const dataStack: NamespacedReactiveRecords = {}
+  for (const namespacedRecords of stack) {
+    for (const namespaceKey in namespacedRecords) {
+      if (!dataStack[namespaceKey]) {
+        dataStack[namespaceKey] = {}
+      }
+      Object.assign(dataStack[namespaceKey], namespacedRecords[namespaceKey])
+    }
+  }
+
   return dataStack
 }
 
@@ -199,4 +193,30 @@ export function hasModifier(modifiers: Modifier[], label: string) {
 
 export function withModifier(modifiers: Modifier[], label: string) {
   return modifiers.find((m) => m.label === label)
+}
+
+export function addActionExension(args: {
+  name: string
+  description: string
+  fn: ActionFn
+  requiredExtensions?: Iterable<Symbol>
+}) {
+  const { name, fn, requiredExtensions } = args
+  const extensions = [ACTION, ...(requiredExtensions || [])]
+
+  if (name != camelCase(name)) {
+    throw new Error(`must be camelCase`)
+  }
+
+  for (const ext of extensions) {
+    if (!extensionsRegistered.has(ext)) {
+      throw new Error(`requires '@${name}' registration`)
+    }
+
+    if (name in actions) {
+      throw new Error(`'@${name}' already registered`)
+    }
+
+    actions[name] = fn
+  }
 }

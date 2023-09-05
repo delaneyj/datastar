@@ -1,9 +1,16 @@
 import { resolve } from 'path'
+import Unfonts from 'unplugin-fonts/vite'
 import { defineConfig } from 'vite'
 import compress from 'vite-plugin-compression'
 
 export default defineConfig({
   plugins: [
+    Unfonts({
+      google: {
+        preconnect: true,
+        families: ['Orbitron', 'Inter', 'JetBrains Mono'],
+      },
+    }),
     compress({
       algorithm: 'brotliCompress',
     }),

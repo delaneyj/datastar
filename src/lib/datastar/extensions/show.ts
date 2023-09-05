@@ -10,7 +10,7 @@ export function addShowDataExtension() {
   addDataExtension(SHOW, {
     requiredExtensions: [SIGNAL],
     allowedModifiers: [IMPORTANT],
-    withExpression: ({ el, name, dataStack, expression, hasMod, reactivity: { effect } }) => {
+    withExpression: ({ el, name, dataStack, expression, hasMod, reactivity: { effect }, actions }) => {
       const signalFn = functionGenerator(expression)
 
       if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
@@ -23,7 +23,7 @@ export function addShowDataExtension() {
       const elementData: NamespacedReactiveRecords = {
         show: {
           [name]: effect(() => {
-            const shouldShow = !!signalFn(dataStack)
+            const shouldShow = !!signalFn(el, dataStack, actions)
             if (shouldShow) {
               if (el.style.length === 1 && el.style.display === NONE) {
                 el.style.removeProperty(DISPLAY)

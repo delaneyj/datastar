@@ -20,6 +20,7 @@ export function addOnDataExtension() {
       expression,
       dataStack,
       reactivity: { computed, effect, onCleanup },
+      actions,
     }) => {
       const signalFn = functionGenerator(expression)
 
@@ -28,7 +29,12 @@ export function addOnDataExtension() {
       const debounceMod = withMod(DEBOUNCE)
       const hasLeading = hasMod(LEADING)
 
-      const fn = () => signalFn(dataStack)
+      if (name === 'load') {
+        document.addEventListener('DOMContentLoaded', () => signalFn(el, dataStack, actions), true)
+        return
+      }
+
+      const fn = () => signalFn(el, dataStack, actions)
       let wrappedFnCallback: Function = fn
       let callback: () => void
 
@@ -74,6 +80,7 @@ export function addOnDataExtension() {
       }
 
       callback = () => wrappedFnCallback()
+
       el.addEventListener(name, callback)
 
       const elementData: NamespacedReactiveRecords = {
