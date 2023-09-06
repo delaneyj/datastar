@@ -1,7 +1,7 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
 import { addDataExtension } from '../core'
 
-export const ON = Symbol('on')
+export const ON = 'on'
 
 const ONCE = 'once',
   THROTTLE = 'throttle',

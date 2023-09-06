@@ -2,7 +2,7 @@ import { functionEval } from '..'
 import { addDataExtension } from '../core'
 import { ACTION } from './actions'
 
-export const SIGNAL = Symbol('signal')
+export const SIGNAL = 'signal'
 
 const PERSIST_KEY = 'persist'
 export function addSignalDataExtension() {
@@ -13,7 +13,7 @@ export function addSignalDataExtension() {
         name: 'signal',
         description: 'turns $signal into dataStack.signals.signal.value',
         regexp: new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g),
-        replacer: ({ signal }) => `dataStack.${SIGNAL.description}s.${signal}.value`,
+        replacer: ({ signal }) => `dataStack.${SIGNAL}s.${signal}.value`,
       },
     ],
     allowedModifiers: [PERSIST_KEY],

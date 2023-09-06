@@ -2,6 +2,7 @@ import { addActionDataExtension } from './actions.js'
 import { addBindDataExtension } from './bind.js'
 import { addFocusDataExtension } from './focus.js'
 import { addAllFragmentExtensions } from './fragments.js'
+import { addModelDataExtension } from './model.js'
 import { addOnDataExtension } from './on.js'
 import { addRefDataExtension } from './ref.js'
 import { addShowDataExtension } from './show.js'
@@ -24,6 +25,7 @@ export function addAllIncludedExtensions() {
   addActionDataExtension()
   addSignalDataExtension()
   addBindDataExtension()
+  addModelDataExtension()
   addFocusDataExtension()
   addAllFragmentExtensions()
   addOnDataExtension()

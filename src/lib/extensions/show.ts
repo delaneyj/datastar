@@ -5,7 +5,7 @@ const IMPORTANT = 'important',
   DISPLAY = 'display',
   NONE = 'none'
 
-export const SHOW = Symbol('show')
+export const SHOW = 'show'
 export function addShowDataExtension() {
   addDataExtension(SHOW, {
     requiredExtensions: [SIGNAL],

@@ -4,5 +4,7 @@
   "semi": false,
   "trailingComma": "all",
   "singleQuote": true,
-  "printWidth": 120
+  "printWidth": 120,
+  "singleAttributePerLine": true,
+  "plugins": ["prettier-plugin-organize-attributes"]
 }

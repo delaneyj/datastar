@@ -1,4 +1,4 @@
-import { Reactive } from './reactively/core'
+import { Reactive } from './external/reactively'
 
 export type Reactivity = {
   signal<T>(initialValue: T): Reactive<T>

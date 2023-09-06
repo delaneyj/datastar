@@ -1,7 +1,7 @@
-import { camelCase } from 'change-case'
+import { camelize } from '.'
 import { walkDownDOM, walkUpDOM } from './dom'
 import { ACTION } from './extensions/actions'
-import { Reactive, autoStabilize, onCleanup, reactive } from './reactively/core'
+import { Reactive, autoStabilize, onCleanup, reactive } from './external/reactively'
 import { ActionFn, ActionsMap, Modifier, NamespacedReactiveRecords, WithExpressionArgs } from './types'
 autoStabilize()
 
@@ -17,7 +17,7 @@ function effect(fn: () => void) {
   return reactive(fn, { effect: true })
 }
 
-const extensionsRegistered = new Set<Symbol>()
+const extensionsRegistered = new Set<string>()
 
 export interface Preprocesser {
   name: string
@@ -44,18 +44,17 @@ const data = new Map<Element, NamespacedReactiveRecords>()
 const actions: ActionsMap = {}
 
 export function addDataExtension(
-  prefix: Symbol,
+  prefix: string,
   args: {
+    allowedTags?: Iterable<string>
     allowedModifiers?: Iterable<string | RegExp>
     isPreprocessGlobal?: boolean
     preprocessExpressions?: Iterable<Preprocesser>
     withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
-    requiredExtensions?: Iterable<Symbol>
+    requiredExtensions?: Iterable<string>
   },
 ) {
-  if (!prefix.description) throw Error()
-  if (prefix.description.toLowerCase() !== prefix.description)
-    throw Error(`Data extension 'data-${prefix.description}' must be lowercase`)
+  if (prefix.toLowerCase() !== prefix) throw Error(`Data extension 'data-${prefix}' must be lowercase`)
 
   if (!args) {
     args = {}
@@ -65,14 +64,14 @@ export function addDataExtension(
     throw new Error(`Data extension 'data-${prefix}' already registered`)
   }
   for (const extension of args.requiredExtensions || []) {
-    if (extension.description === prefix.description) {
-      throw new Error(`Data extension 'data-${prefix.description}' cannot require itself`)
+    if (extension === prefix) {
+      throw new Error(`Data extension 'data-${prefix}' cannot require itself`)
     }
   }
 
   for (const requiredExtension of args.requiredExtensions || []) {
     if (!extensionsRegistered.has(requiredExtension)) {
-      throw new Error(`Data extension 'data-${prefix.description}' can't be a duplicate`)
+      throw new Error(`Data extension 'data-${prefix}' can't be a duplicate`)
     }
   }
 
@@ -84,34 +83,44 @@ export function addDataExtension(
     extensionPreprocessStack.push(...args.preprocessExpressions)
   }
 
-  const allAllowedModifiers = new Set<RegExp>()
+  const allAllowedModifiers: RegExp[] = []
   if (args?.allowedModifiers) {
     for (const modifier of args.allowedModifiers) {
       const m = modifier instanceof RegExp ? modifier : new RegExp(modifier)
-      allAllowedModifiers.add(m)
+      allAllowedModifiers.push(m)
     }
   }
 
+  const allowedTags = new Set([...(args?.allowedTags || [])].map((t) => t.toLowerCase()))
+
   walkDownDOM(document.body, (element) => {
-    if (!prefix.description) throw Error()
+    if (!prefix) throw Error()
 
     const el = toHTMLorSVGElement(element)
     if (!el) return
 
+    if (allowedTags.size) {
+      const tagLower = el.tagName.toLowerCase()
+      if (!allowedTags.has(tagLower)) return
+    }
+
     for (var d in el.dataset) {
-      if (!d.startsWith(prefix?.description)) continue
+      if (!d.startsWith(prefix)) continue
 
       let [name, ...modifiersWithArgsArr] = d.split('.')
 
-      const pl = prefix.description.length
+      const pl = prefix.length
       const pl1 = pl + 1
       name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
 
       const modifiers = modifiersWithArgsArr.map((m) => {
         const [label, ...args] = m.split(':')
-        if (!allAllowedModifiers.has(label)) {
+
+        const isAllowed = allAllowedModifiers.some((allowedModifier) => allowedModifier.test(label))
+        if (!isAllowed) {
           throw new Error(`Modifier ${label} is not allowed for ${name}`)
         }
+
         return { label, args }
       })
 
@@ -154,7 +163,7 @@ export function addDataExtension(
   })
 
   extensionsRegistered.add(prefix)
-  console.log(`Registered data extension: data-${prefix.description}`)
+  console.log(`Registered data extension: data-${prefix}`)
 }
 
 function loadDataStack(el: Element): NamespacedReactiveRecords {
@@ -199,12 +208,12 @@ export function addActionExension(args: {
   name: string
   description: string
   fn: ActionFn
-  requiredExtensions?: Iterable<Symbol>
+  requiredExtensions?: Iterable<string>
 }) {
   const { name, fn, requiredExtensions } = args
   const extensions = [ACTION, ...(requiredExtensions || [])]
 
-  if (name != camelCase(name)) {
+  if (name != camelize(name)) {
     throw new Error(`must be camelCase`)
   }
 
@@ -219,4 +228,9 @@ export function addActionExension(args: {
 
     actions[name] = fn
   }
+}
+
+let nextID = 0
+export function uniqueId() {
+  return nextID++
 }

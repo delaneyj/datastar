@@ -2,40 +2,82 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="/favicon.svg"
+    />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
     <title>DataStar</title>
   </head>
   <body data-theme="night">
-    <div data-signal-count="0">
+    <div
+      class="flex flex-col min-h-screen gap-2 p-4"
+      data-signal-count="0"
+    >
       <div
         class="flex items-center justify-center w-full h-64 bg-center bg-cover"
-        style="background-image: url('bg.png')"
+        style="background-image: url('/bg.png')"
       >
-        <div class="font-bold text-white uppercase text-9xl font-display">datastar</div>
-      </div>
-      <div class="flex flex-col min-h-screen gap-2 p-4">
-        <div class="flex flex-col gap-4">
-          <button class="btn btn-primary" data-on-click="$count++">Increment +</button>
-          <button class="btn btn-primary" data-on-click="$count--">Decrement -</button>
+        <div class="flex items-center font-bold text-white uppercase text-9xl font-display">
+          <span>data</span>
+          <iconify-icon icon="material-symbols:award-star-outline" />
         </div>
-        <div id="foo">Foo Should be replaced</div>
-        <div class="flex items-center justify-center w-full">
-          <div class="flex flex-col items-center justify-center">
-            <span class="font-mono font-bold text-9xl" data-text="$count"></span>
-            <div class="transition-all alert alert-info" data-show="$count >= 5">
-              <iconify-icon icon="mdi:alert" class="datastar-indicator"></iconify-icon>
-              <span> Count is greater or equal to 5</span>
-            </div>
+      </div>
+      <div class="flex flex-col gap-4">
+        <button
+          class="btn btn-primary"
+          data-on-click="$count++"
+        >
+          Increment +
+        </button>
+        <button
+          class="btn btn-primary"
+          data-on-click="$count--"
+        >
+          Decrement -
+        </button>
+        <input
+          class="input input-bordered"
+          type="number"
+          data-model="count"
+        />
+      </div>
+      <div id="foo">Foo Should be replaced</div>
+      <div class="flex items-center justify-center w-full">
+        <div class="flex flex-col items-center justify-center">
+          <span
+            class="font-mono font-bold text-9xl"
+            data-text="$count"
+          ></span>
+          <div
+            class="transition-all alert alert-error"
+            data-show="$count >= 5"
+          >
+            <iconify-icon icon="mdi:alert"></iconify-icon>
+            <span> Count is greater or equal to 5</span>
           </div>
         </div>
-        <button data-signal-get="'/api/echo'" data-on-load="@get" data-on-click="@get" class="btn btn-secondary btn-lg">
-          <span>Contents</span>
-          <iconify-icon icon="svg-spinners:blocks-wave" class="datastar-indicator"></iconify-icon>
-        </button>
-        <a class="btn btn-primary" href="foo.html">Foo</a>
       </div>
+      <button
+        class="btn btn-secondary btn-lg"
+        data-signal-get="'/api/echo'"
+        x-data-on-load="@get"
+        data-on-click="@get"
+      >
+        <span>Contents</span>
+        <iconify-icon
+          class="datastar-indicator"
+          icon="svg-spinners:blocks-wave"
+        ></iconify-icon>
+      </button>
     </div>
-    <script type="module" src="/src/main.ts"></script>
+    <script
+      type="module"
+      src="/src/main.ts"
+    ></script>
   </body>
 </html>

@@ -1,6 +1,6 @@
 import { addDataExtension } from '../core'
 
-export const ACTION = Symbol('action')
+export const ACTION = 'action'
 
 export function addActionDataExtension() {
   addDataExtension(ACTION, {

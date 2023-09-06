@@ -2,7 +2,7 @@ import { SIGNAL } from '.'
 import { functionEval } from '..'
 import { addDataExtension } from '../core'
 
-export const HEADER = Symbol('header')
+export const HEADER = 'header'
 export function addHeadersExtension() {
   addDataExtension(HEADER, {
     requiredExtensions: [SIGNAL],

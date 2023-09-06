@@ -1,6 +1,7 @@
 import { resolve } from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
 import Unfonts from 'unplugin-fonts/vite'
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import compress from 'vite-plugin-compression'
 
 export default defineConfig({
@@ -14,21 +15,20 @@ export default defineConfig({
     compress({
       algorithm: 'brotliCompress',
     }),
+    visualizer({
+      // open: true,
+    }),
+    splitVendorChunkPlugin(),
   ],
   build: {
-    rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-      },
-    },
     target: 'esnext',
     minify: 'esbuild',
     sourcemap: true,
     lib: {
-      entry: resolve(__dirname, 'src/lib/datastar/index.ts'),
+      entry: resolve(__dirname, 'src/lib/index.ts'),
       name: 'Datastar',
       fileName: 'datastar',
-      formats: ['es', 'umd', 'iife'],
+      formats: ['es'],
     },
   },
 })

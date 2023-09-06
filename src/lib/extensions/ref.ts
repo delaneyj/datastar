@@ -1,7 +1,7 @@
 import { NamespacedReactiveRecords, SIGNAL } from '..'
 import { addDataExtension } from '../core'
 
-export const REF = Symbol('ref')
+export const REF = 'ref'
 export function addRefDataExtension() {
   addDataExtension(REF, {
     requiredExtensions: [SIGNAL],

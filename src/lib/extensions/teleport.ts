@@ -5,7 +5,7 @@ const PREPEND = 'prepend',
   APPEND = 'append',
   MUST_PARENT_ERR = 'Target element must have a parent if using prepend or append'
 
-export const TELEPORT = Symbol('teleport')
+export const TELEPORT = 'teleport'
 export function addTeleportDataExtension() {
   addDataExtension(TELEPORT, {
     requiredExtensions: [SIGNAL],

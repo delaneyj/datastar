@@ -1,9 +1,10 @@
-import morphdom from 'morphdom'
 import { ActionArgs } from '..'
 import { addActionExension, toHTMLorSVGElement } from '../core'
-import { Reactive } from '../reactively/core'
+import { idiomorph } from '../external/idiomorph'
+import { Reactive } from '../external/reactively'
 const p = new DOMParser()
 const DATASTAR_CLASS_PREFIX = 'datastar'
+const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}-indicator`
 const LOADING_CLASS = `${DATASTAR_CLASS_PREFIX}-request`
 const ACCEPT = 'Accept',
   TEXT_HTML = 'text/html',
@@ -12,15 +13,15 @@ const ACCEPT = 'Accept',
   SELECTOR = 'selector',
   SWAP = 'swap'
 
-export const GET = Symbol('get')
+export const GET = 'get'
 export const addGetExtension = () => addFetchMethod(GET)
-export const POST = Symbol('post')
+export const POST = 'post'
 export const addPostExtension = () => addFetchMethod(POST)
-export const PUT = Symbol('put')
+export const PUT = 'put'
 export const addPutExtension = () => addFetchMethod(PUT)
-export const PATCH = Symbol('patch')
+export const PATCH = 'patch'
 export const addPatchExtension = () => addFetchMethod(PATCH)
-export const DELETE = Symbol('delete')
+export const DELETE = 'delete'
 export const addDeleteExtension = () => addFetchMethod(DELETE)
 
 export const addAllFragmentExtensions = () => {
@@ -32,25 +33,20 @@ export const addAllFragmentExtensions = () => {
 }
 
 let hasInjectedStyles = false
-function addFetchMethod(methodSymbol: Symbol) {
-  if (!methodSymbol.description) throw Error(`Method must have a description`)
-  const method = methodSymbol.description
-
+function addFetchMethod(method: string) {
   if (!hasInjectedStyles) {
     const style = document.createElement('style')
     style.innerHTML = `
-    .datastar-indicator{
-      opacity:0;
-      transition: opacity 500ms ease-in;
-    }
-    .${LOADING_CLASS} .datastar-indicator{
-        opacity:1
-    }
-    .${LOADING_CLASS}.datastar-indicator{
-        opacity:1
-    }
-
-
+.${INDICATOR_CLASS}{
+  opacity:0;
+  transition: opacity 500ms ease-in;
+}
+.${LOADING_CLASS} .${INDICATOR_CLASS}{
+    opacity:1
+}
+.${LOADING_CLASS}.${INDICATOR_CLASS}{
+    opacity:1
+}
     `
     document.head.appendChild(style)
     hasInjectedStyles = true
@@ -96,7 +92,7 @@ async function fetcher(method: string, args: ActionArgs) {
     return value
   })
   const req: RequestInit = { method, headers }
-  if (method === GET.description) {
+  if (method === GET) {
     const queryParams = new URLSearchParams(url.search)
     queryParams.append('dataStack', dataStackJSON)
     url.search = queryParams.toString()
@@ -136,7 +132,7 @@ async function fetcher(method: string, args: ActionArgs) {
       const merge = fragElement?.dataset?.[SWAP] || 'morph'
       switch (merge) {
         case 'morph':
-          morphdom(target, frag)
+          idiomorph(target, frag)
           break
         case 'inner':
           target.innerHTML = frag.innerHTML //  The default, replace the inner html of the target element

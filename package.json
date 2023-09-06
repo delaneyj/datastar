@@ -24,6 +24,8 @@
     "daisyui": "^3.6.4",
     "postcss": "^8.4.29",
     "prettier": "^3.0.2",
+    "prettier-plugin-organize-attributes": "^1.0.0",
+    "rollup-plugin-visualizer": "^5.9.2",
     "tailwindcss": "^3.3.3",
     "terser": "^5.19.2",
     "typescript": "^5.0.2",
@@ -32,10 +34,7 @@
     "vite-plugin-webfont-dl": "^3.7.6"
   },
   "dependencies": {
-    "add": "^2.0.6",
-    "change-case": "^4.1.2",
     "iconify-icon": "^1.0.8",
-    "morphdom": "^2.7.0",
     "unplugin-fonts": "^1.0.3"
   }
 }

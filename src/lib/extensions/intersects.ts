@@ -5,7 +5,7 @@ const once = 'once',
   full = 'full',
   half = 'half'
 
-export const INTERSECTS = Symbol('intersects')
+export const INTERSECTS = 'intersects'
 export function addIntersectsExtension() {
   addDataExtension(INTERSECTS, {
     requiredExtensions: [SIGNAL],

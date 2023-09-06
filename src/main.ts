@@ -1,9 +1,7 @@
 import 'iconify-icon'
 import 'unfonts.css'
+import { addAllIncludedExtensions, injectMockFetch } from './lib'
 import './main.css'
-
-import { addAllIncludedExtensions } from './lib/datastar'
-import { injectMockFetch } from './lib/mockFetch'
 
 injectMockFetch({
   '/api/echo': {
