@@ -2,9 +2,9 @@
 
 # Not complete, there be 🐉
 
-![Size](https://badgen.net/bundlephobia/minzip/@sudodevnull/datastar@0.0.2)
-![Dependencies](https://badgen.net/bundlephobia/dependency-count/@sudodevnull/datastar@0.0.2)
-![Tree shaking support ](https://badgen.net/bundlephobia/tree-shaking/@sudodevnull/datastar@0.0.2)
+![Size](https://badgen.net/bundlephobia/minzip/@sudodevnull/datastar@0.0.4)
+![Dependencies](https://badgen.net/bundlephobia/dependency-count/@sudodevnull/datastar@0.0.4)
+![Tree shaking support ](https://badgen.net/bundlephobia/tree-shaking/@sudodevnull/datastar@0.0.4)
 
 Typescript library for making [hypermedia](https://hypermedia.systems/) systems using little to no Javascript code.
 
@@ -37,7 +37,7 @@ What surprised me is that by starting over and being more prescriptive I was abl
 * **Everything** is an extension so you can add and remove features as needed
 * Easy to use mock server for testing
 * [HOWL](https://htmx.org/essays/hypermedia-on-whatever-youd-like/) stack ready with Go specific tooling coming soon
-* Even will **all** extensions its very small (see badge above)
+* Even with **all** extensions its very small (see badge above)
 * Faster than Alpine.js VDOM reactivity and HTMX needs Hyperscript or Alpine to work on most real world projects
 
 ### Cons
@@ -81,9 +81,9 @@ pnpm build // for production
 
 ### CDN
 
-Just add this to your HTML file in head or body.  This will add all the extensions.
+Just add this to your HTML file in head or body.  This will add all the extensions and hook them up.
 ```html
-<script src="https://unpkg.com/@sudodevnull/datastar"></script>
+<script src="https://unpkg.com/@sudodevnull/datastar@0.0.4/dist/datastar.iife.js"></script>
 ```
 
 ### Vite/Webpack/* with tree shaking
