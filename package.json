@@ -2,6 +2,7 @@
   "name": "@sudodevnull/datastar",
   "version": "0.0.1",
   "type": "module",
+  "repository": "https://github.com/delaneyj/datastar",
   "files": [
     "dist"
   ],
