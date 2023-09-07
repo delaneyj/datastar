@@ -17,8 +17,7 @@ export function addModelDataExtension() {
       if (!('value' in el)) throw new Error('Element must have a value property')
       el.value = signal.value
 
-      const setter = (evt: Event) => {
-        console.log({ evt })
+      const setter = () => {
         const current = signal.value
         if (typeof current === 'number') {
           signal.value = Number(el.value)

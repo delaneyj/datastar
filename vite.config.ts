@@ -1,8 +1,15 @@
+import viteImagemin from '@vheemstra/vite-plugin-imagemin'
+import imageminGif2Webp from 'imagemin-gif2webp'
+import imageminGifsicle from 'imagemin-gifsicle'
+import imageminMozjpeg from 'imagemin-mozjpeg'
+import imageminPngquant from 'imagemin-pngquant'
+import imageminSvgo from 'imagemin-svgo'
+import imageminWebp from 'imagemin-webp'
+
 import { resolve } from 'path'
 import { visualizer } from 'rollup-plugin-visualizer'
 import Unfonts from 'unplugin-fonts/vite'
 import { defineConfig, splitVendorChunkPlugin } from 'vite'
-import compress from 'vite-plugin-compression'
 
 export default defineConfig({
   plugins: [
@@ -12,13 +19,27 @@ export default defineConfig({
         families: ['Orbitron', 'Inter', 'JetBrains Mono'],
       },
     }),
-    compress({
-      algorithm: 'brotliCompress',
-    }),
+    // compress({
+    // algorithm: 'brotliCompress',
+    // }),
     visualizer({
       // open: true,
     }),
     splitVendorChunkPlugin(),
+    viteImagemin({
+      plugins: {
+        jpg: imageminMozjpeg(),
+        png: imageminPngquant(),
+        svg: imageminSvgo(),
+        gif: imageminGifsicle(),
+      },
+      makeWebp: {
+        plugins: {
+          jpg: imageminWebp(),
+          gif: imageminGif2Webp(),
+        },
+      },
+    }),
   ],
   build: {
     target: 'esnext',
@@ -28,7 +49,7 @@ export default defineConfig({
       entry: resolve(__dirname, 'src/lib/index.ts'),
       name: 'Datastar',
       fileName: 'datastar',
-      formats: ['es'],
+      formats: ['es', 'umd', 'iife'],
     },
   },
 })

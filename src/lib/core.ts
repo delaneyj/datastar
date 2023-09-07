@@ -17,7 +17,27 @@ function effect(fn: () => void) {
   return reactive(fn, { effect: true })
 }
 
-const extensionsRegistered = new Set<string>()
+const extensionObserver = new MutationObserver((mutations) => {
+  for (const m of mutations) {
+    m.removedNodes.forEach((node) => {
+      const el = node as Element
+      if (!el) return
+      extensionElementRegistry.delete(el)
+    })
+
+    m.addedNodes.forEach((node) => {
+      const el = node as Element
+      if (!el) return
+      extensionApplyFunctions.forEach((fn) => fn(el))
+    })
+  }
+})
+
+extensionObserver.observe(document, {
+  attributes: true,
+  childList: true,
+  subtree: true,
+})
 
 export interface Preprocesser {
   name: string
@@ -38,6 +58,25 @@ export function useProcessor({ regexp, replacer }: Preprocesser, str: string): s
   return str
 }
 
+function cyrb53(str: string, seed = 0) {
+  let h1 = 0xdeadbeef ^ seed,
+    h2 = 0x41c6ce57 ^ seed
+  for (let i = 0, ch; i < str.length; i++) {
+    ch = str.charCodeAt(i)
+    h1 = Math.imul(h1 ^ ch, 2654435761)
+    h2 = Math.imul(h2 ^ ch, 1597334677)
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
+  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
+  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+
+  return 4294967296 * (2097151 & h2) + (h1 >>> 0)
+}
+
+const prefixHashes = new Map<string, number>()
+const extensionApplyFunctions = new Map<number, Function>()
+const extensionElementRegistry = new Map<Element, Set<number>>()
 const extensionPreprocessStack = new Array<Preprocesser>()
 const data = new Map<Element, NamespacedReactiveRecords>()
 
@@ -55,20 +94,24 @@ export function addDataExtension(
   },
 ) {
   if (prefix.toLowerCase() !== prefix) throw Error(`Data extension 'data-${prefix}' must be lowercase`)
+  if (prefixHashes.has(prefix)) {
+    throw new Error(`Data extension 'data-${prefix}' already registered`)
+  }
+
+  const hash = cyrb53(prefix)
+  prefixHashes.set(prefix, hash)
 
   if (!args) {
     args = {}
   }
 
-  if (extensionsRegistered.has(prefix)) {
-    throw new Error(`Data extension 'data-${prefix}' already registered`)
-  }
   for (const extension of args.requiredExtensions || []) {
     if (extension === prefix) {
       throw new Error(`Data extension 'data-${prefix}' cannot require itself`)
     }
   }
 
+  const extensionsRegistered = new Set(prefixHashes.keys())
   for (const requiredExtension of args.requiredExtensions || []) {
     if (!extensionsRegistered.has(requiredExtension)) {
       throw new Error(`Data extension 'data-${prefix}' can't be a duplicate`)
@@ -93,77 +136,88 @@ export function addDataExtension(
 
   const allowedTags = new Set([...(args?.allowedTags || [])].map((t) => t.toLowerCase()))
 
-  walkDownDOM(document.body, (element) => {
-    if (!prefix) throw Error()
+  function registerExtensionOnElement(parentEl: Element) {
+    walkDownDOM(parentEl, (element) => {
+      const el = toHTMLorSVGElement(element)
+      if (!el) return
 
-    const el = toHTMLorSVGElement(element)
-    if (!el) return
-
-    if (allowedTags.size) {
-      const tagLower = el.tagName.toLowerCase()
-      if (!allowedTags.has(tagLower)) return
-    }
-
-    for (var d in el.dataset) {
-      if (!d.startsWith(prefix)) continue
-
-      let [name, ...modifiersWithArgsArr] = d.split('.')
-
-      const pl = prefix.length
-      const pl1 = pl + 1
-      name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
-
-      const modifiers = modifiersWithArgsArr.map((m) => {
-        const [label, ...args] = m.split(':')
-
-        const isAllowed = allAllowedModifiers.some((allowedModifier) => allowedModifier.test(label))
-        if (!isAllowed) {
-          throw new Error(`Modifier ${label} is not allowed for ${name}`)
-        }
-
-        return { label, args }
-      })
-
-      const dataStack = loadDataStack(el)
-      let expression = el.dataset[d] || ''
-
-      for (const preprocessor of extensionPreprocessStack) {
-        expression = useProcessor(preprocessor, expression)
+      let extensions = extensionElementRegistry.get(el)
+      if (!extensions) {
+        extensions = new Set()
+        extensionElementRegistry.set(el, extensions)
       }
 
-      if (args?.preprocessExpressions && !args?.isPreprocessGlobal) {
-        for (const preprocessor of args.preprocessExpressions) {
+      if (extensions.has(hash)) return
+      extensions.add(hash)
+
+      if (allowedTags.size) {
+        const tagLower = el.tagName.toLowerCase()
+        if (!allowedTags.has(tagLower)) return
+      }
+
+      for (var d in el.dataset) {
+        if (!d.startsWith(prefix)) continue
+
+        let [name, ...modifiersWithArgsArr] = d.split('.')
+
+        const pl = prefix.length
+        const pl1 = pl + 1
+        name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
+
+        const modifiers = modifiersWithArgsArr.map((m) => {
+          const [label, ...args] = m.split(':')
+
+          const isAllowed = allAllowedModifiers.some((allowedModifier) => allowedModifier.test(label))
+          if (!isAllowed) {
+            throw new Error(`Modifier ${label} is not allowed for ${name}`)
+          }
+
+          return { label, args }
+        })
+
+        const dataStack = loadDataStack(el)
+        let expression = el.dataset[d] || ''
+
+        for (const preprocessor of extensionPreprocessStack) {
           expression = useProcessor(preprocessor, expression)
         }
-      }
 
-      const elementData = data.get(el) || {}
-      if (args?.withExpression) {
-        const postExpression = args.withExpression({
-          name,
-          expression,
-          el,
-          dataStack,
-          reactivity: {
-            signal,
-            computed,
-            effect,
-            onCleanup,
-          },
-          withMod: (label: string) => withModifier(modifiers, label),
-          hasMod: (label: string) => hasModifier(modifiers, label),
-          actions,
-        })
-        if (postExpression) {
-          Object.assign(elementData, postExpression)
+        if (args?.preprocessExpressions && !args?.isPreprocessGlobal) {
+          for (const preprocessor of args.preprocessExpressions) {
+            expression = useProcessor(preprocessor, expression)
+          }
         }
-      }
-      data.set(el, elementData)
-    }
-  })
 
-  extensionsRegistered.add(prefix)
-  console.log(`Registered data extension: data-${prefix}`)
+        const elementData = data.get(el) || {}
+        if (args?.withExpression) {
+          const postExpression = args.withExpression({
+            name,
+            expression,
+            el,
+            dataStack,
+            reactivity: {
+              signal,
+              computed,
+              effect,
+              onCleanup,
+            },
+            withMod: (label: string) => withModifier(modifiers, label),
+            hasMod: (label: string) => hasModifier(modifiers, label),
+            actions,
+          })
+          if (postExpression) {
+            Object.assign(elementData, postExpression)
+          }
+        }
+        data.set(el, elementData)
+      }
+    })
+  }
+
+  registerExtensionOnElement(document.body)
+  extensionApplyFunctions.set(hash, registerExtensionOnElement)
+
+  // console.info(`Registered data extension: data-${prefix}`)
 }
 
 function loadDataStack(el: Element): NamespacedReactiveRecords {
@@ -204,21 +258,21 @@ export function withModifier(modifiers: Modifier[], label: string) {
   return modifiers.find((m) => m.label === label)
 }
 
-export function addActionExension(args: {
+export function addActionExtension(args: {
   name: string
   description: string
   fn: ActionFn
   requiredExtensions?: Iterable<string>
 }) {
   const { name, fn, requiredExtensions } = args
-  const extensions = [ACTION, ...(requiredExtensions || [])]
+  const extensionHashes = [ACTION, ...(requiredExtensions || [])]
 
   if (name != camelize(name)) {
     throw new Error(`must be camelCase`)
   }
 
-  for (const ext of extensions) {
-    if (!extensionsRegistered.has(ext)) {
+  for (const ext of extensionHashes) {
+    if (!prefixHashes.has(ext)) {
       throw new Error(`requires '@${name}' registration`)
     }
 

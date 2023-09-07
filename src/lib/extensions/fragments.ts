@@ -1,5 +1,5 @@
 import { ActionArgs } from '..'
-import { addActionExension, toHTMLorSVGElement } from '../core'
+import { addActionExtension, toHTMLorSVGElement } from '../core'
 import { idiomorph } from '../external/idiomorph'
 import { Reactive } from '../external/reactively'
 const p = new DOMParser()
@@ -52,7 +52,7 @@ function addFetchMethod(method: string) {
     hasInjectedStyles = true
   }
 
-  addActionExension({
+  addActionExtension({
     name: method,
     description: `turns @${method}(args) into fetch(${method}, args)`,
     fn: async (args: ActionArgs) => fetcher(method, args),
