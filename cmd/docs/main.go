@@ -9,9 +9,12 @@ import (
 
 	"github.com/delaneyj/datastar/docs"
 	"github.com/delaneyj/toolbelt"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	godotenv.Load()
+
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	logger.Info("Starting Docs Server")
 	defer logger.Info("Stopping Docs Server")

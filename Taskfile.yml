@@ -1,12 +1,39 @@
 # https://taskfile.dev
 
-version: '3'
+version: "3"
+
+interval: 100ms
 
 vars:
-  GREETING: Hello, World!
+  NAME: "docs"
+  BIN_NAME: "{{.NAME}}_bin"
 
 tasks:
-  default:
+  kill:
     cmds:
-      - echo "{{.GREETING}}"
-    silent: true
+      - killall -q {{.BIN_NAME}}  || echo "Process was not running."
+
+  hot:
+    desc: Server hot reload
+
+    sources:
+      - "**/*.go"
+      # - "**/*.sql"
+      - "docs/static/**/*"
+    deps:
+      - kill
+
+    cmds:
+      - go mod tidy
+      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
+      - ./{{.BIN_NAME}}
+
+  gen:
+    dir: gen/docs
+    cmds:
+      - wget --mirror http://localhost:1337
+
+  default:
+    deps:
+      - hot
+    silent: false
