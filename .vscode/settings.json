@@ -1,16 +1,4 @@
 {
-    "editor.tokenColorCustomizations": {
-        "textMateRules": [
-            {
-                "scope": [
-                    "entity.other.attribute-name.data-signal-*.html"
-                ],
-                "settings": {
-                    "foreground": "#FF9900" // Your desired color for custom data attributes
-                }
-            }
-        ]
-    },
     "editor.codeActionsOnSave": {
         "source.fixAll": true,
         "source.organizeImports": true
