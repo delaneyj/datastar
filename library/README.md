@@ -55,6 +55,7 @@ Lives as a channel in the EventGraph Discord server.  Feel free to join and ask 
 * Even with **all** extensions its very small (see badge above)
 * Faster than Alpine.js [VDOM](https://vuejs.org/guide/extras/rendering-mechanism.html) reactivity and HTMX needs [Hyperscript](https://hyperscript.org/reference/) or Alpine to work on most real world projects
 * [DHH would hate it](https://news.ycombinator.com/item?id=37405565)
+
 ### Cons
 * Syntax is still very much in flux, but will stabilize with usage
 * **No progressive enhancement**, you need Javascript enabled.  Datastar is for making realtime web apps like dashboards, admin panels, etc.  If you need progressive enhancement use [Alpine-Ajax](https://alpine-ajax.js.org/) or [HTMX](https://htmx.org/) and stick to just `<a/>` and `<form/>` tags.  Scripting is a first class citizen in hypermedia systems.
@@ -65,8 +66,6 @@ Lives as a channel in the EventGraph Discord server.  Feel free to join and ask 
 * No tests yet (but actively being used on an internal project).  Plan to use [Vitest](https://vitest.dev/)+[Playwright](https://playwright.dev/) soon
 * Documentation is on its way
 * [No book](https://hypermedia.systems/), but most of hypermedia concepts will port directly over.
-* Uses evil Typescript to oppress the masses with compile time constraint shackles and deny the freedom of the people to experience as many Javascript runtime errors as possible.
-* [DHH would hate it](https://news.ycombinator.com/item?id=37405565)
 
 ## Extensions
 
