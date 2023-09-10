@@ -2,22 +2,24 @@ package docs
 
 import (
 	"context"
-	"net/http"
+	"errors"
+	"fmt"
 
-	. "github.com/delaneyj/toolbelt/gomps"
+	"github.com/benbjohnson/hashfs"
 	"github.com/go-chi/chi/v5"
 )
 
 func setupRoutes(ctx context.Context, router *chi.Mux) error {
-	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		Render(w, HTML5(HTML5Props{
-			Title: "Datastar",
-			Body: NODES{
-				DIV(TXT("Hello World Docs")),
-			},
-		}))
 
-	})
+	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
+
+	if err := errors.Join(
+		setupHome(ctx, router),
+		setupEssays(ctx, router),
+		setupDocs(ctx, router),
+	); err != nil {
+		return fmt.Errorf("error setting up routes: %w", err)
+	}
 
 	return nil
 }

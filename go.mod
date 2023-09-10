@@ -3,20 +3,24 @@ module github.com/delaneyj/datastar
 go 1.21.0
 
 require (
-	github.com/delaneyj/toolbelt v0.0.6
+	github.com/benbjohnson/hashfs v0.2.1
+	github.com/delaneyj/gomponents-iconify v0.0.20230907
+	github.com/delaneyj/toolbelt v0.0.10
+	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.10
+	github.com/goccy/go-json v0.10.2
 	github.com/joho/godotenv v1.5.1
 )
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect
+	github.com/alecthomas/chroma/v2 v2.9.1 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/chewxy/math32 v1.10.1 // indirect
 	github.com/denisbrodbeck/machineid v1.0.1 // indirect
-	github.com/dustin/go-humanize v1.0.1 // indirect
+	github.com/dlclark/regexp2 v1.10.0 // indirect
 	github.com/go-rod/rod v0.114.3 // indirect
-	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/klauspost/compress v1.16.7 // indirect

@@ -3,6 +3,7 @@ package docs
 
 import (
 	"context"
+	"embed"
 	"errors"
 	"fmt"
 	"log/slog"
@@ -10,11 +11,21 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/benbjohnson/hashfs"
 	"github.com/delaneyj/toolbelt"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
+
+//go:embed static/*
+var staticFS embed.FS
+
+var staticSys = hashfs.NewFS(staticFS)
+
+func staticPath(path string) string {
+	return "/" + staticSys.HashName("static/"+path)
+}
 
 // RunBlocking starts a blocking HTTP server on PORT
 func RunBlocking(ctx context.Context) error {

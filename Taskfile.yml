@@ -9,6 +9,35 @@ vars:
   BIN_NAME: "{{.NAME}}_bin"
 
 tasks:
+  library:
+    dir: ./library
+    generates:
+      - "../docs/static/datastar*"
+    sources:
+      - "src/**/*.ts"
+      - "package.json"
+    cmds:
+      - pnpm i
+      - pnpm vite build
+      - cp -Rfpvd dist/* ../docs/static
+      - cp package.json ../docs/static
+
+  tailwind:
+    dir: ./docs/assetgen/css
+    generates:
+      - "../../static/tailwind.css"
+    sources:
+      - "../../**/*.go"
+      - "tailwind.config.js"
+    cmds:
+      - pnpm i
+      - pnpm tailwindcss -o ../../static/tailwind.css
+
+  frontend:
+    deps:
+      - tailwind
+      - library
+
   kill:
     cmds:
       - killall -q {{.BIN_NAME}}  || echo "Process was not running."
@@ -22,6 +51,7 @@ tasks:
       - "docs/static/**/*"
     deps:
       - kill
+      - frontend
 
     cmds:
       - go mod tidy
