@@ -10,6 +10,11 @@ export function walkDownDOM(el: Element | null, callback: (el: Element) => void)
   }
 }
 
+/**
+ * Walks up the DOM tree, starting from the given element, and calls the callback for each element.
+ * @param el The element to start from.
+ * @param callback The callback to call for each element.
+ */
 export function walkUpDOM(el: Element | null, callback: (el: Element) => void) {
   if (!el) return
   callback(el)

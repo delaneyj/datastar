@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/cmd/docs/main.go",
+            "program": "${workspaceFolder}/cmd/webui/main.go",
             "cwd": "${workspaceFolder}",
         }
     ]

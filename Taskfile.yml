@@ -5,25 +5,26 @@ version: "3"
 interval: 100ms
 
 vars:
-  NAME: "docs"
+  NAME: "webui"
   BIN_NAME: "{{.NAME}}_bin"
 
 tasks:
   library:
     dir: ./library
     generates:
-      - "../docs/static/datastar*"
+      - "../{{.NAME}}/static/datastar*"
     sources:
       - "src/**/*.ts"
       - "package.json"
     cmds:
       - pnpm i
+      - pnpm vitest --watch=false
       - pnpm vite build
-      - cp -Rfpvd dist/* ../docs/static
-      - cp package.json ../docs/static
+      - cp -Rfpvd dist/* ../{{.NAME}}/static
+      - cp package.json ../{{.NAME}}/static
 
   tailwind:
-    dir: ./docs/assetgen/css
+    dir: ./{{.NAME}}/assetgen/css
     generates:
       - "../../static/tailwind.css"
     sources:
@@ -31,7 +32,7 @@ tasks:
       - "tailwind.config.js"
     cmds:
       - pnpm i
-      - pnpm tailwindcss -o ../../static/tailwind.css
+      - pnpm tailwindcss -o ../../static/tailwind.css --minify
 
   frontend:
     deps:
@@ -47,8 +48,8 @@ tasks:
 
     sources:
       - "**/*.go"
-      # - "**/*.sql"
-      - "docs/static/**/*"
+      - "webui/static/**/*"
+      - "{{.NAME}}/static/**/*"
     deps:
       - kill
       - frontend
@@ -59,7 +60,7 @@ tasks:
       - ./{{.BIN_NAME}}
 
   gen:
-    dir: gen/docs
+    dir: gen/{{.NAME}}
     cmds:
       - wget --mirror http://localhost:1337
 

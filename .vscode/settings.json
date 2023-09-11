@@ -27,9 +27,11 @@
         "iife",
         "joho",
         "killall",
+        "Makefiles",
         "mozjpeg",
         "Orbitron",
         "Porzio",
+        "PREJSON",
         "Rfpvd",
         "Rollup",
         "sandboxed",
@@ -40,6 +42,10 @@
         "tailwindcss",
         "Teleporting",
         "toolbelt",
+        "TXTF",
+        "typedoc",
+        "unmarshaling",
+        "unmarshalling",
         "unplugin",
         "VDOM",
         "vheemstra",
@@ -47,6 +53,7 @@
         "Vitest",
         "webfont",
         "webp",
+        "webui",
         "zondicons"
     ]
 }

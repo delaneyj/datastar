@@ -1,0 +1,40 @@
+{
+  "name": "@sudodevnull/datastar",
+  "version": "0.0.5",
+  "type": "module",
+  "repository": "https://github.com/delaneyj/datastar",
+  "files": [
+    "dist"
+  ],
+  "private": false,
+  "main": "dist/datastar.js",
+  "module": "dist/datastar.js",
+  "types": "dist/datastar.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/datastar.js",
+      "require": "./dist/datastar.js"
+    }
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@rollup/plugin-typescript": "^11.1.3",
+    "@types/node": "^20.5.7",
+    "prettier": "^3.0.2",
+    "prettier-plugin-organize-attributes": "^1.0.0",
+    "rollup-plugin-typescript-paths": "^1.4.0",
+    "rollup-plugin-visualizer": "^5.9.2",
+    "terser": "^5.19.2",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-dts": "^3.5.3",
+    "vitest": "^0.34.4"
+  }
+}
