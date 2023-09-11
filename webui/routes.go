@@ -10,6 +10,14 @@ import (
 )
 
 func setupRoutes(ctx context.Context, router *chi.Mux) error {
+	b, err := staticFS.ReadFile("static/package.json")
+	if err != nil {
+		return fmt.Errorf("error reading package.json: %w", err)
+	}
+	packageJSON, err = UnmarshalPackageJSON(b)
+	if err != nil {
+		return fmt.Errorf("error unmarshaling package.json: %w", err)
+	}
 
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 

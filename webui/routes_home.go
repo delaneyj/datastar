@@ -13,7 +13,6 @@ import (
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/mdi"
 	"github.com/delaneyj/gomponents-iconify/iconify/ph"
-	"github.com/delaneyj/gomponents-iconify/iconify/skill_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
 	"github.com/delaneyj/gomponents-iconify/iconify/vscode_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/zondicons"
@@ -38,15 +37,6 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	}
 	w.Close()
 	iifeBuildSize := humanize.Bytes(uint64(buf.Len()))
-
-	b, err := staticFS.ReadFile("static/package.json")
-	if err != nil {
-		return fmt.Errorf("error reading package.json: %w", err)
-	}
-	packageJSON, err := UnmarshalPackageJSON(b)
-	if err != nil {
-		return fmt.Errorf("error unmarshaling package.json: %w", err)
-	}
 
 	type Feature struct {
 		Description string
@@ -130,106 +120,40 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		Render(w, HTML5(HTML5Props{
-			Title:       "Datastar ",
-			Language:    "en",
-			Description: `Datastar is a declarative frontend framework that takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use.`,
-			Head: NODES{
-				LINK(
-					REL("icon"),
-					HREF(staticPath("favicon.svg")),
-				),
-				LINK(
-					REL("stylesheet"),
-					HREF("https://fonts.googleapis.com/css?family=Orbitron|Inter|JetBrains+Mono&display=swap"),
-				),
-				LINK(
-					REL("stylesheet"),
-					TYPE("text/css"),
-					HREF(staticPath("tailwind.css")),
-				),
-			},
-			Body: NODES{
-				CLS("flex flex-col w-full min-h-screen"),
+		Render(w, Page(
+			DIV(
+				CLS("flex-1 flex flex-wrap md:p-16 text-xl flex-col items-center text-center bg-gradient-to-tr from-base-100 to-base-200"),
+
 				DIV(
-					CLS("p-4 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
-					STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
+					CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
 					DIV(
-						CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-2"),
-						DIV(
-							CLS("flex gap-2 items-center text-5xl font-display"),
-							TXT("Datastar"),
-							material_symbols.AwardStarOutline(),
-						),
-						DIV(
-							CLS("flex flex-col items-end"),
-							DIV(TXT("Declarative Frontend Framework")),
-							DIV(
-								CLS("font-mono text-accent font-bold"),
-								TXT("v"+packageJSON.Version),
-							),
-						),
-					),
-				),
-				DIV(
-					CLS("flex justify-end gap-6 px-4 py-1 bg-base-100 text-base-content text-sm"),
-					A(
-						CLS("btn btn-primary btn-ghost btn-sm"),
-						TXT("Docs"),
-						HREF("/docs"),
-					),
-					A(
-						CLS("btn btn-primary btn-ghost btn-sm"),
-						TXT("Essays"),
-						HREF("/essays"),
+						CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
+						RANGE(languages, func(fn nodeChildFn) NODE {
+							return DIV(
+								CLS("avatar avatar-xl"),
+								fn(
+									CLS("w-24 h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-4 mask-hexagon"),
+								),
+							)
+						}),
 					),
 					DIV(
-						CLS("join"),
-						A(
-							CLS("btn btn-ghost btn-sm"),
-							skill_icons.Discord(CLS("text-2xl")),
-							HREF("https://discord.com/channels/1035247242887561326/1149367785374359613"),
+
+						H1(
+							CLS("text-6xl font-bold"),
+							TXT("HTML on whatever you like"),
 						),
 						A(
-							CLS("btn btn-ghost btn-sm"),
-							skill_icons.GithubLight(CLS("text-2xl")),
-							HREF("https://github.com/delaneyj/datastar"),
+							CLS("link-accent text-4xl"),
+							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
+							TXT("It's the best idea since web rings"),
 						),
 					),
-				),
-				DIV(
-					CLS("flex-1 flex flex-wrap md:p-16 text-xl flex-col items-center text-center bg-gradient-to-tr from-base-100 to-base-200"),
-
 					DIV(
-						CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
+						CLS("flex flex-col gap-2 w-full"),
 						DIV(
-							CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
-							RANGE(languages, func(fn nodeChildFn) NODE {
-								return DIV(
-									CLS("avatar avatar-xl"),
-									fn(
-										CLS("w-24 h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-4 mask-hexagon"),
-									),
-								)
-							}),
-						),
-						DIV(
-
-							H1(
-								CLS("text-6xl font-bold"),
-								TXT("HTML on whatever you like"),
-							),
-							A(
-								CLS("link-accent text-4xl"),
-								HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
-								TXT("It's the best idea since web rings"),
-							),
-						),
-						DIV(
-							CLS("flex flex-col gap-2 w-full"),
-							DIV(
-								CLS("bg-base-100 shadow-inner text-base-content p-4 rounded-box"),
-								HIGHLIGHT("html", `<div data-signal-count="0">
+							CLS("bg-base-100 shadow-inner text-base-content p-4 rounded-box"),
+							HIGHLIGHT("html", `<div data-signal-count="0">
 	<div>
 		<button data-on-click="$count++">Increment +</button>
 		<button data-on-click="$count--">Decrement -</button>
@@ -244,102 +168,101 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	</button>
 </div>
 		`,
-								),
-							),
-
-							DIV(
-								CLS("flex gap-2 justify-center items-center"),
-								DIV(
-									CLS("badge badge-primary flex-1 gap-1"),
-									tabler.FileZip(),
-									TXT(iifeBuildSize+" w/ all extensions"),
-								),
-								DIV(
-									CLS("badge badge-primary flex-1 gap-1"),
-									carbon.ColumnDependency(),
-									TXTF("%d Dependencies", len(packageJSON.Dependencies)),
-								),
-								DIV(
-									CLS("badge badge-primary flex-1 gap-1"),
-									zondicons.Checkmark(),
-									TXT("Fully Tree Shakeable"),
-								),
-							),
-						),
-						P(
-							TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use."),
-						),
-						DIV(
-							CLS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content"),
-							DIV(
-								CLS("card-body flex flex-col justify-center items-center"),
-								UL(
-									CLS("flex flex-col gap-6 justify-center items-center text-2xl gap-4  max-w-xl"),
-									RANGE(features, func(f Feature) NODE {
-										return LI(
-											DIV(
-												CLS("flex flex-col gap-1 justify-center items-center"),
-												DIV(
-													CLS("flex gap-2 items-center"),
-													f.Icon,
-													TXT(f.Description),
-												),
-												DIV(
-													CLS("text-lg opacity-50 p-2 rounded"),
-
-													f.Details,
-												),
-											),
-										)
-									}),
-								),
 							),
 						),
 
 						DIV(
-							CLS("flex flex-col gap-2 justify-center items-center"),
-							TXT("Built with "),
+							CLS("flex gap-2 justify-center items-center"),
 							DIV(
-								CLS("flex gap-1 justify-center items-center text-5xl"),
-								vscode_icons.FileTypeHtml(),
-								material_symbols.AddRounded(),
-								vscode_icons.FileTypeTypescriptOfficial(),
-								material_symbols.AddRounded(),
-								vscode_icons.FileTypeVite(),
-								material_symbols.AddRounded(),
-								vscode_icons.FileTypeGoGopher(),
+								CLS("badge badge-primary flex-1 gap-1"),
+								tabler.FileZip(),
+								TXT(iifeBuildSize+" w/ all extensions"),
 							),
 							DIV(
-								CLS("flex gap-2 justify-center items-center"),
-								TXT("by "),
-								A(
-									CLS("link-accent"),
-									HREF("http://github.com/delaneyj"),
-									TXT("Delaney"),
-								),
-								TXT("and looking for contributors!"),
+								CLS("badge badge-primary flex-1 gap-1"),
+								carbon.ColumnDependency(),
+								TXTF("%d Dependencies", len(packageJSON.Dependencies)),
 							),
-						),
-						DIV(
-							CLS("w-full flex gap-2 items-center"),
-							A(
-								CLS("btn btn-lg flex-1"),
-								HREF("/essays/why-another-framework"),
-								material_symbols.Help(),
-								TXT("Why another framework?"),
-							),
-							A(
-								CLS("btn btn-primary btn-lg flex-1"),
-								HREF("/docs"),
-								mdi.RocketLaunch(),
-								TXT("Don't care, just get started"),
+							DIV(
+								CLS("badge badge-primary flex-1 gap-1"),
+								zondicons.Checkmark(),
+								TXT("Fully Tree Shakeable"),
 							),
 						),
 					),
-				),
-			},
-		}))
+					P(
+						TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use."),
+					),
+					DIV(
+						CLS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content"),
+						DIV(
+							CLS("card-body flex flex-col justify-center items-center"),
+							UL(
+								CLS("flex flex-col gap-6 justify-center items-center text-2xl gap-4  max-w-xl"),
+								RANGE(features, func(f Feature) NODE {
+									return LI(
+										DIV(
+											CLS("flex flex-col gap-1 justify-center items-center"),
+											DIV(
+												CLS("flex gap-2 items-center"),
+												f.Icon,
+												TXT(f.Description),
+											),
+											DIV(
+												CLS("text-lg opacity-50 p-2 rounded"),
 
+												f.Details,
+											),
+										),
+									)
+								}),
+							),
+						),
+					),
+
+					DIV(
+						CLS("flex flex-col gap-2 justify-center items-center"),
+						TXT("Built with "),
+						DIV(
+							CLS("flex gap-1 justify-center items-center text-5xl"),
+							vscode_icons.FileTypeHtml(),
+							material_symbols.AddRounded(),
+							vscode_icons.FileTypeTypescriptOfficial(),
+							material_symbols.AddRounded(),
+							vscode_icons.FileTypeVite(),
+							material_symbols.AddRounded(),
+							vscode_icons.FileTypeGoGopher(),
+						),
+						DIV(
+							CLS("flex gap-2 justify-center items-center"),
+							TXT("by "),
+							A(
+								CLS("link-accent"),
+								HREF("http://github.com/delaneyj"),
+								TXT("Delaney"),
+							),
+							TXT("and looking for contributors!"),
+						),
+					),
+					DIV(
+						CLS("w-full flex gap-2 items-center"),
+						A(
+							CLS("btn btn-lg flex-1"),
+							HREF("/essays/why-another-framework"),
+							material_symbols.Help(),
+							TXT("Why another framework?"),
+						),
+						A(
+							CLS("btn btn-primary btn-lg flex-1"),
+							HREF("/docs"),
+							mdi.RocketLaunch(),
+							TXT("Don't care, just get started"),
+						),
+					),
+				),
+			),
+		),
+		)
 	})
 
 	return nil

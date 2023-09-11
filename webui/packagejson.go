@@ -25,3 +25,5 @@ type PackageJSON struct {
 	DevDependencies map[string]string
 	Dependencies    map[string]string
 }
+
+var packageJSON PackageJSON

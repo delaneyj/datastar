@@ -8,6 +8,7 @@ module.exports = {
     require("@tailwindcss/container-queries"),
     require("@tailwindcss/typography"),
     require("daisyui"),
+    require("tailwind-scrollbar-daisyui"),
   ],
   theme: {
     fontFamily: {
@@ -40,5 +41,4 @@ module.exports = {
       },
     ],
   },
-  plugins: [require("daisyui")],
 };

@@ -5,11 +5,17 @@ go 1.21.0
 require (
 	github.com/benbjohnson/hashfs v0.2.1
 	github.com/delaneyj/gomponents-iconify v0.0.20230907
-	github.com/delaneyj/toolbelt v0.0.10
+	github.com/delaneyj/toolbelt v0.0.11
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/goccy/go-json v0.10.2
 	github.com/joho/godotenv v1.5.1
+	github.com/samber/lo v1.38.1
+	github.com/yuin/goldmark v1.5.6
+	github.com/yuin/goldmark-emoji v1.0.2
+	go.abhg.dev/goldmark/anchor v0.1.1
+	golang.org/x/text v0.13.0
+	mvdan.cc/xurls/v2 v2.5.0
 )
 
 require (
@@ -36,7 +42,6 @@ require (
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rzajac/clock v0.2.0 // indirect
 	github.com/rzajac/zflake v0.8.0 // indirect
-	github.com/samber/lo v1.38.1 // indirect
 	github.com/ysmood/fetchup v0.2.3 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
 	github.com/ysmood/got v0.34.1 // indirect
@@ -44,6 +49,7 @@ require (
 	github.com/ysmood/leakless v0.8.0 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.13.0 // indirect
+	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
