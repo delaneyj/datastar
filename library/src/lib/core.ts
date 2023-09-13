@@ -1,7 +1,7 @@
 import { camelize } from '.'
 import { walkDownDOM, walkUpDOM } from './dom'
-import { ACTION } from './extensions/actions'
 import { Reactive, autoStabilize, onCleanup, reactive } from './external/reactively'
+import { ACTION } from './plugins/actions'
 import { ActionFn, ActionsMap, Modifier, NamespacedReactiveRecords, WithExpressionArgs } from './types'
 autoStabilize()
 
@@ -17,23 +17,23 @@ function effect(fn: () => void) {
   return reactive(fn, { effect: true })
 }
 
-const extensionObserver = new MutationObserver((mutations) => {
+const pluginObserver = new MutationObserver((mutations) => {
   for (const m of mutations) {
     m.removedNodes.forEach((node) => {
       const el = node as Element
       if (!el) return
-      extensionElementRegistry.delete(el)
+      pluginElementRegistry.delete(el)
     })
 
-    m.addedNodes.forEach((node) => {
-      const el = node as Element
-      if (!el) return
-      extensionApplyFunctions.forEach((fn) => fn(el))
-    })
+    // m.addedNodes.forEach((node) => {
+    //   const el = node as Element
+    //   if (!el) return
+    //   pluginApplyFunctions.forEach((fn) => fn(el))
+    // })
   }
 })
 
-extensionObserver.observe(document, {
+pluginObserver.observe(document, {
   attributes: true,
   childList: true,
   subtree: true,
@@ -58,31 +58,41 @@ export function useProcessor({ regexp, replacer }: Preprocesser, str: string): s
   return str
 }
 
-function cyrb53(str: string, seed = 0) {
-  let h1 = 0xdeadbeef ^ seed,
-    h2 = 0x41c6ce57 ^ seed
-  for (let i = 0, ch; i < str.length; i++) {
-    ch = str.charCodeAt(i)
-    h1 = Math.imul(h1 ^ ch, 2654435761)
-    h2 = Math.imul(h2 ^ ch, 1597334677)
-  }
-  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
-  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
-  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
-  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
+// function cyrb53(str: string, seed = 0) {
+//   let h1 = 0xdeadbeef ^ seed,
+//     h2 = 0x41c6ce57 ^ seed
+//   for (let i = 0, ch; i < str.length; i++) {
+//     ch = str.charCodeAt(i)
+//     h1 = Math.imul(h1 ^ ch, 2654435761)
+//     h2 = Math.imul(h2 ^ ch, 1597334677)
+//   }
+//   h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507)
+//   h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909)
+//   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507)
+//   h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909)
 
-  return 4294967296 * (2097151 & h2) + (h1 >>> 0)
-}
+//   return 4294967296 * (2097151 & h2) + (h1 >>> 0)
+// }
 
-const prefixHashes = new Map<string, number>()
-const extensionApplyFunctions = new Map<number, Function>()
-const extensionElementRegistry = new Map<Element, Set<number>>()
-const extensionPreprocessStack = new Array<Preprocesser>()
+const prefixHashes = new Map<string, string>()
+const pluginApplyFunctions = new Map<string, Function>()
+const pluginElementRegistry = new Map<Element, Set<string>>()
+const pluginPreprocessStack = new Array<Preprocesser>()
 const data = new Map<Element, NamespacedReactiveRecords>()
+
+export function applyPlugins(el: Element) {
+  walkDownDOM(el, (element) => {
+    pluginElementRegistry.delete(element)
+  })
+  pluginApplyFunctions.forEach((fn, name) => {
+    console.log(`apply ${name} to ${el.id || el.tagName} `)
+    fn(el)
+  })
+}
 
 const actions: ActionsMap = {}
 
-export function addDataExtension(
+export function addDataPlugin(
   prefix: string,
   args: {
     allowedTags?: Iterable<string>
@@ -90,31 +100,32 @@ export function addDataExtension(
     isPreprocessGlobal?: boolean
     preprocessExpressions?: Iterable<Preprocesser>
     withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
-    requiredExtensions?: Iterable<string>
+    requiredPlugins?: Iterable<string>
   },
 ) {
-  if (prefix.toLowerCase() !== prefix) throw Error(`Data extension 'data-${prefix}' must be lowercase`)
+  if (prefix.toLowerCase() !== prefix) throw Error(`Data plugin 'data-${prefix}' must be lowercase`)
   if (prefixHashes.has(prefix)) {
-    throw new Error(`Data extension 'data-${prefix}' already registered`)
+    throw new Error(`Data plugin 'data-${prefix}' already registered`)
   }
 
-  const hash = cyrb53(prefix)
+  const hash = prefix
+  // const hash = cyrb53(prefix)
   prefixHashes.set(prefix, hash)
 
   if (!args) {
     args = {}
   }
 
-  for (const extension of args.requiredExtensions || []) {
-    if (extension === prefix) {
-      throw new Error(`Data extension 'data-${prefix}' cannot require itself`)
+  for (const plugin of args.requiredPlugins || []) {
+    if (plugin === prefix) {
+      throw new Error(`Data plugin 'data-${prefix}' cannot require itself`)
     }
   }
 
-  const extensionsRegistered = new Set(prefixHashes.keys())
-  for (const requiredExtension of args.requiredExtensions || []) {
-    if (!extensionsRegistered.has(requiredExtension)) {
-      throw new Error(`Data extension 'data-${prefix}' can't be a duplicate`)
+  const pluginsRegistered = new Set(prefixHashes.keys())
+  for (const requiredPlugin of args.requiredPlugins || []) {
+    if (!pluginsRegistered.has(requiredPlugin)) {
+      throw new Error(`Data plugin 'data-${prefix}' requires 'data-${requiredPlugin}'`)
     }
   }
 
@@ -123,7 +134,7 @@ export function addDataExtension(
   }
 
   if (args?.preprocessExpressions && args.isPreprocessGlobal) {
-    extensionPreprocessStack.push(...args.preprocessExpressions)
+    pluginPreprocessStack.push(...args.preprocessExpressions)
   }
 
   const allAllowedModifiers: RegExp[] = []
@@ -136,19 +147,19 @@ export function addDataExtension(
 
   const allowedTags = new Set([...(args?.allowedTags || [])].map((t) => t.toLowerCase()))
 
-  function registerExtensionOnElement(parentEl: Element) {
+  function registerPluginOnElement(parentEl: Element) {
     walkDownDOM(parentEl, (element) => {
       const el = toHTMLorSVGElement(element)
       if (!el) return
 
-      let extensions = extensionElementRegistry.get(el)
-      if (!extensions) {
-        extensions = new Set()
-        extensionElementRegistry.set(el, extensions)
+      let plugins = pluginElementRegistry.get(el)
+      if (!plugins) {
+        plugins = new Set()
+        pluginElementRegistry.set(el, plugins)
       }
 
-      if (extensions.has(hash)) return
-      extensions.add(hash)
+      if (plugins.has(hash)) return
+      plugins.add(hash)
 
       if (allowedTags.size) {
         const tagLower = el.tagName.toLowerCase()
@@ -158,6 +169,7 @@ export function addDataExtension(
       for (var d in el.dataset) {
         if (!d.startsWith(prefix)) continue
 
+        // console.log(`add plugin ${d} to ${el.id || el.tagName}`)
         let [name, ...modifiersWithArgsArr] = d.split('.')
 
         const pl = prefix.length
@@ -178,7 +190,7 @@ export function addDataExtension(
         const dataStack = loadDataStack(el)
         let expression = el.dataset[d] || ''
 
-        for (const preprocessor of extensionPreprocessStack) {
+        for (const preprocessor of pluginPreprocessStack) {
           expression = useProcessor(preprocessor, expression)
         }
 
@@ -203,6 +215,7 @@ export function addDataExtension(
             },
             withMod: (label: string) => withModifier(modifiers, label),
             hasMod: (label: string) => hasModifier(modifiers, label),
+            applyPlugins: (el: Element) => pluginApplyFunctions.forEach((fn) => fn(el)),
             actions,
           })
           if (postExpression) {
@@ -214,10 +227,10 @@ export function addDataExtension(
     })
   }
 
-  registerExtensionOnElement(document.body)
-  extensionApplyFunctions.set(hash, registerExtensionOnElement)
+  registerPluginOnElement(document.body)
+  pluginApplyFunctions.set(hash, registerPluginOnElement)
 
-  // console.info(`Registered data extension: data-${prefix}`)
+  console.info(`Registered data plugin: data-${prefix}`)
 }
 
 function loadDataStack(el: Element): NamespacedReactiveRecords {
@@ -258,20 +271,20 @@ export function withModifier(modifiers: Modifier[], label: string) {
   return modifiers.find((m) => m.label === label)
 }
 
-export function addActionExtension(args: {
+export function addActionPlugin(args: {
   name: string
   description: string
   fn: ActionFn
-  requiredExtensions?: Iterable<string>
+  requiredPlugins?: Iterable<string>
 }) {
-  const { name, fn, requiredExtensions } = args
-  const extensionHashes = [ACTION, ...(requiredExtensions || [])]
+  const { name, fn, requiredPlugins } = args
+  const pluginHashes = [ACTION, ...(requiredPlugins || [])]
 
   if (name != camelize(name)) {
     throw new Error(`must be camelCase`)
   }
 
-  for (const ext of extensionHashes) {
+  for (const ext of pluginHashes) {
     if (!prefixHashes.has(ext)) {
       throw new Error(`requires '@${name}' registration`)
     }

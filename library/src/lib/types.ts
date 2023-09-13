@@ -15,6 +15,7 @@ export type WithExpressionArgs = {
   reactivity: Reactivity
   withMod(label: string): Modifier | undefined
   hasMod(label: string): boolean
+  applyPlugins(el: Element): void
   actions: ActionsMap
 }
 
@@ -36,4 +37,5 @@ export interface ActionArgs {
   el: Element
   dataStack: NamespacedReactiveRecords
   actions: ActionsMap
+  applyPlugins: (el: Element) => void
 }

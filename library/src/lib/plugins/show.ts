@@ -1,14 +1,14 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 const IMPORTANT = 'important',
   DISPLAY = 'display',
   NONE = 'none'
 
 export const SHOW = 'show'
-export function addShowDataExtension() {
-  addDataExtension(SHOW, {
-    requiredExtensions: [SIGNAL],
+export function addShowDataPlugin() {
+  addDataPlugin(SHOW, {
+    requiredPlugins: [SIGNAL],
     allowedModifiers: [IMPORTANT],
     withExpression: ({ el, name, dataStack, expression, hasMod, reactivity: { effect }, actions }) => {
       const signalFn = functionGenerator(expression)

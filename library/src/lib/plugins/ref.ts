@@ -1,10 +1,10 @@
 import { NamespacedReactiveRecords, SIGNAL } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const REF = 'ref'
-export function addRefDataExtension() {
-  addDataExtension(REF, {
-    requiredExtensions: [SIGNAL],
+export function addRefDataPlugin() {
+  addDataPlugin(REF, {
+    requiredPlugins: [SIGNAL],
     preprocessExpressions: [
       {
         name: 'ref',

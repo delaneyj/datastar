@@ -6,6 +6,7 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -30,10 +31,30 @@ func staticPath(path string) string {
 // RunBlocking starts a blocking HTTP server on PORT
 func RunBlocking(ctx context.Context) error {
 	router := chi.NewRouter()
+
+	// memcached, err := memory.NewAdapter(
+	// 	memory.AdapterWithAlgorithm(memory.LRU),
+	// 	memory.AdapterWithCapacity(1024),
+	// )
+	// if err != nil {
+	// 	return fmt.Errorf("error creating memcached adapter: %w", err)
+	// }
+
+	// cacheClient, err := cache.NewClient(
+	// 	cache.ClientWithAdapter(memcached),
+	// 	cache.ClientWithTTL(10*time.Minute),
+	// 	cache.ClientWithRefreshKey("opn"),
+	// )
+
+	// if err != nil {
+	// 	return fmt.Errorf("error creating cache client: %w", err)
+	// }
+
 	router.Use(
 		middleware.Logger,
 		middleware.Recoverer,
 		toolbelt.CompressMiddleware(),
+		// cacheClient.Middleware,
 	)
 
 	if err := errors.Join(
@@ -46,6 +67,7 @@ func RunBlocking(ctx context.Context) error {
 	if portStr == "" {
 		portStr = "8080"
 	}
+	log.Printf("listening on port %s", portStr)
 
 	port, err := strconv.Atoi(portStr)
 	if err != nil {

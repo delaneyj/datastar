@@ -1,10 +1,10 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const BIND = 'bind'
-export function addBindDataExtension() {
-  addDataExtension(BIND, {
-    requiredExtensions: [SIGNAL],
+export function addBindDataPlugin() {
+  addDataPlugin(BIND, {
+    requiredPlugins: [SIGNAL],
     withExpression: ({ el, name, expression, dataStack, actions, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 

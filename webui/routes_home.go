@@ -13,6 +13,7 @@ import (
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/mdi"
 	"github.com/delaneyj/gomponents-iconify/iconify/ph"
+	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
 	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
 	"github.com/delaneyj/gomponents-iconify/iconify/vscode_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/zondicons"
@@ -170,23 +171,38 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 		`,
 							),
 						),
-
 						DIV(
 							CLS("flex gap-2 justify-center items-center"),
 							DIV(
-								CLS("badge badge-primary flex-1 gap-1"),
+								CLS("badge badge-accent flex-1 gap-1"),
 								tabler.FileZip(),
 								TXT(iifeBuildSize+" w/ all extensions"),
 							),
 							DIV(
-								CLS("badge badge-primary flex-1 gap-1"),
+								CLS("badge badge-accent flex-1 gap-1"),
 								carbon.ColumnDependency(),
 								TXTF("%d Dependencies", len(packageJSON.Dependencies)),
 							),
 							DIV(
-								CLS("badge badge-primary flex-1 gap-1"),
+								CLS("badge badge-accent flex-1 gap-1"),
 								zondicons.Checkmark(),
 								TXT("Fully Tree Shakeable"),
+							),
+						),
+					),
+					DIV(
+						H3(
+							CLS("text-3xl font-bold"),
+							TXT("Global Count Example"),
+						),
+						DIV(
+							ID("global-count-example"),
+							CLS("flex justify-center p-4 items-center gap-2"),
+							DATA("signal-get", "'/api/globalCount'"),
+							DATA("on-load", "@get"),
+							SPAN(TXT("Loading example on delay...")),
+							svg_spinners.Eclipse(
+								CLS("datastar-indicator"),
 							),
 						),
 					),
@@ -248,7 +264,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						CLS("w-full flex gap-2 items-center"),
 						A(
 							CLS("btn btn-lg flex-1"),
-							HREF("/essays/why-another-framework"),
+							HREF("/essays/2023-09-08_why-another-framework"),
 							material_symbols.Help(),
 							TXT("Why another framework?"),
 						),

@@ -7,8 +7,10 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 
 	. "github.com/delaneyj/toolbelt/gomps"
+	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 	"github.com/yuin/goldmark"
@@ -19,6 +21,7 @@ import (
 	"go.abhg.dev/goldmark/anchor"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+	"gopkg.in/typ.v4/slices"
 	"mvdan.cc/xurls/v2"
 )
 
@@ -31,9 +34,10 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 	}
 
 	type Essay struct {
-		Name  string
-		Title string
-		Body  NODE
+		Name        string
+		Title       string
+		Body        NODE
+		LastUpdated time.Time
 	}
 
 	essays := map[string]Essay{}
@@ -76,26 +80,40 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 			return fmt.Errorf("error converting essay %s: %w", de.Name(), err)
 		}
 
-		title := strings.Replace(de.Name(), "-", " ", -1)
+		parts := strings.Split(de.Name(), "_")
+		if len(parts) != 2 {
+			return fmt.Errorf("invalid essay name: %s", de.Name())
+		}
+
+		lastUpdated, err := time.Parse("2006-01-02", parts[0])
+		if err != nil {
+			return fmt.Errorf("invalid essay name: %s", de.Name())
+		}
+
+		title := strings.Replace(parts[1], "-", " ", -1)
 		title = strings.Replace(title, ".md", "", -1)
 		title = titleCaser.String(title)
 
 		essay := Essay{
-			Name:  de.Name()[0 : len(de.Name())-3],
-			Title: title,
-			Body:  RAW(buf.String()),
+			Name:        de.Name()[0 : len(de.Name())-3],
+			Title:       title,
+			Body:        RAW(buf.String()),
+			LastUpdated: lastUpdated,
 		}
 		essays[essay.Name] = essay
-
 	}
 
 	router.Route("/essays", func(essaysRouter chi.Router) {
 		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			essayEntries := lo.Values(essays)
 
+			slices.SortFunc(essayEntries, func(a, b Essay) bool {
+				return a.LastUpdated.After(b.LastUpdated)
+			})
+
 			Render(w, Page(
 				DIV(
-					CLS("flex flex-col items-center p-16"),
+					CLS("flex flex-col justify-center p-16"),
 					DIV(
 						CLS("flex flex-col gap-4"),
 						DIV(
@@ -113,8 +131,13 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 								return LI(
 									CLS("text-center"),
 									A(
-										TXT(e.Title),
 										HREF("/essays/"+e.Name),
+										CLS("flex flex-col gap-2"),
+										SPAN(
+											CLS("text-lg text-accent"),
+											TXT(humanize.Time(e.LastUpdated)),
+										),
+										SPAN(TXT(e.Title)),
 									),
 								)
 							}),
@@ -139,8 +162,23 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 				DIV(
 					CLS("flex flex-col items-center justify-center p-8"),
 					DIV(
-						CLS("prose lg:prose-xl xl:prose-2xl"),
-						contents,
+						CLS("prose lg:prose-xl xl:prose-2xl flex flex-col gap-8"),
+						DIV(
+							CLS("flex justify-start w-full"),
+							A(
+								CLS("btn btn-primary btn-sm"),
+								TXT("Other Essays"),
+								HREF("/essays"),
+							),
+						),
+
+						DIV(
+							H3(
+								CLS("text-6xl font-bold text-accent"),
+								TXT(essay.LastUpdated.Format("January 2, 2006")),
+							),
+							contents,
+						),
 					),
 				),
 			))

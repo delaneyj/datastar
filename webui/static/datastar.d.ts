@@ -2,43 +2,44 @@ export declare interface ActionArgs {
     el: Element;
     dataStack: NamespacedReactiveRecords;
     actions: ActionsMap;
+    applyPlugins: (el: Element) => void;
 }
 
 export declare type ActionFn = (args: WithExpressionArgs) => Promise<void>;
 
 export declare type ActionsMap = Record<string, ActionFn>;
 
-export declare const addAllFragmentExtensions: () => void;
+export declare const addAllFragmentPlugins: () => void;
 
-export declare function addAllIncludedExtensions(): void;
+export declare function addAllIncludedPlugins(): void;
 
-export declare function addBindDataExtension(): void;
+export declare function addBindDataPlugin(): void;
 
-export declare const addDeleteExtension: () => void;
+export declare const addDeletePlugin: () => void;
 
-export declare function addFocusDataExtension(): void;
+export declare function addFocusDataPlugin(): void;
 
-export declare const addGetExtension: () => void;
+export declare const addGetPlugin: () => void;
 
-export declare function addIntersectsExtension(): void;
+export declare function addIntersectsplugin(): void;
 
-export declare function addOnDataExtension(): void;
+export declare function addOnDataPlugin(): void;
 
-export declare const addPatchExtension: () => void;
+export declare const addPatchPlugin: () => void;
 
-export declare const addPostExtension: () => void;
+export declare const addPostPlugin: () => void;
 
-export declare const addPutExtension: () => void;
+export declare const addPutPlugin: () => void;
 
-export declare function addRefDataExtension(): void;
+export declare function addRefDataPlugin(): void;
 
-export declare function addShowDataExtension(): void;
+export declare function addShowDataPlugin(): void;
 
-export declare function addSignalDataExtension(): void;
+export declare function addSignalDataPlugin(): void;
 
-export declare function addTeleportDataExtension(): void;
+export declare function addTeleportDataPlugin(): void;
 
-export declare function addTextDataExtension(): void;
+export declare function addTextDataPlugin(): void;
 
 export declare const BIND = "bind";
 
@@ -160,6 +161,7 @@ export declare type WithExpressionArgs = {
     reactivity: Reactivity;
     withMod(label: string): Modifier | undefined;
     hasMod(label: string): boolean;
+    applyPlugins(el: Element): void;
     actions: ActionsMap;
 };
 

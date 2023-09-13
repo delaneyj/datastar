@@ -64,6 +64,10 @@ tasks:
     cmds:
       - wget --mirror http://localhost:1337
 
+  deploy:
+    cmds:
+      - fly deploy --local-only
+
   default:
     deps:
       - hot

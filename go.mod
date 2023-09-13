@@ -3,6 +3,8 @@ module github.com/delaneyj/datastar
 go 1.21.0
 
 require (
+	github.com/Jeffail/gabs/v2 v2.7.0
+	github.com/alecthomas/chroma/v2 v2.9.1
 	github.com/benbjohnson/hashfs v0.2.1
 	github.com/delaneyj/gomponents-iconify v0.0.20230907
 	github.com/delaneyj/toolbelt v0.0.11
@@ -13,14 +15,16 @@ require (
 	github.com/samber/lo v1.38.1
 	github.com/yuin/goldmark v1.5.6
 	github.com/yuin/goldmark-emoji v1.0.2
+	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
 	go.abhg.dev/goldmark/anchor v0.1.1
+	go.abhg.dev/goldmark/mermaid v0.4.0
 	golang.org/x/text v0.13.0
+	gopkg.in/typ.v4 v4.3.0
 	mvdan.cc/xurls/v2 v2.5.0
 )
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect
-	github.com/alecthomas/chroma/v2 v2.9.1 // indirect
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect
 	github.com/chewxy/math32 v1.10.1 // indirect

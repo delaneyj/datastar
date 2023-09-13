@@ -2,6 +2,8 @@ package webui
 
 import (
 	"fmt"
+	"log"
+	"sync/atomic"
 
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/skill_icons"
@@ -29,16 +31,18 @@ func Page(children ...NODE) NODE {
 			),
 		},
 		Body: NODES{
-			CLS("flex flex-col w-full min-h-screen scrollbar scrollbar-thumb-primary scrollbar-track-secondary "),
+			CLS("flex flex-col w-full min-h-screen scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
+
 			DIV(
 				CLS("p-4 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
 				STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
 				DIV(
 					CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-2"),
-					DIV(
+					A(
 						CLS("flex gap-2 items-center text-5xl font-display"),
 						TXT("Datastar"),
 						material_symbols.AwardStarOutline(),
+						HREF("/"),
 					),
 					DIV(
 						CLS("flex flex-col items-end"),
@@ -77,6 +81,63 @@ func Page(children ...NODE) NODE {
 				),
 			),
 			GRP(children...),
+			SCRIPT(
+				TYPE("module"),
+				RAW(fmt.Sprintf(`
+import { addAllIncludedPlugins } from '%s'
+addAllIncludedPlugins()
+`, staticPath("datastar.js"),
+				)),
+			),
 		},
 	})
+}
+
+var globalCount = new(int32)
+
+func globalCountExample() NODE {
+	count := atomic.LoadInt32(globalCount)
+	log.Print(count)
+	return DIV(
+		ID("global-count-example"),
+		CLS("flex flex-col gap-2"),
+		DATAF("signal-count", "%d", count),
+		DIV(
+			CLS("flex gap-2 justify-between items-center"),
+			BUTTON(
+				CLS("btn btn-primary"),
+				DATA("on-click", "$count++"),
+				TXT("Increment Local State  +"),
+			),
+			BUTTON(
+				CLS("btn btn-primary"),
+				DATA("on-click", "$count--"),
+				TXT("Decrement Local State -"),
+			),
+			INPUT(
+				CLS("input input-bordered"),
+				TYPE("number"),
+				NAME("count"),
+				DATA("model", "count"),
+			),
+			DIV(DATA("text", "`Count is ${$count}`")),
+		),
+		DIV(
+			CLS("flex gap-4"),
+			BUTTON(
+				CLS("btn btn-secondary btn-lg flex-1"),
+				DATA("signal-get", "'/api/globalCount'"),
+				DATA("on-click", "@get"),
+				TXT("Load global count"),
+				material_symbols.Download(),
+			),
+			BUTTON(
+				CLS("btn btn-secondary btn-lg flex-1"),
+				DATA("signal-post", "'/api/globalCount'"),
+				DATA("on-click", "@post"),
+				TXT("Store global count"),
+				material_symbols.Upload(),
+			),
+		),
+	)
 }

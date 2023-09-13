@@ -21,52 +21,52 @@ export type ActionFn = (args: WithExpressionArgs) => Promise<void>;
 export type ActionsMap = Record<string, ActionFn>;
 
 // @public (undocumented)
-export const addAllFragmentExtensions: () => void;
+export const addAllFragmentPlugins: () => void;
 
 // @public (undocumented)
-export function addAllIncludedExtensions(): void;
+export function addAllIncludedPlugins(): void;
 
 // @public (undocumented)
-export function addBindDataExtension(): void;
+export function addBindDataPlugin(): void;
 
 // @public (undocumented)
-export const addDeleteExtension: () => void;
+export const addDeletePlugin: () => void;
 
 // @public (undocumented)
-export function addFocusDataExtension(): void;
+export function addFocusDataPlugin(): void;
 
 // @public (undocumented)
-export const addGetExtension: () => void;
+export const addGetPlugin: () => void;
 
 // @public (undocumented)
-export function addIntersectsExtension(): void;
+export function addIntersectsPlugin(): void;
 
 // @public (undocumented)
-export function addOnDataExtension(): void;
+export function addOnDataPlugin(): void;
 
 // @public (undocumented)
-export const addPatchExtension: () => void;
+export const addPatchPlugin: () => void;
 
 // @public (undocumented)
-export const addPostExtension: () => void;
+export const addPostPlugin: () => void;
 
 // @public (undocumented)
-export const addPutExtension: () => void;
+export const addPutPlugin: () => void;
 
 // @public (undocumented)
-export function addRefDataExtension(): void;
+export function addRefDataPlugin(): void;
 
 // @public (undocumented)
-export function addShowDataExtension(): void;
+export function addShowDataPlugin(): void;
 
 // @public (undocumented)
-export function addSignalDataExtension(): void;
+export function addSignalDataPlugin(): void;
 
 // @public (undocumented)
-export function addTeleportDataExtension(): void;
+export function addTeleportDataPlugin(): void;
 
 // @public (undocumented)
-export function addTextDataExtension(): void;
+export function addTextDataPlugin(): void;
 
 // @public (undocumented)
 export const BIND = "bind";

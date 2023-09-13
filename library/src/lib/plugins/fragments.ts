@@ -1,5 +1,5 @@
 import { ActionArgs } from '..'
-import { addActionExtension, toHTMLorSVGElement } from '../core'
+import { addActionPlugin, applyPlugins, toHTMLorSVGElement } from '../core'
 import { idiomorph } from '../external/idiomorph'
 import { Reactive } from '../external/reactively'
 const p = new DOMParser()
@@ -14,22 +14,22 @@ const ACCEPT = 'Accept',
   SWAP = 'swap'
 
 export const GET = 'get'
-export const addGetExtension = () => addFetchMethod(GET)
+export const addGetPlugin = () => addFetchMethod(GET)
 export const POST = 'post'
-export const addPostExtension = () => addFetchMethod(POST)
+export const addPostPlugin = () => addFetchMethod(POST)
 export const PUT = 'put'
-export const addPutExtension = () => addFetchMethod(PUT)
+export const addPutPlugin = () => addFetchMethod(PUT)
 export const PATCH = 'patch'
-export const addPatchExtension = () => addFetchMethod(PATCH)
+export const addPatchPlugin = () => addFetchMethod(PATCH)
 export const DELETE = 'delete'
-export const addDeleteExtension = () => addFetchMethod(DELETE)
+export const addDeletePlugin = () => addFetchMethod(DELETE)
 
-export const addAllFragmentExtensions = () => {
-  addGetExtension()
-  addPostExtension()
-  addPutExtension()
-  addPatchExtension()
-  addDeleteExtension()
+export const addAllFragmentPlugins = () => {
+  addGetPlugin()
+  addPostPlugin()
+  addPutPlugin()
+  addPatchPlugin()
+  addDeletePlugin()
 }
 
 let hasInjectedStyles = false
@@ -52,7 +52,7 @@ function addFetchMethod(method: string) {
     hasInjectedStyles = true
   }
 
-  addActionExtension({
+  addActionPlugin({
     name: method,
     description: `turns @${method}(args) into fetch(${method}, args)`,
     fn: async (args: ActionArgs) => fetcher(method, args),
@@ -158,6 +158,7 @@ async function fetcher(method: string, args: ActionArgs) {
         default:
           throw new Error('Invalid merge mode')
       }
+      applyPlugins(target)
     }
   }
 

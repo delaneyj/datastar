@@ -2,8 +2,6 @@
 
 *Delaney Gillilan*
 
-**September 9 2023**
-
 ## In response to the HTMX essay [No Build Step](https://htmx.org/essays/no-build-step/)
 
 This is making the counter argument that a build step are extremely valuable when building a frontend framework.  Lack of builds might be the right choice for HTMX but in my eyes its a self full-filling prophecy.  The author concurrently wary of progress yet works on a library about extending the HTML spec to do more than it was designed for.  The essay is written by a core contributor and not the author of HTMX.  In general, its filled with so many fallacies but the real culprit is the *false dilemma fallacy*.
@@ -55,7 +53,7 @@ The DX is why I personally moved on.  The core monkey patches the DOM and that's
 
  > Requiring that htmx remain in a single file (again, around 3,500 LOC) enforces a degree of intention on the library; there is a real pressure when working on the htmx source to justify the addition of new code, a pressure which maintains an equilibrium of relative simplicity.
 
- Or... make everything an extension and allow them to rely on each other at there digression.  Making it a single file doesn't do anything but make harder to maintain.
+ Or... make everything an extension and allow them to rely on each other at there discretion.  Making it a single file doesn't do anything but make harder to maintain.
 
 ## Amalgamation is a build step
 

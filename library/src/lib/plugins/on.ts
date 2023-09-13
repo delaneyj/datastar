@@ -1,5 +1,5 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const ON = 'on'
 
@@ -8,9 +8,9 @@ const ONCE = 'once',
   DEBOUNCE = 'debounce',
   LEADING = 'leading'
 
-export function addOnDataExtension() {
-  addDataExtension(ON, {
-    requiredExtensions: [SIGNAL],
+export function addOnDataPlugin() {
+  addDataPlugin(ON, {
+    requiredPlugins: [SIGNAL],
     allowedModifiers: [ONCE, THROTTLE, DEBOUNCE, LEADING],
     withExpression: ({
       el,

@@ -1,14 +1,14 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
-import { addDataExtension, toHTMLorSVGElement } from '../core'
+import { addDataPlugin, toHTMLorSVGElement } from '../core'
 
 const PREPEND = 'prepend',
   APPEND = 'append',
   MUST_PARENT_ERR = 'Target element must have a parent if using prepend or append'
 
 export const TELEPORT = 'teleport'
-export function addTeleportDataExtension() {
-  addDataExtension(TELEPORT, {
-    requiredExtensions: [SIGNAL],
+export function addTeleportDataPlugin() {
+  addDataPlugin(TELEPORT, {
+    requiredPlugins: [SIGNAL],
     allowedModifiers: [PREPEND, APPEND],
     withExpression: ({ name, el, expression, dataStack, reactivity: { effect }, hasMod, actions }) => {
       if (!(el instanceof HTMLTemplateElement)) {

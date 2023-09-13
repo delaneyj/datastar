@@ -1,11 +1,11 @@
 import { SIGNAL } from '.'
 import { functionEval } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const HEADER = 'header'
-export function addHeadersExtension() {
-  addDataExtension(HEADER, {
-    requiredExtensions: [SIGNAL],
+export function addHeadersplugin() {
+  addDataPlugin(HEADER, {
+    requiredPlugins: [SIGNAL],
     withExpression: ({ name, expression, dataStack, actions, el, reactivity: { computed } }) => {
       const headers = functionEval(el, dataStack, actions, expression)
       if (typeof headers !== 'object') {

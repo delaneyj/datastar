@@ -1,13 +1,13 @@
 import { functionEval } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 import { ACTION } from './actions'
 
 export const SIGNAL = 'signal'
 
 const PERSIST_KEY = 'persist'
-export function addSignalDataExtension() {
-  addDataExtension(SIGNAL, {
-    requiredExtensions: [ACTION],
+export function addSignalDataPlugin() {
+  addDataPlugin(SIGNAL, {
+    requiredPlugins: [ACTION],
     preprocessExpressions: [
       {
         name: 'signal',

@@ -1,12 +1,12 @@
 import { SIGNAL } from '.'
-import { addDataExtension, uniqueId } from '../core'
+import { addDataPlugin, uniqueId } from '../core'
 
 export const MODEL = 'model'
 const updateEvents = ['change', 'input', 'keydown']
-export function addModelDataExtension() {
-  addDataExtension(MODEL, {
+export function addModelDataPlugin() {
+  addDataPlugin(MODEL, {
     allowedTags: ['input', 'textarea', 'select'],
-    requiredExtensions: [SIGNAL],
+    requiredPlugins: [SIGNAL],
 
     withExpression: ({ name, el, expression, dataStack, reactivity: { effect, onCleanup } }) => {
       const signal = dataStack.signals[expression]

@@ -1,9 +1,9 @@
 import { NamespacedReactiveRecords, functionGenerator } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const TEXT = 'text'
-export function addTextDataExtension() {
-  addDataExtension(TEXT, {
+export function addTextDataPlugin() {
+  addDataPlugin(TEXT, {
     withExpression: ({ name, el, expression, dataStack, actions, reactivity: { effect } }) => {
       const signalFn = functionGenerator(expression)
 

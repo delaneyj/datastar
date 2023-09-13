@@ -1,9 +1,9 @@
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 export const ACTION = 'action'
 
-export function addActionDataExtension() {
-  addDataExtension(ACTION, {
+export function addActionDataPlugin() {
+  addDataPlugin(ACTION, {
     preprocessExpressions: [
       {
         name: 'action',

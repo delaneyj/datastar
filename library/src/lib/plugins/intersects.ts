@@ -1,14 +1,14 @@
 import { NamespacedReactiveRecords, SIGNAL, functionGenerator } from '..'
-import { addDataExtension } from '../core'
+import { addDataPlugin } from '../core'
 
 const once = 'once',
   full = 'full',
   half = 'half'
 
 export const INTERSECTS = 'intersects'
-export function addIntersectsExtension() {
-  addDataExtension(INTERSECTS, {
-    requiredExtensions: [SIGNAL],
+export function addIntersectsplugin() {
+  addDataPlugin(INTERSECTS, {
+    requiredPlugins: [SIGNAL],
     allowedModifiers: [once, full, half],
     withExpression: ({ name, el, expression, dataStack, actions, hasMod, reactivity: { effect, onCleanup } }) => {
       const signalFn = functionGenerator(expression)
