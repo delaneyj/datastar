@@ -9,6 +9,13 @@ vars:
   BIN_NAME: "{{.NAME}}_bin"
 
 tasks:
+  library-publish:
+    dir: ./library
+    cmds:
+      - npm version patch
+      - npm publish --access public
+      - git push origin --tags
+
   library:
     dir: ./library
     generates:
