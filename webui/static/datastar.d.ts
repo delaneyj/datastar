@@ -21,7 +21,7 @@ export declare function addFocusDataPlugin(): void;
 
 export declare const addGetPlugin: () => void;
 
-export declare function addIntersectsplugin(): void;
+export declare function addIntersectsPlugin(): void;
 
 export declare function addOnDataPlugin(): void;
 

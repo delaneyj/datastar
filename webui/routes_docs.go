@@ -13,6 +13,7 @@ import (
 	"github.com/delaneyj/gomponents-iconify/iconify/clarity"
 	"github.com/delaneyj/gomponents-iconify/iconify/file_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/game_icons"
+	"github.com/delaneyj/gomponents-iconify/iconify/gis"
 	"github.com/delaneyj/gomponents-iconify/iconify/gridicons"
 	"github.com/delaneyj/gomponents-iconify/iconify/lucide"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
@@ -181,15 +182,15 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 														HREF("/docs/included-plugins-ui-focus"),
 													)),
 												LI(
-													CLS("disabled"),
+													// CLS("disabled"),
 													A(
 														CLSS{"active": current == "included-plugins-ui-intersect"},
 														ph.IntersectFill(),
-														TXT("Intersect"),
-														HREF("/docs/included-plugins-ui-intersect"),
+														TXT("Intersects"),
+														HREF("/docs/included-plugins-ui-intersects"),
 													)),
 												LI(
-													CLS("disabled"),
+													// CLS("disabled"),
 													A(
 														CLSS{"active": current == "included-plugins-ui-teleport"},
 														game_icons.Teleport(),
@@ -205,7 +206,7 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 											SUMMARY(TXT("HTML Partials")),
 											UL(
 												LI(
-													CLS("disabled"),
+													// CLS("disabled"),
 													A(
 														CLSS{"active": current == "included-plugins-html-partials-raw"},
 														cil.Transfer(),
@@ -213,7 +214,7 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 														HREF("/docs/included-plugins-html-partials-fragments"),
 													)),
 												LI(
-													CLS("disabled"),
+													// CLS("disabled"),
 													A(
 														CLSS{"active": current == "included-plugins-html-partials-raw"},
 														material_symbols.Bookmark(),
@@ -222,6 +223,75 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 													)),
 											),
 										),
+									),
+								),
+							),
+						),
+						LI(
+							CLS("disabled"),
+							SUMMARY(TXT("Make Your Own Plugins")),
+							UL(
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-intro"},
+										gridicons.Plugins(),
+										TXT("Intro"),
+										HREF("/docs/make-your-own-plugins-intro"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-dataStack"},
+										mdi.Database(),
+										TXT("Data Stack"),
+										HREF("/docs/make-your-own-plugins-dataStack"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-reactivity"},
+										streamline.InterfaceHierarchyTwoNodeOrganizationLinksStructureLinkNodesNetworkHierarchy(),
+										TXT("Reactivity"),
+										HREF("/docs/make-your-own-plugins-reactivity"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-actions"},
+										mdi.PlayCircleOutline(),
+										TXT("Actions"),
+										HREF("/docs/make-your-own-plugins-actions"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-required"},
+										mdi.AlertCircleOutline(),
+										TXT("Required"),
+										HREF("/docs/make-your-own-plugins-required"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-modifiers"},
+										gis.ModifyLine(),
+										TXT("Modifiers"),
+										HREF("/docs/make-your-own-plugins-modifiers"),
+									),
+								),
+								LI(
+									CLS("disabled"),
+									A(
+										CLSS{"active": current == "make-your-own-plugins-expression"},
+										mdi.FunctionVariant(),
+										TXT("Expression"),
+										HREF("/docs/make-your-own-plugins-expression"),
 									),
 								),
 							),

@@ -1048,7 +1048,7 @@ export {
   kt as addDeletePlugin,
   tt as addFocusDataPlugin,
   yt as addGetPlugin,
-  Zt as addIntersectsplugin,
+  Zt as addIntersectsPlugin,
   Ot as addOnDataPlugin,
   Lt as addPatchPlugin,
   Tt as addPostPlugin,

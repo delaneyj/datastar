@@ -3,7 +3,7 @@ import { functionEval } from '..'
 import { addDataPlugin } from '../core'
 
 export const HEADER = 'header'
-export function addHeadersplugin() {
+export function addHeadersPlugin() {
   addDataPlugin(HEADER, {
     requiredPlugins: [SIGNAL],
     withExpression: ({ name, expression, dataStack, actions, el, reactivity: { computed } }) => {

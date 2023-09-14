@@ -6,7 +6,7 @@ const once = 'once',
   half = 'half'
 
 export const INTERSECTS = 'intersects'
-export function addIntersectsplugin() {
+export function addIntersectsPlugin() {
   addDataPlugin(INTERSECTS, {
     requiredPlugins: [SIGNAL],
     allowedModifiers: [once, full, half],
