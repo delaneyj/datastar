@@ -12,7 +12,7 @@ For example in Alpine.js you have `x-for` and `x-if` but they act as templating 
 
 ## No more monkey patching
 
-Alpine.js and HTMX both monkey patch the DOM to make things work.  This is fine but it makes it hard to extend and build plugins.  Datastar uses the native HTML5 `data-` attributes to define the behavior of the page.  This means you can extend any plugin and even build your own plugins without having to worry about breaking other plugins.
+Alpine.js and HTMX both monkey patch the DOM to make things work.  This is fine but it makes it hard to extend and build plugins.  Datastar uses the native HTML5 `data-*` attributes (hence the name) to define the behavior of the page.  This means you can extend any plugin and even build your own plugins without having to worry about breaking other plugins.
 
 ## Types matter
 
