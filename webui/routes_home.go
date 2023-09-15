@@ -215,6 +215,10 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 								CLS("datastar-indicator"),
 							),
 						),
+						H5(
+							CLS("text-2xl font-bold"),
+							TXT("Open the console to see the Fetch/XHR traffic"),
+						),
 					),
 					P(
 						TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use."),

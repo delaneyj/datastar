@@ -11,12 +11,17 @@ The key concept that the core plugins are built is use the [data attributes](htt
 
 This is a normal HTML element with a `data-signal-count` attribute.  This is a special attribute that tells the `signal` plugin to create a signal called `count` with an initial value of `0`.  This is a very simple example but it shows how you can use HTML to define the state of your application.  This is a very powerful concept and allows you to build complex applications with very little code.
 
-![Declarative UI](/static/images/bankruptcy.gif)
+For example so you want a shout plugin that will uppercase the text in an element with the contents of the expression. Maybe something like...
 
 ```html
 <div data-shout.office="Bankruptcy!">
 ```
-What does this mean?  It up to you and the plugins you decide to install.  Even if you don't install any plugins you HTML stays valid and inert.
+![Declarative UI](/static/images/bankruptcy.gif)
+
+## What does this mean?
+![Declarative UI](/static/images/what-does-it-mean.gif)
+
+It up to you and the plugins you decide to install.  Even if you don't install any plugins you HTML stays valid and inert.
 
 All plugins work off data attributes, but as they are hooked onto the appropriate elements they can not only get access to the element, but the entire context of the page.  This allows you to build complex applications with very little code.  Alpine.js has some similar concepts but unfortunately has to monkey patch the DOM to make it work.  Also since `.dataset` is a native concept its easy to query ***ANY*** declarative information and even extend other plugins.
 
