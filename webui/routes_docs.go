@@ -101,30 +101,24 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 											ATTR("open"),
 											SUMMARY(TXT("Core")),
 											UL(
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-core-reactivity"},
-														streamline.InterfaceHierarchyTwoNodeOrganizationLinksStructureLinkNodesNetworkHierarchy(),
-														TXT("Reactivity"),
-														HREF("/docs/included-plugins-core-reactivity"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-core-sandboxed-functions"},
-														material_symbols.Function(),
-														TXT("Sandboxed Functions"),
-														HREF("/docs/included-plugins-core-sandboxed-functions"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-core-events"},
-														lucide.MousePointerClick(),
-														TXT("Events"),
-														HREF("/docs/included-plugins-core-events"),
-													)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-core-reactivity"},
+													streamline.InterfaceHierarchyTwoNodeOrganizationLinksStructureLinkNodesNetworkHierarchy(),
+													TXT("Reactivity"),
+													HREF("/docs/included-plugins-core-reactivity"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-core-sandboxed-functions"},
+													material_symbols.Function(),
+													TXT("Sandboxed Functions"),
+													HREF("/docs/included-plugins-core-sandboxed-functions"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-core-events"},
+													lucide.MousePointerClick(),
+													TXT("Events"),
+													HREF("/docs/included-plugins-core-events"),
+												)),
 											),
 										),
 									),
@@ -133,70 +127,54 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 											ATTR("open"),
 											SUMMARY(TXT("UI")),
 											UL(
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-visibility"},
-														clarity.EyeShowSolid(),
-														TXT("Visibility"),
-														HREF("/docs/included-plugins-ui-visibility"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-text-node"},
-														material_symbols.TextFields(),
-														TXT("Text Node"),
-														HREF("/docs/included-plugins-ui-text-node"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-bind-attribute"},
-														file_icons.Binder(),
-														TXT("Bind"),
-														HREF("/docs/included-plugins-ui-bind-attribute"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-two-way-binding"},
-														tabler.BoxModel(),
-														TXT("Two-Way Binding"),
-														HREF("/docs/included-plugins-ui-two-way-binding"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-refs"},
-														carbon.AssemblyReference(),
-														TXT("Refs"),
-														HREF("/docs/included-plugins-ui-refs"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-focus"},
-														material_symbols.CenterFocusStrong(),
-														TXT("Focus"),
-														HREF("/docs/included-plugins-ui-focus"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-intersect"},
-														ph.IntersectFill(),
-														TXT("Intersects"),
-														HREF("/docs/included-plugins-ui-intersects"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-ui-teleport"},
-														game_icons.Teleport(),
-														TXT("Teleport"),
-														HREF("/docs/included-plugins-ui-teleport"),
-													)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-visibility"},
+													clarity.EyeShowSolid(),
+													TXT("Visibility"),
+													HREF("/docs/included-plugins-ui-visibility"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-text-node"},
+													material_symbols.TextFields(),
+													TXT("Text Node"),
+													HREF("/docs/included-plugins-ui-text-node"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-bind-attribute"},
+													file_icons.Binder(),
+													TXT("Bind"),
+													HREF("/docs/included-plugins-ui-bind-attribute"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-two-way-binding"},
+													tabler.BoxModel(),
+													TXT("Two-Way Binding"),
+													HREF("/docs/included-plugins-ui-two-way-binding"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-refs"},
+													carbon.AssemblyReference(),
+													TXT("Refs"),
+													HREF("/docs/included-plugins-ui-refs"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-focus"},
+													material_symbols.CenterFocusStrong(),
+													TXT("Focus"),
+													HREF("/docs/included-plugins-ui-focus"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-intersect"},
+													ph.IntersectFill(),
+													TXT("Intersects"),
+													HREF("/docs/included-plugins-ui-intersects"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-ui-teleport"},
+													game_icons.Teleport(),
+													TXT("Teleport"),
+													HREF("/docs/included-plugins-ui-teleport"),
+												)),
 											),
 										),
 									),
@@ -205,22 +183,24 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 											ATTR("open"),
 											SUMMARY(TXT("HTML Partials")),
 											UL(
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-html-partials-raw"},
-														cil.Transfer(),
-														TXT("Fragments"),
-														HREF("/docs/included-plugins-html-partials-fragments"),
-													)),
-												LI(
-													// CLS("disabled"),
-													A(
-														CLSS{"active": current == "included-plugins-html-partials-raw"},
-														material_symbols.Bookmark(),
-														TXT("Headers"),
-														HREF("/docs/included-plugins-html-partials-headers"),
-													)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-html-partials-raw"},
+													cil.Transfer(),
+													TXT("Fragments"),
+													HREF("/docs/included-plugins-html-partials-fragments"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-html-partials-raw"},
+													material_symbols.Bookmark(),
+													TXT("Headers"),
+													HREF("/docs/included-plugins-html-partials-headers"),
+												)),
+												LI(A(
+													CLSS{"active": current == "included-plugins-html-partials-sse"},
+													streamline.InterfaceDownloadLaptopArrowComputerDownDownloadInternetLaptopNetworkServerUpload(),
+													TXT("Server Sent Events"),
+													HREF("/docs/included-plugins-html-partials-sse"),
+												)),
 											),
 										),
 									),

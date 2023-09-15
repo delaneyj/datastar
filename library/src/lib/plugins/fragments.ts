@@ -104,6 +104,12 @@ async function fetcher(method: string, args: ActionArgs) {
   if (!res.ok) throw new Error('Network response was not ok.')
   const html = await res.text()
 
+  mergeHTMLFragments(el, html)
+
+  el.classList.remove(LOADING_CLASS)
+}
+
+export function mergeHTMLFragments(el: Element, html: string) {
   const dom = [...p.parseFromString(html, TEXT_HTML).body.children]
   for (let i = 0; i < dom.length; i++) {
     const frag = dom[i]
@@ -119,7 +125,7 @@ async function fetcher(method: string, args: ActionArgs) {
 
     let targets: Iterable<Element>
     if (useElAsTarget) {
-      targets = [elRaw]
+      targets = [el]
     } else {
       if (!hasID) throw new Error('No id')
 
@@ -161,6 +167,4 @@ async function fetcher(method: string, args: ActionArgs) {
       applyPlugins(target)
     }
   }
-
-  el.classList.remove(LOADING_CLASS)
 }

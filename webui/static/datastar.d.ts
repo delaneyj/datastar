@@ -61,6 +61,8 @@ export declare function injectMockFetch(routes: MockFetchRoutes): void;
 
 export declare const INTERSECTS = "intersects";
 
+export declare function mergeHTMLFragments(el: Element, html: string): void;
+
 export declare interface MockedResponse {
     html: string;
     status?: number;

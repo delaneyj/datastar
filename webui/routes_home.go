@@ -57,12 +57,12 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 			Details:     DIV(TXT("No monkey patching, no custom elements, no custom attributes, no custom anything.  Just plain old HTML5.")),
 		},
 		{
-			Description: "Everything is an Extension",
+			Description: "Everything is an Plugin",
 			Icon:        gridicons.Plugins(),
 			Details:     DIV(TXT("Disagree with the built-in behavior? No problem, just write your own extension in a type safe way.  Take what you need, leave what you don't.")),
 		},
 		{
-			Description: "Batteries Included",
+			Description: "Batteries Included (but optional)",
 			Icon:        game_icons.Batteries(),
 			Details: DIV(
 				CLS("breadcrumbs"),
@@ -70,15 +70,19 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					CLS(
 						"flex flex-wrap gap-2 justify-center items-center",
 					),
-					LI(TXT("Actions")),
+					LI(TXT("Custom Actions")),
 					LI(TXT("Attribute Binding")),
 					LI(TXT("Focus")),
-					LI(TXT("HTMX like features")),
+					LI(TXT("Signals")),
+					LI(TXT("DOM Events")),
+					LI(TXT("Refs")),
 					LI(TXT("Intersects")),
 					LI(TXT("Two-Way Binding")),
 					LI(TXT("Visibility")),
 					LI(TXT("Teleporting")),
 					LI(TXT("Text Replacement")),
+					LI(TXT("HTMX like features")),
+					LI(TXT("Server Sent Events")),
 				),
 			),
 		},
@@ -160,6 +164,10 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					),
 					DIV(
 						CLS("flex flex-col gap-2 w-full"),
+						H3(
+							CLS("text-3xl font-bold"),
+							TXT("Simple count example code"),
+						),
 						DIV(
 							CLS("bg-base-100 shadow-inner text-base-content p-4 rounded-box"),
 							HIGHLIGHT("html", `<div data-signal-count="0">
@@ -168,15 +176,9 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 		<button data-on-click="$count--">Decrement -</button>
 		<input type="number" data-model="count" />
 	</div>
-	<button
-		data-signal-get="'/api/echo'"
-		data-on-load="@get"
-		data-on-click="@get"
-	>
-		Contents
-	</button>
+	<div data-text="$count"></div>
 </div>
-		`,
+`,
 							),
 						),
 						DIV(
@@ -201,7 +203,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					DIV(
 						H3(
 							CLS("text-3xl font-bold"),
-							TXT("Global Count Example"),
+							TXT("Global count example from Backend"),
 						),
 						DIV(
 							ID("global-count-example"),

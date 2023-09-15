@@ -2,8 +2,6 @@ package webui
 
 import (
 	"fmt"
-	"log"
-	"sync/atomic"
 
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/skill_icons"
@@ -91,53 +89,4 @@ addAllIncludedPlugins()
 			),
 		},
 	})
-}
-
-var globalCount = new(int32)
-
-func globalCountExample() NODE {
-	count := atomic.LoadInt32(globalCount)
-	log.Print(count)
-	return DIV(
-		ID("global-count-example"),
-		CLS("flex flex-col gap-2"),
-		DATAF("signal-count", "%d", count),
-		DIV(
-			CLS("flex gap-2 justify-between items-center"),
-			BUTTON(
-				CLS("btn btn-primary"),
-				DATA("on-click", "$count++"),
-				TXT("Increment Local State  +"),
-			),
-			BUTTON(
-				CLS("btn btn-primary"),
-				DATA("on-click", "$count--"),
-				TXT("Decrement Local State -"),
-			),
-			INPUT(
-				CLS("input input-bordered"),
-				TYPE("number"),
-				NAME("count"),
-				DATA("model", "count"),
-			),
-			DIV(DATA("text", "`Count is ${$count}`")),
-		),
-		DIV(
-			CLS("flex gap-4"),
-			BUTTON(
-				CLS("btn btn-secondary btn-lg flex-1"),
-				DATA("signal-get", "'/api/globalCount'"),
-				DATA("on-click", "@get"),
-				TXT("Load global count"),
-				material_symbols.Download(),
-			),
-			BUTTON(
-				CLS("btn btn-secondary btn-lg flex-1"),
-				DATA("signal-post", "'/api/globalCount'"),
-				DATA("on-click", "@post"),
-				TXT("Store global count"),
-				material_symbols.Upload(),
-			),
-		),
-	)
 }
