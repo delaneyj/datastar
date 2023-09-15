@@ -8,7 +8,6 @@ This is a more explicit take on the same kind of behavior that [HTMX](https://ht
 
 
 ![ref](/static/images/so-fetch.gif)
-![ref](/static/images/no-fetch.gif)
 
 
 ## Example
@@ -34,6 +33,26 @@ All actions send off a request to the URL specified in the data-* attribute and 
 * `@patch`
 * `@delete`
 
+## The Request
+```mermaid
+stateDiagram-v2
+    state "Data Stack" as dataStack
+    state "Request Headers (if any)" as headers
+    state "Is GET?" as isGet
+    state "Create query string with dataStack" as createQueryString
+    state "Create body with dataStack contents" as createBody
+    state "Fetch" as fetch
+    state "Server Response" as res
+
+    dataStack --> headers
+    headers --> isGet
+    isGet --> createQueryString : Yes
+    isGet --> createBody : No
+    createQueryString --> fetch
+    createBody --> fetch
+    fetch --> res
+```
+
 # The Response
 ```mermaid
 stateDiagram-v2
@@ -51,10 +70,10 @@ stateDiagram-v2
     res --> is2xx
     is2xx --> err : No
     is2xx --> each : Yes
-    each --> hasTarget : Yes
-    each --> setTarget : No
-    hasTarget --> hasSwap
-    setTarget --> hasSwap
+    each --> hasTarget
+    each --> setTarget
+    hasTarget --> hasSwap : Yes
+    setTarget --> hasSwap : No
     hasSwap --> setSwap : No
     hasSwap --> swap : Yes
     setSwap --> swap
@@ -73,5 +92,6 @@ stateDiagram-v2
 | `data-swap="after"` | Insert after element |
 | `data-swap="delete"` | Remove element |
 
+![ref](/static/images/no-fetch.gif)
 
 [Next Headers](/docs/included-plugins-html-partials-headers)
