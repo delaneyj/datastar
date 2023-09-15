@@ -9,7 +9,7 @@ vars:
   BIN_NAME: "{{.NAME}}_bin"
 
 tasks:
-  library-publish:
+  libpub:
     dir: ./library
     cmds:
       - npm version patch
