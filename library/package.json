@@ -32,9 +32,13 @@
     "rollup-plugin-visualizer": "^5.9.2",
     "terser": "^5.19.2",
     "typescript": "^5.0.2",
+    "utility-types": "^3.10.0",
     "vite": "^4.4.5",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dts": "^3.5.3",
     "vitest": "^0.34.4"
+  },
+  "dependencies": {
+    "@maverick-js/signals": "^5.11.4"
   }
 }

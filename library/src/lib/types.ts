@@ -1,41 +1,53 @@
-import { Reactive } from './external/reactively'
+import { Dispose, MaybeDisposable, type Effect, type StopEffect } from '@maverick-js/signals'
 
-export type Reactivity = {
-  signal<T>(initialValue: T): Reactive<T>
-  computed<T>(fn: () => T): Reactive<T>
-  effect(fn: () => void): Reactive<void>
-  onCleanup(fn: () => void): void
+export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
+
+export type Context = {
+  get<T>(key: string): T | undefined
+  set<T>(key: string, value: T): void
 }
 
-export type WithExpressionArgs = {
-  name: string
-  expression: string
-  el: Element
-  dataStack: NamespacedReactiveRecords
-  reactivity: Reactivity
-  withMod(label: string): Modifier | undefined
-  hasMod(label: string): boolean
-  applyPlugins(el: Element): void
-  actions: ActionsMap
+export abstract class DatastarPlugin {
+  abstract name: string
+  abstract description: string
+  requiredPluginTypes = new Set<typeof DatastarPlugin>()
 }
 
-export type ReactiveRecord = Record<string, Reactive<any>>
-export type NamespacedReactiveRecords = Record<string, ReactiveRecord>
-export type ActionFn = (args: WithExpressionArgs) => Promise<void>
-export type ActionsMap = Record<string, ActionFn>
-export type NamespacedReactiveRecordCallback<T> = (
-  el: Element,
-  data: NamespacedReactiveRecords,
-  actions: ActionsMap,
-) => T
-export type Modifier = {
-  label: string
-  args: string[]
+export type DatastarPluginConstructor = new () => DatastarPlugin
+
+export type AttributeContext = Context & {
+  el: Readonly<HTMLorSVGElement>
+  key: Readonly<string>
+  expressionRaw: Readonly<string>
+  expressionEvaluated?: any
+  modifiers: Readonly<Map<string, Readonly<string>[]>>
+  effect: (
+    effect: Effect,
+    options?: {
+      id?: string
+    },
+  ) => StopEffect
+  cleanup: (disposable: MaybeDisposable) => Dispose
 }
 
-export interface ActionArgs {
-  el: Element
-  dataStack: NamespacedReactiveRecords
-  actions: ActionsMap
-  applyPlugins: (el: Element) => void
+export abstract class AttributePlugin extends DatastarPlugin {
+  abstract prefix: string
+  abstract onMount(ctx: AttributeContext): void
+  onUnmount?(ctx: AttributeContext): void
+  mustHaveEmptyExpression = false
+  mustHaveEmptyKey = false
+  allowedTags?: Set<string>
+  allowedModifiers?: Set<string>
+  allowedModifierArgs?: Record<string, (args: string[]) => boolean>
+}
+
+export type Groups = Record<string, string>
+
+export abstract class RunePlugin extends DatastarPlugin {
+  abstract regexp: RegExp
+  abstract replacer(groups: Groups): string
+}
+
+export abstract class ActionPlugin extends DatastarPlugin {
+  abstract action(ctx: AttributeContext, ...args: any[]): Promise<void>
 }

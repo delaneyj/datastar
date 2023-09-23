@@ -1,3 +1,12 @@
+import { AttributeContext, HTMLorSVGElement } from './types'
+
+export function toHTMLorSVGElement(node: Node): HTMLorSVGElement | null {
+  if (!(node instanceof HTMLElement || node instanceof SVGElement)) {
+    return null
+  }
+  return node
+}
+
 export function walkDownDOM(el: Element | null, callback: (el: Element) => void) {
   if (!el) return
   callback(el)
@@ -10,15 +19,19 @@ export function walkDownDOM(el: Element | null, callback: (el: Element) => void)
   }
 }
 
-/**
- * Walks up the DOM tree, starting from the given element, and calls the callback for each element.
- * @param el The element to start from.
- * @param callback The callback to call for each element.
- */
-export function walkUpDOM(el: Element | null, callback: (el: Element) => void) {
-  if (!el) return
-  callback(el)
+export function functionGenerator(str: string): Function {
+  const fnContents = `return ${str}`
+  const fn = new Function('ctx', fnContents)
+  return fn
+}
 
-  el = el.parentElement
-  walkUpDOM(el, callback)
+export function functionEval(ctx: AttributeContext) {
+  const expression = ctx.expressionRaw
+  const fn = functionGenerator(expression)
+  try {
+    ctx.expressionEvaluated = fn(ctx)
+  } catch (e) {
+    console.error(`Error evaluating expression:\n${expression}`)
+    throw e
+  }
 }

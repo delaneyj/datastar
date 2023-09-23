@@ -1,287 +1,170 @@
-import { camelize } from '.'
-import { walkDownDOM, walkUpDOM } from './dom'
-import { Reactive, autoStabilize, onCleanup, reactive } from './external/reactively'
-import { ACTION } from './plugins/actions'
-import { ActionFn, ActionsMap, Modifier, NamespacedReactiveRecords, WithExpressionArgs } from './types'
-autoStabilize()
+import { effect, getContext, onDispose, root, setContext } from '@maverick-js/signals'
+import { functionEval, toHTMLorSVGElement, walkDownDOM } from './dom'
+import {
+  AttributeContext,
+  AttributePlugin,
+  DatastarPlugin,
+  DatastarPluginConstructor,
+  HTMLorSVGElement,
+  RunePlugin,
+} from './types'
 
-function signal<T>(initialValue: T): Reactive<T> {
-  return reactive(initialValue)
-}
+export class Datastar {
+  attributePlugins: AttributePlugin[] = []
+  runePlugins: RunePlugin[] = []
+  attributeObserver: MutationObserver
 
-function computed<T>(fn: () => T): Reactive<T> {
-  return reactive(fn)
-}
+  constructor(...plugins: DatastarPluginConstructor[]) {
+    if (!plugins.length) throw new Error('No plugins provided')
 
-function effect(fn: () => void) {
-  return reactive(fn, { effect: true })
-}
+    this.attributeObserver = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        if (m.type === 'attributes') {
+          const el = toHTMLorSVGElement(m.target)
+          if (!el) return
 
-const pluginObserver = new MutationObserver((mutations) => {
-  for (const m of mutations) {
-    m.removedNodes.forEach((node) => {
-      const el = node as Element
-      if (!el) return
-      pluginElementRegistry.delete(el)
+          // Old
+          this.handleAttributePlugin(el, (p, ctx) => {
+            p.onUnmount?.(ctx)
+            p.onMount(ctx)
+          })
+        } else {
+          m.removedNodes.forEach((node) => {
+            const el = toHTMLorSVGElement(node)
+            if (!el) return
+
+            this.handleAttributePlugin(el, (p, ctx) => {
+              p.onUnmount?.(ctx)
+            })
+          })
+        }
+      }
     })
 
-    // m.addedNodes.forEach((node) => {
-    //   const el = node as Element
-    //   if (!el) return
-    //   pluginApplyFunctions.forEach((fn) => fn(el))
-    // })
-  }
-})
+    this.attributeObserver.observe(document.body, {
+      attributes: true,
+      attributeOldValue: true,
+      subtree: true,
+      childList: true,
+    })
 
-pluginObserver.observe(document, {
-  attributes: true,
-  childList: true,
-  subtree: true,
-})
+    const allPlugins: DatastarPlugin[] = []
+    for (const Plugin of plugins) {
+      const p = new Plugin()
 
-export interface Preprocesser {
-  name: string
-  description: string
-  regexp: RegExp
-  replacer: (groups: Record<string, string>) => string
-}
-export function useProcessor({ regexp, replacer }: Preprocesser, str: string): string {
-  // console.log(`preprocess with ${name}. ${description}`)
-  const matches = [...str.matchAll(regexp)]
-  if (!matches.length) return str
-  for (const match of matches) {
-    if (!match.groups) continue
-    const { groups } = match
-    const { whole } = groups
-    str = str.replace(whole, replacer(groups))
-  }
-  return str
-}
+      p.requiredPluginTypes.forEach((requiredPluginType) => {
+        const requiredPlugin = allPlugins.find((plugin) => plugin instanceof requiredPluginType)
+        if (!requiredPlugin) {
+          throw new Error(`Plugin "${p.name}" requires plugin "${requiredPluginType.name}"`)
+        }
 
-const prefixHashes = new Map<string, string>()
-const pluginApplyFunctions = new Map<string, Function>()
-const pluginElementRegistry = new Map<Element, Set<string>>()
-const pluginPreprocessStack = new Array<Preprocesser>()
-const data = new Map<Element, NamespacedReactiveRecords>()
+        if (p instanceof AttributePlugin) {
+          if (p.allowedTags) {
+            p.allowedTags = new Set([...p.allowedTags].map((t) => t.toLowerCase()))
+          }
+          this.attributePlugins.push(p)
+        } else if (p instanceof RunePlugin) {
+          this.runePlugins.push(p)
+        } else {
+          throw new Error(`Unknown plugin type`)
+        }
 
-export function applyPlugins(el: Element) {
-  walkDownDOM(el, (element) => {
-    pluginElementRegistry.delete(element)
-  })
-  pluginApplyFunctions.forEach((fn, name) => {
-    console.log(`apply ${name} to ${el.id || el.tagName} `)
-    fn(el)
-  })
-}
-
-const actions: ActionsMap = {}
-
-export function addDataPlugin(
-  prefix: string,
-  args: {
-    allowedTags?: Iterable<string>
-    allowedModifiers?: Iterable<string | RegExp>
-    isPreprocessGlobal?: boolean
-    preprocessExpressions?: Iterable<Preprocesser>
-    withExpression?: (args: WithExpressionArgs) => NamespacedReactiveRecords | void
-    requiredPlugins?: Iterable<string>
-  },
-) {
-  if (prefix.toLowerCase() !== prefix) throw Error(`Data plugin 'data-${prefix}' must be lowercase`)
-  if (prefixHashes.has(prefix)) {
-    throw new Error(`Data plugin 'data-${prefix}' already registered`)
-  }
-
-  const hash = prefix
-  // const hash = cyrb53(prefix)
-  prefixHashes.set(prefix, hash)
-
-  if (!args) {
-    args = {}
-  }
-
-  for (const plugin of args.requiredPlugins || []) {
-    if (plugin === prefix) {
-      throw new Error(`Data plugin 'data-${prefix}' cannot require itself`)
+        allPlugins.push(p)
+      })
     }
   }
 
-  const pluginsRegistered = new Set(prefixHashes.keys())
-  for (const requiredPlugin of args.requiredPlugins || []) {
-    if (!pluginsRegistered.has(requiredPlugin)) {
-      throw new Error(`Data plugin 'data-${prefix}' requires 'data-${requiredPlugin}'`)
-    }
-  }
-
-  if (typeof args?.isPreprocessGlobal === 'undefined') {
-    args.isPreprocessGlobal = true
-  }
-
-  if (args?.preprocessExpressions && args.isPreprocessGlobal) {
-    pluginPreprocessStack.push(...args.preprocessExpressions)
-  }
-
-  const allAllowedModifiers: RegExp[] = []
-  if (args?.allowedModifiers) {
-    for (const modifier of args.allowedModifiers) {
-      const m = modifier instanceof RegExp ? modifier : new RegExp(modifier)
-      allAllowedModifiers.push(m)
-    }
-  }
-
-  const allowedTags = new Set([...(args?.allowedTags || [])].map((t) => t.toLowerCase()))
-
-  function registerPluginOnElement(parentEl: Element) {
-    walkDownDOM(parentEl, (element) => {
+  run() {
+    walkDownDOM(document.body, (element) => {
       const el = toHTMLorSVGElement(element)
       if (!el) return
 
-      let plugins = pluginElementRegistry.get(el)
-      if (!plugins) {
-        plugins = new Set()
-        pluginElementRegistry.set(el, plugins)
-      }
-
-      if (plugins.has(hash)) return
-      plugins.add(hash)
-
-      if (allowedTags.size) {
-        const tagLower = el.tagName.toLowerCase()
-        if (!allowedTags.has(tagLower)) return
-      }
-
-      for (var d in el.dataset) {
-        if (!d.startsWith(prefix)) continue
-
-        // console.log(`add plugin ${d} to ${el.id || el.tagName}`)
-        let [name, ...modifiersWithArgsArr] = d.split('.')
-
-        const pl = prefix.length
-        const pl1 = pl + 1
-        name = name.slice(pl, pl1).toLocaleLowerCase() + name.slice(pl1)
-
-        const modifiers = modifiersWithArgsArr.map((m) => {
-          const [label, ...args] = m.split(':')
-
-          const isAllowed = allAllowedModifiers.some((allowedModifier) => allowedModifier.test(label))
-          if (!isAllowed) {
-            throw new Error(`Modifier ${label} is not allowed for ${name}`)
-          }
-
-          return { label, args }
+      let hasAttributePlugin = false
+      const reactiveRootDisposal = root((dispose) => {
+        this.handleAttributePlugin(el, (p, ctx) => {
+          p.onMount(ctx)
+          hasAttributePlugin = true
         })
 
-        const dataStack = loadDataStack(el)
-        let expression = el.dataset[d] || ''
+        return dispose
+      })
 
-        for (const preprocessor of pluginPreprocessStack) {
-          expression = useProcessor(preprocessor, expression)
-        }
-
-        if (args?.preprocessExpressions && !args?.isPreprocessGlobal) {
-          for (const preprocessor of args.preprocessExpressions) {
-            expression = useProcessor(preprocessor, expression)
-          }
-        }
-
-        const elementData = data.get(el) || {}
-        if (args?.withExpression) {
-          const postExpression = args.withExpression({
-            name,
-            expression,
-            el,
-            dataStack,
-            reactivity: {
-              signal,
-              computed,
-              effect,
-              onCleanup,
-            },
-            withMod: (label: string) => withModifier(modifiers, label),
-            hasMod: (label: string) => hasModifier(modifiers, label),
-            applyPlugins: (el: Element) => pluginApplyFunctions.forEach((fn) => fn(el)),
-            actions,
-          })
-          if (postExpression) {
-            Object.assign(elementData, postExpression)
-          }
-        }
-        data.set(el, elementData)
-      }
+      if (!hasAttributePlugin) reactiveRootDisposal()
     })
   }
 
-  registerPluginOnElement(document.body)
-  pluginApplyFunctions.set(hash, registerPluginOnElement)
-
-  console.info(`Registered data plugin: data-${prefix}`)
-}
-
-function loadDataStack(el: Element): NamespacedReactiveRecords {
-  const stack: NamespacedReactiveRecords[] = []
-
-  walkUpDOM(el, (el) => {
-    const elData = data.get(el)
-    if (elData) stack.push(elData)
-  })
-
-  stack.reverse()
-
-  const dataStack: NamespacedReactiveRecords = {}
-  for (const namespacedRecords of stack) {
-    for (const namespaceKey in namespacedRecords) {
-      if (!dataStack[namespaceKey]) {
-        dataStack[namespaceKey] = {}
+  private handleAttributePlugin(el: HTMLorSVGElement, cb: (p: AttributePlugin, ctx: AttributeContext) => void) {
+    this.attributePlugins.forEach((p) => {
+      if (p.allowedTags) {
+        const elTagLower = el.tagName.toLowerCase()
+        if (!p.allowedTags.has(elTagLower)) return
       }
-      Object.assign(dataStack[namespaceKey], namespacedRecords[namespaceKey])
-    }
+
+      const fullPrefix = `data-${p.prefix}`
+
+      for (const attr of el.attributes) {
+        if (!attr.name.startsWith(fullPrefix)) continue
+
+        let keyRaw = attr.name.slice(fullPrefix.length)
+        if (keyRaw.startsWith('-')) keyRaw = keyRaw.slice(1)
+
+        const [key, ...modifiersWithArgsArr] = keyRaw.split('.')
+
+        if (p.mustHaveEmptyKey && key.length > 0) {
+          throw new Error(`Attribute '${attr.name}' must have empty key`)
+        }
+
+        const modifiersArr = modifiersWithArgsArr.map((m) => {
+          const [label, ...args] = m.split('_')
+          return { label, args }
+        })
+        const expressionRaw = attr.value
+
+        if (p.mustHaveEmptyExpression && expressionRaw?.length > 0) {
+          throw new Error(`Attribute '${attr.name}' must have empty expression`)
+        }
+
+        if (p.allowedModifiers) {
+          for (const modifier of modifiersArr) {
+            if (!p.allowedModifiers.has(modifier.label)) {
+              throw new Error(`Modifier '${modifier.label}' is not allowed`)
+            }
+
+            if (p.allowedModifierArgs) {
+              const allowedArgs = p.allowedModifierArgs[modifier.label]
+              if (allowedArgs) {
+                if (!allowedArgs(modifier.args)) {
+                  throw new Error(`Modifier '${modifier.label}' arguments are not allowed`)
+                }
+              }
+            }
+          }
+        }
+
+        const modifiers = new Map<string, string[]>()
+        for (const modifier of modifiersArr) {
+          modifiers.set(modifier.label, modifier.args)
+        }
+
+        const ctx: AttributeContext = {
+          get(k: string) {
+            return getContext(k)
+          },
+          set(k, v) {
+            setContext(k, v)
+          },
+          el,
+          key,
+          expressionRaw,
+          modifiers,
+          effect,
+          cleanup: onDispose,
+        }
+
+        ctx.expressionEvaluated = functionEval(ctx)
+
+        cb(p, ctx)
+      }
+    })
   }
-
-  return dataStack
-}
-
-export function toHTMLorSVGElement(el: Element) {
-  if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
-    return null
-  }
-  return el
-}
-
-export function hasModifier(modifiers: Modifier[], label: string) {
-  return modifiers.some((m) => m.label === label)
-}
-
-export function withModifier(modifiers: Modifier[], label: string) {
-  return modifiers.find((m) => m.label === label)
-}
-
-export function addActionPlugin(args: {
-  name: string
-  description: string
-  fn: ActionFn
-  requiredPlugins?: Iterable<string>
-}) {
-  const { name, fn, requiredPlugins } = args
-  const pluginHashes = [ACTION, ...(requiredPlugins || [])]
-
-  if (name != camelize(name)) {
-    throw new Error(`must be camelCase`)
-  }
-
-  for (const ext of pluginHashes) {
-    if (!prefixHashes.has(ext)) {
-      throw new Error(`requires '@${name}' registration`)
-    }
-
-    if (name in actions) {
-      throw new Error(`'@${name}' already registered`)
-    }
-
-    actions[name] = fn
-  }
-}
-
-let nextID = 0
-export function uniqueId() {
-  return nextID++
 }

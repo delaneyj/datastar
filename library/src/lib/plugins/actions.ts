@@ -1,16 +1,10 @@
-import { addDataPlugin } from '../core'
+import { Groups, RunePlugin } from '../types'
 
-export const ACTION = 'action'
-
-export function addActionDataPlugin() {
-  addDataPlugin(ACTION, {
-    preprocessExpressions: [
-      {
-        name: 'action',
-        description: 'turns @action(args) into actions.action(args)',
-        regexp: new RegExp(/(?<whole>@(?<action>[a-zA-Z_$][0-9a-zA-Z_$]*)(?<call>\((?<args>.*)\))?)/g),
-        replacer: ({ action, args }) => `actions.${action}({el,dataStack, actions}, ${args || ''})`,
-      },
-    ],
-  })
+export class ActionRunePlugin extends RunePlugin {
+  name = 'ActionRune'
+  description = 'A action rune'
+  regexp = new RegExp(/(?<whole>@(?<action>[a-zA-Z_$][0-9a-zA-Z_$]*)(?<call>\((?<args>.*)\))?)/g)
+  replacer({ action, args }: Groups) {
+    return `get('${action}')(ctx, ${args || ''})`
+  }
 }
