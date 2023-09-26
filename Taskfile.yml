@@ -12,7 +12,6 @@ tasks:
   libpub:
     dir: ./library
     cmds:
-      - npm version patch
       - npm publish --access public
       - git push origin --tags
 

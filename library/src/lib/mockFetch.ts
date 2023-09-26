@@ -37,3 +37,60 @@ export function injectMockFetch(routes: MockFetchRoutes) {
 
   window.fetch = mockFetch
 }
+
+export type MockSSERoutes = Record<string, string[]>
+
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
+
+export function injectMockSSE(routes: MockSSERoutes, interval = 1000) {
+  class MockEventSource {
+    url: string
+    responses: string[]
+    emitters = new Map<string, Function[]>()
+
+    constructor(url: string) {
+      this.url = url
+      this.responses = routes[url]
+      if (!this.responses) throw new Error(`No mock SSE route found for ${url}`)
+
+      this.run()
+    }
+
+    async run() {
+      while (this.responses.length) {
+        await sleep(interval)
+        const res = this.responses.shift()
+        this.emit('message', { data: res })
+      }
+      this.emit('close', {})
+    }
+
+    private emit(event: string, data: any) {
+      console.log(`Emitting ${event} with data`, data)
+      if (!this.emitters.has(event)) return
+      const fns = this.emitters.get(event)!
+      for (const fn of fns) {
+        fn(data)
+      }
+    }
+
+    addEventListener(event: string, fn: Function) {
+      if (!this.emitters.has(event)) {
+        this.emitters.set(event, [])
+      }
+      this.emitters.get(event)!.push(fn)
+    }
+
+    removeEventListener(event: string, fn: Function) {
+      if (!this.emitters.has(event)) return
+      const fns = this.emitters.get(event)!
+      fns.splice(fns.indexOf(fn), 1)
+    }
+
+    close() {
+      this.emitters.clear()
+    }
+  }
+
+  window.EventSource = MockEventSource as any
+}

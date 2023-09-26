@@ -1,4 +1,3 @@
-import { deepSignal } from '../external/deepsignal'
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
 const SignalProcessor: Preprocesser = {
@@ -31,15 +30,14 @@ const RefProcessor: Preprocesser = {
 
 export const CorePreprocessors: Preprocesser[] = [SignalProcessor, ActionProcessor, RefProcessor]
 
-const StoreAttributePlugin: AttributePlugin = {
+const BodyStoreAttributePlugin: AttributePlugin = {
   prefix: 'store',
   description: 'Setup the global store',
   allowedTags: new Set(['body']),
 
   onLoad: (ctx: AttributeContext) => {
-    const { expressionFn } = ctx
-    const s = deepSignal(expressionFn(ctx))
-    ctx.replaceStore(s)
+    const bodyStore = ctx.expressionFn(ctx)
+    ctx.mergeStore(bodyStore)
   },
 }
 
@@ -54,8 +52,8 @@ const RefPlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx
     ctx.refs[expression] = el
-    return () => delete ctx.store.refs[expression]
+    return () => delete ctx.refs[expression]
   },
 }
 
-export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, RefPlugin]
+export const CorePlugins: AttributePlugin[] = [BodyStoreAttributePlugin, RefPlugin]

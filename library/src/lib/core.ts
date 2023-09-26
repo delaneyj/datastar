@@ -1,5 +1,7 @@
 import { toHTMLorSVGElement } from './dom'
+import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
 import { computed, effect, signal } from './external/preact-core'
+import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
   Actions,
@@ -11,9 +13,9 @@ import {
   Reactivity,
 } from './types'
 
-export class Datastar<T extends {}> {
+export class Datastar {
   plugins: AttributePlugin[] = []
-  store: T = {} as T
+  store: DeepSignal<any> = deepSignal({})
   actions: Actions = {}
   refs: Record<string, HTMLElement> = {}
   reactivity: Reactivity = {
@@ -39,13 +41,24 @@ export class Datastar<T extends {}> {
         }
       }
 
-      if (p.onGlobalInit) p.onGlobalInit()
-
       this.plugins.push(p)
       allPluginPrefixes.add(p.prefix)
     }
+  }
 
-    this.applyPlugins()
+  run() {
+    this.plugins.forEach((p) => {
+      if (p.onGlobalInit) {
+        p.onGlobalInit({
+          actions: this.actions,
+          refs: this.refs,
+          reactivity: this.reactivity,
+          mergeStore: this.mergeStore.bind(this),
+          store: this.store,
+        })
+      }
+    })
+    this.applyPlugins(document.body)
   }
 
   private cleanupElementRemovals(element: Element) {
@@ -58,10 +71,15 @@ export class Datastar<T extends {}> {
     }
   }
 
-  applyPlugins() {
+  private mergeStore(store: DeepState) {
+    const revisedStore = apply(this.store.value, store) as DeepState
+    this.store = deepSignal(revisedStore)
+  }
+
+  applyPlugins(rootElement: Element) {
     const appliedProcessors = new Set<Preprocesser>()
 
-    walkDownDOM(document.body, (element) => {
+    walkDownDOM(rootElement, (element) => {
       this.cleanupElementRemovals(element)
 
       const el = toHTMLorSVGElement(element)
@@ -78,13 +96,13 @@ export class Datastar<T extends {}> {
         el.id = `ds${id}`
       }
 
-      for (const dsKey in el.dataset) {
-        let expression = el.dataset[dsKey] || ''
+      this.plugins.forEach((p) => {
+        for (const dsKey in el.dataset) {
+          let expression = el.dataset[dsKey] || ''
 
-        this.plugins.forEach((p) => {
+          if (!dsKey.startsWith(p.prefix)) continue
+
           appliedProcessors.clear()
-
-          if (!dsKey.startsWith(p.prefix)) return
           console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 
           if (p.allowedTags && !p.allowedTags.has(el.tagName.toLowerCase())) {
@@ -148,8 +166,8 @@ export class Datastar<T extends {}> {
           const { store, reactivity, actions, refs } = this
           const ctx: AttributeContext = {
             store,
-            replaceStore: (store: T) => (this.store = store),
-            applyPlugins: () => this.applyPlugins(),
+            mergeStore: this.mergeStore.bind(this),
+            applyPlugins: this.applyPlugins.bind(this),
             actions,
             refs,
             reactivity,
@@ -180,8 +198,8 @@ export class Datastar<T extends {}> {
             }
             this.removals.get(el)!.add(removal)
           }
-        })
-      }
+        }
+      })
     })
   }
 }

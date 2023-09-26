@@ -74,6 +74,7 @@ export const TextPlugin: AttributePlugin = {
   },
 }
 
+const DOMContentLoaded = 'DOMContentLoaded'
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   description: 'Sets the event listener of the element',
@@ -82,10 +83,17 @@ export const EventPlugin: AttributePlugin = {
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    if (!(el instanceof HTMLElement)) throw new Error('Element is not HTMLElement')
     const callback = () => {
       expressionFn(ctx)
     }
+
+    if (key === 'load') {
+      document.addEventListener(DOMContentLoaded, callback, true)
+      return () => {
+        document.removeEventListener(DOMContentLoaded, callback)
+      }
+    }
+
     const eventType = key.toLowerCase()
     el.addEventListener(eventType, callback)
     return () => {
@@ -110,10 +118,10 @@ export const FocusPlugin: AttributePlugin = {
   },
 }
 
-export const BindingPlugins: AttributePlugin[] = [
+export const AttributePlugins: AttributePlugin[] = [
   BindAttributePlugin,
   TwoWayBindingModelPlugin,
   TextPlugin,
-  EventPlugin,
   FocusPlugin,
+  EventPlugin,
 ]
