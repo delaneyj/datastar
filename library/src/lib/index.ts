@@ -1,57 +1,18 @@
-// function mergeActions<T extends unknown[]>(...actions: T): UnionToIntersection<T[number]> {
-//   const all = {}
-//   for (const action of actions) {
-//     Object.assign(all, action)
-//   }
-//   return all as UnionToIntersection<T[number]>
-// }
+export * from './core'
+export * from './dom'
+export * from './types'
 
 import { Datastar } from './core'
-import { ActionRunePlugin } from './plugins/actions'
-import {
-  FetchAttributePlugin,
-  FetchDeleteActionPlugin,
-  FetchGetActionPlugin,
-  FetchPatchActionPlugin,
-  FetchPostActionPlugin,
-  FetchPutActionPlugin,
-} from './plugins/backend'
-import {
-  BindAttributePlugin,
-  EventListenerAttributePlugin,
-  ModelAttributePlugin,
-  RefAttributePlugin,
-  RefRunePlugin,
-  TextNodeAttributePlugin,
-} from './plugins/binding'
-import {
-  ComputedAttributePlugin,
-  EffectAttributePlugin,
-  ReactivityRunePlugin,
-  SignalAttributePlugin,
-} from './plugins/reactivity'
-import { IntersectionAttributePlugin, ShowPlugin, TeleportAttributePlugin } from './plugins/visibility'
+import { BindingPlugins } from './plugins/attributes'
+import { BackendActions, BackendPlugins } from './plugins/backend'
+import { VisibilityPlugins } from './plugins/visibility'
+import { Actions } from './types'
 
-const ds = new Datastar(
-  ActionRunePlugin,
-  ReactivityRunePlugin,
-  RefRunePlugin,
-  SignalAttributePlugin,
-  ComputedAttributePlugin,
-  EffectAttributePlugin,
-  BindAttributePlugin,
-  RefAttributePlugin,
-  ModelAttributePlugin,
-  EventListenerAttributePlugin,
-  TextNodeAttributePlugin,
-  ShowPlugin,
-  IntersectionAttributePlugin,
-  TeleportAttributePlugin,
-  FetchAttributePlugin,
-  FetchGetActionPlugin,
-  FetchPostActionPlugin,
-  FetchPatchActionPlugin,
-  FetchPutActionPlugin,
-  FetchDeleteActionPlugin,
-)
-ds.run()
+const start = performance.now()
+
+const actions: Actions = Object.assign({}, BackendActions)
+const plugins = [...BackendPlugins, ...BindingPlugins, ...VisibilityPlugins]
+export const datastar = new Datastar(actions, ...plugins)
+
+const end = performance.now()
+console.log(`Datastar loaded in ${end - start}ms`)

@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/daisyui@3.7.7/dist/full.css"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body
+    class="min-h-screen bg-base-100 p-4 flex flex-col gap-4"
+    data-store="{
+      count: 123,
+      theme: 'light',
+      intersectText: `I'm not visible`
+    }"
+    data-bind-data-theme="$theme"
+  >
+    <h1 class="text-4xl font-bold">Kitchen Sink</h1>
+    <div>
+      <div class="text-2xl font-bold">Plugins</div>
+      <div class="max-w-md">
+        <div class="text-xl font-bold">Attributes</div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">bind</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">model</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">text</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">on</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">focus</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+      </div>
+      <div class="max-w-md">
+        <div class="text-xl font-bold">Core</div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">ref</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+      </div>
+      <div class="max-w-md">
+        <div class="text-xl font-bold">Visibility</div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">show</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">intersects</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">teleport</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">scrollIntoView</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+              checked
+            />
+          </label>
+        </div>
+      </div>
+      <div class="max-w-md">
+        <div class="text-xl font-bold">Backend</div>
+        <div class="form-control">
+          <label class="label">
+            <span class="label-text">header</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">url</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+            />
+          </label>
+        </div>
+        <div class="form-control">
+          <label class="label cursor-pointer">
+            <span class="label-text">sse</span>
+            <input
+              class="checkbox"
+              type="checkbox"
+              disabled
+            />
+          </label>
+        </div>
+      </div>
+    </div>
+    <template data-teleport="body">Should teleport to bottom</template>
+    <div class="flex gap-2 items-center">
+      <button
+        class="btn btn-primary"
+        id="increment"
+        data-on-click="$count++"
+      >
+        Increment
+      </button>
+      <button
+        class="btn btn-primary"
+        data-on-click="$count--"
+      >
+        Decrement
+      </button>
+      <div
+        class="text-2xl font-bold"
+        id="count"
+        data-text="$count"
+      >
+        Replace me
+      </div>
+      <div
+        class="text-2xl font-bold text-green-500"
+        data-show="$count % 2 === 0"
+      >
+        Is Even!
+      </div>
+      <div
+        class="text-2xl font-bold text-red-500"
+        data-show="$count % 2 === 1"
+      >
+        Is Odd!
+      </div>
+    </div>
+    <input
+      class="input input-bordered"
+      type="number"
+      step="1"
+      data-model="count"
+      data-focus
+    />
+    <button
+      class="btn btn-primary"
+      data-on-click="$theme = $theme === 'dark' ? 'light' : 'dark'"
+      data-text="$theme === 'dark' ? 'Light' : 'Dark'"
+    >
+      x
+    </button>
+    <canvas data-ref="foo"></canvas>
+    <div class="h-[2048px]"></div>
+    <div
+      data-scroll-into-view
+      data-intersects="$intersectText = `I'm visible`"
+      data-text="$intersectText"
+    ></div>
+    <script
+      type="module"
+      src="/src/main.ts"
+    ></script>
+  </body>
+</html>

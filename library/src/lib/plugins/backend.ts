@@ -1,239 +1,173 @@
 import { toHTMLorSVGElement } from '../dom'
 import { idiomorph } from '../external/idiomorph'
-import { ActionPlugin, AttributeContext, AttributePlugin, HTMLorSVGElement } from '../types'
+import { Signal } from '../external/preact-core'
+import { Actions, AttributeContext, AttributePlugin, OnRemovalFn } from '../types'
 
-import { Signal, reactivityPlugins } from './reactivity'
-import { noArgs } from './shared'
+const GET = 'get'
+const POST = 'post'
+const PUT = 'put'
+const PATCH = 'patch'
+const DELETE = 'delete'
+const Methods = [GET, POST, PUT, PATCH, DELETE]
 
-export const SELECTOR = 'selector'
-export const SWAP = 'swap'
-export const REQ_HEADERS_CTX_KEY = 'reqHeaders'
+export const BackendActions: Actions = Methods.reduce((acc, method) => {
+  acc[method] = async (ctx) => fetcher(method, ctx)
+  return acc
+}, {} as Actions)
 
-export class FetchRequestHeadersPlugin extends AttributePlugin {
-  name = 'FetchRequestHeaders'
-  prefix = 'header'
-  description = 'Sets the headers of the fetch request'
-  mustHaveEmptyKey = true
+export const FetchHeaders: AttributePlugin = {
+  prefix: 'header',
+  description: 'Sets the fetch headers',
+  mustHaveEmptyKey: true,
+  mustNotEmptyExpression: true,
+  onLoad: (ctx) => {
+    ctx.reactivity.effect(() => {
+      const key = ctx.key
+      const value = ctx.expressionFn(ctx)
 
-  onMount({ key, get, set, expressionEvaluated }: AttributeContext) {
-    let headers: Headers | undefined = get(REQ_HEADERS_CTX_KEY)
+      if (!('headers' in ctx.store)) {
+        ctx.store.headers = ctx.reactivity.signal(new Headers())
+      }
 
-    if (!headers) {
-      headers = new Headers()
-    }
+      const headers = ctx.store.headers.value
+      headers.value.set(key, value)
 
-    headers.set(key, expressionEvaluated)
-    set(REQ_HEADERS_CTX_KEY, headers)
-  }
+      ctx.store.headers.value = headers
+    })
+  },
 }
 
-export const GET = 'get'
-export const POST = 'post'
-export const PUT = 'put'
-export const PATCH = 'patch'
-export const DELETE = 'delete'
-
+const ACCEPT = 'Accept'
+const CONTENT_TYPE = 'Content-Type'
+const APPLICATION_JSON = 'application/json'
 const DATASTAR_CLASS_PREFIX = 'datastar'
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}-indicator`
 const LOADING_CLASS = `${DATASTAR_CLASS_PREFIX}-request`
 
-type Method = typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE
-
-abstract class FetchAction extends ActionPlugin {
-  static hasInjectedStyles = false
-  name: string
-  description: string
-
-  constructor(public readonly method: Method) {
-    super()
-    this.name = `Fetch${method}`
-    this.description = `fetches fragments from the server using ${method}`
-    this.requiredPluginTypes = new Set([FetchRequestHeadersPlugin, ...reactivityPlugins])
-
-    if (!FetchAction.hasInjectedStyles) {
-      const style = document.createElement('style')
-      style.innerHTML = `
-.${INDICATOR_CLASS}{
-  opacity:0;
-  transition: opacity 500ms ease-in;
-}
-.${LOADING_CLASS} .${INDICATOR_CLASS}{
-    opacity:1
-}
-.${LOADING_CLASS}.${INDICATOR_CLASS}{
-    opacity:1
-}
-    `
-      document.head.appendChild(style)
-      FetchAction.hasInjectedStyles = true
-    }
-  }
-
-  async action(ctx: AttributeContext) {
-    await fetcher(this.method, ctx)
-  }
-}
-
-export class FetchGetActionPlugin extends FetchAction {
-  constructor() {
-    super(GET)
-  }
-}
-
-export class FetchPostActionPlugin extends FetchAction {
-  constructor() {
-    super(POST)
-  }
-}
-
-export class FetchPutActionPlugin extends FetchAction {
-  constructor() {
-    super(PUT)
-  }
-}
-
-export class FetchPatchActionPlugin extends FetchAction {
-  constructor() {
-    super(PATCH)
-  }
-}
-
-export class FetchDeleteActionPlugin extends FetchAction {
-  constructor() {
-    super(DELETE)
-  }
-}
-
-export class FetchAttributePlugin extends AttributePlugin {
-  name = 'Fetch'
-  prefix = 'fetch'
-  description = 'URL to fetch from'
-  allowedModifiers = new Set([GET, POST, PUT, PATCH, DELETE])
-  allowedModifierArgs = {
-    [GET]: noArgs,
-    [POST]: noArgs,
-    [PUT]: noArgs,
-    [PATCH]: noArgs,
-    [DELETE]: noArgs,
-  }
-  mustHaveEmptyKey = true
-
-  onMount({ expressionEvaluated, modifiers, set }: AttributeContext): void {
-    if (typeof expressionEvaluated !== 'string') throw new Error('expressionEvaluated must be a string')
-
-    if (modifiers.has(POST)) {
-      set(POST, expressionEvaluated)
-    } else if (modifiers.has(PUT)) {
-      set(PUT, expressionEvaluated)
-    } else if (modifiers.has(PATCH)) {
-      set(PATCH, expressionEvaluated)
-    } else if (modifiers.has(DELETE)) {
-      set(DELETE, expressionEvaluated)
-    } else {
-      set(GET, expressionEvaluated)
-    }
-  }
-
-  onUnmount({ set, modifiers }: AttributeContext): void {
-    if (modifiers.has(POST)) {
-      set(POST, undefined)
-    } else if (modifiers.has(PUT)) {
-      set(PUT, undefined)
-    } else if (modifiers.has(PATCH)) {
-      set(PATCH, undefined)
-    } else if (modifiers.has(DELETE)) {
-      set(DELETE, undefined)
-    } else {
-      set(GET, undefined)
-    }
-  }
-}
-
-export class ServerSentEventsAttributePlugin extends AttributePlugin {
-  name = 'ServerSentEvents'
-  prefix = 'sse'
-  description = 'Sets the value of the element'
-  mustHaveEmptyKey = true
-  eventSources = new Map<HTMLorSVGElement, EventSource>()
-
-  onMount({ el, key, expressionEvaluated, effect, cleanup }: AttributeContext) {
-    const isString = typeof expressionEvaluated === 'string'
-
-    const addEventListeners = (eventSource: EventSource) => {
-      eventSource.addEventListener('message', (evt) => {
-        mergeHTMLFragments(el, evt.data)
-      })
-      eventSource.addEventListener('error', (evt) => {
-        console.error('SSE error', evt)
-      })
-    }
-
-    if (isString) {
-      const eventSource = new EventSource(key)
-      addEventListeners(eventSource)
-      this.eventSources.set(el, eventSource)
-    } else {
-      const isSignal = expressionEvaluated instanceof Signal
-      if (!isSignal) throw new Error(`Signal ${expressionEvaluated} not found`)
-
-      const eventSource = new EventSource(expressionEvaluated.value)
-      effect(() => {
-        addEventListeners(eventSource)
-        cleanup(() => eventSource.close())
-      })
-    }
-  }
-
-  onUnmount({ el }: AttributeContext): void {
-    const eventSource = this.eventSources.get(el)
-    if (eventSource) {
-      eventSource.close()
-    }
-  }
-}
-
-export const ACCEPT = 'Accept'
-export const CONTENT_TYPE = 'Content-Type'
-export const TEXT_HTML = 'text/html'
-export const APPLICATION_JSON = 'application/json'
-
-async function fetcher(method: Method, { el, get, expressionEvaluated }: AttributeContext) {
-  const urlSignal = get(method)
-  if (!urlSignal) throw new Error(`No url for ${method}`)
+async function fetcher(method: string, ctx: AttributeContext) {
+  const { el, store } = ctx
+  const urlSignal: Signal<string> = store.url?.[method]
+  if (!urlSignal) throw new Error(`No signal for ${method}`)
 
   el.classList.add(LOADING_CLASS)
+
+  const url = new URL(urlSignal.value, window.location.origin)
 
   const headers = new Headers()
   headers.append(ACCEPT, TEXT_HTML)
   headers.append(CONTENT_TYPE, APPLICATION_JSON)
 
-  const ctxHeaders = get(REQ_HEADERS_CTX_KEY) as Headers
-  if (ctxHeaders) {
-    for (const [name, value] of ctxHeaders.entries()) {
+  const storeHeaders = store?.headers?.value as Headers
+  if (storeHeaders) {
+    storeHeaders.forEach((value, name) => {
       headers.append(name, value)
-    }
+    })
   }
 
-  const url = new URL(expressionEvaluated, window.location.origin)
-  const dataStack = {}
-  const dataStackJSON = JSON.stringify(dataStack)
+  const storeJSON = JSON.stringify(store, (_, value) => {
+    if (value instanceof Signal) {
+      return value.toJSON()
+    }
+    return value
+  })
   const req: RequestInit = { method, headers }
   if (method === GET) {
     const queryParams = new URLSearchParams(url.search)
-    queryParams.append('dataStack', dataStackJSON)
+    queryParams.append('datastar', storeJSON)
     url.search = queryParams.toString()
   } else {
-    req.body = dataStackJSON
+    req.body = storeJSON
   }
+
   const res = await fetch(url, req)
   if (!res.ok) throw new Error('Network response was not ok.')
   const html = await res.text()
-  mergeHTMLFragments(el, html)
+
+  mergeHTMLFragments(ctx, html)
+
   el.classList.remove(LOADING_CLASS)
 }
 
+// type Method = typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE
+
+export const FetchURL: AttributePlugin = {
+  prefix: 'url',
+  description: 'Sets the fetch url',
+  mustHaveEmptyKey: true,
+  mustNotEmptyExpression: true,
+  allowedModifiers: new Set([GET, POST, PUT, PATCH, DELETE]),
+  onLoad: (ctx) => {
+    ctx.reactivity.effect(() => {
+      const url = ctx.expressionFn(ctx)
+      ctx.store.url = ctx.reactivity.signal(url)
+    })
+  },
+  onGlobalInit: () => {
+    const style = document.createElement('style')
+    style.innerHTML = `
+.${INDICATOR_CLASS}{
+ opacity:0;
+ transition: opacity 500ms ease-in;
+}
+.${LOADING_CLASS} .${INDICATOR_CLASS}{
+ opacity:1
+}
+.${LOADING_CLASS}.${INDICATOR_CLASS}{
+ opacity:1
+}
+`
+    document.head.appendChild(style)
+  },
+}
+
+export const ServerSentEventsPlugin: AttributePlugin = {
+  prefix: 'sse',
+  description: 'Sets the value of the element',
+  mustHaveEmptyKey: true,
+  onLoad: (ctx) => {
+    const cleanups: OnRemovalFn[] = []
+    const cleanup = () => {
+      cleanups.forEach((fn) => fn?.())
+      cleanups.length = 0
+    }
+
+    const dispose = ctx.reactivity.effect(() => {
+      cleanup()
+
+      const url = ctx.expressionFn(ctx)
+      if (typeof url !== 'string') throw new Error('SSE url must be a string')
+
+      const eventSource = new EventSource(url)
+      const callback = (evt: MessageEvent) => {
+        mergeHTMLFragments(ctx, evt.data)
+      }
+
+      const errCallback = (evt: Event) => console.error(evt)
+
+      eventSource.addEventListener('message', callback)
+      eventSource.addEventListener('error', errCallback)
+
+      cleanups.push(() => {
+        eventSource.removeEventListener('message', callback)
+        eventSource.removeEventListener('error', errCallback)
+        eventSource.close()
+      })
+    })
+    if (dispose) cleanups.push(dispose)
+
+    return cleanup
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [FetchHeaders, ServerSentEventsPlugin]
+
+const TEXT_HTML = 'text/html'
+const SELECTOR = 'selector'
+const SWAP = 'swap'
+
 const p = new DOMParser()
-function mergeHTMLFragments(el: Element, html: string) {
+export function mergeHTMLFragments(ctx: AttributeContext, html: string) {
+  const { el } = ctx
   const dom = [...p.parseFromString(html, TEXT_HTML).body.children]
   for (let i = 0; i < dom.length; i++) {
     const frag = dom[i]
@@ -288,6 +222,7 @@ function mergeHTMLFragments(el: Element, html: string) {
         default:
           throw new Error('Invalid merge mode')
       }
+      ctx.applyPlugins(target)
     }
   }
 }

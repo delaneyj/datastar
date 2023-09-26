@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "type": "module",
   "repository": "https://github.com/delaneyj/datastar",
   "files": [
@@ -36,5 +36,5 @@
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-dts": "^3.5.3",
     "vitest": "^0.34.4"
-  }
+  },
 }

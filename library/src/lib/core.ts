@@ -1,170 +1,199 @@
-import { effect, getContext, onDispose, root, setContext } from '@maverick-js/signals'
-import { functionEval, toHTMLorSVGElement, walkDownDOM } from './dom'
+import { toHTMLorSVGElement } from './dom'
+import { computed, effect, signal } from './external/preact-core'
+import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
+  Actions,
   AttributeContext,
   AttributePlugin,
-  DatastarPlugin,
-  DatastarPluginConstructor,
-  HTMLorSVGElement,
-  RunePlugin,
+  ExpressionFunction,
+  OnRemovalFn,
+  Preprocesser,
+  Reactivity,
 } from './types'
 
-export class Datastar {
-  attributePlugins: AttributePlugin[] = []
-  runePlugins: RunePlugin[] = []
-  attributeObserver: MutationObserver
+export class Datastar<T extends {}> {
+  plugins: AttributePlugin[] = []
+  store: T = {} as T
+  actions: Actions = {}
+  refs: Record<string, HTMLElement> = {}
+  reactivity: Reactivity = {
+    signal,
+    computed,
+    effect,
+  }
+  missingIDNext = 0
+  removals = new Map<Element, Set<OnRemovalFn>>()
 
-  constructor(...plugins: DatastarPluginConstructor[]) {
+  constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
+    this.actions = Object.assign(this.actions, actions)
+    plugins = [...CorePlugins, ...plugins]
     if (!plugins.length) throw new Error('No plugins provided')
 
-    this.attributeObserver = new MutationObserver((mutations) => {
-      for (const m of mutations) {
-        if (m.type === 'attributes') {
-          const el = toHTMLorSVGElement(m.target)
-          if (!el) return
-
-          // Old
-          this.handleAttributePlugin(el, (p, ctx) => {
-            p.onUnmount?.(ctx)
-            p.onMount(ctx)
-          })
-        } else {
-          m.removedNodes.forEach((node) => {
-            const el = toHTMLorSVGElement(node)
-            if (!el) return
-
-            this.handleAttributePlugin(el, (p, ctx) => {
-              p.onUnmount?.(ctx)
-            })
-          })
+    const allPluginPrefixes = new Set<string>()
+    for (const p of plugins) {
+      if (p.requiredPluginPrefixes) {
+        for (const requiredPluginType of p.requiredPluginPrefixes) {
+          if (!allPluginPrefixes.has(requiredPluginType)) {
+            throw new Error(`Plugin ${p.prefix} requires plugin ${requiredPluginType}`)
+          }
         }
       }
-    })
 
-    this.attributeObserver.observe(document.body, {
-      attributes: true,
-      attributeOldValue: true,
-      subtree: true,
-      childList: true,
-    })
+      if (p.onGlobalInit) p.onGlobalInit()
 
-    const allPlugins: DatastarPlugin[] = []
-    for (const Plugin of plugins) {
-      const p = new Plugin()
+      this.plugins.push(p)
+      allPluginPrefixes.add(p.prefix)
+    }
 
-      p.requiredPluginTypes.forEach((requiredPluginType) => {
-        const requiredPlugin = allPlugins.find((plugin) => plugin instanceof requiredPluginType)
-        if (!requiredPlugin) {
-          throw new Error(`Plugin "${p.name}" requires plugin "${requiredPluginType.name}"`)
-        }
+    this.applyPlugins()
+  }
 
-        if (p instanceof AttributePlugin) {
-          if (p.allowedTags) {
-            p.allowedTags = new Set([...p.allowedTags].map((t) => t.toLowerCase()))
-          }
-          this.attributePlugins.push(p)
-        } else if (p instanceof RunePlugin) {
-          this.runePlugins.push(p)
-        } else {
-          throw new Error(`Unknown plugin type`)
-        }
-
-        allPlugins.push(p)
-      })
+  private cleanupElementRemovals(element: Element) {
+    const removalSet = this.removals.get(element)
+    if (removalSet) {
+      for (const removal of removalSet) {
+        removal()
+      }
+      this.removals.delete(element)
     }
   }
 
-  run() {
+  applyPlugins() {
+    const appliedProcessors = new Set<Preprocesser>()
+
     walkDownDOM(document.body, (element) => {
+      this.cleanupElementRemovals(element)
+
       const el = toHTMLorSVGElement(element)
       if (!el) return
 
-      let hasAttributePlugin = false
-      const reactiveRootDisposal = root((dispose) => {
-        this.handleAttributePlugin(el, (p, ctx) => {
-          p.onMount(ctx)
-          hasAttributePlugin = true
-        })
-
-        return dispose
-      })
-
-      if (!hasAttributePlugin) reactiveRootDisposal()
-    })
-  }
-
-  private handleAttributePlugin(el: HTMLorSVGElement, cb: (p: AttributePlugin, ctx: AttributeContext) => void) {
-    this.attributePlugins.forEach((p) => {
-      if (p.allowedTags) {
-        const elTagLower = el.tagName.toLowerCase()
-        if (!p.allowedTags.has(elTagLower)) return
+      if (el.id) {
+        // TODO: Remove this hack once CSSStyleDeclaration supports viewTransitionName
+        const styl = el.style as any
+        styl.viewTransitionName = el.id
+        console.log(`Setting viewTransitionName on ${el.id}`)
+      }
+      if (!el.id && el.tagName !== 'BODY') {
+        const id = (this.missingIDNext++).toString(16).padStart(8, '0')
+        el.id = `ds${id}`
       }
 
-      const fullPrefix = `data-${p.prefix}`
+      for (const dsKey in el.dataset) {
+        let expression = el.dataset[dsKey] || ''
 
-      for (const attr of el.attributes) {
-        if (!attr.name.startsWith(fullPrefix)) continue
+        this.plugins.forEach((p) => {
+          appliedProcessors.clear()
 
-        let keyRaw = attr.name.slice(fullPrefix.length)
-        if (keyRaw.startsWith('-')) keyRaw = keyRaw.slice(1)
+          if (!dsKey.startsWith(p.prefix)) return
+          console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 
-        const [key, ...modifiersWithArgsArr] = keyRaw.split('.')
+          if (p.allowedTags && !p.allowedTags.has(el.tagName.toLowerCase())) {
+            throw new Error(
+              `Tag '${el.tagName}' is not allowed for plugin '${dsKey}', allowed tags are: ${[
+                [...p.allowedTags].map((t) => `'${t}'`),
+              ].join(', ')}`,
+            )
+          }
 
-        if (p.mustHaveEmptyKey && key.length > 0) {
-          throw new Error(`Attribute '${attr.name}' must have empty key`)
-        }
+          let keyRaw = dsKey.slice(p.prefix.length)
+          let [key, ...modifiersWithArgsArr] = keyRaw.split('.')
+          if (p.mustHaveEmptyKey && key.length > 0) {
+            throw new Error(`Attribute '${dsKey}' must have empty key`)
+          }
+          if (p.mustNotEmptyKey && key.length === 0) {
+            throw new Error(`Attribute '${dsKey}' must have non-empty key`)
+          }
+          if (key.length) {
+            key = key[0].toLowerCase() + key.slice(1)
+          }
 
-        const modifiersArr = modifiersWithArgsArr.map((m) => {
-          const [label, ...args] = m.split('_')
-          return { label, args }
-        })
-        const expressionRaw = attr.value
-
-        if (p.mustHaveEmptyExpression && expressionRaw?.length > 0) {
-          throw new Error(`Attribute '${attr.name}' must have empty expression`)
-        }
-
-        if (p.allowedModifiers) {
-          for (const modifier of modifiersArr) {
-            if (!p.allowedModifiers.has(modifier.label)) {
-              throw new Error(`Modifier '${modifier.label}' is not allowed`)
-            }
-
-            if (p.allowedModifierArgs) {
-              const allowedArgs = p.allowedModifierArgs[modifier.label]
-              if (allowedArgs) {
-                if (!allowedArgs(modifier.args)) {
-                  throw new Error(`Modifier '${modifier.label}' arguments are not allowed`)
-                }
+          const modifiersArr = modifiersWithArgsArr.map((m) => {
+            const [label, ...args] = m.split('_')
+            return { label, args }
+          })
+          if (p.allowedModifiers) {
+            for (const modifier of modifiersArr) {
+              if (!p.allowedModifiers.has(modifier.label)) {
+                throw new Error(`Modifier '${modifier.label}' is not allowed`)
               }
             }
           }
-        }
+          const modifiers = new Map<string, string[]>()
+          for (const modifier of modifiersArr) {
+            modifiers.set(modifier.label, modifier.args)
+          }
 
-        const modifiers = new Map<string, string[]>()
-        for (const modifier of modifiersArr) {
-          modifiers.set(modifier.label, modifier.args)
-        }
+          if (p.mustHaveEmptyExpression && expression.length) {
+            throw new Error(`Attribute '${dsKey}' must have empty expression`)
+          }
+          if (p.mustNotEmptyExpression && !expression.length) {
+            throw new Error(`Attribute '${dsKey}' must have non-empty expression`)
+          }
 
-        const ctx: AttributeContext = {
-          get(k: string) {
-            return getContext(k)
-          },
-          set(k, v) {
-            setContext(k, v)
-          },
-          el,
-          key,
-          expressionRaw,
-          modifiers,
-          effect,
-          cleanup: onDispose,
-        }
+          const processors = [...CorePreprocessors, ...(p.preprocessers || [])]
+          for (const processor of processors) {
+            if (appliedProcessors.has(processor)) continue
+            appliedProcessors.add(processor)
+            const matches = [...expression.matchAll(processor.regexp)]
+            if (matches.length) {
+              for (const match of matches) {
+                if (!match.groups) continue
+                const { groups } = match
+                const { whole } = groups
+                expression = expression.replace(whole, processor.replacer(groups))
+              }
+            }
+          }
 
-        ctx.expressionEvaluated = functionEval(ctx)
+          const { store, reactivity, actions, refs } = this
+          const ctx: AttributeContext = {
+            store,
+            replaceStore: (store: T) => (this.store = store),
+            applyPlugins: () => this.applyPlugins(),
+            actions,
+            refs,
+            reactivity,
+            el,
+            key,
+            expression,
+            expressionFn: () => {
+              throw new Error('Expression function not created')
+            },
+            modifiers,
+          }
 
-        cb(p, ctx)
+          if (!p.bypassExpressionFunctionCreation && !p.mustHaveEmptyExpression && expression.length) {
+            const fnContent = `return ${expression}`
+            try {
+              const fn = new Function('ctx', fnContent) as ExpressionFunction
+              ctx.expressionFn = fn
+            } catch (e) {
+              console.error(`Error evaluating expression '${fnContent}' on ${el.id ? `#${el.id}` : el.tagName}`)
+              return
+            }
+          }
+
+          const removal = p.onLoad(ctx)
+          if (removal) {
+            if (!this.removals.has(el)) {
+              this.removals.set(el, new Set())
+            }
+            this.removals.get(el)!.add(removal)
+          }
+        })
       }
     })
+  }
+}
+
+function walkDownDOM(el: Element | null, callback: (el: Element) => void) {
+  if (!el) return
+  callback(el)
+
+  el = el.firstElementChild
+
+  while (el) {
+    walkDownDOM(el, callback)
+    el = el.nextElementSibling
   }
 }
