@@ -6,8 +6,8 @@ require (
 	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/alecthomas/chroma/v2 v2.9.1
 	github.com/benbjohnson/hashfs v0.2.1
-	github.com/delaneyj/gomponents-iconify v0.0.20230907
-	github.com/delaneyj/toolbelt v0.0.11
+	github.com/delaneyj/gomponents-iconify v0.0.20230926
+	github.com/delaneyj/toolbelt v0.0.13
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/goccy/go-json v0.10.2
@@ -33,27 +33,27 @@ require (
 	github.com/go-rod/rod v0.114.3 // indirect
 	github.com/google/uuid v1.3.1 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
-	github.com/klauspost/compress v1.16.7 // indirect
+	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
 	github.com/maragudk/gomponents v0.20.1 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
-	github.com/nats-io/jwt/v2 v2.5.0 // indirect
-	github.com/nats-io/nats-server/v2 v2.9.22 // indirect
-	github.com/nats-io/nats.go v1.28.0 // indirect
-	github.com/nats-io/nkeys v0.4.4 // indirect
+	github.com/nats-io/jwt/v2 v2.5.2 // indirect
+	github.com/nats-io/nats-server/v2 v2.10.1 // indirect
+	github.com/nats-io/nats.go v1.30.1 // indirect
+	github.com/nats-io/nkeys v0.4.5 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rzajac/clock v0.2.0 // indirect
 	github.com/rzajac/zflake v0.8.0 // indirect
 	github.com/ysmood/fetchup v0.2.3 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
-	github.com/ysmood/got v0.34.1 // indirect
+	github.com/ysmood/got v0.36.0 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.13.0 // indirect
-	golang.org/x/exp v0.0.0-20230522175609-2e198f4a06a1 // indirect
+	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.12.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
