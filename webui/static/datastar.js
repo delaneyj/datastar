@@ -1,7 +1,7 @@
 function Y(t) {
   return t instanceof HTMLElement || t instanceof SVGElement ? t : null;
 }
-function V() {
+function B() {
   throw new Error("Cycle detected");
 }
 function De() {
@@ -109,7 +109,7 @@ Object.defineProperty(h.prototype, "value", {
   },
   set(t) {
     if (u instanceof y && De(), t !== this._value) {
-      W > 100 && V(), this._value = t, this._version++, D++, j();
+      W > 100 && B(), this._value = t, this._version++, D++, j();
       try {
         for (let e = this._targets; e !== void 0; e = e._nextTarget)
           e._target._notify();
@@ -189,20 +189,20 @@ y.prototype._notify = function() {
   }
 };
 y.prototype.peek = function() {
-  if (this._refresh() || V(), this._flags & M)
+  if (this._refresh() || B(), this._flags & M)
     throw this._value;
   return this._value;
 };
 Object.defineProperty(y.prototype, "value", {
   get() {
-    this._flags & _ && V();
+    this._flags & _ && B();
     const t = me(this);
     if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & M)
       throw this._value;
     return this._value;
   }
 });
-function Be(t) {
+function Ve(t) {
   return new y(t);
 }
 function Ee(t) {
@@ -225,7 +225,7 @@ function Q(t) {
     e._source._unsubscribe(e);
   t._compute = void 0, t._sources = void 0, Ee(t);
 }
-function Ve(t) {
+function Be(t) {
   if (u !== this)
     throw new Error("Out-of-order effect");
   be(this), u = t, this._flags &= ~_, this._flags & L && Q(this), q();
@@ -245,9 +245,9 @@ R.prototype._callback = function() {
   }
 };
 R.prototype._start = function() {
-  this._flags & _ && V(), this._flags |= _, this._flags &= ~L, Ee(this), ye(this), j();
+  this._flags & _ && B(), this._flags |= _, this._flags &= ~L, Ee(this), ye(this), j();
   const t = u;
-  return u = this, Ve.bind(this, t);
+  return u = this, Be.bind(this, t);
 };
 R.prototype._notify = function() {
   this._flags & A || (this._flags |= A, this._nextBatchedEffect = N, N = this);
@@ -320,9 +320,8 @@ const qe = {
     return `data.refs.${t}`;
   }
 }, Ge = [qe, Ke, Ue], Je = {
-  prefix: "store",
+  prefix: "mergeStore",
   description: "Setup the global store",
-  allowedTags: /* @__PURE__ */ new Set(["body"]),
   onLoad: (t) => {
     const e = t.expressionFn(t);
     t.mergeStore(e);
@@ -346,7 +345,7 @@ class Ze {
   refs = {};
   reactivity = {
     signal: ve,
-    computed: Be,
+    computed: Ve,
     effect: ee
   };
   missingIDNext = 0;
@@ -888,7 +887,7 @@ function mt(t, e) {
   const r = /* @__PURE__ */ new Map();
   return le(t, r), le(e, r), r;
 }
-const ke = "get", vt = "post", _t = "put", yt = "patch", bt = "delete", Et = [ke, vt, _t, yt, bt], wt = Et.reduce((t, e) => (t[e] = async (r) => Pt(e, r), t), {}), He = "Accept", X = "Content-Type", Re = "application/json", xe = "datastar", U = `${xe}-indicator`, F = `${xe}-request`, B = "text/html", St = "selector", Tt = "swap", At = {
+const ke = "get", vt = "post", _t = "put", yt = "patch", bt = "delete", Et = [ke, vt, _t, yt, bt], wt = Et.reduce((t, e) => (t[e] = async (r) => Pt(e, r), t), {}), He = "Accept", X = "Content-Type", Re = "application/json", xe = "datastar", U = `${xe}-indicator`, F = `${xe}-request`, V = "text/html", St = "selector", Tt = "swap", At = {
   prefix: "header",
   description: "Sets the header of the fetch request",
   mustNotEmptyKey: !0,
@@ -919,7 +918,7 @@ const ke = "get", vt = "post", _t = "put", yt = "patch", bt = "delete", Et = [ke
 }
 `, document.head.appendChild(e);
     const r = new Headers();
-    r.append(He, B), r.append(X, Re), t({
+    r.append(He, V), r.append(X, Re), t({
       fetch: {
         headers: {},
         elementURLs: {}
@@ -956,7 +955,7 @@ async function Pt(t, e) {
     throw new Error(`No signal for ${t}`);
   r.classList.add(F);
   const s = new URL(o.value, window.location.origin), i = new Headers();
-  i.append(He, B), i.append(X, Re);
+  i.append(He, V), i.append(X, Re);
   const l = n.fetch.headers.value;
   if (l)
     for (const v in l) {
@@ -979,13 +978,13 @@ async function Pt(t, e) {
     let v = p;
     v.startsWith("/") && (v = window.location.origin + v), Response.redirect(v);
   }
-  if (!(c.headers.get(X) === B))
+  if (!(c.headers.get(X) === V))
     throw new Error("Response is not HTML, can't merge");
   Ce(e, p), r.classList.remove(F);
 }
 const kt = new DOMParser();
 function Ce(t, e, r = "morph") {
-  const { el: n } = t, o = [...kt.parseFromString(e, B).body.children];
+  const { el: n } = t, o = [...kt.parseFromString(e, V).body.children];
   for (let s = 0; s < o.length; s++) {
     const i = o[s];
     if (!(i instanceof Element))
@@ -1107,11 +1106,11 @@ const G = "display", ce = "none", J = "important", Ht = {
   xt,
   Ct,
   Ot
-], Dt = performance.now(), It = Object.assign({}, wt), Ft = [...Nt, ...$t, ...nt], Vt = new Ze(It, ...Ft), Bt = performance.now();
-console.log(`Datastar loaded in ${Bt - Dt}ms`);
+], Dt = performance.now(), It = Object.assign({}, wt), Ft = [...Nt, ...$t, ...nt], Bt = new Ze(It, ...Ft), Vt = performance.now();
+console.log(`Datastar loaded in ${Vt - Dt}ms`);
 export {
   Ze as Datastar,
-  Vt as datastar,
+  Bt as datastar,
   Y as toHTMLorSVGElement
 };
 //# sourceMappingURL=datastar.js.map

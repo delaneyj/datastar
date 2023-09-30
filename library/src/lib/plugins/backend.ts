@@ -53,13 +53,14 @@ export const FetchURLPlugin: AttributePlugin = {
     style.innerHTML = `
 .${INDICATOR_CLASS}{
  opacity:0;
- transition: opacity 500ms ease-in;
 }
 .${LOADING_CLASS} .${INDICATOR_CLASS}{
- opacity:1
+ opacity:1;
+ transition: opacity 300ms ease-in;
 }
 .${LOADING_CLASS}.${INDICATOR_CLASS}{
- opacity:1
+ opacity:1;
+ transition: opacity 300s ease-in;
 }
 `
     document.head.appendChild(style)
@@ -118,6 +119,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
   if (!urlSignal) throw new Error(`No signal for ${method}`)
 
   el.classList.add(LOADING_CLASS)
+  // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
 
   const url = new URL(urlSignal.value, window.location.origin)
 
@@ -161,6 +163,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
   mergeHTMLFragments(ctx, text)
 
   el.classList.remove(LOADING_CLASS)
+  // console.log(`Removing ${LOADING_CLASS} from ${el.id}`)
 }
 
 const p = new DOMParser()

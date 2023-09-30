@@ -15,4 +15,4 @@ const plugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins]
 export const datastar = new Datastar(actions, ...plugins)
 
 const end = performance.now()
-console.log(`Datastar loaded in ${end - start}ms`)
+console.log(`Datastar loaded and attached to all DOM elements in ${end - start}ms`)

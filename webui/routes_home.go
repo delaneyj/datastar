@@ -163,19 +163,19 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						CLS("flex flex-col gap-2 w-full"),
 						H3(
 							CLS("text-3xl font-bold"),
-							TXT("Simple count example code"),
+							TXT("Simple count example code "),
 						),
 						DIV(
 							CLS("bg-base-100 shadow-inner text-base-content p-4 rounded-box"),
 							HIGHLIGHT("html", `<body data-store="{count:0}">
-							<div>
-								<button data-on-click="$count++">Increment +</button>
-								<button data-on-click="$count--">Decrement -</button>
-								<input type="number" data-model="count" />
-							</div>
-							<div data-text="$count"></div>
-						</body>
-						`,
+	<div>
+		<button data-on-click="$count++">Increment + </button>
+		<button data-on-click="$count--">Decrement - </button>
+		<input type="number" data-model="count" />
+	</div>
+	<div data-text="$count">will get replaced with count</div>
+</body>
+`,
 							),
 						),
 						DIV(

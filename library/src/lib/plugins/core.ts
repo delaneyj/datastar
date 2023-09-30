@@ -1,9 +1,13 @@
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
+const validJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$]*`
+const wholePrefixSuffix = (symb: string, prefix: string, call: string) =>
+  new RegExp(`(?<whole>\\${symb}(?<${prefix}>${validJSIdentifier}))${call}`, `g`)
+
 const SignalProcessor: Preprocesser = {
   name: 'SignalProcessor',
   description: `Replacing $signal with ctx.store.signal.value`,
-  regexp: new RegExp(/(?<whole>\$(?<signal>[a-zA-Z_$][0-9a-zA-Z_$]*))/g),
+  regexp: wholePrefixSuffix('$', 'signal', ''),
   replacer: (groups: RegexpGroups) => {
     const { signal } = groups
     return `ctx.store.${signal}.value`
@@ -13,7 +17,7 @@ const SignalProcessor: Preprocesser = {
 const ActionProcessor: Preprocesser = {
   name: 'ActionProcessor',
   description: `Replacing @action(args) with ctx.actions.action(ctx, args)`,
-  regexp: new RegExp(/(?<whole>@(?<action>[a-zA-Z_$][0-9a-zA-Z_$]*)(?<call>\((?<args>.*)\))?)/g),
+  regexp: wholePrefixSuffix('@', 'action', '(?<call>\\((?<args>.*)\\))?'),
   replacer: ({ action, args }: RegexpGroups) => {
     return `ctx.actions.${action}(ctx, ${args || ''})`
   },
@@ -22,7 +26,7 @@ const ActionProcessor: Preprocesser = {
 const RefProcessor: Preprocesser = {
   name: 'RefProcessor',
   description: `Replacing #foo with ctx.refs.foo`,
-  regexp: new RegExp(/(?<whole>\#(?<ref>[a-zA-Z_$][0-9a-zA-Z_$]*))/g),
+  regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
     return `data.refs.${ref}`
   },
@@ -30,10 +34,9 @@ const RefProcessor: Preprocesser = {
 
 export const CorePreprocessors: Preprocesser[] = [SignalProcessor, ActionProcessor, RefProcessor]
 
-const BodyStoreAttributePlugin: AttributePlugin = {
-  prefix: 'store',
+const MergeStoreAttributePlugin: AttributePlugin = {
+  prefix: 'mergeStore',
   description: 'Setup the global store',
-  allowedTags: new Set(['body']),
 
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
@@ -56,4 +59,4 @@ const RefPlugin: AttributePlugin = {
   },
 }
 
-export const CorePlugins: AttributePlugin[] = [BodyStoreAttributePlugin, RefPlugin]
+export const CorePlugins: AttributePlugin[] = [MergeStoreAttributePlugin, RefPlugin]

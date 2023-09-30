@@ -79,31 +79,31 @@ export class Datastar {
   applyPlugins(rootElement: Element) {
     const appliedProcessors = new Set<Preprocesser>()
 
-    walkDownDOM(rootElement, (element) => {
-      this.cleanupElementRemovals(element)
+    this.plugins.forEach((p, pi) => {
+      walkDownDOM(rootElement, (element) => {
+        if (pi === 0) this.cleanupElementRemovals(element)
 
-      const el = toHTMLorSVGElement(element)
-      if (!el) return
+        const el = toHTMLorSVGElement(element)
+        if (!el) return
 
-      if (el.id) {
-        // TODO: Remove this hack once CSSStyleDeclaration supports viewTransitionName
-        const styl = el.style as any
-        styl.viewTransitionName = el.id
-        console.log(`Setting viewTransitionName on ${el.id}`)
-      }
-      if (!el.id && el.tagName !== 'BODY') {
-        const id = (this.missingIDNext++).toString(16).padStart(8, '0')
-        el.id = `ds${id}`
-      }
+        if (el.id) {
+          // TODO: Remove this hack once CSSStyleDeclaration supports viewTransitionName
+          const styl = el.style as any
+          styl.viewTransitionName = el.id
+          // console.log(`Setting viewTransitionName on ${el.id}`)
+        }
+        if (!el.id && el.tagName !== 'BODY') {
+          const id = (this.missingIDNext++).toString(16).padStart(8, '0')
+          el.id = `ds${id}`
+        }
 
-      this.plugins.forEach((p) => {
         for (const dsKey in el.dataset) {
           let expression = el.dataset[dsKey] || ''
 
           if (!dsKey.startsWith(p.prefix)) continue
 
           appliedProcessors.clear()
-          console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
+          // console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 
           if (p.allowedTags && !p.allowedTags.has(el.tagName.toLowerCase())) {
             throw new Error(

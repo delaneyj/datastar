@@ -66,7 +66,7 @@ export function injectMockSSE(routes: MockSSERoutes, interval = 1000) {
     }
 
     private emit(event: string, data: any) {
-      console.log(`Emitting ${event} with data`, data)
+      // console.log(`Emitting ${event} with data`, data)
       if (!this.emitters.has(event)) return
       const fns = this.emitters.get(event)!
       for (const fn of fns) {

@@ -14,8 +14,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
   </head>
   <body
-    class="min-h-screen bg-base-100 p-4 flex flex-col gap-4"
-    data-store="{
+    class="flex flex-col min-h-screen gap-4 p-4 bg-base-100"
+    data-merge-store="{
       count: 123,
       theme: 'light',
       intersectText: `I'm not visible`,
@@ -24,247 +24,221 @@
     data-bind-data-theme="$theme"
   >
     <h1 class="text-4xl font-bold">Kitchen Sink</h1>
+    <template data-teleport="#bar">Should teleport to bottom</template>
     <div>
-      <div class="flex gap-2 items-center">
-
+      <div class="flex items-center gap-2">
+        <button
+          class="btn btn-primary"
+          id="increment"
+          data-on-click="$count++"
+        >
+          Increment
+        </button>
+        <button
+          class="btn btn-primary"
+          data-on-click="$count--"
+        >
+          Decrement
+        </button>
         <div
+          class="text-2xl font-bold"
+          id="count"
+          data-text="$count"
+        >
+          Replace me
+        </div>
+        <div
+          class="text-2xl font-bold text-green-500"
+          data-show="$count % 2 === 0"
+        >
+          Is Even!
+        </div>
+        <div
+          class="text-2xl font-bold text-red-500"
+          data-show="$count % 2 === 1"
+        >
+          Is Odd!
+        </div>
+      </div>
+      <input
+        class="input input-bordered"
+        type="number"
+        step="1"
+        data-model="count"
+        data-focus
+      />
+    </div>
+
+    <div id="bar">Bar</div>
+    <div>
+      <div
+        class="flex items-center gap-2 btn btn-primary"
         data-header-authorization="`Bearer ${$token}`"
         data-fetch-url="'/api/simple'"
-        data-on-load="@get"
-        >
-        Foo
-      </div>
-      <div class="datastar-indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><rect width="10" height="10" x="1" y="1" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle30" fill="freeze" attributeName="x" begin="0;svgSpinnersBlocksShuffle3b.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle31" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle38.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle32" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle39.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle33" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle3a.end" dur="0.2s" values="13;1"/></rect><rect width="10" height="10" x="1" y="13" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle34" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle30.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle35" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle31.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle36" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle32.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle37" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle33.end" dur="0.2s" values="13;1"/></rect><rect width="10" height="10" x="13" y="13" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle38" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle34.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle39" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle35.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle3a" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle36.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle3b" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle37.end" dur="0.2s" values="1;13"/></rect></svg>
+        data-on-click="@get"
+      >
+        <span>click to GET</span>
+        <img
+          class="datastar-indicator fill-white"
+          src="/spinner.svg"
+        />
       </div>
     </div>
-    <div>
-      <div class="flex gap-2 items-center">
 
-        <div
-        data-fetch-url="'/api/simple'"
-        data-on-load="@post"
-        >
-        Foo
-      </div>
+    <div
+      class="flex items-center gap-2"
+      data-fetch-url="'/api/simple'"
+      data-on-load="@post"
+    >
+      <span>Will be replace with POST contents</span>
       <div class="datastar-indicator">
-        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><rect width="10" height="10" x="1" y="1" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle30" fill="freeze" attributeName="x" begin="0;svgSpinnersBlocksShuffle3b.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle31" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle38.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle32" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle39.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle33" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle3a.end" dur="0.2s" values="13;1"/></rect><rect width="10" height="10" x="1" y="13" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle34" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle30.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle35" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle31.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle36" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle32.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle37" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle33.end" dur="0.2s" values="13;1"/></rect><rect width="10" height="10" x="13" y="13" fill="currentColor" rx="1"><animate id="svgSpinnersBlocksShuffle38" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle34.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle39" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle35.end" dur="0.2s" values="13;1"/><animate id="svgSpinnersBlocksShuffle3a" fill="freeze" attributeName="x" begin="svgSpinnersBlocksShuffle36.end" dur="0.2s" values="1;13"/><animate id="svgSpinnersBlocksShuffle3b" fill="freeze" attributeName="y" begin="svgSpinnersBlocksShuffle37.end" dur="0.2s" values="1;13"/></rect></svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="1em"
+          height="1em"
+          viewBox="0 0 24 24"
+        >
+          <rect
+            width="10"
+            height="10"
+            x="1"
+            y="1"
+            fill="currentColor"
+            rx="1"
+          >
+            <animate
+              id="svgSpinnersBlocksShuffle30"
+              fill="freeze"
+              attributeName="x"
+              begin="0;svgSpinnersBlocksShuffle3b.end"
+              dur="0.2s"
+              values="1;13"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle31"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle38.end"
+              dur="0.2s"
+              values="1;13"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle32"
+              fill="freeze"
+              attributeName="x"
+              begin="svgSpinnersBlocksShuffle39.end"
+              dur="0.2s"
+              values="13;1"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle33"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle3a.end"
+              dur="0.2s"
+              values="13;1"
+            />
+          </rect>
+          <rect
+            width="10"
+            height="10"
+            x="1"
+            y="13"
+            fill="currentColor"
+            rx="1"
+          >
+            <animate
+              id="svgSpinnersBlocksShuffle34"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle30.end"
+              dur="0.2s"
+              values="13;1"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle35"
+              fill="freeze"
+              attributeName="x"
+              begin="svgSpinnersBlocksShuffle31.end"
+              dur="0.2s"
+              values="1;13"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle36"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle32.end"
+              dur="0.2s"
+              values="1;13"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle37"
+              fill="freeze"
+              attributeName="x"
+              begin="svgSpinnersBlocksShuffle33.end"
+              dur="0.2s"
+              values="13;1"
+            />
+          </rect>
+          <rect
+            width="10"
+            height="10"
+            x="13"
+            y="13"
+            fill="currentColor"
+            rx="1"
+          >
+            <animate
+              id="svgSpinnersBlocksShuffle38"
+              fill="freeze"
+              attributeName="x"
+              begin="svgSpinnersBlocksShuffle34.end"
+              dur="0.2s"
+              values="13;1"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle39"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle35.end"
+              dur="0.2s"
+              values="13;1"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle3a"
+              fill="freeze"
+              attributeName="x"
+              begin="svgSpinnersBlocksShuffle36.end"
+              dur="0.2s"
+              values="1;13"
+            />
+            <animate
+              id="svgSpinnersBlocksShuffle3b"
+              fill="freeze"
+              attributeName="y"
+              begin="svgSpinnersBlocksShuffle37.end"
+              dur="0.2s"
+              values="1;13"
+            />
+          </rect>
+        </svg>
       </div>
     </div>
+
     <div data-sse="'/api/sse'">
       <span>Append to me SSE Events</span>
     </div>
 
-    <div class="text-2xl font-bold">Plugins</div>
-      <div class="max-w-md">
-        <div class="text-xl font-bold">Attributes</div>
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">bind</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">model</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">text</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">on</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">focus</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-      </div>
-      <div class="max-w-md">
-        <div class="text-xl font-bold">Core</div>
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">ref</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-      </div>
-      <div class="max-w-md">
-        <div class="text-xl font-bold">Visibility</div>
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">show</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">intersects</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">teleport</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">scrollIntoView</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-      </div>
-      <div class="max-w-md">
-        <div class="text-xl font-bold">Backend</div>
-        <div class="form-control">
-          <label class="label">
-            <span class="label-text">header</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">url</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-        <div class="form-control">
-          <label class="label cursor-pointer">
-            <span class="label-text">sse</span>
-            <input
-              class="checkbox"
-              type="checkbox"
-              disabled
-              checked
-            />
-          </label>
-        </div>
-      </div>
-    </div>
-    <template data-teleport="body">Should teleport to bottom</template>
-    <div class="flex gap-2 items-center">
-      <button
-        class="btn btn-primary"
-        id="increment"
-        data-on-click="$count++"
-      >
-        Increment
-      </button>
-      <button
-        class="btn btn-primary"
-        data-on-click="$count--"
-      >
-        Decrement
-      </button>
-      <div
-        class="text-2xl font-bold"
-        id="count"
-        data-text="$count"
-      >
-        Replace me
-      </div>
-      <div
-        class="text-2xl font-bold text-green-500"
-        data-show="$count % 2 === 0"
-      >
-        Is Even!
-      </div>
-      <div
-        class="text-2xl font-bold text-red-500"
-        data-show="$count % 2 === 1"
-      >
-        Is Odd!
-      </div>
-    </div>
-    <input
-      class="input input-bordered"
-      type="number"
-      step="1"
-      data-model="count"
-      data-focus
-    />
     <button
       class="btn btn-primary"
       data-on-click="$theme = $theme === 'dark' ? 'light' : 'dark'"
-      data-text="$theme === 'dark' ? 'Light' : 'Dark'"
+      data-text="`Change theme to ${$theme === 'dark' ? 'Light' : 'Dark'}`"
     >
       x
     </button>
-
     <div class="h-[2048px]"></div>
     <div
-      data-scroll-into-view
+      xdata-scroll-into-view
       data-intersects="$intersectText = `I'm visible`"
       data-text="$intersectText"
     ></div>
