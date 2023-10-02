@@ -80,22 +80,47 @@ export const EventPlugin: AttributePlugin = {
   description: 'Sets the event listener of the element',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
+  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    const callback = () => {
+    let callback = () => {
       expressionFn(ctx)
     }
 
+    const debounceArgs = ctx.modifiers.get('debounce')
+    if (debounceArgs) {
+      const wait = argsToMs(debounceArgs)
+      const leading = argsHas(debounceArgs, 'leading', false)
+      const trailing = argsHas(debounceArgs, 'noTrail', true)
+      callback = debounce(callback, wait, leading, trailing)
+    }
+
+    const throttleArgs = ctx.modifiers.get('throttle')
+    if (throttleArgs) {
+      const wait = argsToMs(throttleArgs)
+      const leading = argsHas(throttleArgs, 'noLead', true)
+      const trailing = argsHas(throttleArgs, 'noTrail', true)
+      callback = throttle(callback, wait, leading, trailing)
+    }
+
+    const evtListOpts: AddEventListenerOptions = {
+      capture: true,
+      passive: false,
+      once: false,
+    }
+    if (!ctx.modifiers.has('capture')) evtListOpts.capture = false
+    if (ctx.modifiers.has('passive')) evtListOpts.passive = true
+    if (ctx.modifiers.has('once')) evtListOpts.once = true
+
     if (key === 'load') {
-      document.addEventListener(DOMContentLoaded, callback, true)
+      document.addEventListener(DOMContentLoaded, callback, evtListOpts)
       return () => {
         document.removeEventListener(DOMContentLoaded, callback)
       }
     }
-
     const eventType = key.toLowerCase()
-    el.addEventListener(eventType, callback)
+    el.addEventListener(eventType, callback, evtListOpts)
     return () => {
       el.removeEventListener(eventType, callback)
     }
@@ -125,3 +150,79 @@ export const AttributePlugins: AttributePlugin[] = [
   FocusPlugin,
   EventPlugin,
 ]
+
+function argsToMs(args: string[] | undefined) {
+  if (!args || args?.length === 0) return 0
+
+  for (const arg of args) {
+    if (arg.endsWith('ms')) {
+      return Number(arg.replace('ms', ''))
+    } else if (arg.endsWith('s')) {
+      return Number(arg.replace('s', '')) * 1000
+    }
+
+    try {
+      return parseFloat(arg)
+    } catch (e) {}
+  }
+
+  return 0
+}
+
+function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
+  if (!args) return false
+  return args.includes(arg) || defaultValue
+}
+
+type TimerHandler = (...args: any[]) => void
+
+function debounce(func: TimerHandler, wait: number, leading = false, trailing = true): TimerHandler {
+  let timer: number | undefined
+
+  const resetTimer = () => {
+    clearTimeout(timer)
+    timer = undefined
+  }
+
+  return function wrapper(this: any, ...args: any[]) {
+    if (leading && timer === undefined) {
+      func.apply(this, args)
+      timer = window.setTimeout(() => resetTimer(), wait)
+    } else {
+      resetTimer()
+      timer = window.setTimeout(() => {
+        if (trailing) func.apply(this, args)
+        resetTimer()
+      }, wait)
+    }
+  }
+}
+
+function throttle(func: TimerHandler, wait: number, leading = true, trailing = false) {
+  let waiting = false
+  let lastArgs: any[] | null = null
+
+  return function wrapper(this: any, ...args: any[]) {
+    if (!waiting) {
+      waiting = true
+
+      const startWaitingPeriod = () =>
+        setTimeout(() => {
+          if (trailing && lastArgs) {
+            func.apply(this, lastArgs)
+            lastArgs = null
+            startWaitingPeriod()
+          } else {
+            waiting = false
+          }
+        }, wait)
+
+      if (leading) func.apply(this, args)
+      else lastArgs = args // if not leading, treat like another any other function call during the waiting period
+
+      startWaitingPeriod()
+    } else {
+      lastArgs = args
+    }
+  }
+}

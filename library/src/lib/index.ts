@@ -6,13 +6,19 @@ import { Datastar } from './core'
 import { AttributePlugins } from './plugins/attributes'
 import { BackendActions, BackendPlugins } from './plugins/backend'
 import { VisibilityPlugins } from './plugins/visibility'
-import { Actions } from './types'
+import { Actions, AttributePlugin } from './types'
 
-const start = performance.now()
+export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlugin[]) {
+  const start = performance.now()
+  const ds = new Datastar(actions, ...plugins)
+  ds.run()
+  const end = performance.now()
+  console.log(`Datastar loaded and attached to all DOM elements in ${end - start}ms`)
+  return ds
+}
 
-const actions: Actions = Object.assign({}, BackendActions)
-const plugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins]
-export const datastar = new Datastar(actions, ...plugins)
-
-const end = performance.now()
-console.log(`Datastar loaded and attached to all DOM elements in ${end - start}ms`)
+export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPlugins: AttributePlugin[]) {
+  const actions: Actions = Object.assign({}, BackendActions, addedActions)
+  const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins]
+  return runDatastarWith(actions, ...allPlugins)
+}

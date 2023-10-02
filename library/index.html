@@ -75,7 +75,7 @@
         class="flex items-center gap-2 btn btn-primary"
         data-header-authorization="`Bearer ${$token}`"
         data-fetch-url="'/api/simple'"
-        data-on-click="@get"
+        data-on-click.debounce_1s="@get"
       >
         <span>click to GET</span>
         <img
@@ -238,7 +238,7 @@
     </button>
     <div class="h-[2048px]"></div>
     <div
-      xdata-scroll-into-view
+      data-scroll-into-view
       data-intersects="$intersectText = `I'm visible`"
       data-text="$intersectText"
     ></div>
