@@ -138,28 +138,35 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 				CLS("flex-1 flex flex-wrap md:p-16 text-xl flex-col items-center text-center bg-gradient-to-tr from-base-100 to-base-200"),
 
 				DIV(
-					CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
 					DIV(
-						CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
-						RANGE(languages, func(fn nodeChildFn) NODE {
-							return DIV(
-								CLS("avatar avatar-xl"),
-								fn(
-									CLS("w-24 h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-4 mask-hexagon"),
-								),
-							)
-						}),
-					),
-					DIV(
-
 						H1(
 							CLS("text-6xl font-bold"),
-							TXT("HTML on whatever you like"),
+							TXT("Declarative HTML "),
 						),
+						P(
+							TXT("Delieved in a blazing fast, simple single framework"),
+						),
+						DIV(
+							CLS("flex gap-2 justify-center items-center"),
+						),
+					),
+					CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
+					DIV(
+						CLS("flex flex-wrap gap-6 justify-center items-center"),
+						DIV(
+							CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
+							RANGE(languages, func(fn nodeChildFn) NODE {
+								return DIV(
+									CLS("avatar avatar-xl"),
+									fn(
+										CLS("w-24 h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-4 mask-hexagon"),
+									),
+								)
+							})),
 						A(
 							CLS("link-accent text-4xl"),
 							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
-							TXT("It's the best idea since web rings"),
+							TXT("HTML on whatever you want"),
 						),
 					),
 					DIV(
@@ -201,6 +208,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						),
 					),
 					DIV(
+						CLS("flex flex-col gap-2 w-full"),
 						H3(
 							CLS("text-3xl font-bold"),
 							TXT("Global count example from Backend"),
@@ -219,9 +227,6 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							CLS("text-2xl font-bold"),
 							TXT("Open the console to see the Fetch/XHR traffic"),
 						),
-					),
-					P(
-						TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use."),
 					),
 					DIV(
 						CLS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content"),
