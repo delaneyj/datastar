@@ -176,51 +176,48 @@ function argsHas(args: string[] | undefined, arg: string, defaultValue = false) 
 
 type TimerHandler = (...args: any[]) => void
 
-function debounce(func: TimerHandler, wait: number, leading = false, trailing = true): TimerHandler {
-  let timer: number | undefined
+function debounce(callback: TimerHandler, wait: number, leading = false, trailing = true): TimerHandler {
+  let timer: NodeJS.Timeout | undefined
 
-  const resetTimer = () => {
-    clearTimeout(timer)
-    timer = undefined
-  }
+  const resetTimer = () => timer && clearTimeout(timer)
 
-  return function wrapper(this: any, ...args: any[]) {
-    if (leading && timer === undefined) {
-      func.apply(this, args)
-      timer = window.setTimeout(() => resetTimer(), wait)
-    } else {
-      resetTimer()
-      timer = window.setTimeout(() => {
-        if (trailing) func.apply(this, args)
-        resetTimer()
-      }, wait)
+  return function wrapper(...args: any[]) {
+    resetTimer()
+
+    if (leading && !timer) {
+      callback(...args)
     }
+
+    timer = setTimeout(() => {
+      if (trailing) {
+        callback(...args)
+      }
+      resetTimer()
+    }, wait)
   }
 }
 
-function throttle(func: TimerHandler, wait: number, leading = true, trailing = false) {
+function throttle(callback: TimerHandler, wait: number, leading = true, trailing = false): TimerHandler {
   let waiting = false
   let lastArgs: any[] | null = null
 
-  return function wrapper(this: any, ...args: any[]) {
+  return function wrapper(...args: any[]) {
     if (!waiting) {
       waiting = true
 
-      const startWaitingPeriod = () =>
-        setTimeout(() => {
-          if (trailing && lastArgs) {
-            func.apply(this, lastArgs)
-            lastArgs = null
-            startWaitingPeriod()
-          } else {
-            waiting = false
-          }
-        }, wait)
+      if (leading) {
+        callback(...args)
+      } else {
+        lastArgs = args
+      }
 
-      if (leading) func.apply(this, args)
-      else lastArgs = args // if not leading, treat like another any other function call during the waiting period
-
-      startWaitingPeriod()
+      setTimeout(() => {
+        if (trailing && lastArgs) {
+          callback(...lastArgs)
+          lastArgs = null
+        }
+        waiting = false
+      }, wait)
     } else {
       lastArgs = args
     }

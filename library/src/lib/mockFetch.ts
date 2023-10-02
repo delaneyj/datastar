@@ -13,17 +13,21 @@ export interface MockFetchRoutes {
 
 export function injectMockFetch(routes: MockFetchRoutes) {
   console.warn(`Overriding fetch with mock version, this should only be used in examples.`)
-
+  let realFetch = window.fetch
   const mockFetch = async (url: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
     const req = new Request(url, init)
 
     if (!(url instanceof URL)) throw new Error(`url must be a URL`)
 
     const urlMethods = routes[url.pathname]
-    if (!urlMethods) throw new Error(`No mock route found for ${req.url}`)
+    if (!urlMethods) {
+      return realFetch(url, init)
+    }
 
     const methodFn = urlMethods[req.method]
     if (!methodFn) throw new Error(`No mock route found for ${req.method} ${req.url}`)
+
+    console.log(`Mock fetch ${req.method} ${req.url}`)
 
     let { html, status, statusText, headers } = await methodFn(req)
     if (!headers) headers = new Headers()
