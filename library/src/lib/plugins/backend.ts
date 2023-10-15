@@ -154,7 +154,9 @@ async function fetcher(method: string, ctx: AttributeContext) {
     const isRedirect = res.status >= 300 && res.status < 400
     if (!isRedirect) throw new Error(`Response was not ok and wasn't a redirect, can't merge.`)
     let url = text
-    if (url.startsWith('/')) url = window.location.origin + url
+    if (url.startsWith('/')) {
+      url = `${window.location.origin}/${url}`
+    }
     Response.redirect(url)
     return
   }
