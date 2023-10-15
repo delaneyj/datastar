@@ -22,8 +22,8 @@ const DATASTAR_CLASS_PREFIX = 'datastar'
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}-indicator`
 const LOADING_CLASS = `${DATASTAR_CLASS_PREFIX}-request`
 const TEXT_HTML = 'text/html'
-const SELECTOR = 'selector'
-const SWAP = 'swap'
+const SELECTOR = 'fragmentSelector'
+const SWAP = 'fragmentSwap'
 
 // type Method = typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE
 
@@ -148,18 +148,19 @@ async function fetcher(method: string, ctx: AttributeContext) {
   }
 
   const res = await fetch(url, req)
-  if (!res.ok) throw new Error('Network response was not ok.')
   const text = await res.text()
 
-  const isRedirect = res.status >= 300 && res.status < 40
-  if (isRedirect) {
+  if (!res.ok) {
+    const isRedirect = res.status >= 300 && res.status < 40
+    if (!isRedirect) throw new Error(`Response was not ok and wasn't a redirect, can't merge.`)
     let url = text
     if (url.startsWith('/')) url = window.location.origin + url
     Response.redirect(url)
+    return
   }
 
   const isHTML = res.headers.get(CONTENT_TYPE) === TEXT_HTML
-  if (!isHTML) throw new Error(`Response is not HTML, can't merge`)
+  if (!isHTML) throw new Error(`Response is not HTML and wasn't a redirect, can't merge.`)
   mergeHTMLFragments(ctx, text)
 
   el.classList.remove(LOADING_CLASS)
