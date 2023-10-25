@@ -4,10 +4,10 @@ function Y(t) {
 function j() {
   throw new Error("Cycle detected");
 }
-function Ve() {
+function Be() {
   throw new Error("Computed cannot have side-effects");
 }
-const Be = Symbol.for("preact-signals"), _ = 1, A = 2, H = 4, M = 8, L = 16, w = 32;
+const Ve = Symbol.for("preact-signals"), _ = 1, A = 2, H = 4, M = 8, L = 16, w = 32;
 function q() {
   N++;
 }
@@ -65,7 +65,7 @@ function _e(t) {
 function m(t) {
   this._value = t, this._version = 0, this._node = void 0, this._targets = void 0;
 }
-m.prototype.brand = Be;
+m.prototype.brand = Ve;
 m.prototype._refresh = function() {
   return !0;
 };
@@ -108,7 +108,7 @@ Object.defineProperty(m.prototype, "value", {
     return t !== void 0 && (t._version = this._version), this._value;
   },
   set(t) {
-    if (f instanceof b && Ve(), t !== this._value) {
+    if (f instanceof b && Be(), t !== this._value) {
       G > 100 && j(), this._value = t, this._version++, I++, q();
       try {
         for (let e = this._targets; e !== void 0; e = e._nextTarget)
@@ -385,6 +385,9 @@ class et {
   mergeStore(e) {
     const r = Ae(this.store.value, e);
     this.store = z(r);
+  }
+  signalByName(e) {
+    return this.store.value[e];
   }
   applyPlugins(e) {
     const r = /* @__PURE__ */ new Set();
@@ -940,7 +943,7 @@ function wt(t, e) {
   const r = /* @__PURE__ */ new Map();
   return ue(t, r), ue(e, r), r;
 }
-const Re = "get", St = "post", Tt = "put", At = "patch", Mt = "delete", Lt = [Re, St, Tt, At, Mt], Pt = Lt.reduce((t, e) => (t[e] = async (r) => $t(e, r), t), {}), Oe = "Accept", X = "Content-Type", Ce = "application/json", $e = "datastar", U = `${$e}-indicator`, V = `${$e}-request`, B = "text/html", Nt = "fragmentSelector", Ht = "fragmentSwap", kt = {
+const Re = "get", St = "post", Tt = "put", At = "patch", Mt = "delete", Lt = [Re, St, Tt, At, Mt], Pt = Lt.reduce((t, e) => (t[e] = async (r) => $t(e, r), t), {}), Oe = "Accept", X = "Content-Type", Ce = "application/json", $e = "datastar", U = `${$e}-indicator`, B = `${$e}-request`, V = "text/html", Nt = "fragmentSelector", Ht = "fragmentSwap", kt = {
   prefix: "header",
   description: "Sets the header of the fetch request",
   mustNotEmptyKey: !0,
@@ -962,17 +965,17 @@ const Re = "get", St = "post", Tt = "put", At = "patch", Mt = "delete", Lt = [Re
 .${U}{
  opacity:0;
 }
-.${V} .${U}{
+.${B} .${U}{
  opacity:1;
  transition: opacity 300ms ease-in;
 }
-.${V}.${U}{
+.${B}.${U}{
  opacity:1;
  transition: opacity 300s ease-in;
 }
 `, document.head.appendChild(e);
     const r = new Headers();
-    r.append(Oe, B), r.append(X, Ce), t({
+    r.append(Oe, V), r.append(X, Ce), t({
       fetch: {
         headers: {},
         elementURLs: {}
@@ -1000,9 +1003,9 @@ async function $t(t, e) {
   const { el: r, store: n } = e, o = n.fetch.elementURLs[r.id];
   if (!o)
     throw new Error(`No signal for ${t}`);
-  r.classList.add(V);
+  r.classList.add(B);
   const s = new URL(o.value, window.location.origin), i = new Headers();
-  i.append(Oe, B), i.append(X, Ce);
+  i.append(Oe, V), i.append(X, Ce);
   const a = n.fetch.headers.value;
   if (a)
     for (const v in a) {
@@ -1025,13 +1028,13 @@ async function $t(t, e) {
     y.startsWith("/") && (y = window.location.origin + y), console.log(`Redirecting to ${y}`), window.location.replace(y);
     return;
   }
-  if (!(c.headers.get(X) === B))
+  if (!(c.headers.get(X) === V))
     throw new Error("Response is not HTML and wasn't a redirect, can't merge.");
-  Dt(e, h), r.classList.remove(V);
+  Dt(e, h), r.classList.remove(B);
 }
 const xt = new DOMParser();
 function Dt(t, e, r = "morph") {
-  const { el: n } = t, o = [...xt.parseFromString(e, B).body.children];
+  const { el: n } = t, o = [...xt.parseFromString(e, V).body.children];
   for (let s = 0; s < o.length; s++) {
     const i = o[s];
     if (!(i instanceof Element))
@@ -1093,7 +1096,7 @@ const W = "display", fe = "none", J = "important", It = {
       s ? e.style.length === 1 && e.style.display === fe ? e.style.removeProperty(W) : e.style.setProperty(W, "", a) : e.style.setProperty(W, fe, a);
     });
   }
-}, Ft = "intersects", de = "once", pe = "half", he = "full", Vt = {
+}, Ft = "intersects", de = "once", pe = "half", he = "full", Bt = {
   prefix: Ft,
   description: "Run expression when element intersects with viewport",
   allowedModifiers: /* @__PURE__ */ new Set([de, pe, he]),
@@ -1108,7 +1111,7 @@ const W = "display", fe = "none", J = "important", It = {
     }, r);
     return n.observe(t.el), () => n.disconnect();
   }
-}, me = "prepend", ge = "append", ve = new Error("Target element must have a parent if using prepend or append"), Bt = {
+}, me = "prepend", ge = "append", ve = new Error("Target element must have a parent if using prepend or append"), Vt = {
   prefix: "teleport",
   description: "Teleports the element to another element",
   allowedModifiers: /* @__PURE__ */ new Set([me, ge]),
@@ -1150,8 +1153,8 @@ const W = "display", fe = "none", J = "important", It = {
   }
 }, qt = [
   It,
-  Vt,
   Bt,
+  Vt,
   jt
 ];
 function Kt(t = {}, ...e) {

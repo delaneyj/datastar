@@ -1,6 +1,6 @@
 import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
-import { computed, effect, signal } from './external/preact-core'
+import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
@@ -74,6 +74,10 @@ export class Datastar {
   private mergeStore(store: DeepState) {
     const revisedStore = apply(this.store.value, store) as DeepState
     this.store = deepSignal(revisedStore)
+  }
+
+  public signalByName<T>(name: string) {
+    return this.store.value[name] as unknown as Signal<T>
   }
 
   private applyPlugins(rootElement: Element) {
