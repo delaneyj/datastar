@@ -77,7 +77,7 @@ export class Datastar {
   }
 
   public signalByName<T>(name: string) {
-    return this.store.value[name] as unknown as Signal<T>
+    return (this.store as any)[name] as Signal<T>
   }
 
   private applyPlugins(rootElement: Element) {
