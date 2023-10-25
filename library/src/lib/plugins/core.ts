@@ -1,8 +1,8 @@
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
 const validJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$]*`
-const wholePrefixSuffix = (symb: string, prefix: string, call: string) =>
-  new RegExp(`(?<whole>\\${symb}(?<${prefix}>${validJSIdentifier}))${call}`, `g`)
+const wholePrefixSuffix = (rune: string, prefix: string, call: string) =>
+  new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier}))${call}`, `g`)
 
 const SignalProcessor: Preprocesser = {
   name: 'SignalProcessor',
@@ -50,7 +50,7 @@ const RefPlugin: AttributePlugin = {
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   bypassExpressionFunctionCreation: true,
-  preprocessers: new Set([]),
+  preprocessors: new Set([]),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx

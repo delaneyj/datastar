@@ -66,8 +66,6 @@ export declare class Datastar {
     applyPlugins(rootElement: Element): void;
 }
 
-export declare const datastar: Datastar;
-
 export declare type DatastarPlugin = {};
 
 declare class DeepSignal<T extends DeepState> implements DeepSignalAccessors<T> {
@@ -151,6 +149,10 @@ declare interface ReadonlySignal<T = any> extends Signal<T> {
 }
 
 export declare type RegexpGroups = Record<string, string>;
+
+export declare function runDatastarWith(actions?: Actions, ...plugins: AttributePlugin[]): Datastar;
+
+export declare function runDatastarWithAllPlugins(addedActions?: Actions, ...addedPlugins: AttributePlugin[]): Datastar;
 
 /* Excluded declaration from this release type: Signal */
 

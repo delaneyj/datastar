@@ -48,7 +48,7 @@ export type AttributePlugin = {
   mustNotEmptyKey?: boolean // The key of the data-* attribute must not be empty after the prefix
   allowedTags?: Set<string> // If not provided, all tags are allowed
   disallowedTags?: Set<string> // If not provided, no tags are disallowed
-  preprocessers?: Set<Preprocesser> // If not provided, no preprocessers are used
+  preprocessors?: Set<Preprocesser> // If not provided, no preprocessors are used
   bypassExpressionFunctionCreation?: boolean // If true, the expression function is not created
 }
 

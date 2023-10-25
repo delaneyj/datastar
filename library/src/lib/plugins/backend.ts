@@ -93,20 +93,33 @@ export const ServerSentEventsPlugin: AttributePlugin = {
     const url = ctx.expressionFn(ctx)
     if (typeof url !== 'string') throw new Error('SSE url must be a string')
 
-    const eventSource = new EventSource(url)
-
-    const callback = (evt: MessageEvent) => {
+    const onMessage = (evt: MessageEvent) => {
       mergeHTMLFragments(ctx, evt.data, 'append')
     }
-    eventSource.addEventListener('message', callback)
 
-    const errCallback = (evt: Event) => console.error(evt)
-    eventSource.addEventListener('error', errCallback)
+    const onError = (evt: Event) => {
+      console.error(evt)
+      setup()
+    }
+
+    let eventSource: EventSource
+    const cleanup = () => {
+      if (eventSource) {
+        eventSource.removeEventListener('message', onMessage)
+        eventSource.removeEventListener('error', onError)
+        eventSource.close()
+      }
+    }
+
+    const setup = () => {
+      cleanup()
+      eventSource = new EventSource(url)
+      eventSource.addEventListener('message', onMessage)
+      eventSource.addEventListener('error', onError)
+    }
 
     return () => {
-      eventSource.removeEventListener('message', callback)
-      eventSource.removeEventListener('error', errCallback)
-      eventSource.close()
+      cleanup()
     }
   },
 }
@@ -155,9 +168,10 @@ async function fetcher(method: string, ctx: AttributeContext) {
     if (!isRedirect) throw new Error(`Response was not ok and wasn't a redirect, can't merge.`)
     let url = text
     if (url.startsWith('/')) {
-      url = `${window.location.origin}/${url}`
+      url = window.location.origin + url
     }
-    Response.redirect(url)
+    console.log(`Redirecting to ${url}`)
+    window.location.replace(url)
     return
   }
 

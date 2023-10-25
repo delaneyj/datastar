@@ -76,7 +76,7 @@ export class Datastar {
     this.store = deepSignal(revisedStore)
   }
 
-  applyPlugins(rootElement: Element) {
+  private applyPlugins(rootElement: Element) {
     const appliedProcessors = new Set<Preprocesser>()
 
     this.plugins.forEach((p, pi) => {
@@ -88,8 +88,8 @@ export class Datastar {
 
         if (el.id) {
           // TODO: Remove this hack once CSSStyleDeclaration supports viewTransitionName
-          const styl = el.style as any
-          styl.viewTransitionName = el.id
+          const style = el.style as any
+          style.viewTransitionName = el.id
           // console.log(`Setting viewTransitionName on ${el.id}`)
         }
         if (!el.id && el.tagName !== 'BODY') {
@@ -148,7 +148,7 @@ export class Datastar {
             throw new Error(`Attribute '${dsKey}' must have non-empty expression`)
           }
 
-          const processors = [...CorePreprocessors, ...(p.preprocessers || [])]
+          const processors = [...CorePreprocessors, ...(p.preprocessors || [])]
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
             appliedProcessors.add(processor)
