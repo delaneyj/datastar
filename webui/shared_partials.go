@@ -27,10 +27,26 @@ func Page(children ...NODE) NODE {
 				TYPE("text/css"),
 				HREF(staticPath("tailwind.css")),
 			),
+			SCRIPT(
+				TYPE("module"),
+				DEFER,
+				RAW(
+					fmt.Sprintf(`
+import { datastar } from '%s'
+datastar.run()
+`,
+						staticPath("datastar.js"),
+					),
+				),
+			),
 		},
 		Body: NODES{
-			CLS("flex flex-col w-full min-h-screen scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
-
+			CLS(`
+				w-full h-screen overflow-hidden
+				grid
+				grid-rows-[auto,1fr,auto]
+				grid-cols-[1fr]
+			`),
 			DIV(
 				CLS("p-4 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
 				STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
@@ -45,47 +61,46 @@ func Page(children ...NODE) NODE {
 					DIV(
 						CLS("flex flex-col items-end"),
 						DIV(TXT("Declarative Frontend Framework")),
-						DIV(
-							CLS("font-mono text-accent font-bold"),
-							TXT("v"+packageJSON.Version),
+					),
+				),
+			),
+
+			DIV(
+				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
+				GRP(children...),
+			),
+			DIV(
+				CLS("bg-base-200 text-base-content text-sm flex justify-between items-center gap-6 px-4 py-1"),
+				DIV(
+					CLS("flex gap-2"),
+					A(
+						CLS("btn btn-primary btn-ghost btn-sm"),
+						TXT("Docs"),
+						HREF("/docs"),
+					),
+					A(
+						CLS("btn btn-primary btn-ghost btn-sm"),
+						TXT("Essays"),
+						HREF("/essays"),
+					),
+					DIV(
+						CLS("join "),
+						A(
+							CLS("btn btn-ghost btn-sm"),
+							skill_icons.Discord(CLS("text-2xl")),
+							HREF("https://discord.com/channels/1035247242887561326/1149367785374359613"),
+						),
+						A(
+							CLS("btn btn-ghost btn-sm"),
+							skill_icons.GithubLight(CLS("text-2xl")),
+							HREF("https://github.com/delaneyj/datastar"),
 						),
 					),
 				),
-			),
-			DIV(
-				CLS("flex justify-end gap-6 px-4 py-1 bg-base-200 text-base-content text-sm"),
-				A(
-					CLS("btn btn-primary btn-ghost btn-sm"),
-					TXT("Docs"),
-					HREF("/docs"),
-				),
-				A(
-					CLS("btn btn-primary btn-ghost btn-sm"),
-					TXT("Essays"),
-					HREF("/essays"),
-				),
 				DIV(
-					CLS("join"),
-					A(
-						CLS("btn btn-ghost btn-sm"),
-						skill_icons.Discord(CLS("text-2xl")),
-						HREF("https://discord.com/channels/1035247242887561326/1149367785374359613"),
-					),
-					A(
-						CLS("btn btn-ghost btn-sm"),
-						skill_icons.GithubLight(CLS("text-2xl")),
-						HREF("https://github.com/delaneyj/datastar"),
-					),
+					CLS("font-mono text-accent font-bold"),
+					TXT("v"+packageJSON.Version),
 				),
-			),
-			GRP(children...),
-			SCRIPT(
-				TYPE("module"),
-				RAW(fmt.Sprintf(`
-import { addAllIncludedPlugins } from '%s'
-addAllIncludedPlugins()
-`, staticPath("datastar.js"),
-				)),
 			),
 		},
 	})

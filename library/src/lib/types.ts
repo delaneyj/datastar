@@ -1,41 +1,64 @@
-import { Reactive } from './external/reactively'
+import { DeepState } from './external/deepsignal'
+import { ReadonlySignal, Signal } from './external/preact-core'
 
+export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
+
+export type DatastarPlugin = {}
+
+export type ExpressionFunction = (ctx: AttributeContext) => any
 export type Reactivity = {
-  signal<T>(initialValue: T): Reactive<T>
-  computed<T>(fn: () => T): Reactive<T>
-  effect(fn: () => void): Reactive<void>
-  onCleanup(fn: () => void): void
+  signal: <T>(value: T) => Signal<T>
+  computed: <T>(fn: () => T) => ReadonlySignal<T>
+  effect: (cb: () => void) => OnRemovalFn
 }
 
-export type WithExpressionArgs = {
-  name: string
-  expression: string
-  el: Element
-  dataStack: NamespacedReactiveRecords
+export type AttributeContext = {
+  store: any
+  mergeStore: (store: DeepState) => void
+  applyPlugins: (target: Element) => void
+  actions: Readonly<Actions>
+  refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
-  withMod(label: string): Modifier | undefined
-  hasMod(label: string): boolean
-  applyPlugins(el: Element): void
-  actions: ActionsMap
+  el: Readonly<HTMLorSVGElement>
+  key: Readonly<string>
+  expression: Readonly<string>
+  expressionFn: ExpressionFunction
+  modifiers: Map<string, string[]>
 }
 
-export type ReactiveRecord = Record<string, Reactive<any>>
-export type NamespacedReactiveRecords = Record<string, ReactiveRecord>
-export type ActionFn = (args: WithExpressionArgs) => Promise<void>
-export type ActionsMap = Record<string, ActionFn>
-export type NamespacedReactiveRecordCallback<T> = (
-  el: Element,
-  data: NamespacedReactiveRecords,
-  actions: ActionsMap,
-) => T
-export type Modifier = {
-  label: string
-  args: string[]
+export type InitContext = {
+  store: any
+  mergeStore: (store: DeepState) => void
+  actions: Readonly<Actions>
+  refs: Record<string, HTMLorSVGElement>
+  reactivity: Reactivity
 }
 
-export interface ActionArgs {
-  el: Element
-  dataStack: NamespacedReactiveRecords
-  actions: ActionsMap
-  applyPlugins: (el: Element) => void
+export type OnRemovalFn = () => void
+export type AttributePlugin = {
+  prefix: string // The prefix of the `data-${prefix}` attribute
+  description: string // Used for debugging
+  requiredPluginPrefixes?: Iterable<string> // If not provided, no plugins are required
+  onGlobalInit?: (ctx: InitContext) => void // Called once on registration of the plugin
+  onLoad: (ctx: AttributeContext) => OnRemovalFn | void // Return a function to be called on removal
+  allowedModifiers?: Set<string> // If not provided, all modifiers are allowed
+  mustHaveEmptyExpression?: boolean // The contents of the data-* attribute must be empty
+  mustNotEmptyExpression?: boolean // The contents of the data-* attribute must not be empty
+  mustHaveEmptyKey?: boolean // The key of the data-* attribute must be empty after the prefix
+  mustNotEmptyKey?: boolean // The key of the data-* attribute must not be empty after the prefix
+  allowedTags?: Set<string> // If not provided, all tags are allowed
+  disallowedTags?: Set<string> // If not provided, no tags are disallowed
+  preprocessors?: Set<Preprocesser> // If not provided, no preprocessors are used
+  bypassExpressionFunctionCreation?: boolean // If true, the expression function is not created
 }
+
+export type RegexpGroups = Record<string, string>
+export type Preprocesser = {
+  name: string
+  description: string
+  regexp: RegExp
+  replacer: (groups: RegexpGroups) => string
+}
+
+export type Action = (ctx: AttributeContext, args: string) => Promise<void>
+export type Actions = Record<string, Action>

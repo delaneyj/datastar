@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -32,6 +32,9 @@ devDependencies:
   postcss:
     specifier: ^8.4.24
     version: 8.4.24
+  tailwind-scrollbar-daisyui:
+    specifier: ^1.0.3
+    version: 1.0.3
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.2
@@ -854,6 +857,14 @@ packages:
   /supports-preserve-symlinks-flag@1.0.0:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
+    dev: true
+
+  /tailwind-scrollbar-daisyui@1.0.3:
+    resolution: {integrity: sha512-nV4ylyqFWG37xPttBJFkJK9ZHNwc87sYADoLtVdHz9vRIBb0HcdLddAxqSkMsS2bkDDqLNMV5is3Sg8CqjVc+Q==}
+    dependencies:
+      tailwindcss: 3.3.2
+    transitivePeerDependencies:
+      - ts-node
     dev: true
 
   /tailwindcss@3.3.2:

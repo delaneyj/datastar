@@ -5,6 +5,8 @@ import dts from 'vite-plugin-dts'
 
 export default defineConfig({
   plugins: [
+    dts({ rollupTypes: true }),
+
     // compress({
     // algorithm: 'brotliCompress',
     // }),
@@ -12,10 +14,6 @@ export default defineConfig({
       // open: true,
     }),
     splitVendorChunkPlugin(),
-    dts({
-      rollupTypes: true,
-      include: 'src/lib/**/*',
-    }),
   ],
   build: {
     target: 'esnext',
