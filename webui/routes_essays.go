@@ -9,12 +9,14 @@ import (
 	"strings"
 	"time"
 
+	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
+	highlighting "github.com/yuin/goldmark-highlighting/v2"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/renderer/html"
@@ -23,6 +25,38 @@ import (
 	"golang.org/x/text/language"
 	"gopkg.in/typ.v4/slices"
 	"mvdan.cc/xurls/v2"
+)
+
+var markdownConverter = goldmark.New(
+	goldmark.WithExtensions(
+		extension.GFM,
+		extension.NewLinkify(
+			extension.WithLinkifyAllowedProtocols([][]byte{
+				[]byte("http:"),
+				[]byte("https:"),
+			}),
+			extension.WithLinkifyURLRegexp(
+				xurls.Strict(),
+			),
+		),
+		emoji.Emoji,
+		&anchor.Extender{},
+		highlighting.NewHighlighting(
+			highlighting.WithStyle("gruvbox"),
+			highlighting.WithFormatOptions(
+				chromahtml.WithLineNumbers(true),
+			),
+		),
+	),
+	goldmark.WithParserOptions(
+		parser.WithAutoHeadingID(),
+		parser.WithAttribute(),
+	),
+	goldmark.WithRendererOptions(
+		html.WithHardWraps(),
+		html.WithXHTML(),
+		html.WithUnsafe(),
+	),
 )
 
 func setupEssays(ctx context.Context, router *chi.Mux) error {
@@ -43,31 +77,6 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 	essays := map[string]Essay{}
 	titleCaser := cases.Title(language.English)
 
-	md := goldmark.New(
-		goldmark.WithExtensions(
-			extension.GFM,
-			extension.NewLinkify(
-				extension.WithLinkifyAllowedProtocols([][]byte{
-					[]byte("http:"),
-					[]byte("https:"),
-				}),
-				extension.WithLinkifyURLRegexp(
-					xurls.Strict(),
-				),
-			),
-			emoji.Emoji,
-			&anchor.Extender{},
-		),
-		goldmark.WithParserOptions(
-			parser.WithAutoHeadingID(),
-			parser.WithAttribute(),
-		),
-		goldmark.WithRendererOptions(
-			html.WithHardWraps(),
-			html.WithXHTML(),
-		),
-	)
-
 	for _, de := range dirEntries {
 		fullPath := filepath.Join(essaysPath, de.Name())
 		source, err := staticFS.ReadFile(fullPath)
@@ -76,7 +85,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 		}
 
 		var buf bytes.Buffer
-		if err := md.Convert(source, &buf); err != nil {
+		if err := markdownConverter.Convert(source, &buf); err != nil {
 			return fmt.Errorf("error converting essay %s: %w", de.Name(), err)
 		}
 

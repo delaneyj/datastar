@@ -5,6 +5,7 @@ export * from './types'
 import { Datastar } from './core'
 import { AttributePlugins } from './plugins/attributes'
 import { BackendActions, BackendPlugins } from './plugins/backend'
+import { HelperActions } from './plugins/helpers'
 import { VisibilityPlugins } from './plugins/visibility'
 import { Actions, AttributePlugin } from './types'
 
@@ -18,7 +19,7 @@ export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlug
 }
 
 export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPlugins: AttributePlugin[]) {
-  const actions: Actions = Object.assign({}, BackendActions, addedActions)
+  const actions: Actions = Object.assign({}, HelperActions, BackendActions, addedActions)
   const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins]
   return runDatastarWith(actions, ...allPlugins)
 }

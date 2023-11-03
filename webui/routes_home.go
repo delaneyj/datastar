@@ -87,7 +87,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 		},
 	}
 
-	languages := []NodeFn{
+	languages := []NodeFunc{
 		vscode_icons.FileTypeAssembly,
 		vscode_icons.FileTypeApl,
 		vscode_icons.FileTypeC,
@@ -138,7 +138,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
 					DIV(
 						CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
-						RANGE(languages, func(fn NodeFn) NODE {
+						RANGE(languages, func(fn NodeFunc) NODE {
 							return DIV(
 								CLS("avatar avatar-xl"),
 								fn(

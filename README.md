@@ -19,8 +19,8 @@ Typescript library for making [hypermedia](https://hypermedia.systems/) systems 
   </div>
   <button
     data-signal-get="'/api/echo'"
-    data-on-load="@get"
-    data-on-click="@get"
+    data-on-load="$$get"
+    data-on-click="$$get"
   >
     Contents
   </button>

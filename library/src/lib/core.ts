@@ -163,6 +163,7 @@ export class Datastar {
                 const { groups } = match
                 const { whole } = groups
                 expression = expression.replace(whole, processor.replacer(groups))
+                // expression = processor.replacer(groups)
               }
             }
           }
@@ -185,7 +186,9 @@ export class Datastar {
           }
 
           if (!p.bypassExpressionFunctionCreation && !p.mustHaveEmptyExpression && expression.length) {
-            const fnContent = `return ${expression}`
+            const lines = expression.split(';')
+            lines[lines.length - 1] = `return ${lines[lines.length - 1]}`
+            const fnContent = lines.join(';')
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn

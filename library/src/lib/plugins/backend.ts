@@ -21,11 +21,11 @@ const APPLICATION_JSON = 'application/json'
 const DATASTAR_CLASS_PREFIX = 'datastar'
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}-indicator`
 const LOADING_CLASS = `${DATASTAR_CLASS_PREFIX}-request`
+const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}-settling`
+const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}-swapping`
 const TEXT_HTML = 'text/html'
 const SELECTOR = 'fragmentSelector'
 const SWAP = 'fragmentSwap'
-
-// type Method = typeof GET | typeof POST | typeof PUT | typeof PATCH | typeof DELETE
 
 export const HeadersPlugin: AttributePlugin = {
   prefix: 'header',
@@ -151,8 +151,9 @@ async function fetcher(method: string, ctx: AttributeContext) {
   const storeWithoutFetch = { ...store }
   delete storeWithoutFetch.fetch
   const storeJSON = JSON.stringify(storeWithoutFetch)
+  method = method.toUpperCase()
   const req: RequestInit = { method, headers }
-  if (method === GET) {
+  if (method === 'GET') {
     const queryParams = new URLSearchParams(url.search)
     queryParams.append('datastar', storeJSON)
     url.search = queryParams.toString()
@@ -214,11 +215,13 @@ export function mergeHTMLFragments(ctx: AttributeContext, html: string, merge = 
       const swap = fragElement?.dataset?.[SWAP]
       if (swap) merge = swap
 
+      target.classList.add(SWAPPING_CLASS)
+      console.log(`Adding ${SWAPPING_CLASS} to ${target.id}`)
+
       switch (merge) {
         case 'morph':
           idiomorph(target, frag)
-          ctx.applyPlugins(target)
-          continue
+          break
         case 'inner':
           target.innerHTML = frag.innerHTML //  The default, replace the inner html of the target element
           break
@@ -243,7 +246,13 @@ export function mergeHTMLFragments(ctx: AttributeContext, html: string, merge = 
         default:
           throw new Error('Invalid merge mode')
       }
-      ctx.applyPlugins(frag)
+      ctx.applyPlugins(target)
+
+      target.classList.remove(SWAPPING_CLASS)
+      target.classList.add(SETTLING_CLASS)
+      setTimeout(() => {
+        target.classList.remove(SETTLING_CLASS)
+      }, 300)
     }
   }
 }

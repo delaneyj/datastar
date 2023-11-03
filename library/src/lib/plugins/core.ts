@@ -1,8 +1,8 @@
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
 const validJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$]*`
-const wholePrefixSuffix = (rune: string, prefix: string, call: string) =>
-  new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier}))${call}`, `g`)
+const wholePrefixSuffix = (rune: string, prefix: string, suffix: string) =>
+  new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier})${suffix})`, `g`)
 
 const SignalProcessor: Preprocesser = {
   name: 'SignalProcessor',
@@ -16,10 +16,15 @@ const SignalProcessor: Preprocesser = {
 
 const ActionProcessor: Preprocesser = {
   name: 'ActionProcessor',
-  description: `Replacing @action(args) with ctx.actions.action(ctx, args)`,
-  regexp: wholePrefixSuffix('@', 'action', '(?<call>\\((?<args>.*)\\))?'),
+  description: `Replacing $$action(args) with ctx.actions.action(ctx, args)`,
+  regexp: wholePrefixSuffix('$\\$', 'action', '(?<call>\\((?<args>.*)\\))?'),
   replacer: ({ action, args }: RegexpGroups) => {
-    return `ctx.actions.${action}(ctx, ${args || ''})`
+    const withCtx = [`ctx`]
+    if (args) {
+      withCtx.push(...args.split(',').map((x) => x.trim()))
+    }
+    const argsJoined = withCtx.join(',')
+    return `ctx.actions.${action}(${argsJoined})`
   },
 }
 
@@ -32,7 +37,7 @@ const RefProcessor: Preprocesser = {
   },
 }
 
-export const CorePreprocessors: Preprocesser[] = [SignalProcessor, ActionProcessor, RefProcessor]
+export const CorePreprocessors: Preprocesser[] = [ActionProcessor, SignalProcessor, RefProcessor]
 
 const MergeStoreAttributePlugin: AttributePlugin = {
   prefix: 'mergeStore',

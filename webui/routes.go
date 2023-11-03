@@ -25,6 +25,7 @@ func setupRoutes(ctx context.Context, router *chi.Mux) error {
 	if err := errors.Join(
 		setupAPI(ctx, router),
 		setupHome(ctx, router),
+		setupExamples(ctx, router),
 		setupEssays(ctx, router),
 		setupDocs(ctx, router),
 	); err != nil {

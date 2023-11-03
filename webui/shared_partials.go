@@ -1,14 +1,41 @@
 package webui
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
-	"github.com/delaneyj/gomponents-iconify/iconify/skill_icons"
+	"github.com/delaneyj/gomponents-iconify/iconify/simple_icons"
+	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
+	"github.com/go-chi/chi/v5"
 )
 
 func Page(children ...NODE) NODE {
+	linkPages := []string{
+		"Examples",
+		"Docs",
+		"Essays",
+	}
+	type ExternalPage struct {
+		Icon NodeFunc
+		Link string
+	}
+	externalPages := []ExternalPage{
+		{
+			Icon: simple_icons.Discord,
+			Link: "https://discord.com/channels/1035247242887561326/1149367785374359613",
+		},
+		{
+			Icon: simple_icons.Github,
+			Link: "https://github.com/delaneyj/datastar",
+		},
+		{
+			Icon: simple_icons.Npm,
+			Link: "https://www.npmjs.com/package/@sudodevnull/datastar",
+		},
+	}
+
 	return HTML5(HTML5Props{
 		Title:       "Datastar ",
 		Language:    "en",
@@ -27,28 +54,16 @@ func Page(children ...NODE) NODE {
 				TYPE("text/css"),
 				HREF(staticPath("tailwind.css")),
 			),
-			SCRIPT(
-				TYPE("module"),
-				DEFER,
-				RAW(
-					fmt.Sprintf(`
-import { datastar } from '%s'
-datastar.run()
-`,
-						staticPath("datastar.js"),
-					),
-				),
-			),
 		},
 		Body: NODES{
 			CLS(`
 				w-full h-screen overflow-hidden
 				grid
-				grid-rows-[auto,1fr,auto]
+				grid-rows-[auto,auto,1fr]
 				grid-cols-[1fr]
 			`),
 			DIV(
-				CLS("p-4 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
+				CLS("p-2 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
 				STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
 				DIV(
 					CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-2"),
@@ -61,47 +76,62 @@ datastar.run()
 					DIV(
 						CLS("flex flex-col items-end"),
 						DIV(TXT("Declarative Frontend Framework")),
+						DIV(
+							CLS("font-mono text-accent font-bold text-xs"),
+							TXT("v"+packageJSON.Version),
+						),
 					),
 				),
-			),
-
-			DIV(
-				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
-				GRP(children...),
 			),
 			DIV(
 				CLS("bg-base-200 text-base-content text-sm flex justify-between items-center gap-6 px-4 py-1"),
 				DIV(
 					CLS("flex gap-2"),
-					A(
-						CLS("btn btn-primary btn-ghost btn-sm"),
-						TXT("Docs"),
-						HREF("/docs"),
-					),
-					A(
-						CLS("btn btn-primary btn-ghost btn-sm"),
-						TXT("Essays"),
-						HREF("/essays"),
-					),
-					DIV(
-						CLS("join "),
-						A(
+					RANGE(linkPages, func(p string) NODE {
+						return A(
 							CLS("btn btn-ghost btn-sm"),
-							skill_icons.Discord(CLS("text-2xl")),
-							HREF("https://discord.com/channels/1035247242887561326/1149367785374359613"),
-						),
-						A(
-							CLS("btn btn-ghost btn-sm"),
-							skill_icons.GithubLight(CLS("text-2xl")),
-							HREF("https://github.com/delaneyj/datastar"),
-						),
-					),
+							TXT(p),
+							HREF(fmt.Sprintf("/%s", toolbelt.Lower(toolbelt.Snake(p)))),
+						)
+					}),
 				),
 				DIV(
-					CLS("font-mono text-accent font-bold"),
-					TXT("v"+packageJSON.Version),
+					CLS("flex gap-2"),
+					RANGE(externalPages, func(p ExternalPage) NODE {
+						return A(
+							CLS("btn btn-ghost btn-sm flex justify-center items-center rounded-full"),
+							p.Icon(CLS("text-2xl")),
+							HREF(p.Link),
+						)
+					}),
+				),
+			),
+			DIV(
+				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
+				GRP(children...),
+			),
+			SCRIPT(
+				TYPE("module"),
+				DEFER,
+				RAW(
+					fmt.Sprintf(`
+import { runDatastarWithAllPlugins } from '%s'
+window.ds = runDatastarWithAllPlugins()
+window.dispatchEvent(new CustomEvent('datastar-ready'))
+`,
+						staticPath("datastar.js"),
+					),
 				),
 			),
 		},
 	})
+}
+
+type routerFunc func(ctx context.Context, r chi.Router) error
+
+func Route(ctx context.Context, r chi.Router, path string, fn routerFunc) (err error) {
+	r.Route(path, func(router chi.Router) {
+		err = fn(ctx, router)
+	})
+	return err
 }

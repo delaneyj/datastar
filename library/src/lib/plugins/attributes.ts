@@ -23,15 +23,22 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
-  allowedTags: new Set(['input', 'textarea', 'select']),
+  allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
   bypassExpressionFunctionCreation: true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: expressionRaw } = ctx
     const signal = store[expressionRaw] as Signal<any>
 
     return ctx.reactivity.effect(() => {
-      if (!('value' in el)) throw new Error('Element does not have value property')
-      el.value = `${signal.value}`
+      if (!(el instanceof HTMLInputElement)) {
+        throw new Error('Element does not have value or checked')
+      }
+      const isCheckbox = el.type === 'checkbox'
+      if (isCheckbox) {
+        el.checked = signal.value
+      } else {
+        el.value = `${signal.value}`
+      }
       const setter = () => {
         const current = signal.value
         if (typeof current === 'number') {
@@ -39,7 +46,11 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         } else if (typeof current === 'string') {
           signal.value = el.value
         } else if (typeof current === 'boolean') {
-          signal.value = Boolean(el.value)
+          if (isCheckbox) {
+            signal.value = el.checked
+          } else {
+            signal.value = Boolean(el.value)
+          }
         } else {
           throw new Error('Unsupported type')
         }

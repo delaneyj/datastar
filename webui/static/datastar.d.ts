@@ -1,4 +1,4 @@
-export declare type Action = (ctx: AttributeContext, args: string) => Promise<void>;
+export declare type Action = (ctx: AttributeContext, ...args: string[]) => Promise<void>;
 
 export declare type Actions = Record<string, Action>;
 
@@ -31,7 +31,7 @@ export declare type AttributePlugin = {
     mustNotEmptyKey?: boolean;
     allowedTags?: Set<string>;
     disallowedTags?: Set<string>;
-    preprocessers?: Set<Preprocesser>;
+    preprocessors?: Set<Preprocesser>;
     bypassExpressionFunctionCreation?: boolean;
 };
 
@@ -63,7 +63,8 @@ export declare class Datastar {
     run(): void;
     private cleanupElementRemovals;
     private mergeStore;
-    applyPlugins(rootElement: Element): void;
+    signalByName<T>(name: string): Signal<T>;
+    private applyPlugins;
 }
 
 export declare type DatastarPlugin = {};
