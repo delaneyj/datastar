@@ -12,8 +12,9 @@ tasks:
   libpub:
     dir: ./library
     cmds:
-      - npm publish --access public
+      - git push origin
       - git push origin --tags
+      - npm publish --access public
 
   library:
     dir: ./library

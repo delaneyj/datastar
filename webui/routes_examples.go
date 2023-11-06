@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
@@ -31,14 +32,23 @@ func examplePage(w http.ResponseWriter, r *http.Request, children ...NODE) error
 		return fmt.Errorf("error converting markdown: %w", err)
 	}
 
+	back := A(
+		HREF("/examples"),
+		CLS("btn btn-primary"),
+		material_symbols.ArrowBack(),
+		TXT("Back to Examples"),
+	)
+
 	Render(w, Page(
 		DIV(
-			CLS("flex flex-col items-center p-8"),
+			CLS("flex flex-col items-center p-8 gap-8"),
+			back,
 			DIV(
 				CLS("flex flex-col max-w-5xl w-full prose"),
 				RAW(mdBuf.String()),
 				GRP(children...),
 			),
+			back,
 		),
 	))
 
@@ -63,6 +73,14 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 			{
 				Pattern:     "Bulk Update",
 				Description: "Demonstrates bulk updating of multiple rows of data",
+			},
+			{
+				Pattern:     "Click to Load",
+				Description: "Demonstrates loading data on demand",
+			},
+			{
+				Pattern:     "Delete Row",
+				Description: "Demonstrates row deletion in a table",
 			},
 		}
 		exampleRows := RANGE(examples, func(e Example) NODE {
@@ -89,7 +107,7 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 						DIV(
 							DIV(
 								CLS("text-4xl font-bold text-primary"),
-								TXT("Examples*"),
+								TXT("Ported HTMX Examples*"),
 							),
 							HR(
 								CLS("divider border-primary"),
@@ -115,6 +133,8 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 		if err := errors.Join(
 			setupExamplesClickToEdit(ctx, examplesRouter),
 			setupExamplesBulkUpdate(ctx, examplesRouter),
+			setupExamplesClickToLoad(ctx, examplesRouter),
+			setupExamplesDeleteRow(ctx, examplesRouter),
 		); err != nil {
 			return fmt.Errorf("error setting up examples routes: %w", err)
 		}

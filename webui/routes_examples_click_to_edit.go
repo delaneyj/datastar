@@ -1,12 +1,11 @@
 package webui
 
 import (
-	"bytes"
 	"context"
-	"encoding/json"
 	"net/http"
 
 	goaway "github.com/TwiN/go-away"
+	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/delaneyj/toolbelt/gomps/datastar"
 	"github.com/go-chi/chi/v5"
@@ -65,100 +64,119 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 
 		exampleRouter.Route("/contact/{id}", func(contactRouter chi.Router) {
 			contactRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-				Render(w, contactNode(c1))
+				sse := toolbelt.NewSSE(w, r)
+				datastar.RenderFragment(
+					sse,
+					datastar.FragmentSelectorUseID,
+					datastar.FragmentMergeMorphElement,
+					contactNode(c1),
+				)
 			})
 
 			contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {
 				resetContact()
-				Render(w, contactNode(c1))
+				sse := toolbelt.NewSSE(w, r)
+				datastar.RenderFragment(
+					sse,
+					datastar.FragmentSelectorUseID,
+					datastar.FragmentMergeMorphElement,
+					contactNode(c1),
+				)
 			})
 
 			contactRouter.Get("/edit", func(w http.ResponseWriter, r *http.Request) {
-				Render(w, DIV(
-					ID("contact_1"),
-					CLS("flex flex-col gap-2"),
-					datastar.MergeStore(c1),
+				sse := toolbelt.NewSSE(w, r)
+				datastar.RenderFragment(
+					sse,
+					datastar.FragmentSelectorUseID,
+					datastar.FragmentMergeMorphElement,
 					DIV(
-						CLS("form-control"),
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text"),
-								TXT("First Name"),
+						ID("contact_1"),
+						CLS("flex flex-col gap-2"),
+						datastar.MergeStore(c1),
+						DIV(
+							CLS("form-control"),
+							LABEL(
+								CLS("label"),
+								SPAN(
+									CLS("label-text"),
+									TXT("First Name"),
+								),
+							),
+							INPUT(
+								CLS("input input-bordered"),
+								TYPE("text"),
+								datastar.Model("firstName"),
 							),
 						),
-						INPUT(
-							CLS("input input-bordered"),
-							TYPE("text"),
-							datastar.Model("firstName"),
-						),
-					),
-					DIV(
-						CLS("form-control"),
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text"),
-								TXT("Last Name"),
+						DIV(
+							CLS("form-control"),
+							LABEL(
+								CLS("label"),
+								SPAN(
+									CLS("label-text"),
+									TXT("Last Name"),
+								),
+							),
+							INPUT(
+								CLS("input input-bordered"),
+								TYPE("text"),
+								datastar.Model("lastName"),
 							),
 						),
-						INPUT(
-							CLS("input input-bordered"),
-							TYPE("text"),
-							datastar.Model("lastName"),
-						),
-					),
-					DIV(
-						CLS("form-control"),
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text"),
-								TXT("Email"),
+						DIV(
+							CLS("form-control"),
+							LABEL(
+								CLS("label"),
+								SPAN(
+									CLS("label-text"),
+									TXT("Email"),
+								),
+							),
+							INPUT(
+								CLS("input input-bordered"),
+								TYPE("text"),
+								datastar.Model("email"),
 							),
 						),
-						INPUT(
-							CLS("input input-bordered"),
-							TYPE("text"),
-							datastar.Model("email"),
+						DIV(
+							CLS("join"),
+							BUTTON(
+								CLS("btn btn-primary join-item"),
+								datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
+								datastar.On("click", "$$put"),
+								TXT("Save"),
+							),
+							BUTTON(
+								CLS("btn btn-warning join-item"),
+								datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
+								datastar.On("click", "$$get"),
+								TXT("Cancel"),
+							),
 						),
 					),
-					DIV(
-						CLS("join"),
-						BUTTON(
-							CLS("btn btn-primary join-item"),
-							datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
-							datastar.On("click", "$$put"),
-							TXT("Save"),
-						),
-						BUTTON(
-							CLS("btn btn-warning join-item"),
-							datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
-							datastar.On("click", "$$get"),
-							TXT("Cancel"),
-						),
-					),
-				))
+				)
 			})
 
 			contactRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
-				buf := bytes.NewBuffer(nil)
-				buf.ReadFrom(r.Body)
-				b := buf.Bytes()
 				c := &Contact{}
-				if err := json.Unmarshal(b, c); err != nil {
+				if err := datastar.BodyUnmarshal(r, c); err != nil {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 					return
 				}
+
 				if err := sanitizer.Sanitize(c); err != nil {
 					http.Error(w, err.Error(), http.StatusBadRequest)
 					return
 				}
 
-				c1 = c
-
-				Render(w, contactNode(c1))
-
+				c1 = c // update the contact
+				datastar.RenderFragment(
+					toolbelt.NewSSE(w, r),
+					datastar.FragmentSelectorUseID,
+					datastar.FragmentMergeMorphElement,
+					contactNode(c1),
+				)
 			})
 		})
 	})

@@ -36,7 +36,7 @@ The click to edit pattern provides a way to offer inline editing of all or part 
 ```
 This returns a form that can be used to edit the contact
 ```html
-<!-- Removed styling -->
+<!-- Removed styling and escaping for brevity -->
 <div
     id="contact_1"
     data-merge-store="{

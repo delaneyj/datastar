@@ -8,8 +8,9 @@ require (
 	github.com/alecthomas/chroma/v2 v2.9.1
 	github.com/benbjohnson/hashfs v0.2.1
 	github.com/delaneyj/gomponents-iconify v0.0.20231025
-	github.com/delaneyj/toolbelt v0.0.26
+	github.com/delaneyj/toolbelt v0.0.32
 	github.com/dustin/go-humanize v1.0.1
+	github.com/ggicci/httpin v0.14.2
 	github.com/go-chi/chi/v5 v5.0.10
 	github.com/goccy/go-json v0.10.2
 	github.com/joho/godotenv v1.5.1
@@ -24,7 +25,10 @@ require (
 	mvdan.cc/xurls/v2 v2.5.0
 )
 
-require github.com/valyala/bytebufferpool v1.0.0 // indirect
+require (
+	github.com/ggicci/owl v0.4.0 // indirect
+	github.com/valyala/bytebufferpool v1.0.0 // indirect
+)
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect

@@ -1,8 +1,9 @@
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
 const validJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$]*`
-const wholePrefixSuffix = (rune: string, prefix: string, suffix: string) =>
-  new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier})${suffix})`, `g`)
+function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
+  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier})${suffix})`, `g`)
+}
 
 const SignalProcessor: Preprocesser = {
   name: 'SignalProcessor',
@@ -42,7 +43,6 @@ export const CorePreprocessors: Preprocesser[] = [ActionProcessor, SignalProcess
 const MergeStoreAttributePlugin: AttributePlugin = {
   prefix: 'mergeStore',
   description: 'Setup the global store',
-
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
