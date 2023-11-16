@@ -6,23 +6,23 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
-	"github.com/delaneyj/toolbelt/gomps/datastar"
 	"github.com/go-chi/chi/v5"
 )
 
-func setupExamplesDeleteRow(ctx context.Context, examplesRouter chi.Router) error {
-	examplesRouter.Route("/delete_row", func(deleteRowRouter chi.Router) {
+func setupExamplesDeleteRow(ctx context.Context, deleteRowRouter chi.Router) error {
+	deleteRowRouter.Route("/delete_row", func(deleteRowRouter chi.Router) {
 
 		deleteRowRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			examplePage(w, r)
 		})
 
-		contacts := starterContacts()
+		contacts := starterActiveContacts()
 
-		contactNode := func(i int, cs *ContactStatus) NODE {
+		contactNode := func(i int, cs *ContactActive) NODE {
 			return TR(
 				ID(fmt.Sprintf("contact_%d", i)),
 				TD(TXT(cs.Name)),
@@ -57,7 +57,7 @@ func setupExamplesDeleteRow(ctx context.Context, examplesRouter chi.Router) erro
 							TH(TXT("Name")),
 							TH(TXT("Email")),
 							TH(TXT("Status")),
-							TH(TXT("")),
+							TH(TXT("Actions"), CLS("text-right")),
 						),
 					),
 					TBODY(
@@ -77,21 +77,13 @@ func setupExamplesDeleteRow(ctx context.Context, examplesRouter chi.Router) erro
 		deleteRowRouter.Route("/data", func(dataRouter chi.Router) {
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(
-					sse, datastar.FragmentSelectorSelf,
-					datastar.FragmentMergeMorphElement,
-					contactsToNode(),
-				)
+				datastar.RenderFragmentSelf(sse, contactsToNode())
 			})
 
 			dataRouter.Get("/reset", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				contacts = starterContacts()
-				datastar.RenderFragment(
-					sse, "#contacts",
-					datastar.FragmentMergeMorphElement,
-					contactsToNode(),
-				)
+				contacts = starterActiveContacts()
+				datastar.RenderFragment(sse, contactsToNode())
 			})
 
 			dataRouter.Delete("/{index}", func(w http.ResponseWriter, r *http.Request) {
@@ -104,12 +96,7 @@ func setupExamplesDeleteRow(ctx context.Context, examplesRouter chi.Router) erro
 				}
 
 				contacts = append(contacts[:index], contacts[index+1:]...)
-				datastar.RenderFragment(
-					sse,
-					fmt.Sprintf("#contact_%d", index),
-					datastar.FragmentMergeDeleteElement,
-					DIV(),
-				)
+				datastar.Delete(sse, "#contact_"+indexStr)
 			})
 		})
 

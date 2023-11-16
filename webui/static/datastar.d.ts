@@ -8,6 +8,7 @@ export declare type AttributeContext = {
     store: any;
     mergeStore: (store: DeepState) => void;
     applyPlugins: (target: Element) => void;
+    cleanupElementRemovals: (el: Element) => void;
     actions: Readonly<Actions>;
     refs: Record<string, HTMLorSVGElement>;
     reactivity: Reactivity;
@@ -32,7 +33,7 @@ export declare type AttributePlugin = {
     allowedTags?: Set<string>;
     disallowedTags?: Set<string>;
     preprocessors?: Set<Preprocesser>;
-    bypassExpressionFunctionCreation?: boolean;
+    bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean;
 };
 
 declare function Computed(this: Computed, compute: () => unknown): void;
@@ -57,6 +58,7 @@ export declare class Datastar {
     actions: Actions;
     refs: Record<string, HTMLElement>;
     reactivity: Reactivity;
+    parentID: string;
     missingIDNext: number;
     removals: Map<Element, Set<OnRemovalFn>>;
     constructor(actions?: Actions, ...plugins: AttributePlugin[]);
@@ -65,6 +67,7 @@ export declare class Datastar {
     private mergeStore;
     signalByName<T>(name: string): Signal<T>;
     private applyPlugins;
+    private walkDownDOM;
 }
 
 export declare type DatastarPlugin = {};

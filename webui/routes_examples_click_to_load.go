@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
-	"github.com/delaneyj/toolbelt/gomps/datastar"
 	"github.com/ggicci/httpin"
 	"github.com/go-chi/chi/v5"
 )
@@ -89,23 +89,15 @@ func setupExamplesClickToLoad(ctx context.Context, examplesRouter chi.Router) er
 			sse := toolbelt.NewSSE(w, r)
 
 			if input.Offset == 0 {
-				datastar.RenderFragment(
-					sse,
-					datastar.FragmentSelectorSelf,
-					datastar.FragmentMergeMorphElement,
-					renderAgentsTable(input),
-				)
+				datastar.RenderFragmentSelf(sse, renderAgentsTable(input))
 			} else {
-				datastar.RenderFragment(
-					sse, "#more_btn",
-					datastar.FragmentMergeMorphElement,
-					moreButton(input),
-				)
+				datastar.RenderFragment(sse, moreButton(input))
 				for _, node := range renderAgentRows(input) {
 					datastar.RenderFragment(
-						sse, "#click_to_load_rows",
-						datastar.FragmentMergeAppendElement,
+						sse,
 						node,
+						datastar.WithQuerySelectorID("click_to_load_rows"),
+						datastar.WithMergeAppendElement(),
 					)
 				}
 			}

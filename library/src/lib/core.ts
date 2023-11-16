@@ -8,6 +8,7 @@ import {
   AttributeContext,
   AttributePlugin,
   ExpressionFunction,
+  HTMLorSVGElement,
   OnRemovalFn,
   Preprocesser,
   Reactivity,
@@ -23,6 +24,7 @@ export class Datastar {
     computed,
     effect,
   }
+  parentID = ''
   missingIDNext = 0
   removals = new Map<Element, Set<OnRemovalFn>>()
 
@@ -84,22 +86,8 @@ export class Datastar {
     const appliedProcessors = new Set<Preprocesser>()
 
     this.plugins.forEach((p, pi) => {
-      walkDownDOM(rootElement, (element) => {
-        if (pi === 0) this.cleanupElementRemovals(element)
-
-        const el = toHTMLorSVGElement(element)
-        if (!el) return
-
-        if (el.id) {
-          // TODO: Remove this hack once CSSStyleDeclaration supports viewTransitionName
-          const style = el.style as any
-          style.viewTransitionName = el.id
-          // console.log(`Setting viewTransitionName on ${el.id}`)
-        }
-        if (!el.id && el.tagName !== 'BODY') {
-          const id = (this.missingIDNext++).toString(16).padStart(8, '0')
-          el.id = `ds${id}`
-        }
+      this.walkDownDOM(rootElement, (el) => {
+        if (pi === 0) this.cleanupElementRemovals(el)
 
         for (const dsKey in el.dataset) {
           let expression = el.dataset[dsKey] || ''
@@ -173,6 +161,7 @@ export class Datastar {
             store,
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
+            cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             actions,
             refs,
             reactivity,
@@ -185,7 +174,7 @@ export class Datastar {
             modifiers,
           }
 
-          if (!p.bypassExpressionFunctionCreation && !p.mustHaveEmptyExpression && expression.length) {
+          if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
             const lines = expression.split(';')
             lines[lines.length - 1] = `return ${lines[lines.length - 1]}`
             const fnContent = lines.join(';')
@@ -193,6 +182,7 @@ export class Datastar {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
+              console.error(e)
               console.error(`Error evaluating expression '${fnContent}' on ${el.id ? `#${el.id}` : el.tagName}`)
               return
             }
@@ -209,16 +199,28 @@ export class Datastar {
       })
     })
   }
-}
 
-function walkDownDOM(el: Element | null, callback: (el: Element) => void) {
-  if (!el) return
-  callback(el)
+  private walkDownDOM(element: Element | null, callback: (el: HTMLorSVGElement) => void, siblingOffset = 0) {
+    if (!element) return
+    const el = toHTMLorSVGElement(element)
+    if (!el) return
 
-  el = el.firstElementChild
+    if (el?.id?.length) {
+      const style = el.style as any
+      if (!style?.viewTransitionName?.length) {
+        style.viewTransitionName = el.id
+        // console.log(`setting viewTransitionName to ${el.id}`)
+        // console.log(element)
+      }
+    }
 
-  while (el) {
-    walkDownDOM(el, callback)
-    el = el.nextElementSibling
+    callback(el)
+
+    siblingOffset = 0
+    element = element.firstElementChild
+    while (element) {
+      this.walkDownDOM(element, callback, siblingOffset++)
+      element = element.nextElementSibling
+    }
   }
 }

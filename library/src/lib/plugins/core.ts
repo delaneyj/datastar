@@ -54,7 +54,7 @@ const RefPlugin: AttributePlugin = {
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
-  bypassExpressionFunctionCreation: true,
+  bypassExpressionFunctionCreation: () => true,
   preprocessors: new Set([]),
 
   onLoad: (ctx: AttributeContext) => {

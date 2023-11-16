@@ -7,21 +7,21 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
-	"github.com/delaneyj/toolbelt/gomps/datastar"
 	"github.com/go-chi/chi/v5"
 )
 
-type ContactStatus struct {
+type ContactActive struct {
 	IsActive bool   `json:"isActive"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
 }
 
-func starterContacts() []*ContactStatus {
-	return []*ContactStatus{
+func starterActiveContacts() []*ContactActive {
+	return []*ContactActive{
 		{
 			Name:     "Joe Smith",
 			Email:    "joe@smith.org",
@@ -52,7 +52,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 	// 	return fmt.Errorf("error reading examples dir: %w", err)
 	// }
 
-	contactToNode := func(i int, cs *ContactStatus, wasChanged bool) NODE {
+	contactToNode := func(i int, cs *ContactActive, wasChanged bool) NODE {
 		key := fmt.Sprintf("contact_%d", i)
 		return TR(
 			ID(key),
@@ -77,7 +77,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 		)
 	}
 
-	contacts := starterContacts()
+	contacts := starterActiveContacts()
 
 	store := map[string]bool{
 		"all": false,
@@ -87,7 +87,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 		store[key] = false
 	}
 
-	contactsToNode := func(contacts []*ContactStatus) NODE {
+	contactsToNode := func(contacts []*ContactActive) NODE {
 		return DIV(
 			ID("bulk_update"),
 			datastar.MergeStore(store),
@@ -111,7 +111,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 					),
 				),
 				TBODY(
-					RANGEI(contacts, func(i int, cs *ContactStatus) NODE {
+					RANGEI(contacts, func(i int, cs *ContactActive) NODE {
 						return contactToNode(i, cs, false)
 					}),
 				),
@@ -145,12 +145,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 		bulkUpdateRouter.Route("/data", func(dataRouter chi.Router) {
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(
-					sse,
-					datastar.FragmentSelectorSelf,
-					datastar.FragmentMergeMorphElement,
-					contactsToNode(contacts),
-				)
+				datastar.RenderFragmentSelf(sse, contactsToNode(contacts))
 			})
 
 			setActivation := func(w http.ResponseWriter, r *http.Request, isActive bool) {
@@ -177,8 +172,6 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 
 						datastar.RenderFragment(
 							sse,
-							datastar.FragmentSelectorUseID,
-							datastar.FragmentMergeMorphElement,
 							contactToNode(i, c, wasChanged && wasSelected),
 						)
 					}
@@ -188,9 +181,10 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 					store[k] = false
 				}
 				datastar.RenderFragment(
-					sse, "#bulk_update",
-					datastar.FragmentMergeUpsertAttributes,
+					sse,
 					DIV(datastar.MergeStore(store)),
+					datastar.WithQuerySelector("#bulk_update"),
+					datastar.WithMergeType(datastar.FragmentMergeUpsertAttributes),
 				)
 			}
 

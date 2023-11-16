@@ -54,6 +54,10 @@ func Page(children ...NODE) NODE {
 				TYPE("text/css"),
 				HREF(staticPath("tailwind.css")),
 			),
+			META(
+				NAME("view-transition"),
+				CONTENT("same-origin"),
+			),
 		},
 		Body: NODES{
 			CLS(`
@@ -66,7 +70,7 @@ func Page(children ...NODE) NODE {
 				CLS("p-2 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
 				STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
 				DIV(
-					CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-2"),
+					CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-1"),
 					A(
 						CLS("flex gap-2 items-center text-5xl font-display"),
 						TXT("Datastar"),
@@ -74,12 +78,13 @@ func Page(children ...NODE) NODE {
 						HREF("/"),
 					),
 					DIV(
-						CLS("flex flex-col items-end"),
+						CLS("flex flex-col gap-1 items-end"),
 						DIV(TXT("Declarative Frontend Framework")),
 						DIV(
 							CLS("font-mono text-accent font-bold text-xs"),
 							TXT("v"+packageJSON.Version),
 						),
+						BuildSizeBadge,
 					),
 				),
 			),

@@ -8,13 +8,16 @@ require (
 	github.com/alecthomas/chroma/v2 v2.9.1
 	github.com/benbjohnson/hashfs v0.2.1
 	github.com/delaneyj/gomponents-iconify v0.0.20231025
-	github.com/delaneyj/toolbelt v0.0.32
+	github.com/delaneyj/toolbelt v0.0.38
 	github.com/dustin/go-humanize v1.0.1
 	github.com/ggicci/httpin v0.14.2
 	github.com/go-chi/chi/v5 v5.0.10
+	github.com/go-faker/faker/v4 v4.2.0
 	github.com/goccy/go-json v0.10.2
 	github.com/joho/godotenv v1.5.1
+	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/samber/lo v1.38.1
+	github.com/valyala/bytebufferpool v1.0.0
 	github.com/yuin/goldmark v1.5.6
 	github.com/yuin/goldmark-emoji v1.0.2
 	github.com/yuin/goldmark-highlighting/v2 v2.0.0-20230729083705-37449abec8cc
@@ -25,10 +28,7 @@ require (
 	mvdan.cc/xurls/v2 v2.5.0
 )
 
-require (
-	github.com/ggicci/owl v0.4.0 // indirect
-	github.com/valyala/bytebufferpool v1.0.0 // indirect
-)
+require github.com/ggicci/owl v0.4.0 // indirect
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9 // indirect
@@ -43,7 +43,7 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/klauspost/compress v1.17.1 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.5 // indirect
-	github.com/maragudk/gomponents v0.20.1 // indirect
+	github.com/maragudk/gomponents v0.20.1
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/nats-io/jwt/v2 v2.5.2 // indirect

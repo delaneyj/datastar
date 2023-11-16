@@ -16,6 +16,7 @@ export type AttributeContext = {
   store: any
   mergeStore: (store: DeepState) => void
   applyPlugins: (target: Element) => void
+  cleanupElementRemovals: (el: Element) => void
   actions: Readonly<Actions>
   refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
@@ -49,7 +50,7 @@ export type AttributePlugin = {
   allowedTags?: Set<string> // If not provided, all tags are allowed
   disallowedTags?: Set<string> // If not provided, no tags are disallowed
   preprocessors?: Set<Preprocesser> // If not provided, no preprocessors are used
-  bypassExpressionFunctionCreation?: boolean // If true, the expression function is not created
+  bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean // If true, the expression function is not created
 }
 
 export type RegexpGroups = Record<string, string>

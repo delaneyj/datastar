@@ -9,4 +9,12 @@ export const HelperActions: Actions = {
         ctx.store[k].value = newValue
       })
   },
+  toggleAll: async (ctx, regexp) => {
+    const re = new RegExp(regexp)
+    Object.keys(ctx.store)
+      .filter((k) => re.test(k))
+      .forEach((k) => {
+        ctx.store[k].value = !ctx.store[k].value
+      })
+  },
 }

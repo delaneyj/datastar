@@ -13,46 +13,92 @@ export const BindAttributePlugin: AttributePlugin = {
     return ctx.reactivity.effect(() => {
       const key = kebabize(ctx.key)
       const value = ctx.expressionFn(ctx)
-      ctx.el.setAttribute(key, `${value}`)
+      const v = `${value}`
+      if (!v || v === 'false' || v === 'null' || v === 'undefined') {
+        ctx.el.removeAttribute(key)
+      } else {
+        ctx.el.setAttribute(key, v)
+      }
     })
   },
 }
 
+const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/
 const updateModelEvents = ['change', 'input', 'keydown']
 export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
   allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
-  bypassExpressionFunctionCreation: true,
+  bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: expressionRaw } = ctx
     const signal = store[expressionRaw] as Signal<any>
 
     return ctx.reactivity.effect(() => {
-      if (!(el instanceof HTMLInputElement)) {
-        throw new Error('Element does not have value or checked')
+      const isInput = el instanceof HTMLInputElement
+      const isSelect = el instanceof HTMLSelectElement
+
+      if (!isInput && !isSelect) {
+        throw new Error('Element must be input or select')
       }
-      const isCheckbox = el.type === 'checkbox'
+
+      const isCheckbox = isInput && el.type === 'checkbox'
+      const isFile = isInput && el.type === 'file'
+      if (!signal) throw new Error(`Signal ${expressionRaw} not found`)
       if (isCheckbox) {
         el.checked = signal.value
+      } else if (isFile) {
+        // console.warn('File input reading is not supported yet')
       } else {
         el.value = `${signal.value}`
       }
       const setter = () => {
-        const current = signal.value
-        if (typeof current === 'number') {
-          signal.value = Number(el.value)
-        } else if (typeof current === 'string') {
-          signal.value = el.value
-        } else if (typeof current === 'boolean') {
-          if (isCheckbox) {
-            signal.value = el.checked
-          } else {
-            signal.value = Boolean(el.value)
+        if (isFile) {
+          const [f] = el?.files || []
+          if (!f) {
+            signal.value = ''
+            return
           }
+          const reader = new FileReader()
+          reader.onload = () => {
+            if (typeof reader.result !== 'string') throw new Error('Unsupported type')
+
+            const match = reader.result.match(dataURIRegex)
+            if (!match?.groups) throw new Error('Invalid data URI')
+            const { mime, contents } = match.groups
+            signal.value = contents
+
+            const mimeName = `${expressionRaw}Mime`
+            if (mimeName in store) {
+              const mimeSignal = store[`${mimeName}`] as Signal<string>
+              mimeSignal.value = mime
+            }
+          }
+          reader.readAsDataURL(f)
+
+          const nameName = `${expressionRaw}Name`
+          if (nameName in store) {
+            const nameSignal = store[`${nameName}`] as Signal<string>
+            nameSignal.value = f.name
+          }
+
+          return
         } else {
-          throw new Error('Unsupported type')
+          const current = signal.value
+          if (typeof current === 'number') {
+            signal.value = Number(el.value)
+          } else if (typeof current === 'string') {
+            signal.value = el.value
+          } else if (typeof current === 'boolean') {
+            if (isCheckbox) {
+              signal.value = el.checked
+            } else {
+              signal.value = Boolean(el.value)
+            }
+          } else {
+            throw new Error('Unsupported type')
+          }
         }
       }
 
@@ -85,7 +131,29 @@ export const TextPlugin: AttributePlugin = {
   },
 }
 
-const DOMContentLoaded = 'DOMContentLoaded'
+// export const PromptPlugin: AttributePlugin = {
+//   prefix: 'prompt',
+//   description: 'Sets the textContent of the element',
+//   preprocessors: new Set([
+//     {
+//       name: 'PromptPreprocessor',
+//       description: `Replacing prompt() with ctx.store.prompt`,
+//       regexp: /(?<whole>(?<signal>[^;]*);(?<label>.*))/gm,
+//       replacer: ({ signal, label }: RegexpGroups) =>
+//         `
+//           const v = prompt(\`${label}\`, ctx.store.${signal}.value);
+//           if (v && v !== ctx.store.${signal}.value) {
+//             ctx.store.${signal}.value = v
+//           };
+//           v
+//         `,
+//     },
+//   ]),
+//   onLoad: (ctx: AttributeContext) => {
+//     ctx.expressionFn(ctx)
+//   },
+// }
+
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   description: 'Sets the event listener of the element',
@@ -125,10 +193,8 @@ export const EventPlugin: AttributePlugin = {
     if (ctx.modifiers.has('once')) evtListOpts.once = true
 
     if (key === 'load') {
-      document.addEventListener(DOMContentLoaded, callback, evtListOpts)
-      return () => {
-        document.removeEventListener(DOMContentLoaded, callback)
-      }
+      callback()
+      return () => {}
     }
     const eventType = key.toLowerCase()
     el.addEventListener(eventType, callback, evtListOpts)
@@ -159,6 +225,7 @@ export const AttributePlugins: AttributePlugin[] = [
   TwoWayBindingModelPlugin,
   TextPlugin,
   FocusPlugin,
+  // PromptPlugin,
   EventPlugin,
 ]
 

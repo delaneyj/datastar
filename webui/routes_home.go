@@ -21,6 +21,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
+var BuildSizeBadge NODE
+
 func setupHome(ctx context.Context, router *chi.Mux) error {
 	build, err := staticFS.ReadFile("static/datastar.iife.js")
 	if err != nil {
@@ -37,6 +39,11 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	}
 	w.Close()
 	iifeBuildSize := humanize.Bytes(uint64(buf.Len()))
+	BuildSizeBadge = DIV(
+		CLS("badge badge-accent flex-1 gap-1"),
+		tabler.FileZip(),
+		TXT(iifeBuildSize+" w/ all plugins"),
+	)
 
 	type Feature struct {
 		Description string
@@ -180,11 +187,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						),
 						DIV(
 							CLS("flex gap-2 justify-center items-center"),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1"),
-								tabler.FileZip(),
-								TXT(iifeBuildSize+" w/ all plugins"),
-							),
+							BuildSizeBadge,
 							DIV(
 								CLS("badge badge-accent flex-1 gap-1"),
 								carbon.ColumnDependency(),
@@ -254,11 +257,11 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							DIV(
 								CLS("flex gap-1 justify-center items-center text-5xl"),
 								vscode_icons.FileTypeHtml(),
-								material_symbols.AddRounded(),
+								material_symbols.AddRounded(CLS("text-3xl")),
 								vscode_icons.FileTypeTypescriptOfficial(),
-								material_symbols.AddRounded(),
+								material_symbols.AddRounded(CLS("text-3xl")),
 								vscode_icons.FileTypeVite(),
-								material_symbols.AddRounded(),
+								material_symbols.AddRounded(CLS("text-3xl")),
 								vscode_icons.FileTypeGoGopher(),
 							),
 							DIV(
@@ -281,10 +284,16 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 								TXT("Why another framework?"),
 							),
 							A(
-								CLS("btn btn-primary btn-lg flex-1"),
-								HREF("/docs"),
+								CLS("btn btn-accent btn-lg flex-1"),
+								HREF("/examples"),
 								mdi.RocketLaunch(),
-								TXT("Don't care, just get started"),
+								TXT("Show me what you got!"),
+							),
+							A(
+								CLS("btn btn-lg flex-1"),
+								HREF("/docs"),
+								mdi.Book(),
+								TXT("I'm do my own research"),
 							),
 						),
 					),

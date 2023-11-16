@@ -1,7 +1,6 @@
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
-
 const GET = 'get'
 const POST = 'post'
 const PUT = 'put'
@@ -10,7 +9,19 @@ const DELETE = 'delete'
 const Methods = [GET, POST, PUT, PATCH, DELETE]
 
 export const BackendActions: Actions = Methods.reduce((acc, method) => {
-  acc[method] = async (ctx) => fetcher(method, ctx)
+  acc[method] = async (ctx) => {
+    const da = Document as any
+    if (!da.startViewTransition) {
+      await fetcher(method, ctx)
+      return
+    }
+    return new Promise((resolve) => {
+      da.startViewTransition(async () => {
+        await fetcher(method, ctx)
+        resolve()
+      })
+    })
+  }
   return acc
 }, {} as Actions)
 
@@ -20,11 +31,11 @@ const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
 const TEXT_EVENT_STREAM = 'text/event-stream'
 const TRUE_STRING = 'true'
-const DATASTAR_CLASS_PREFIX = 'datastar'
-const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}-indicator`
-const LOADING_CLASS = `${DATASTAR_CLASS_PREFIX}-request`
-const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}-settling`
-const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}-swapping`
+const DATASTAR_CLASS_PREFIX = 'datastar-'
+const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
+const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
+const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
+const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
 const SELECTOR_SELF_SELECTOR = 'self'
 
 const MergeOptions = {
@@ -62,25 +73,11 @@ export const FetchURLPlugin: AttributePlugin = {
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   onGlobalInit: ({ mergeStore }) => {
-    const style = document.createElement('style')
-    style.innerHTML = `
-.${INDICATOR_CLASS}{
- opacity:0;
-}
-.${LOADING_CLASS} .${INDICATOR_CLASS}{
- opacity:1;
- transition: opacity 300ms ease-in;
-}
-.${LOADING_CLASS}.${INDICATOR_CLASS}{
- opacity:1;
- transition: opacity 300s ease-in;
-}
-`
-    document.head.appendChild(style)
     mergeStore({
       fetch: {
         headers: {},
         elementURLs: {},
+        indicatorSelectors: {},
       },
     })
   },
@@ -95,54 +92,65 @@ export const FetchURLPlugin: AttributePlugin = {
   },
 }
 
-export const ServerSentEventsPlugin: AttributePlugin = {
-  prefix: 'sse',
-  description: 'Sets the value of the element',
+export const FetchIndicatorPlugin: AttributePlugin = {
+  prefix: 'fetchIndicator',
+  description: 'Sets the fetch indicator selector',
   mustHaveEmptyKey: true,
+  mustNotEmptyExpression: true,
+  onGlobalInit: () => {
+    const style = document.createElement('style')
+    style.innerHTML = `
+.${INDICATOR_CLASS}{
+ opacity:0;
+ transition: opacity 300ms ease-out;
+}
+.${INDICATOR_LOADING_CLASS} {
+ opacity:1;
+ transition: opacity 300ms ease-in;
+}
+`
+    document.head.appendChild(style)
+  },
   onLoad: (ctx) => {
-    const url = ctx.expressionFn(ctx)
-    if (typeof url !== 'string') throw new Error('SSE url must be a string')
+    return ctx.reactivity.effect(() => {
+      const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
+      ctx.store.fetch.indicatorSelectors[ctx.el.id] = c
 
-    const onMessage = (evt: MessageEvent) => {
-      mergeHTMLFragment(ctx, '', 'append_element', evt.data)
-    }
+      const indicator = document.querySelector(c.value)
+      if (!indicator) throw new Error(`No indicator found for ${c.value}`)
+      indicator.classList.add(INDICATOR_CLASS)
 
-    const onError = (evt: Event) => {
-      console.error(evt)
-      setup()
-    }
-
-    let eventSource: EventSource
-    const cleanup = () => {
-      if (eventSource) {
-        eventSource.removeEventListener('message', onMessage)
-        eventSource.removeEventListener('error', onError)
-        eventSource.close()
+      return () => {
+        delete ctx.store.fetch.indicatorSelectors[ctx.el.id]
       }
-    }
-
-    const setup = () => {
-      cleanup()
-      eventSource = new EventSource(url)
-      eventSource.addEventListener('message', onMessage)
-      eventSource.addEventListener('error', onError)
-    }
-
-    return () => {
-      cleanup()
-    }
+    })
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchURLPlugin, ServerSentEventsPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchURLPlugin, FetchIndicatorPlugin]
 
 const sseRegexp = /(?<key>\w*): (?<value>.*)/gm
 async function fetcher(method: string, ctx: AttributeContext) {
   const { el, store } = ctx
   const urlSignal: Signal<string> = store.fetch.elementURLs[el.id]
-  if (!urlSignal) throw new Error(`No signal for ${method}`)
+  if (!urlSignal) {
+    // throw new Error(`No signal for ${method} on ${el.id}`)
+    return
+  }
 
-  el.classList.add(LOADING_CLASS)
+  let loadingTarget = el
+  let hasIndicator = false
+  const indicatorSelector = store.fetch.indicatorSelectors[el.id]
+  if (indicatorSelector) {
+    const indicator = document.querySelector(indicatorSelector)
+    if (indicator) {
+      loadingTarget = indicator
+      loadingTarget.classList.remove(INDICATOR_CLASS)
+      loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
+      hasIndicator = true
+    }
+  }
+
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
 
   const url = new URL(urlSignal.value, window.location.origin)
@@ -194,54 +202,96 @@ async function fetcher(method: string, ctx: AttributeContext) {
     if (done) break
 
     value.split('\n\n').forEach((evtBlock) => {
-      console.log(evtBlock)
+      // console.log(evtBlock)
       const matches = [...evtBlock.matchAll(sseRegexp)]
       if (matches.length) {
         let fragment = '',
           merge: MergeOption = 'morph_element',
-          selector = ''
+          selector = '',
+          settleTime = 0,
+          isRedirect = false,
+          isFragment = false,
+          redirectURL = ''
 
-        let dataIdx = 0
         for (const match of matches) {
           if (!match.groups) continue
           const { key, value } = match.groups
           switch (key) {
             case 'event':
-              if (value !== 'datastar-fragment') {
-                throw new Error(`datastar-fragment event not supported`)
+              if (!value.startsWith(DATASTAR_CLASS_PREFIX)) {
+                throw new Error(`Unknown event: ${value}`)
+              }
+              const eventType = value.slice(DATASTAR_CLASS_PREFIX.length)
+              switch (eventType) {
+                case 'redirect':
+                  isRedirect = true
+                  break
+                case 'fragment':
+                  isFragment = true
+                  break
+                default:
+                  throw new Error(`Unknown event: ${value}`)
               }
               break
             case 'data':
-              switch (dataIdx) {
-                case 0:
-                  selector = value
+              const offset = value.indexOf(' ')
+              if (offset === -1) {
+                throw new Error(`Missing space in data`)
+              }
+              const type = value.slice(0, offset)
+              const contents = value.slice(offset + 1)
+
+              switch (type) {
+                case 'selector':
+                  selector = contents
                   break
-                case 1:
-                  const vmo = value as MergeOption
+                case 'merge':
+                  const vmo = contents as MergeOption
                   const exists = Object.values(MergeOptions).includes(vmo)
                   if (!exists) {
                     throw new Error(`Unknown merge option: ${value}`)
                   }
                   merge = vmo
                   break
-                case 2:
-                  fragment = value
+                case 'settle':
+                  settleTime = parseInt(contents)
+                  break
+                case 'fragment':
+                case 'html':
+                  fragment = contents
+                  break
+                case 'redirect':
+                  redirectURL = contents
                   break
               }
-              dataIdx++
           }
         }
 
-        mergeHTMLFragment(ctx, selector, merge, fragment)
+        if (isRedirect && redirectURL) {
+          window.location.href = redirectURL
+        } else if (isFragment && fragment) {
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+        } else {
+          throw new Error(`Unknown event`)
+        }
       }
     })
   }
 
-  el.classList.remove(LOADING_CLASS)
+  if (hasIndicator) {
+    loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
+    loadingTarget.classList.add(INDICATOR_CLASS)
+  }
 }
 
 const fragContainer = document.createElement('template')
-export function mergeHTMLFragment(ctx: AttributeContext, selector: string, merge: MergeOption, fragment: string) {
+export function mergeHTMLFragment(
+  ctx: AttributeContext,
+  selector: string,
+  merge: MergeOption,
+  fragment: string,
+  settleTime: number,
+) {
   const { el } = ctx
 
   fragContainer.innerHTML = fragment
@@ -261,57 +311,69 @@ export function mergeHTMLFragment(ctx: AttributeContext, selector: string, merge
     if (!!!targets) throw new Error(`No target elements, selector: ${selector}`)
   }
 
-  for (const target of targets) {
-    target.classList.add(SWAPPING_CLASS)
+  for (const initialTarget of targets) {
+    initialTarget.classList.add(SWAPPING_CLASS)
 
-    const originalHTML = target.outerHTML
+    const originalHTML = initialTarget.outerHTML
+
+    let modifiedTarget = initialTarget
 
     switch (merge) {
       case MergeOptions.MorphElement:
-        idiomorph(target, frag)
+        const result = idiomorph(modifiedTarget, frag)
+        if (!result?.length) throw new Error(`Failed to morph element`)
+        const first = result[0] as Element
+        modifiedTarget = first
         break
       case MergeOptions.InnerElement:
-        target.innerHTML = frag.innerHTML //  The default, replace the inner html of the target element
+        // Replace the contents of the target element with the response
+        modifiedTarget.innerHTML = frag.innerHTML
         break
       case MergeOptions.OuterElement:
-        target.outerHTML = frag.outerHTML //  Replace the entire target element with the response
+        // Replace the entire target element with the response
+        modifiedTarget.replaceWith(frag)
         break
       case MergeOptions.PrependElement:
-        target.prepend(frag) //  Insert the response before the first child of the target element
+        modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
         break
       case MergeOptions.AppendElement:
-        target.append(frag) //  Insert the response after the last child of the target element
+        modifiedTarget.append(frag) //  Insert the response after the last child of the target element
         break
       case MergeOptions.BeforeElement:
-        target.before(frag) //  Insert the response before the target element
+        modifiedTarget.before(frag) //  Insert the response before the target element
         break
       case MergeOptions.AfterElement:
-        target.after(frag) //  Insert the response after the target element
+        modifiedTarget.after(frag) //  Insert the response after the target element
         break
       case MergeOptions.DeleteElement:
-        target.remove() //  Deletes the target element regardless of the response
+        //  Deletes the target element regardless of the response
+        setTimeout(() => modifiedTarget.remove(), settleTime)
         break
       case MergeOptions.UpsertAttributes:
         //  Upsert the attributes of the target element
         frag.getAttributeNames().forEach((attrName) => {
           const value = frag.getAttribute(attrName)!
-          target.setAttribute(attrName, value)
+          modifiedTarget.setAttribute(attrName, value)
         })
         break
       default:
         throw new Error(`Unknown merge type: ${merge}`)
     }
-    ctx.applyPlugins(target)
+    modifiedTarget.classList.add(SWAPPING_CLASS)
 
-    target.classList.remove(SWAPPING_CLASS)
+    ctx.cleanupElementRemovals(initialTarget)
+    ctx.applyPlugins(modifiedTarget)
 
-    const revisedHTML = target.outerHTML
+    initialTarget.classList.remove(SWAPPING_CLASS)
+    modifiedTarget.classList.remove(SWAPPING_CLASS)
+
+    const revisedHTML = modifiedTarget.outerHTML
 
     if (originalHTML !== revisedHTML) {
-      target.classList.add(SETTLING_CLASS)
+      modifiedTarget.classList.add(SETTLING_CLASS)
       setTimeout(() => {
-        target.classList.remove(SETTLING_CLASS)
-      }, 300)
+        modifiedTarget.classList.remove(SETTLING_CLASS)
+      }, settleTime)
     }
   }
 }

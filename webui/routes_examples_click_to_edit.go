@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	goaway "github.com/TwiN/go-away"
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
-	"github.com/delaneyj/toolbelt/gomps/datastar"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -65,31 +65,19 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 		exampleRouter.Route("/contact/{id}", func(contactRouter chi.Router) {
 			contactRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(
-					sse,
-					datastar.FragmentSelectorUseID,
-					datastar.FragmentMergeMorphElement,
-					contactNode(c1),
-				)
+				datastar.RenderFragment(sse, contactNode(c1))
 			})
 
 			contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {
 				resetContact()
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(
-					sse,
-					datastar.FragmentSelectorUseID,
-					datastar.FragmentMergeMorphElement,
-					contactNode(c1),
-				)
+				datastar.RenderFragment(sse, contactNode(c1))
 			})
 
 			contactRouter.Get("/edit", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
 					sse,
-					datastar.FragmentSelectorUseID,
-					datastar.FragmentMergeMorphElement,
 					DIV(
 						ID("contact_1"),
 						CLS("flex flex-col gap-2"),
@@ -171,12 +159,7 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 				}
 
 				c1 = c // update the contact
-				datastar.RenderFragment(
-					toolbelt.NewSSE(w, r),
-					datastar.FragmentSelectorUseID,
-					datastar.FragmentMergeMorphElement,
-					contactNode(c1),
-				)
+				datastar.RenderFragment(toolbelt.NewSSE(w, r), contactNode(c1))
 			})
 		})
 	})
