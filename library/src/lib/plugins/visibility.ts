@@ -74,7 +74,7 @@ export const TeleportPlugin: AttributePlugin = {
   description: 'Teleports the element to another element',
   allowedModifiers: new Set([PREPEND, APPEND]),
   allowedTags: new Set(['template']),
-  bypassExpressionFunctionCreation: true,
+  bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, modifiers, expression } = ctx
     if (!(el instanceof HTMLTemplateElement)) throw new Error() // type guard
