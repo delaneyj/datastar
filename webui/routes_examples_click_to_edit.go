@@ -68,12 +68,6 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 				datastar.RenderFragment(sse, contactNode(c1))
 			})
 
-			contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {
-				resetContact()
-				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(sse, contactNode(c1))
-			})
-
 			contactRouter.Get("/edit", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
@@ -144,6 +138,12 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 						),
 					),
 				)
+			})
+
+			contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {
+				resetContact()
+				sse := toolbelt.NewSSE(w, r)
+				datastar.RenderFragment(sse, contactNode(c1))
 			})
 
 			contactRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {

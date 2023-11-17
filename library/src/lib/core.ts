@@ -94,6 +94,10 @@ export class Datastar {
 
           if (!dsKey.startsWith(p.prefix)) continue
 
+          if (el.id.length === 0) {
+            el.id = `ds-${this.parentID}-${this.missingIDNext++}`
+          }
+
           appliedProcessors.clear()
           // console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 

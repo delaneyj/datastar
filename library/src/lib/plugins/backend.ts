@@ -184,14 +184,17 @@ async function fetcher(method: string, ctx: AttributeContext) {
   const response = await fetch(url, req)
 
   if (!response.ok) {
+    console.log(`Response was not ok, url: ${url}, status: ${response.status}`)
     const isRedirect = response.status >= 300 && response.status < 400
-    if (!isRedirect) throw new Error(`Response was not ok and wasn't a redirect, can't merge.`)
-    let url = await response.text()
-    if (url.startsWith('/')) {
-      url = window.location.origin + url
+    if (!isRedirect) {
+      throw new Error(`Response was not ok and wasn't a redirect, status: ${response}`)
     }
-    console.log(`Redirecting to ${url}`)
-    window.location.replace(url)
+    let urlText = await response.text()
+    if (urlText.startsWith('/')) {
+      urlText = window.location.origin + urlText
+    }
+    console.log(`Redirecting to ${urlText}`)
+    window.location.replace(urlText)
     return
   }
 

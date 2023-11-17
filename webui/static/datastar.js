@@ -43,24 +43,24 @@ function Je(t) {
     ee();
   }
 }
-let d, x, D = 0, oe = 0, Z = 0;
+let p, x, D = 0, oe = 0, Z = 0;
 function Re(t) {
-  if (d === void 0)
+  if (p === void 0)
     return;
   let e = t._node;
-  if (e === void 0 || e._target !== d)
+  if (e === void 0 || e._target !== p)
     return e = {
       _version: 0,
       _source: t,
-      _prevSource: d._sources,
+      _prevSource: p._sources,
       _nextSource: void 0,
-      _target: d,
+      _target: p,
       _prevTarget: void 0,
       _nextTarget: void 0,
       _rollbackNode: e
-    }, d._sources !== void 0 && (d._sources._nextSource = e), d._sources = e, t._node = e, d._flags & N && t._subscribe(e), e;
+    }, p._sources !== void 0 && (p._sources._nextSource = e), p._sources = e, t._node = e, p._flags & N && t._subscribe(e), e;
   if (e._version === -1)
-    return e._version = 0, e._nextSource !== void 0 && (e._nextSource._prevSource = e._prevSource, e._prevSource !== void 0 && (e._prevSource._nextSource = e._nextSource), e._prevSource = d._sources, e._nextSource = void 0, d._sources._nextSource = e, d._sources = e), e;
+    return e._version = 0, e._nextSource !== void 0 && (e._nextSource._prevSource = e._prevSource, e._prevSource !== void 0 && (e._prevSource._nextSource = e._nextSource), e._prevSource = p._sources, e._nextSource = void 0, p._sources._nextSource = e, p._sources = e), e;
 }
 function v(t) {
   this._value = t, this._version = 0, this._node = void 0, this._targets = void 0;
@@ -108,7 +108,7 @@ Object.defineProperty(v.prototype, "value", {
     return t !== void 0 && (t._version = this._version), this._value;
   },
   set(t) {
-    if (d instanceof T && Ge(), t !== this._value) {
+    if (p instanceof T && Ge(), t !== this._value) {
       oe > 100 && Y(), this._value = t, this._version++, Z++, Q();
       try {
         for (let e = this._targets; e !== void 0; e = e._nextTarget)
@@ -156,15 +156,15 @@ T.prototype._refresh = function() {
     return !0;
   if (this._globalVersion = Z, this._flags |= S, this._version > 0 && !Oe(this))
     return this._flags &= ~S, !0;
-  const t = d;
+  const t = p;
   try {
-    He(this), d = this;
+    He(this), p = this;
     const e = this._compute();
     (this._flags & I || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~I, this._version++);
   } catch (e) {
     this._value = e, this._flags |= I, this._version++;
   }
-  return d = t, Ce(this), this._flags &= ~S, !0;
+  return p = t, Ce(this), this._flags &= ~S, !0;
 };
 T.prototype._subscribe = function(t) {
   if (this._targets === void 0) {
@@ -209,14 +209,14 @@ function Ie(t) {
   const e = t._cleanup;
   if (t._cleanup = void 0, typeof e == "function") {
     Q();
-    const r = d;
-    d = void 0;
+    const r = p;
+    p = void 0;
     try {
       e();
     } catch (n) {
       throw t._flags &= ~S, t._flags |= R, ce(t), n;
     } finally {
-      d = r, ee();
+      p = r, ee();
     }
   }
 }
@@ -226,9 +226,9 @@ function ce(t) {
   t._compute = void 0, t._sources = void 0, Ie(t);
 }
 function Ze(t) {
-  if (d !== this)
+  if (p !== this)
     throw new Error("Out-of-order effect");
-  Ce(this), d = t, this._flags &= ~S, this._flags & R && ce(this), ee();
+  Ce(this), p = t, this._flags &= ~S, this._flags & R && ce(this), ee();
 }
 function B(t) {
   this._compute = t, this._cleanup = void 0, this._sources = void 0, this._nextBatchedEffect = void 0, this._flags = N;
@@ -246,8 +246,8 @@ B.prototype._callback = function() {
 };
 B.prototype._start = function() {
   this._flags & S && Y(), this._flags |= S, this._flags &= ~R, Ie(this), He(this), Q();
-  const t = d;
-  return d = this, Ze.bind(this, t);
+  const t = p;
+  return p = this, Ze.bind(this, t);
 };
 B.prototype._notify = function() {
   this._flags & P || (this._flags |= P, this._nextBatchedEffect = x, x = this);
@@ -408,13 +408,13 @@ class it {
           let c = o.dataset[i] || "";
           if (!i.startsWith(n.prefix))
             continue;
-          if (r.clear(), n.allowedTags && !n.allowedTags.has(o.tagName.toLowerCase()))
+          if (o.id.length === 0 && (o.id = `ds-${this.parentID}-${this.missingIDNext++}`), r.clear(), n.allowedTags && !n.allowedTags.has(o.tagName.toLowerCase()))
             throw new Error(
               `Tag '${o.tagName}' is not allowed for plugin '${i}', allowed tags are: ${[
                 [...n.allowedTags].map((f) => `'${f}'`)
               ].join(", ")}`
             );
-          let p = i.slice(n.prefix.length), [u, ...a] = p.split(".");
+          let d = i.slice(n.prefix.length), [u, ...a] = d.split(".");
           if (n.mustHaveEmptyKey && u.length > 0)
             throw new Error(`Attribute '${i}' must have empty key`);
           if (n.mustNotEmptyKey && u.length === 0)
@@ -519,12 +519,12 @@ const at = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, r) => (r ? "-" : "") +
       const o = r instanceof HTMLInputElement, i = r instanceof HTMLSelectElement;
       if (!o && !i)
         throw new Error("Element must be input or select");
-      const c = o && r.type === "checkbox", p = o && r.type === "file";
+      const c = o && r.type === "checkbox", d = o && r.type === "file";
       if (!s)
         throw new Error(`Signal ${n} not found`);
-      c ? r.checked = s.value : p || (r.value = `${s.value}`);
+      c ? r.checked = s.value : d || (r.value = `${s.value}`);
       const u = () => {
-        if (p) {
+        if (d) {
           const [a] = r?.files || [];
           if (!a) {
             s.value = "";
@@ -613,9 +613,9 @@ const at = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, r) => (r ? "-" : "") +
     if (t.modifiers.has("capture") || (c.capture = !1), t.modifiers.has("passive") && (c.passive = !0), t.modifiers.has("once") && (c.once = !0), r === "load")
       return s(), () => {
       };
-    const p = r.toLowerCase();
-    return e.addEventListener(p, s, c), () => {
-      e.removeEventListener(p, s);
+    const d = r.toLowerCase();
+    return e.addEventListener(d, s, c), () => {
+      e.removeEventListener(d, s);
     };
   }
 }, pt = {
@@ -777,14 +777,14 @@ function G(t, e, r) {
   n !== s && (n ? e.setAttribute(r, n) : e.removeAttribute(r));
 }
 function Ve(t, e, r) {
-  const n = [], s = [], o = [], i = [], c = r.head.style, p = /* @__PURE__ */ new Map();
+  const n = [], s = [], o = [], i = [], c = r.head.style, d = /* @__PURE__ */ new Map();
   for (const a of t.children)
-    p.set(a.outerHTML, a);
+    d.set(a.outerHTML, a);
   for (const a of e.children) {
-    let l = p.has(a.outerHTML), m = r.head.shouldReAppend(a), g = r.head.shouldPreserve(a);
-    l || g ? m ? s.push(a) : (p.delete(a.outerHTML), o.push(a)) : c === "append" ? m && (s.push(a), i.push(a)) : r.head.shouldRemove(a) !== !1 && s.push(a);
+    let l = d.has(a.outerHTML), m = r.head.shouldReAppend(a), g = r.head.shouldPreserve(a);
+    l || g ? m ? s.push(a) : (d.delete(a.outerHTML), o.push(a)) : c === "append" ? m && (s.push(a), i.push(a)) : r.head.shouldRemove(a) !== !1 && s.push(a);
   }
-  i.push(...p.values()), console.log("to append: ", i);
+  i.push(...d.values()), console.log("to append: ", i);
   const u = [];
   for (const a of i) {
     console.log("adding: ", a);
@@ -1077,7 +1077,7 @@ async function Ee(t, e) {
     const h = document.querySelector(c);
     h && (o = h, o.classList.remove(j), o.classList.add(le), i = !0);
   }
-  const p = new URL(s.value, window.location.origin), u = new Headers();
+  const d = new URL(s.value, window.location.origin), u = new Headers();
   u.append(xt, Vt), u.append(Dt, Ut), u.append(Ft, jt);
   const a = n.fetch.headers.value;
   if (a)
@@ -1091,14 +1091,14 @@ async function Ee(t, e) {
   t = t.toUpperCase();
   const g = { method: t, headers: u };
   if (t === "GET") {
-    const h = new URLSearchParams(p.search);
-    h.append("datastar", m), p.search = h.toString();
+    const h = new URLSearchParams(d.search);
+    h.append("datastar", m), d.search = h.toString();
   } else
     g.body = m;
-  const _ = await fetch(p, g);
+  const _ = await fetch(d, g);
   if (!_.ok) {
-    if (!(_.status >= 300 && _.status < 400))
-      throw new Error("Response was not ok and wasn't a redirect, can't merge.");
+    if (console.log(`Response was not ok, url: ${d}, status: ${_.status}`), !(_.status >= 300 && _.status < 400))
+      throw new Error(`Response was not ok and wasn't a redirect, status: ${_}`);
     let y = await _.text();
     y.startsWith("/") && (y = window.location.origin + y), console.log(`Redirecting to ${y}`), window.location.replace(y);
     return;
@@ -1182,15 +1182,15 @@ function zt(t, e, r, n, s) {
   if (!(i instanceof Element))
     throw new Error(`Fragment is not an element, source '${n}'`);
   const c = e === Bt;
-  let p;
+  let d;
   if (c)
-    p = [o];
+    d = [o];
   else {
     const u = e || `#${i.getAttribute("id")}`;
-    if (p = document.querySelectorAll(u) || [], !p)
+    if (d = document.querySelectorAll(u) || [], !d)
       throw new Error(`No target elements, selector: ${e}`);
   }
-  for (const u of p) {
+  for (const u of d) {
     u.classList.add(K);
     const a = u.outerHTML;
     let l = u;
@@ -1282,7 +1282,7 @@ const Zt = {
   description: "Teleports the element to another element",
   allowedModifiers: /* @__PURE__ */ new Set([Me, Ne]),
   allowedTags: /* @__PURE__ */ new Set(["template"]),
-  bypassExpressionFunctionCreation: !0,
+  bypassExpressionFunctionCreation: () => !0,
   onLoad: (t) => {
     const { el: e, modifiers: r, expression: n } = t;
     if (!(e instanceof HTMLTemplateElement))
