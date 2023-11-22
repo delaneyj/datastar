@@ -9,17 +9,17 @@ function Ge() {
 }
 const Ke = Symbol.for("preact-signals"), S = 1, P = 2, F = 4, R = 8, I = 16, N = 32;
 function Q() {
-  D++;
+  x++;
 }
 function ee() {
-  if (D > 1) {
-    D--;
+  if (x > 1) {
+    x--;
     return;
   }
   let t, e = !1;
-  for (; x !== void 0; ) {
-    let r = x;
-    for (x = void 0, oe++; r !== void 0; ) {
+  for (; D !== void 0; ) {
+    let r = D;
+    for (D = void 0, oe++; r !== void 0; ) {
       const n = r._nextBatchedEffect;
       if (r._nextBatchedEffect = void 0, r._flags &= ~P, !(r._flags & R) && Oe(r))
         try {
@@ -30,11 +30,11 @@ function ee() {
       r = n;
     }
   }
-  if (oe = 0, D--, e)
+  if (oe = 0, x--, e)
     throw t;
 }
 function Je(t) {
-  if (D > 0)
+  if (x > 0)
     return t();
   Q();
   try {
@@ -43,7 +43,7 @@ function Je(t) {
     ee();
   }
 }
-let p, x, D = 0, oe = 0, Z = 0;
+let p, D, x = 0, oe = 0, Z = 0;
 function Re(t) {
   if (p === void 0)
     return;
@@ -250,7 +250,7 @@ B.prototype._start = function() {
   return p = this, Ze.bind(this, t);
 };
 B.prototype._notify = function() {
-  this._flags & P || (this._flags |= P, this._nextBatchedEffect = x, x = this);
+  this._flags & P || (this._flags |= P, this._nextBatchedEffect = D, D = this);
 };
 B.prototype._dispose = function() {
   this._flags |= R, this._flags & S || ce(this);
@@ -264,7 +264,7 @@ function ue(t) {
   }
   return e._dispose.bind(e);
 }
-class xe {
+class De {
   get value() {
     return ae(this);
   }
@@ -276,7 +276,7 @@ class xe {
   }
 }
 const ie = (t) => Object.assign(
-  new xe(),
+  new De(),
   Object.entries(t).reduce(
     (e, [r, n]) => {
       if (["value", "peek"].some((s) => s === r))
@@ -286,17 +286,17 @@ const ie = (t) => Object.assign(
     {}
   )
 ), Xe = (t, e) => Object.keys(e).forEach((r) => t[r].value = e[r]), ae = (t, { peek: e = !1 } = {}) => Object.entries(t).reduce(
-  (r, [n, s]) => (s instanceof v ? r[n] = e ? s.peek() : s.value : s instanceof xe && (r[n] = ae(s, { peek: e })), r),
+  (r, [n, s]) => (s instanceof v ? r[n] = e ? s.peek() : s.value : s instanceof De && (r[n] = ae(s, { peek: e })), r),
   {}
 );
-function De(t, e) {
+function xe(t, e) {
   if (typeof e != "object" || Array.isArray(e) || !e)
     return JSON.parse(JSON.stringify(e));
   if (typeof e == "object" && e.toJSON !== void 0 && typeof e.toJSON == "function")
     return e.toJSON();
   let r = t;
   return typeof t != "object" && (r = { ...e }), Object.keys(e).forEach((n) => {
-    r.hasOwnProperty(n) || (r[n] = e[n]), e[n] === null ? delete r[n] : r[n] = De(r[n], e[n]);
+    r.hasOwnProperty(n) || (r[n] = e[n]), e[n] === null ? delete r[n] : r[n] = xe(r[n], e[n]);
   }), r;
 }
 const Ye = "[a-zA-Z_$][0-9a-zA-Z_$]*";
@@ -393,7 +393,7 @@ class it {
     }
   }
   mergeStore(e) {
-    const r = De(this.store.value, e);
+    const r = xe(this.store.value, e);
     this.store = ie(r);
   }
   signalByName(e) {
@@ -511,7 +511,7 @@ const at = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, r) => (r ? "-" : "") +
   prefix: "model",
   description: "Sets the value of the element",
   mustHaveEmptyKey: !0,
-  allowedTags: /* @__PURE__ */ new Set(["input", "textarea", "select", "checkbox"]),
+  // allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
   bypassExpressionFunctionCreation: () => !0,
   onLoad: (t) => {
     const { store: e, el: r, expression: n } = t, s = e[n];
@@ -997,7 +997,7 @@ const Pt = "get", Rt = "post", $t = "put", Ot = "patch", Ht = "delete", Ct = [Pt
       await Ee(e, r), s();
     });
   });
-}, t), {}), xt = "Accept", Dt = "Content-Type", Ft = "datastar-request", Ut = "application/json", Vt = "text/event-stream", jt = "true", V = "datastar-", j = `${V}indicator`, le = `${j}-loading`, be = `${V}settling`, K = `${V}swapping`, Bt = "self", w = {
+}, t), {}), Dt = "Accept", xt = "Content-Type", Ft = "datastar-request", Ut = "application/json", Vt = "text/event-stream", jt = "true", V = "datastar-", j = `${V}indicator`, le = `${j}-loading`, be = `${V}settling`, K = `${V}swapping`, Bt = "self", w = {
   MorphElement: "morph_element",
   InnerElement: "inner_element",
   OuterElement: "outer_element",
@@ -1078,7 +1078,7 @@ async function Ee(t, e) {
     h && (o = h, o.classList.remove(j), o.classList.add(le), i = !0);
   }
   const d = new URL(s.value, window.location.origin), u = new Headers();
-  u.append(xt, Vt), u.append(Dt, Ut), u.append(Ft, jt);
+  u.append(Dt, Vt), u.append(xt, Ut), u.append(Ft, jt);
   const a = n.fetch.headers.value;
   if (a)
     for (const h in a) {

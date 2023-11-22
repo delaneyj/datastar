@@ -7,6 +7,7 @@ interval: 100ms
 vars:
   NAME: "webui"
   BIN_NAME: "{{.NAME}}_bin"
+  VERSION: 0.3.2
 
 tasks:
   libpub:
@@ -75,6 +76,13 @@ tasks:
   deploy:
     cmds:
       - fly deploy --local-only
+
+  bump:
+    cmds:
+      - git push origin
+      - git tag v{{.VERSION}}
+      - git push --tags
+      - GOPROXY=proxy.golang.org go list -m github.com/delaneyj/datastar@v{{.VERSION}}
 
   default:
     deps:

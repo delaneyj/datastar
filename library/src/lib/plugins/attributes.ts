@@ -29,7 +29,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
-  allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
+  // allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: expressionRaw } = ctx
