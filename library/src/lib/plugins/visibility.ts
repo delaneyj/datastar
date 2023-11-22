@@ -73,7 +73,7 @@ export const TeleportPlugin: AttributePlugin = {
   prefix: 'teleport',
   description: 'Teleports the element to another element',
   allowedModifiers: new Set([PREPEND, APPEND]),
-  allowedTags: new Set(['template']),
+  allowedTagRegexps: new Set(['template']),
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, modifiers, expression } = ctx

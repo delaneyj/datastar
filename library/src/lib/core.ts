@@ -101,12 +101,17 @@ export class Datastar {
           appliedProcessors.clear()
           // console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 
-          if (p.allowedTags && !p.allowedTags.has(el.tagName.toLowerCase())) {
-            throw new Error(
-              `Tag '${el.tagName}' is not allowed for plugin '${dsKey}', allowed tags are: ${[
-                [...p.allowedTags].map((t) => `'${t}'`),
-              ].join(', ')}`,
-            )
+          if (p.allowedTagRegexps) {
+            const lowerCaseTag = el.tagName.toLowerCase()
+            const allowed = [...p.allowedTagRegexps].some((r) => lowerCaseTag.match(r))
+            if (!allowed) {
+              throw new Error(
+                `Tag '${el.tagName}' is not allowed for plugin '${dsKey}', allowed tags are: ${[
+                  [...p.allowedTagRegexps].map((t) => `'${t}'`),
+                ].join(', ')}`,
+              )
+            }
+            // console.log(`Tag '${el.tagName}' is allowed for plugin '${dsKey}'`)
           }
 
           let keyRaw = dsKey.slice(p.prefix.length)

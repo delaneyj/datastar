@@ -58,6 +58,14 @@ func Page(children ...NODE) NODE {
 				NAME("view-transition"),
 				CONTENT("same-origin"),
 			),
+			LINK(
+				REL("stylesheet"),
+				HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"),
+			),
+			SCRIPT(
+				TYPE("module"),
+				SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"),
+			),
 		},
 		Body: NODES{
 			CLS(`

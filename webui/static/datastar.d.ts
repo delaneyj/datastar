@@ -30,7 +30,7 @@ export declare type AttributePlugin = {
     mustNotEmptyExpression?: boolean;
     mustHaveEmptyKey?: boolean;
     mustNotEmptyKey?: boolean;
-    allowedTags?: Set<string>;
+    allowedTagRegexps?: Set<string>;
     disallowedTags?: Set<string>;
     preprocessors?: Set<Preprocesser>;
     bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean;

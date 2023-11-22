@@ -29,33 +29,37 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
-  // allowedTags: new Set(['input', 'textarea', 'select', 'checkbox']),
+  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox']),
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: expressionRaw } = ctx
     const signal = store[expressionRaw] as Signal<any>
 
     return ctx.reactivity.effect(() => {
-      const isInput = el instanceof HTMLInputElement
-      const isSelect = el instanceof HTMLSelectElement
+      const isInput = el.tagName.toLowerCase().includes('input')
+      const isSelect = el.tagName.toLowerCase().includes('select')
+      const type = el.getAttribute('type')
 
       if (!isInput && !isSelect) {
         throw new Error('Element must be input or select')
       }
 
-      const isCheckbox = isInput && el.type === 'checkbox'
-      const isFile = isInput && el.type === 'file'
+      const isCheckbox = isInput && type === 'checkbox'
+      const isFile = isInput && type === 'file'
       if (!signal) throw new Error(`Signal ${expressionRaw} not found`)
       if (isCheckbox) {
-        el.checked = signal.value
+        el.setAttribute('checked', signal.value)
       } else if (isFile) {
         // console.warn('File input reading is not supported yet')
       } else {
-        el.value = `${signal.value}`
+        el.setAttribute('value', `${signal.value}`)
       }
       const setter = () => {
+        const value = (el as any).value
+        if (typeof value === 'undefined') return
+
         if (isFile) {
-          const [f] = el?.files || []
+          const [f] = (el as any)?.files || []
           if (!f) {
             signal.value = ''
             return
@@ -87,16 +91,19 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         } else {
           const current = signal.value
           if (typeof current === 'number') {
-            signal.value = Number(el.value)
+            signal.value = Number(value)
           } else if (typeof current === 'string') {
-            signal.value = el.value
+            signal.value = value
           } else if (typeof current === 'boolean') {
             if (isCheckbox) {
-              signal.value = el.checked
+              signal.value = el.getAttribute('checked') === 'true'
             } else {
-              signal.value = Boolean(el.value)
+              signal.value = Boolean(value)
             }
+          } else if (typeof current === 'undefined') {
           } else {
+            console.log(typeof current)
+            debugger
             throw new Error('Unsupported type')
           }
         }

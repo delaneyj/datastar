@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/carbon"
 	"github.com/delaneyj/gomponents-iconify/iconify/game_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/gridicons"
@@ -19,6 +20,7 @@ import (
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
+	"github.com/maragudk/gomponents"
 )
 
 var BuildSizeBadge NODE
@@ -155,10 +157,20 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						}),
 					),
 					DIV(
-
-						H1(
-							CLS("text-6xl font-bold"),
-							TXT("HTML on whatever you like"),
+						CLS("flex flex-col gap-2 items-center"),
+						datastar.MergeStore(map[string]any{
+							"label": "HTML on whatever you like",
+						}),
+						DIV(
+							H1(
+								CLS("text-6xl font-bold"),
+								datastar.Text("$label"),
+							),
+							gomponents.El(
+								"sl-input",
+								ATTR("size", "small"),
+								datastar.Model("label"),
+							),
 						),
 						A(
 							CLS("link link-accent text-4xl"),
