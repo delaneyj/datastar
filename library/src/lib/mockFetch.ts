@@ -39,7 +39,8 @@ export function injectMockFetch(routes: MockFetchRoutes) {
     return res
   }
 
-  window.fetch = mockFetch
+  const wa = window as any
+  wa.fetch = mockFetch
 }
 
 export type MockSSERoutes = Record<string, string[]>
