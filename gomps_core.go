@@ -35,6 +35,10 @@ func BodyUnmarshal(r *http.Request, store any) error {
 	buf.ReadFrom(r.Body)
 	b := buf.Bytes()
 
+	if len(b) == 0 {
+		return nil
+	}
+
 	if err := json.Unmarshal(b, store); err != nil {
 		return fmt.Errorf("failed to unmarshal: %w", err)
 	}
