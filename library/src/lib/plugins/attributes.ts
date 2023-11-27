@@ -38,10 +38,11 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     return ctx.reactivity.effect(() => {
       const isInput = el.tagName.toLowerCase().includes('input')
       const isSelect = el.tagName.toLowerCase().includes('select')
+      const isTextarea = el.tagName.toLowerCase().includes('textarea')
       const type = el.getAttribute('type')
 
-      if (!isInput && !isSelect) {
-        throw new Error('Element must be input or select')
+      if (!isInput && !isSelect && !isTextarea) {
+        throw new Error('Element must be input, select or textarea')
       }
 
       const isCheckbox = isInput && type === 'checkbox'
