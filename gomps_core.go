@@ -7,7 +7,6 @@ import (
 	"github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-sanitize/sanitize"
 	"github.com/goccy/go-json"
-	"github.com/valyala/bytebufferpool"
 )
 
 func MergeStore(m any) gomps.NODE {
@@ -30,19 +29,9 @@ func QueryStringUnmarshal(r *http.Request, store any) error {
 }
 
 func BodyUnmarshal(r *http.Request, store any) error {
-	buf := bytebufferpool.Get()
-	defer bytebufferpool.Put(buf)
-	buf.ReadFrom(r.Body)
-	b := buf.Bytes()
-
-	if len(b) == 0 {
-		return nil
+	if err := json.NewDecoder(r.Body).Decode(store); err != nil {
+		return fmt.Errorf("failed to decode: %w", err)
 	}
-
-	if err := json.Unmarshal(b, store); err != nil {
-		return fmt.Errorf("failed to unmarshal: %w", err)
-	}
-
 	return nil
 }
 

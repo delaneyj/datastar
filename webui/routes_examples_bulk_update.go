@@ -46,12 +46,6 @@ func starterActiveContacts() []*ContactActive {
 }
 
 func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) error {
-
-	// tsBytes, err := staticFS.ReadFile("static/examples/click_to_edit.txt")
-	// if err != nil {
-	// 	return fmt.Errorf("error reading examples dir: %w", err)
-	// }
-
 	contactToNode := func(i int, cs *ContactActive, wasChanged bool) NODE {
 		key := fmt.Sprintf("contact_%d", i)
 		return TR(

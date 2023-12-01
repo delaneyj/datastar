@@ -5,8 +5,8 @@ export const HelperActions: Actions = {
     const re = new RegExp(regexp)
     Object.keys(ctx.store)
       .filter((k) => re.test(k))
-      .forEach((k) => {
-        ctx.store[k].value = newValue
+      .forEach((signalName) => {
+        ctx.store[signalName].value = newValue
       })
   },
   toggleAll: async (ctx, regexp) => {

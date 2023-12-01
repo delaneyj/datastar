@@ -32,96 +32,99 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox']),
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
-    const { store, el, expression: expressionRaw } = ctx
-    const signal = store[expressionRaw] as Signal<any>
+    const { store, el, expression: signalName } = ctx
+    const signal = store[signalName] as Signal<any>
 
-    return ctx.reactivity.effect(() => {
-      const isInput = el.tagName.toLowerCase().includes('input')
-      const isSelect = el.tagName.toLowerCase().includes('select')
-      const isTextarea = el.tagName.toLowerCase().includes('textarea')
-      const type = el.getAttribute('type')
+    const isInput = el.tagName.toLowerCase().includes('input')
+    const isSelect = el.tagName.toLowerCase().includes('select')
+    const isTextarea = el.tagName.toLowerCase().includes('textarea')
+    const type = el.getAttribute('type')
+    const isCheckbox = isInput && type === 'checkbox'
+    const isFile = isInput && type === 'file'
 
-      if (!isInput && !isSelect && !isTextarea) {
-        throw new Error('Element must be input, select or textarea')
-      }
+    if (!isInput && !isSelect && !isTextarea) {
+      throw new Error('Element must be input, select or textarea')
+    }
 
-      const isCheckbox = isInput && type === 'checkbox'
-      const isFile = isInput && type === 'file'
-      if (!signal) throw new Error(`Signal ${expressionRaw} not found`)
+    const setInputFromSignal = () => {
+      const v = signal.value
+      if (!signal) throw new Error(`Signal ${signalName} not found`)
       if (isCheckbox) {
-        el.setAttribute('checked', signal.value)
+        const input = el as HTMLInputElement
+        input.checked = v
       } else if (isFile) {
         // console.warn('File input reading is not supported yet')
       } else {
         el.setAttribute('value', `${signal.value}`)
       }
-      const setter = () => {
-        const value = (el as any).value
-        if (typeof value === 'undefined') return
+    }
+    const cleanupSetInputFromSignal = ctx.reactivity.effect(setInputFromSignal)
 
-        if (isFile) {
-          const [f] = (el as any)?.files || []
-          if (!f) {
-            signal.value = ''
-            return
-          }
-          const reader = new FileReader()
-          reader.onload = () => {
-            if (typeof reader.result !== 'string') throw new Error('Unsupported type')
+    const setSignalFromInput = () => {
+      const value = (el as any).value
+      if (typeof value === 'undefined') return
 
-            const match = reader.result.match(dataURIRegex)
-            if (!match?.groups) throw new Error('Invalid data URI')
-            const { mime, contents } = match.groups
-            signal.value = contents
-
-            const mimeName = `${expressionRaw}Mime`
-            if (mimeName in store) {
-              const mimeSignal = store[`${mimeName}`] as Signal<string>
-              mimeSignal.value = mime
-            }
-          }
-          reader.readAsDataURL(f)
-
-          const nameName = `${expressionRaw}Name`
-          if (nameName in store) {
-            const nameSignal = store[`${nameName}`] as Signal<string>
-            nameSignal.value = f.name
-          }
-
+      if (isFile) {
+        const [f] = (el as any)?.files || []
+        if (!f) {
+          signal.value = ''
           return
-        } else {
-          const current = signal.value
-          if (typeof current === 'number') {
-            signal.value = Number(value)
-          } else if (typeof current === 'string') {
-            signal.value = value
-          } else if (typeof current === 'boolean') {
-            if (isCheckbox) {
-              signal.value = el.getAttribute('checked') === 'true'
-            } else {
-              signal.value = Boolean(value)
-            }
-          } else if (typeof current === 'undefined') {
-          } else {
-            console.log(typeof current)
-            debugger
-            throw new Error('Unsupported type')
+        }
+        const reader = new FileReader()
+        reader.onload = () => {
+          if (typeof reader.result !== 'string') throw new Error('Unsupported type')
+
+          const match = reader.result.match(dataURIRegex)
+          if (!match?.groups) throw new Error('Invalid data URI')
+          const { mime, contents } = match.groups
+          signal.value = contents
+
+          const mimeName = `${signalName}Mime`
+          if (mimeName in store) {
+            const mimeSignal = store[`${mimeName}`] as Signal<string>
+            mimeSignal.value = mime
           }
         }
+        reader.readAsDataURL(f)
+
+        const nameName = `${signalName}Name`
+        if (nameName in store) {
+          const nameSignal = store[`${nameName}`] as Signal<string>
+          nameSignal.value = f.name
+        }
+
+        return
+      } else {
+        const current = signal.value
+        if (typeof current === 'number') {
+          signal.value = Number(value)
+        } else if (typeof current === 'string') {
+          signal.value = value
+        } else if (typeof current === 'boolean') {
+          if (isCheckbox) {
+            const { checked } = el as HTMLInputElement
+            signal.value = checked
+          } else {
+            signal.value = Boolean(value)
+          }
+        } else if (typeof current === 'undefined') {
+        } else {
+          console.log(typeof current)
+          throw new Error('Unsupported type')
+        }
       }
+    }
 
-      setter()
-
-      updateModelEvents.forEach((event) => {
-        el.addEventListener(event, setter)
-      })
-
-      return () => {
-        updateModelEvents.forEach((event) => {
-          el.removeEventListener(event, setter)
-        })
-      }
+    updateModelEvents.forEach((event) => {
+      el.addEventListener(event, setSignalFromInput)
     })
+
+    return () => {
+      cleanupSetInputFromSignal()
+      updateModelEvents.forEach((event) => {
+        el.removeEventListener(event, setSignalFromInput)
+      })
+    }
   },
 }
 
