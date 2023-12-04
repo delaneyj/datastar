@@ -6,6 +6,7 @@ import (
 
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/simple_icons"
+	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
@@ -75,10 +76,10 @@ func Page(children ...NODE) NODE {
 				grid-cols-[1fr]
 			`),
 			DIV(
-				CLS("p-2 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
+				CLS("py-2 flex flex-col items-center bg-cover bg-opacity-50 text-white bg-center"),
 				STYLE(fmt.Sprintf("background-image: url(%s);", staticPath("bg.jpg"))),
 				DIV(
-					CLS("w-full flex justify-between items-center gap-2  backdrop-blur-sm py-1"),
+					CLS("w-full flex flex-wrap justify-center md:justify-between items-center gap-6 px-4  backdrop-blur-sm py-1 bg-base-200 bg-opacity-50"),
 					A(
 						CLS("flex gap-2 items-center text-5xl font-display"),
 						TXT("Datastar"),
@@ -86,13 +87,20 @@ func Page(children ...NODE) NODE {
 						HREF("/"),
 					),
 					DIV(
-						CLS("flex flex-col gap-1 items-end"),
+						CLS("flex flex-col gap-1 md:items-end"),
 						DIV(TXT("Declarative Frontend Framework")),
 						DIV(
-							CLS("font-mono text-accent font-bold text-xs"),
-							TXT("v"+packageJSON.Version),
+							CLS("flex gap-1 items-center"),
+							DIV(
+								CLS("font-mono text-accent font-bold text-xs"),
+								TXT("v"+packageJSON.Version),
+							),
+							DIV(
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-1 w-full md:w-auto"),
+								tabler.FileZip(),
+								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
+							),
 						),
-						BuildSizeBadge,
 					),
 				),
 			),
@@ -120,7 +128,7 @@ func Page(children ...NODE) NODE {
 				),
 			),
 			DIV(
-				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary"),
+				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary flex flex-col"),
 				GRP(children...),
 			),
 			SCRIPT(

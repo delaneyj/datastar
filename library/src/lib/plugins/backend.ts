@@ -183,20 +183,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
 
   const response = await fetch(url, req)
 
-  if (!response.ok) {
-    console.log(`Response was not ok, url: ${url}, status: ${response.status}`)
-    const isRedirect = response.status >= 300 && response.status < 400
-    if (!isRedirect) {
-      throw new Error(`Response was not ok and wasn't a redirect, status: ${response}`)
-    }
-    let urlText = await response.text()
-    if (urlText.startsWith('/')) {
-      urlText = window.location.origin + urlText
-    }
-    console.log(`Redirecting to ${urlText}`)
-    window.location.replace(urlText)
-    return
-  }
+  if (!response.ok) throw new Error(`Response was not ok, url: ${url}, status: ${response.status}`)
 
   if (!response.body) throw new Error(`No response body`)
   const reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
@@ -214,6 +201,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
           settleTime = 0,
           isRedirect = false,
           isFragment = false,
+          isError = false,
           redirectURL = ''
 
         for (const match of matches) {
@@ -231,6 +219,9 @@ async function fetcher(method: string, ctx: AttributeContext) {
                   break
                 case 'fragment':
                   isFragment = true
+                  break
+                case 'error':
+                  isError = true
                   break
                 default:
                   throw new Error(`Unknown event: ${value}`)
@@ -266,6 +257,10 @@ async function fetcher(method: string, ctx: AttributeContext) {
                 case 'redirect':
                   redirectURL = contents
                   break
+                case 'error':
+                  throw new Error(contents)
+                default:
+                  throw new Error(`Unknown data type: ${type}`)
               }
           }
         }

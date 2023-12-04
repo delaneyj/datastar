@@ -205,3 +205,20 @@ func Redirect(sse *toolbelt.ServerSentEventsHandler, url string) {
 		toolbelt.WithSSESkipMinBytesCheck(true),
 	)
 }
+
+func RedirectF(sse *toolbelt.ServerSentEventsHandler, urlFormat string, args ...interface{}) {
+	Redirect(sse, fmt.Sprintf(urlFormat, args...))
+}
+
+func Error(sse *toolbelt.ServerSentEventsHandler, err error) {
+	sse.Send(
+		fmt.Sprintf("error %s", err.Error()),
+		toolbelt.WithSSEEvent(SSEEventTypeRedirect),
+		toolbelt.WithSSERetry(0),
+		toolbelt.WithSSESkipMinBytesCheck(true),
+	)
+}
+
+func ErrorF(sse *toolbelt.ServerSentEventsHandler, format string, args ...interface{}) {
+	Error(sse, fmt.Errorf(format, args...))
+}

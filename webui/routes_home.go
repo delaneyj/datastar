@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/delaneyj/datastar"
@@ -23,29 +22,31 @@ import (
 	"github.com/maragudk/gomponents"
 )
 
-var BuildSizeBadge NODE
+var iifeBuildSize string
 
-func setupHome(ctx context.Context, router *chi.Mux) error {
+func UpsertIIfeBuildSize() string {
+	if iifeBuildSize != "" {
+		return iifeBuildSize
+	}
 	build, err := staticFS.ReadFile("static/datastar.iife.js")
 	if err != nil {
-		return fmt.Errorf("error reading build: %w", err)
+		panic(err)
 	}
 	buf := bytes.NewBuffer(nil)
 	w, err := gzip.NewWriterLevel(buf, gzip.BestCompression)
 	if err != nil {
-		return fmt.Errorf("error compressing build: %w", err)
+		panic(err)
 	}
 
 	if _, err := w.Write(build); err != nil {
-		return fmt.Errorf("error compressing build: %w", err)
+		panic(err)
 	}
 	w.Close()
-	iifeBuildSize := humanize.Bytes(uint64(buf.Len()))
-	BuildSizeBadge = DIV(
-		CLS("badge badge-accent flex-1 gap-1"),
-		tabler.FileZip(),
-		TXT(iifeBuildSize+" w/ all plugins"),
-	)
+	iifeBuildSize = humanize.Bytes(uint64(buf.Len()))
+	return iifeBuildSize
+}
+
+func setupHome(ctx context.Context, router *chi.Mux) error {
 
 	type Feature struct {
 		Description string
@@ -142,20 +143,9 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		Render(w, Page(
 			DIV(
-				CLS("flex flex-col items-center text-center flex-wrap text-xl p-4"),
+				CLS("flex flex-col md:items-center text-center md:text-xl p-1 md:p-4"),
 				DIV(
-					CLS("max-w-4xl flex flex-col items-center justify-center gap-16"),
-					DIV(
-						CLS("flex flex-wrap gap-2 justify-center items-center text-6xl"),
-						RANGE(languages, func(fn NodeFunc) NODE {
-							return DIV(
-								CLS("avatar avatar-xl"),
-								fn(
-									CLS("w-24 h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-4 mask-hexagon"),
-								),
-							)
-						}),
-					),
+					CLS("md:max-w-4xl flex flex-col items-center justify-center gap-16"),
 					DIV(
 						CLS("flex flex-col gap-2 items-center"),
 						datastar.MergeStore(map[string]any{
@@ -163,7 +153,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						}),
 						DIV(
 							H1(
-								CLS("text-6xl font-bold"),
+								CLS("text-2xl md:text-6xl font-bold"),
 								datastar.Text("$label"),
 							),
 							gomponents.El(
@@ -173,9 +163,20 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							),
 						),
 						A(
-							CLS("link link-accent text-4xl"),
+							CLS("link link-accent text-xl md:text-4xl"),
 							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
 							TXT("It's the best idea since web rings"),
+						),
+						DIV(
+							CLS("flex flex-wrap gap-1 md:gap-2 justify-center items-center text-6xl"),
+							RANGE(languages, func(fn NodeFunc) NODE {
+								return DIV(
+									CLS("avatar avatar-xl"),
+									fn(
+										CLS("w-16 h-12 md:w-24 md:h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-2 md:p-4 mask-hexagon"),
+									),
+								)
+							}),
 						),
 					),
 					DIV(
@@ -185,7 +186,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							TXT("Simple count example code "),
 						),
 						DIV(
-							CLS("bg-base-100 shadow-inner text-base-content p-4 rounded-box"),
+							CLS("bg-base-100 shadow-inner text-base-content p-1 md:p-4 rounded-box text-xs md:text-base"),
 							HIGHLIGHT("html", `<body data-merge-store="{count:0}">
 	<div>
 		<button data-on-click="$count++">Increment +</button>
@@ -198,15 +199,22 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							),
 						),
 						DIV(
-							CLS("flex gap-2 justify-center items-center"),
-							BuildSizeBadge,
+							CLS("flex flex-wrap gap-2 justify-center items-center"),
 							DIV(
-								CLS("badge badge-accent flex-1 gap-1"),
-								carbon.ColumnDependency(),
-								TXTF("%d Dependencies", len(packageJSON.Dependencies)),
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
+								tabler.FileZip(),
+								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
 							),
 							DIV(
-								CLS("badge badge-accent flex-1 gap-1"),
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
+								DIV(
+									CLS("flex flex-wrap gap-1"),
+									carbon.ColumnDependency(),
+									TXTF("%d Dependencies", len(packageJSON.Dependencies)),
+								),
+							),
+							DIV(
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
 								zondicons.Checkmark(),
 								TXT("Fully Tree Shakeable"),
 							),
@@ -290,21 +298,21 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						DIV(
 							CLS("w-full flex gap-2 items-center"),
 							A(
-								CLS("btn btn-lg flex-1"),
+								CLS("btn md:btn-lg flex-1"),
 								HREF("/essays/2023-09-01_why-another-framework"),
-								material_symbols.Help(),
+								material_symbols.Help(CLS("md:visible hidden")),
 								TXT("Why another framework?"),
 							),
 							A(
-								CLS("btn btn-accent btn-lg flex-1"),
+								CLS("btn md:btn-lg flex-1 btn-accent"),
 								HREF("/examples"),
-								mdi.RocketLaunch(),
+								mdi.RocketLaunch(CLS("md:visible hidden")),
 								TXT("Show me what you got!"),
 							),
 							A(
-								CLS("btn btn-lg flex-1"),
+								CLS("btn md:btn-lg flex-1"),
 								HREF("/docs"),
-								mdi.Book(),
+								mdi.Book(CLS("md:visible hidden")),
 								TXT("I'm do my own research"),
 							),
 						),

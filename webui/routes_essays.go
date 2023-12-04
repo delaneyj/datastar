@@ -127,7 +127,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 						CLS("flex flex-col gap-4"),
 						DIV(
 							H1(
-								CLS("text-6xl font-bold text-primary"),
+								CLS("text-xl md:text-6xl font-bold text-primary"),
 								TXT("Essays"),
 							),
 							HR(
@@ -135,18 +135,21 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 							),
 						),
 						UL(
-							CLS("menu text-4xl gap-8"),
+							CLS("menu text-xl md:text-4xl gap-8"),
 							RANGE(essayEntries, func(e Essay) NODE {
 								return LI(
 									CLS("text-center"),
 									A(
 										HREF("/essays/"+e.Name),
-										CLS("flex flex-col gap-2"),
+										CLS("flex flex-col gap-2 justify-center items-center"),
 										SPAN(
 											CLS("text-lg text-accent"),
 											TXT(humanize.Time(e.LastUpdated)),
 										),
-										SPAN(TXT(e.Title)),
+										SPAN(
+											CLS("text-center"),
+											TXT(e.Title),
+										),
 									),
 								)
 							}),
@@ -171,7 +174,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 				DIV(
 					CLS("flex flex-col items-center justify-center p-8"),
 					DIV(
-						CLS("prose lg:prose-xl xl:prose-2xl flex flex-col gap-8"),
+						CLS("prose-sm md:prose lg:prose-xl xl:prose-2xl flex flex-col gap-8"),
 						DIV(
 							CLS("flex justify-start w-full"),
 							A(

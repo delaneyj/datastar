@@ -46,25 +46,22 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 					CLS("drawer-toggle"),
 				),
 				DIV(
-					CLS("drawer-content flex flex-col p-4"),
-					DIV(
-
-						LABEL(
-							ATTR("for", "drawer-toggle"),
-							CLS("btn btn-primary drawer-button lg:hidden mb-8"),
-							material_symbols.Menu(),
-						),
+					CLS("drawer-content flex flex-col text-sm md:text-md p-1 md:p-4 w-full gap-6"),
+					LABEL(
+						ATTR("for", "drawer-toggle"),
+						CLS("btn btn-primary drawer-button lg:hidden"),
+						material_symbols.Menu(),
 					),
 					GRP(children...),
 				),
 				DIV(
-					CLS("drawer-side bg-base-300 text-base-content"),
+					CLS("drawer-side text-base-content"),
 					LABEL(
 						ATTR("for", "drawer-toggle"),
 						CLS("drawer-overlay"),
 					),
 					UL(
-						CLS("menu w-80"),
+						CLS("menu w-80 bg-base-200"),
 						LI(
 							DETAILS(
 								ATTR("open"),
