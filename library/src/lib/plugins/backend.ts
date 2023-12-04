@@ -200,9 +200,10 @@ async function fetcher(method: string, ctx: AttributeContext) {
           selector = '',
           settleTime = 0,
           isRedirect = false,
-          isFragment = false,
+          redirectURL = '',
+          error: Error | undefined = undefined,
           isError = false,
-          redirectURL = ''
+          isFragment = false
 
         for (const match of matches) {
           if (!match.groups) continue
@@ -258,19 +259,22 @@ async function fetcher(method: string, ctx: AttributeContext) {
                   redirectURL = contents
                   break
                 case 'error':
-                  throw new Error(contents)
+                  error = new Error(contents)
+                  break
                 default:
                   throw new Error(`Unknown data type: ${type}`)
               }
           }
         }
 
-        if (isRedirect && redirectURL) {
+        if (isError && error) {
+          throw error
+        } else if (isRedirect && redirectURL) {
           window.location.href = redirectURL
         } else if (isFragment && fragment) {
           mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
         } else {
-          throw new Error(`Unknown event`)
+          throw new Error(`Unknown event block: ${evtBlock}`)
         }
       }
     })
