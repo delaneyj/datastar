@@ -1,6 +1,6 @@
 ## Click to Edit
 
-[Original HTMX Version](https://htmx.org/examples/click_to_edit/)
+[Original HTMX Version](https://htmx.org/examples/click-to-edit/)
 
 ## Demo
 <div

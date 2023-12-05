@@ -96,7 +96,7 @@ func Page(children ...NODE) NODE {
 								TXT("v"+packageJSON.Version),
 							),
 							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-1 w-full md:w-auto"),
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-1 w-full md:w-auto "),
 								tabler.FileZip(),
 								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
 							),

@@ -28,22 +28,25 @@ func setupExamplesProgressBar(ctx context.Context, examplesRouter chi.Router) er
 				progress = min(100, progress+rand.Intn(25)+1)
 				datastar.RenderFragment(
 					sse,
-					TERNCached(
-						progress == 100,
-						A(
-							HREF("/examples/progress_bar"),
-							CLS("btn btn-success"),
-							DIV(
-								CLS("flex gap-2 font-bold text-2xl"),
-								material_symbols.CheckCircle(),
-								TXT("Completed! Try again"),
+					DIV(
+						ID("progress_bar"),
+						TERNCached(
+							progress == 100,
+							A(
+								HREF("/examples/progress_bar"),
+								CLS("btn btn-success"),
+								DIV(
+									CLS("flex gap-2 font-bold text-2xl"),
+									material_symbols.CheckCircle(),
+									TXT("Completed! Try again"),
+								),
 							),
-						),
-						DIV(
-							CLS("radial-progress text-primary"),
-							STYLEF("--value: %d; --size:12rem;", progress),
-							ATTR("ROLE", "progressbar"),
-							TXTF("%d%%", progress),
+							DIV(
+								CLS("radial-progress text-primary"),
+								STYLEF("--value: %d; --size:12rem;", progress),
+								ATTR("ROLE", "progressbar"),
+								TXTF("%d%%", progress),
+							),
 						),
 					),
 				)
