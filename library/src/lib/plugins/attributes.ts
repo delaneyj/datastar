@@ -29,7 +29,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
-  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox']),
+  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: signalName } = ctx

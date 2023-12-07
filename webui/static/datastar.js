@@ -509,7 +509,7 @@ const ut = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
   prefix: "model",
   description: "Sets the value of the element",
   mustHaveEmptyKey: !0,
-  allowedTagRegexps: /* @__PURE__ */ new Set(["input", "textarea", "select", "checkbox"]),
+  allowedTagRegexps: /* @__PURE__ */ new Set(["input", "textarea", "select", "checkbox", "radio"]),
   bypassExpressionFunctionCreation: () => !0,
   onLoad: (t) => {
     const { store: e, el: n, expression: r } = t, s = e[r], o = n.tagName.toLowerCase().includes("input"), i = n.tagName.toLowerCase().includes("select"), a = n.tagName.toLowerCase().includes("textarea"), f = n.getAttribute("type"), u = o && f === "checkbox", c = o && f === "file";
