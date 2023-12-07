@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.3.10",
+  "version": "0.4.0",
   "type": "module",
   "repository": "https://github.com/delaneyj/datastar",
   "files": [
@@ -24,12 +24,12 @@
   },
   "devDependencies": {
     "@types/dom-view-transitions": "^1.0.4",
-    "@types/node": "^20.10.0",
+    "@types/node": "^20.10.3",
     "prettier": "^3.1.0",
     "prettier-plugin-organize-attributes": "^1.0.0",
-    "rollup-plugin-visualizer": "^5.9.3",
+    "rollup-plugin-visualizer": "^5.10.0",
     "typescript": "^5.3.2",
-    "vite": "^5.0.2",
-    "vite-plugin-dts": "^3.6.3"
+    "vite": "^5.0.5",
+    "vite-plugin-dts": "^3.6.4"
   }
 }

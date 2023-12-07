@@ -99,7 +99,6 @@ export class Datastar {
           }
 
           appliedProcessors.clear()
-          // console.info(`Found ${dsKey} on ${el.id ? `#${el.id}` : el.tagName}, applying Datastar plugin '${p.prefix}'`)
 
           if (p.allowedTagRegexps) {
             const lowerCaseTag = el.tagName.toLowerCase()
@@ -160,7 +159,6 @@ export class Datastar {
                 const { groups } = match
                 const { whole } = groups
                 expression = expression.replace(whole, processor.replacer(groups))
-                // expression = processor.replacer(groups)
               }
             }
           }
@@ -213,15 +211,6 @@ export class Datastar {
     if (!element) return
     const el = toHTMLorSVGElement(element)
     if (!el) return
-
-    if (el?.id?.length) {
-      const style = el.style as any
-      if (!style?.viewTransitionName?.length) {
-        style.viewTransitionName = el.id
-        // console.log(`setting viewTransitionName to ${el.id}`)
-        // console.log(element)
-      }
-    }
 
     callback(el)
 

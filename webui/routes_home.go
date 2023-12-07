@@ -19,7 +19,6 @@ import (
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
-	"github.com/maragudk/gomponents"
 )
 
 var iifeBuildSize string
@@ -143,83 +142,9 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		Render(w, Page(
 			DIV(
-				CLS("flex flex-col md:items-center text-center md:text-xl p-1 md:p-4"),
+				CLS("flex flex-col md:items-center text-center md:text-xl p-1 md:p-4 gap-8"),
 				DIV(
 					CLS("md:max-w-4xl flex flex-col items-center justify-center gap-16"),
-					DIV(
-						CLS("flex flex-col gap-2 items-center"),
-						datastar.MergeStore(map[string]any{
-							"label": "HTML on whatever you like",
-						}),
-						DIV(
-							H1(
-								CLS("text-2xl md:text-6xl font-bold"),
-								datastar.Text("$label"),
-							),
-							gomponents.El(
-								"sl-input",
-								ATTR("size", "small"),
-								datastar.Model("label"),
-							),
-						),
-						A(
-							CLS("link link-accent text-xl md:text-4xl"),
-							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
-							TXT("It's the best idea since web rings"),
-						),
-						DIV(
-							CLS("flex flex-wrap gap-1 md:gap-2 justify-center items-center text-6xl"),
-							RANGE(languages, func(fn NodeFunc) NODE {
-								return DIV(
-									CLS("avatar avatar-xl"),
-									fn(
-										CLS("w-16 h-12 md:w-24 md:h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-2 md:p-4 mask-hexagon"),
-									),
-								)
-							}),
-						),
-					),
-					DIV(
-						CLS("flex flex-col gap-2 w-full"),
-						H3(
-							CLS("text-3xl font-bold"),
-							TXT("Simple count example code "),
-						),
-						DIV(
-							CLS("bg-base-100 shadow-inner text-base-content p-1 md:p-4 rounded-box text-xs md:text-base"),
-							HIGHLIGHT("html", `<body data-merge-store="{count:0}">
-	<div>
-		<button data-on-click="$count++">Increment +</button>
-		<button data-on-click="$count--">Decrement -</button>
-		<input type="number" data-model="count" />
-	</div>
-	<div data-text="$count">will get replaced with count</div>
-</body>
-`,
-							),
-						),
-						DIV(
-							CLS("flex flex-wrap gap-2 justify-center items-center"),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								tabler.FileZip(),
-								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
-							),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								DIV(
-									CLS("flex flex-wrap gap-1"),
-									carbon.ColumnDependency(),
-									TXTF("%d Dependencies", len(packageJSON.Dependencies)),
-								),
-							),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								zondicons.Checkmark(),
-								TXT("Fully Tree Shakeable"),
-							),
-						),
-					),
 					DIV(
 						CLS("flex flex-col gap-6"),
 						// 						H3(
@@ -270,51 +195,128 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 								),
 							),
 						),
-
+					),
+					DIV(
+						CLS("flex flex-col gap-4 items-center"),
+						datastar.MergeStore(map[string]any{
+							"label": "HTML on whatever backend you like",
+							"v":     1,
+						}),
 						DIV(
-							CLS("flex flex-col gap-2 justify-center items-center"),
-							TXT("Built with "),
-							DIV(
-								CLS("flex gap-1 justify-center items-center text-5xl"),
-								vscode_icons.FileTypeHtml(),
-								material_symbols.AddRounded(CLS("text-3xl")),
-								vscode_icons.FileTypeTypescriptOfficial(),
-								material_symbols.AddRounded(CLS("text-3xl")),
-								vscode_icons.FileTypeVite(),
-								material_symbols.AddRounded(CLS("text-3xl")),
-								vscode_icons.FileTypeGoGopher(),
+							CLS("flex flex-col gap-2 items-center"),
+							H1(
+								CLS("text-2xl md:text-6xl font-bold"),
+								datastar.Text("$label"),
 							),
-							DIV(
-								CLS("flex gap-2 justify-center items-center"),
-								TXT("by "),
-								A(
-									CLS("link-accent"),
-									HREF("http://github.com/delaneyj"),
-									TXT("Delaney"),
-								),
-								TXT("and looking for contributors!"),
+							INPUT(
+								CLS("input input-bordered w-full"),
+								datastar.Model("label"),
 							),
 						),
 						DIV(
-							CLS("w-full flex gap-2 items-center"),
-							A(
-								CLS("btn md:btn-lg flex-1"),
-								HREF("/essays/2023-09-01_why-another-framework"),
-								material_symbols.Help(CLS("md:visible hidden")),
-								TXT("Why another framework?"),
+							CLS("flex flex-wrap gap-1 md:gap-2 justify-center items-center text-6xl"),
+							RANGE(languages, func(fn NodeFunc) NODE {
+								return DIV(
+									CLS("avatar avatar-xl"),
+									fn(
+										CLS("w-16 h-12 md:w-24 md:h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-2 md:p-4 mask-hexagon"),
+									),
+								)
+							}),
+						),
+						A(
+							CLS("link link-accent text-xl md:text-4xl"),
+							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
+							TXT("It's the best idea since web rings"),
+						),
+					),
+					DIV(
+						CLS("flex flex-col gap-2 w-full"),
+						H3(
+							CLS("text-3xl font-bold"),
+							TXT("Simple count example code "),
+						),
+						DIV(
+							CLS("bg-base-100 shadow-inner text-base-content p-1 md:p-4 rounded-box text-xs md:text-base"),
+							HIGHLIGHT("html", `<body data-merge-store="{count:0}">
+	<div>
+		<button data-on-click="$count++">Increment +</button>
+		<button data-on-click="$count--">Decrement -</button>
+		<input type="number" data-model="count" />
+	</div>
+	<div data-text="$count">will get replaced with count</div>
+</body>
+`,
 							),
-							A(
-								CLS("btn md:btn-lg flex-1 btn-accent"),
-								HREF("/examples"),
-								mdi.RocketLaunch(CLS("md:visible hidden")),
-								TXT("Show me what you got!"),
+						),
+						DIV(
+							CLS("flex flex-wrap gap-2 justify-center items-center"),
+							DIV(
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
+								tabler.FileZip(),
+								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
 							),
-							A(
-								CLS("btn md:btn-lg flex-1"),
-								HREF("/docs"),
-								mdi.Book(CLS("md:visible hidden")),
-								TXT("I'm do my own research"),
+							DIV(
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
+								DIV(
+									CLS("flex flex-wrap gap-1"),
+									carbon.ColumnDependency(),
+									TXTF("%d Dependencies", len(packageJSON.Dependencies)),
+								),
 							),
+							DIV(
+								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
+								zondicons.Checkmark(),
+								TXT("Fully Tree Shakeable"),
+							),
+						),
+					),
+				),
+
+				DIV(
+					CLS("flex flex-col gap-2 justify-center items-center"),
+					TXT("Built with "),
+					DIV(
+						CLS("flex gap-1 justify-center items-center text-5xl"),
+						vscode_icons.FileTypeHtml(),
+						material_symbols.AddRounded(CLS("text-3xl")),
+						vscode_icons.FileTypeTypescriptOfficial(),
+						material_symbols.AddRounded(CLS("text-3xl")),
+						vscode_icons.FileTypeVite(),
+						material_symbols.AddRounded(CLS("text-3xl")),
+						vscode_icons.FileTypeGoGopher(),
+					),
+					DIV(
+						CLS("flex gap-2 justify-center items-center"),
+						TXT("by "),
+						A(
+							CLS("link-accent"),
+							HREF("http://github.com/delaneyj"),
+							TXT("Delaney"),
+						),
+						TXT("and looking for contributors!"),
+					),
+				),
+				DIV(
+					DIV(
+						CLS("w-full flex gap-2 items-center"),
+						A(
+							CLS("btn md:btn-lg flex-1"),
+							HREF("/essays/2023-09-01_why-another-framework"),
+							material_symbols.Help(CLS("md:visible hidden")),
+							TXT("Why another framework?"),
+						),
+						A(
+							CLS("btn md:btn-lg flex-1 btn-accent"),
+							HREF("/examples"),
+							mdi.RocketLaunch(CLS("md:visible hidden")),
+							TXT("Show me what you got!"),
+						),
+						A(
+							CLS("btn md:btn-lg flex-1"),
+							HREF("/docs"),
+							mdi.Book(CLS("md:visible hidden")),
+							TXT("I'm do my own research"),
 						),
 					),
 				),

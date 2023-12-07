@@ -115,9 +115,77 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
   },
 }
 
+const viewTransitionID = 'ds-view-transition-stylesheet'
+export const ViewTransitionPlugin: AttributePlugin = {
+  prefix: 'viewTransition',
+  description: 'Setup view transition api',
+  onGlobalInit(ctx) {
+    const viewTransitionStylesheet = document.createElement('style')
+    viewTransitionStylesheet.id = viewTransitionID
+    document.head.appendChild(viewTransitionStylesheet)
+
+    let hasViewTransitionMeta = false
+    document.head.childNodes.forEach((node) => {
+      if (node instanceof HTMLMetaElement && node.name === 'view-transition') {
+        hasViewTransitionMeta = true
+      }
+    })
+
+    if (!hasViewTransitionMeta) {
+      const meta = document.createElement('meta')
+      meta.name = 'view-transition'
+      meta.content = 'same-origin'
+      document.head.appendChild(meta)
+    }
+
+    ctx.mergeStore({
+      viewTransitions: {},
+    })
+  },
+  onLoad: (ctx: AttributeContext) => {
+    const { el, expressionFn, store } = ctx
+    let name = expressionFn(ctx)
+    if (!name) {
+      if (!el.id) throw new Error('Element must have an id if no name is provided')
+      name = el.id
+    }
+
+    const stylesheet = document.getElementById(viewTransitionID) as HTMLStyleElement
+    if (!stylesheet) throw new Error('View transition stylesheet not found')
+
+    const clsName = `ds-vt-${name}`
+    // add view transition class
+    const vtCls = `
+.${clsName} {
+  view-transition: ${name};
+}
+
+`
+    stylesheet.innerHTML += vtCls
+    let count = store.viewTransitions[name]
+    if (!count) {
+      count = ctx.reactivity.signal(0)
+      store.viewTransitions[name] = count
+    }
+    count.value++
+
+    // add class to element
+    el.classList.add(clsName)
+
+    return () => {
+      count.value--
+      if (count.value === 0) {
+        delete store.viewTransitions[name]
+        stylesheet.innerHTML = stylesheet.innerHTML.replace(vtCls, '')
+      }
+    }
+  },
+}
+
 export const VisibilityPlugins: AttributePlugin[] = [
   ShowPlugin,
   IntersectionPlugin,
   TeleportPlugin,
   ScrollIntoViewPlugin,
+  ViewTransitionPlugin,
 ]

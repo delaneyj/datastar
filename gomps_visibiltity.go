@@ -17,3 +17,10 @@ func Intersects(querySelectorExpression string) gomps.NODE {
 func ScrollIntoView() gomps.NODE {
 	return gomps.DATA("scroll-into-view")
 }
+
+func ViewTransition(name ...string) gomps.NODE {
+	if len(name) > 0 {
+		return gomps.DATA("view-transition", name[0])
+	}
+	return gomps.DATA("view-transition")
+}

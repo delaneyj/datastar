@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/gomponents-iconify/iconify/simple_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
@@ -55,18 +56,14 @@ func Page(children ...NODE) NODE {
 				TYPE("text/css"),
 				HREF(staticPath("tailwind.css")),
 			),
-			META(
-				NAME("view-transition"),
-				CONTENT("same-origin"),
-			),
-			LINK(
-				REL("stylesheet"),
-				HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"),
-			),
-			SCRIPT(
-				TYPE("module"),
-				SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"),
-			),
+			// LINK(
+			// 	REL("stylesheet"),
+			// 	HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"),
+			// ),
+			// SCRIPT(
+			// 	TYPE("module"),
+			// 	SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"),
+			// ),
 		},
 		Body: NODES{
 			CLS(`
@@ -128,6 +125,7 @@ func Page(children ...NODE) NODE {
 				),
 			),
 			DIV(
+				datastar.ViewTransition("'page'"),
 				CLS("overflow-auto scrollbar scrollbar-thumb-primary scrollbar-track-secondary flex flex-col"),
 				GRP(children...),
 			),
