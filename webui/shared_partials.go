@@ -56,14 +56,14 @@ func Page(children ...NODE) NODE {
 				TYPE("text/css"),
 				HREF(staticPath("tailwind.css")),
 			),
-			// LINK(
-			// 	REL("stylesheet"),
-			// 	HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"),
-			// ),
-			// SCRIPT(
-			// 	TYPE("module"),
-			// 	SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"),
-			// ),
+			LINK(
+				REL("stylesheet"),
+				HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/dark.css"),
+			),
+			SCRIPT(
+				TYPE("module"),
+				SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"),
+			),
 		},
 		Body: NODES{
 			CLS(`

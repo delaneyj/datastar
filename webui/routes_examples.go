@@ -65,69 +65,90 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 			Pattern     string
 			Description string
 		}
-		examples := []Example{
-			{Pattern: "Click to Edit", Description: "Demonstrates inline editing of a data object"},
-			{Pattern: "Bulk Update", Description: "Demonstrates bulk updating of multiple rows of data"},
-			{Pattern: "Click to Load", Description: "Demonstrates loading data on demand"},
-			{Pattern: "Delete Row", Description: "Demonstrates row deletion in a table"},
-			{Pattern: "Edit Row", Description: "Demonstrates how to edit rows in a table"},
-			{Pattern: "Lazy Load", Description: "Demonstrates how to lazy load content"},
-			{Pattern: "Inline Validation", Description: "Demonstrates how to do inline field validation"},
-			{Pattern: "Infinite Scroll", Description: "Demonstrates infinite scrolling of a page"},
-			{Pattern: "Active Search", Description: "Demonstrates the active search box pattern"},
-			{Pattern: "Progress Bar", Description: "Demonstrates a job-runner like progress bar"},
-			{Pattern: "Value Select", Description: "Demonstrates making the values of a select dependent on another select"},
-			{Pattern: "Animations", Description: "Demonstrates various animation techniques"},
-			{Pattern: "File Upload", Description: "Demonstrates how to upload a file via ajax with a progress bar"},
-			{Pattern: "Dialogs - Browser", Description: "Demonstrates the prompt and confirm dialogs"},
-			{Pattern: "Dialogs - DaisyUI", Description: "Demonstrates modal dialogs using Bootstrap"},
-			{Pattern: "Lazy Tabs", Description: "Demonstrates how to lazy load tabs"},
-			// {Pattern: "Tabs (Using Hyperscript)", Description: "Demonstrates how to display and select tabs using Hyperscript"},
-			// {Pattern: "Keyboard Shortcuts", Description: "Demonstrates how to create keyboard shortcuts for htmx enabled elements"},
-			// {Pattern: "Sortable", Description: "Demonstrates how to use htmx with the Sortable.js plugin to implement drag-and-drop reordering"},
-			// {Pattern: "Updating Other Content", Description: "Demonstrates how to update content beyond just the target elements"},
-			// {Pattern: "Confirm", Description: "Demonstrates how to implement a custom confirmation dialog with htmx"},
+		type ExampleGroup struct {
+			Label    string
+			Examples []Example
 		}
-		exampleRows := RANGE(examples, func(e Example) NODE {
-			return TR(
-				CLS("hover"),
-				TD(A(
-					CLS("link-secondary disable"),
-					HREF("/examples/"+toolbelt.Cased(e.Pattern, toolbelt.Snake, toolbelt.Lower)),
-					TXT(e.Pattern),
-				)),
-				TD(
-					CLS("text-sm"),
-					TXT(e.Description),
-				),
-			)
-		})
+		examples := []ExampleGroup{
+			{
+				Label: "Ported HTMX Examples*",
+				Examples: []Example{
+					{Pattern: "Click to Edit", Description: "Demonstrates inline editing of a data object"},
+					{Pattern: "Bulk Update", Description: "Demonstrates bulk updating of multiple rows of data"},
+					{Pattern: "Click to Load", Description: "Demonstrates loading data on demand"},
+					{Pattern: "Delete Row", Description: "Demonstrates row deletion in a table"},
+					{Pattern: "Edit Row", Description: "Demonstrates how to edit rows in a table"},
+					{Pattern: "Lazy Load", Description: "Demonstrates how to lazy load content"},
+					{Pattern: "Inline Validation", Description: "Demonstrates how to do inline field validation"},
+					{Pattern: "Infinite Scroll", Description: "Demonstrates infinite scrolling of a page"},
+					{Pattern: "Active Search", Description: "Demonstrates the active search box pattern"},
+					{Pattern: "Progress Bar", Description: "Demonstrates a job-runner like progress bar"},
+					{Pattern: "Value Select", Description: "Demonstrates making the values of a select dependent on another select"},
+					{Pattern: "Animations", Description: "Demonstrates various animation techniques"},
+					{Pattern: "File Upload", Description: "Demonstrates how to upload a file via ajax with a progress bar"},
+					{Pattern: "Dialogs - Browser", Description: "Demonstrates the prompt and confirm dialogs"},
+					{Pattern: "Dialogs - DaisyUI", Description: "Demonstrates modal dialogs using Bootstrap"},
+					{Pattern: "Lazy Tabs", Description: "Demonstrates how to lazy load tabs"},
+					// {Pattern: "Tabs (Using Hyperscript)", Description: "Demonstrates how to display and select tabs using Hyperscript"},
+					// {Pattern: "Keyboard Shortcuts", Description: "Demonstrates how to create keyboard shortcuts for htmx enabled elements"},
+					// {Pattern: "Sortable", Description: "Demonstrates how to use htmx with the Sortable.js plugin to implement drag-and-drop reordering"},
+					// {Pattern: "Updating Other Content", Description: "Demonstrates how to update content beyond just the target elements"},
+					// {Pattern: "Confirm", Description: "Demonstrates how to implement a custom confirmation dialog with htmx"},
+				},
+			},
+			{
+				Label: "Web Components Examples*",
+				Examples: []Example{
+					{Pattern: "Shoelace Kitchensink", Description: "Demonstrates the Shoelace Web Components library"},
+				},
+			},
+		}
+
 		examplesRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			Render(w, Page(
 				DIV(
-					CLS("flex flex-col items-center p-16 "),
+					CLS("flex flex-col items-center p-16"),
 					DIV(
-						CLS("flex flex-col gap-4 max-w-5xl"),
-						DIV(
-							DIV(
-								CLS("text-4xl font-bold text-primary"),
-								TXT("Ported HTMX Examples*"),
-							),
-							HR(
-								CLS("divider border-primary"),
-							),
-						),
-						TABLE(
-							CLS("table w-full"),
-							THEAD(TR(
-								TH(TXT("Pattern")),
-								TH(TXT("Description")),
-							)),
-							TBODY(exampleRows),
-						),
+						CLS("flex flex-col gap-8 max-w-5xl"),
+						RANGE(examples, func(g ExampleGroup) NODE {
+							return DIV(
+								DIV(
+									DIV(
+										CLS("text-4xl font-bold text-primary"),
+										TXT(g.Label+"*"),
+									),
+									HR(
+										CLS("divider border-primary"),
+									),
+								),
+								TABLE(
+									CLS("table w-full"),
+									THEAD(TR(
+										TH(TXT("Pattern")),
+										TH(TXT("Description")),
+									)),
+									TBODY(
+										RANGE(g.Examples, func(e Example) NODE {
+											return TR(
+												CLS("hover"),
+												TD(A(
+													CLS("link-secondary disable"),
+													HREF("/examples/"+toolbelt.Cased(e.Pattern, toolbelt.Snake, toolbelt.Lower)),
+													TXT(e.Pattern),
+												)),
+												TD(
+													CLS("text-sm"),
+													TXT(e.Description),
+												),
+											)
+										}),
+									),
+								),
+							)
+						}),
 						DIV(
 							CLS("text-accent font-bold italic"),
-							TXT("* All examples use server-side logic in Go but you can use any language you like."),
+							TXT("All examples use server-side logic in Go but you can use any language you like."),
 						),
 					),
 				),
@@ -151,6 +172,8 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 			setupExamplesDialogsBrowser(ctx, examplesRouter),
 			setupExamplesDialogsDaisyUI(ctx, examplesRouter),
 			setupExamplesLazyTabs(ctx, examplesRouter),
+			//
+			setupExamplesShoelaceKitchensink(ctx, examplesRouter),
 		); err != nil {
 			return fmt.Errorf("error setting up examples routes: %w", err)
 		}

@@ -38,12 +38,13 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const isInput = el.tagName.toLowerCase().includes('input')
     const isSelect = el.tagName.toLowerCase().includes('select')
     const isTextarea = el.tagName.toLowerCase().includes('textarea')
+    const isRadio = el.tagName.toLowerCase().includes('radio')
     const type = el.getAttribute('type')
     const isCheckbox = isInput && type === 'checkbox'
     const isFile = isInput && type === 'file'
 
-    if (!isInput && !isSelect && !isTextarea) {
-      throw new Error('Element must be input, select or textarea')
+    if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
+      throw new Error('Element must be input, select, textarea, checkbox or radio')
     }
 
     const setInputFromSignal = () => {
@@ -115,15 +116,20 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       }
     }
 
-    updateModelEvents.forEach((event) => {
-      el.addEventListener(event, setSignalFromInput)
-    })
+    const parts = el.tagName.split('-')
+    const isCustomElement = parts.length > 1
+    if (isCustomElement) {
+      const customElementPrefix = parts[0].toLowerCase()
+      updateModelEvents.forEach((eventType) => {
+        updateModelEvents.push(`${customElementPrefix}-${eventType}`)
+      })
+    }
+
+    updateModelEvents.forEach((eventType) => el.addEventListener(eventType, setSignalFromInput))
 
     return () => {
       cleanupSetInputFromSignal()
-      updateModelEvents.forEach((event) => {
-        el.removeEventListener(event, setSignalFromInput)
-      })
+      updateModelEvents.forEach((event) => el.removeEventListener(event, setSignalFromInput))
     }
   },
 }
