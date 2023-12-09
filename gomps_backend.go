@@ -183,6 +183,8 @@ func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child gomps.NODE, opt
 		fmt.Sprintf("fragment %s", buf.String()),
 	}
 
+	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
+
 	sse.SendMultiData(
 		dataRows,
 		toolbelt.WithSSEEvent(SSEEventTypeFragment),

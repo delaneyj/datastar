@@ -19,17 +19,22 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 		})
 
 		shoelaceKitchenSinkRouter.Route("/data", func(dataRouter chi.Router) {
-			type Input struct {
+			type Nested struct {
 				Label     string `json:"label"`
 				Selection int    `json:"selection"`
+			}
+			type Input struct {
+				Nested *Nested `json:"nested"`
 			}
 
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
 
 				input := &Input{
-					Label:     "Select an option",
-					Selection: 0,
+					Nested: &Nested{
+						Label:     "Hello World",
+						Selection: 1,
+					},
 				}
 
 				datastar.RenderFragment(sse,
@@ -39,11 +44,11 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 						datastar.MergeStore(input),
 						gomponents.El("sl-input",
 							ATTR("label", "Label"),
-							DATA("model", "label"),
+							DATA("model", "nested.label"),
 						),
 						gomponents.El("sl-select",
 							ATTR("label", "Select"),
-							DATA("model", "selection"),
+							DATA("model", "nested.selection"),
 							gomponents.El("sl-option",
 								ATTR("value", "0"),
 								TXT("Option 1"),
@@ -59,7 +64,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 						),
 						gomponents.El("sl-radio-group",
 							ATTR("label", "Radio Group"),
-							DATA("model", "selection"),
+							DATA("model", "nested.selection"),
 							gomponents.El("sl-radio-button",
 								ATTR("value", "0"),
 								TXT("Option 1"),
@@ -74,7 +79,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 							),
 						),
 
-						PRE(datastar.Text("JSON.stringify({label:$label,selection:$selection},null,2)")),
+						SignalStore,
 					),
 				)
 			})

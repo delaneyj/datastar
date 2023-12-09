@@ -138,6 +138,12 @@ async function fetcher(method: string, ctx: AttributeContext) {
     return
   }
 
+  const storeWithoutFetch = { ...store }
+  delete storeWithoutFetch.fetch
+  const storeJSON = JSON.stringify(storeWithoutFetch)
+  // console.log(`Sending ${storeJSON}`)
+  // debugger
+
   let loadingTarget = el
   let hasIndicator = false
   const indicatorSelector = store.fetch.indicatorSelectors[el.id]
@@ -168,9 +174,6 @@ async function fetcher(method: string, ctx: AttributeContext) {
     }
   }
 
-  const storeWithoutFetch = { ...store }
-  delete storeWithoutFetch.fetch
-  const storeJSON = JSON.stringify(storeWithoutFetch)
   method = method.toUpperCase()
   const req: RequestInit = { method, headers }
   if (method === 'GET') {

@@ -73,7 +73,7 @@ export class Datastar {
     }
   }
 
-  private mergeStore(store: DeepState) {
+  private mergeStore<T extends object>(store: T) {
     const revisedStore = apply(this.store.value, store) as DeepState
     this.store = deepSignal(revisedStore)
   }
@@ -148,7 +148,7 @@ export class Datastar {
             throw new Error(`Attribute '${dsKey}' must have non-empty expression`)
           }
 
-          const processors = [...CorePreprocessors, ...(p.preprocessors || [])]
+          const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
             appliedProcessors.add(processor)
@@ -169,6 +169,7 @@ export class Datastar {
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
+            walkSignals: this.walkSignals.bind(this),
             actions,
             refs,
             reactivity,
@@ -182,9 +183,15 @@ export class Datastar {
           }
 
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
-            const lines = expression.split(';')
-            lines[lines.length - 1] = `return ${lines[lines.length - 1]}`
-            const fnContent = lines.join(';')
+            const statements = expression.split(';')
+            statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
+            const fnContent = `
+try {
+  ${statements.join(';')}
+} catch (e) {
+  throw new Error(\`Error evaluating expression '${expression}' on ${el.id}\`)
+}
+            `
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
@@ -205,6 +212,29 @@ export class Datastar {
         }
       })
     })
+  }
+
+  private walkSignalsStore(store: any, callback: (name: string, signal: Signal<any>) => void) {
+    const keys = Object.keys(store)
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i]
+      const value = store[key]
+      const isSignal = value instanceof Signal
+      const hasChildren = typeof value === 'object' && Object.keys(value).length > 0
+
+      if (isSignal) {
+        callback(key, value)
+        continue
+      }
+
+      if (!hasChildren) continue
+
+      this.walkSignalsStore(value, callback)
+    }
+  }
+
+  private walkSignals(callback: (name: string, signal: Signal<any>) => void) {
+    this.walkSignalsStore(this.store, callback)
   }
 
   private walkDownDOM(element: Element | null, callback: (el: HTMLorSVGElement) => void, siblingOffset = 0) {

@@ -1,3 +1,5 @@
+// From https://github.com/preactjs/signals/blob/main/packages/core/src/index.ts
+
 function cycleDetected(): never {
   throw new Error('Cycle detected')
 }
@@ -743,4 +745,5 @@ function effect(compute: () => unknown | EffectCleanup): () => void {
   return effect._dispose.bind(effect)
 }
 
-export { Signal, batch, computed, effect, signal, untracked, type ReadonlySignal }
+export { Signal, batch, computed, effect, signal, untracked }
+export type { ReadonlySignal }

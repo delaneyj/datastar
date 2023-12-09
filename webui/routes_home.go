@@ -62,7 +62,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 		{
 			Description: "Fully Compliant",
 			Icon:        mdi.LanguageHtmlFive(),
-			Details:     DIV(TXT("No monkey patching, no custom elements, no custom attributes, no custom anything.  Just plain old HTML5.")),
+			Details:     DIV(TXT("No monkey patching, custom elements or attributes.  Just plain old HTML5 but works out of the box with custom web components.")),
 		},
 		{
 			Description: "Everything is an Plugin",
@@ -70,7 +70,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 			Details:     DIV(TXT("Disagree with the built-in behavior? No problem, just write your own plugin in a type safe way.  Take what you need, leave what you don't.")),
 		},
 		{
-			Description: "Batteries Included (but optional)",
+			Description: "Declarative Batteries Included (but optional)",
 			Icon:        game_icons.Batteries(),
 			Details: DIV(
 				CLS("breadcrumbs"),
@@ -91,6 +91,8 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					LI(TXT("Text Replacement")),
 					LI(TXT("HTMX like features")),
 					LI(TXT("Server Sent Events")),
+					LI(TXT("Redirects")),
+					LI(TXT("View Transition API")),
 				),
 			),
 		},
@@ -167,7 +169,8 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 						// 						),
 						// 					),
 						P(
-							TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use."),
+							CLS("text-xl md:text-3xl font-bold py-8"),
+							TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use. 🚀"),
 						),
 						DIV(
 							CLS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content"),
@@ -254,7 +257,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 							DIV(
 								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
 								tabler.FileZip(),
-								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
+								TXTF("< %s w/ all plugins", UpsertIIfeBuildSize()),
 							),
 							DIV(
 								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
@@ -275,14 +278,12 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 
 				DIV(
 					CLS("flex flex-col gap-2 justify-center items-center"),
-					TXT("Built with "),
+					TXT("This site for example is built with just"),
 					DIV(
 						CLS("flex gap-1 justify-center items-center text-5xl"),
 						vscode_icons.FileTypeHtml(),
 						material_symbols.AddRounded(CLS("text-3xl")),
-						vscode_icons.FileTypeTypescriptOfficial(),
-						material_symbols.AddRounded(CLS("text-3xl")),
-						vscode_icons.FileTypeVite(),
+						vscode_icons.FileTypeCss(),
 						material_symbols.AddRounded(CLS("text-3xl")),
 						vscode_icons.FileTypeGoGopher(),
 					),

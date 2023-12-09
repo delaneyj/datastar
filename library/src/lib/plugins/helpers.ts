@@ -3,18 +3,10 @@ import { Actions } from '..'
 export const HelperActions: Actions = {
   setAll: async (ctx, regexp, newValue) => {
     const re = new RegExp(regexp)
-    Object.keys(ctx.store)
-      .filter((k) => re.test(k))
-      .forEach((signalName) => {
-        ctx.store[signalName].value = newValue
-      })
+    ctx.walkSignals((name, signal) => re.test(name) && (signal.value = newValue))
   },
   toggleAll: async (ctx, regexp) => {
     const re = new RegExp(regexp)
-    Object.keys(ctx.store)
-      .filter((k) => re.test(k))
-      .forEach((k) => {
-        ctx.store[k].value = !ctx.store[k].value
-      })
+    ctx.walkSignals((name, signal) => re.test(name) && (signal.value = !signal.value))
   },
 }

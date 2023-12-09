@@ -51,10 +51,9 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 							"input input-bordered": true,
 							"border-error":         !isValid,
 						},
-						TYPE("text"),
 						datastar.Model(field),
 						datastar.FetchURL("'/examples/inline_validation/data'"),
-						datastar.OnDebounce("keydown", 500*time.Millisecond, datastar.GET_ACTION),
+						datastar.OnDebounce("keydown", 2*time.Second, datastar.GET_ACTION),
 					),
 					IFCachedNode(
 						!isValid,
@@ -71,7 +70,7 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 
 			userToNode := func(u *User) NODE {
 				isEmailValid, isFirstNameValid, isLastNameValid, isValid := userValidation(u)
-
+				_, _ = isEmailValid, isFirstNameValid
 				return DIV(
 					ID("inline_validation"),
 					datastar.MergeStore(u),
@@ -108,6 +107,7 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 						material_symbols.PersonAdd(),
 						TXT("Submit"),
 					),
+					SignalStore,
 				)
 			}
 
@@ -118,7 +118,7 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 					return
 				}
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(sse, userToNode(u), datastar.WithQuerySelectorUseID())
+				datastar.RenderFragment(sse, userToNode(u))
 			})
 
 			dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
@@ -143,7 +143,7 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 					)
 				}
 
-				datastar.RenderFragment(sse, node, datastar.WithQuerySelectorUseID())
+				datastar.RenderFragment(sse, node)
 			})
 		})
 	})

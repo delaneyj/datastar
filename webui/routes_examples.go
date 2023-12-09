@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	. "github.com/delaneyj/toolbelt/gomps"
@@ -181,3 +182,8 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 		return nil
 	})
 }
+
+var SignalStore = GRP(
+	H4(TXT("Signal Store")),
+	PRE(datastar.Text("JSON.stringify(ctx.store,null,2)")),
+)

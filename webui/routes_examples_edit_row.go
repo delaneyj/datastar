@@ -14,32 +14,27 @@ import (
 )
 
 type ContactEdit struct {
-	Name      string `json:"name"`
-	Email     string `json:"email"`
-	IsEditing bool   `json:"isEditing"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
 }
 
 func starterEditContacts() []*ContactEdit {
 	return []*ContactEdit{
 		{
-			Name:      "Joe Smith",
-			Email:     "joe@smith.org",
-			IsEditing: false,
+			Name:  "Joe Smith",
+			Email: "joe@smith.org",
 		},
 		{
-			Name:      "Angie MacDowell",
-			Email:     "angie@macdowell.org",
-			IsEditing: false,
+			Name:  "Angie MacDowell",
+			Email: "angie@macdowell.org",
 		},
 		{
-			Name:      "Fuqua Tarkenton",
-			Email:     "fuqua@tarkenton.org",
-			IsEditing: false,
+			Name:  "Fuqua Tarkenton",
+			Email: "fuqua@tarkenton.org",
 		},
 		{
-			Name:      "Kim Yee",
-			Email:     "kim@yee.org",
-			IsEditing: false,
+			Name:  "Kim Yee",
+			Email: "kim@yee.org",
 		},
 	}
 }
@@ -54,50 +49,48 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 
 		contacts := starterEditContacts()
 
-		contactNode := func(i int) NODE {
-			cs := contacts[i]
+		type Store struct {
+			EditRowIndex int    `json:"editRowIndex"`
+			Name         string `json:"name"`
+			Email        string `json:"email"`
+		}
+
+		contactNode := func(i int, isEditingRow, isEditingAnyRow bool) NODE {
+			contact := contacts[i]
 			contactKeyPrefix := fmt.Sprintf("contact_%d", i)
-			name := contactKeyPrefix + "_name"
-			nameSignal := "$" + name
-			email := contactKeyPrefix + "_email"
-			emailSignal := "$" + email
 			return TR(
-				datastar.MergeStore(map[string]any{
-					name:  cs.Name,
-					email: cs.Email,
-				}),
 				ID(contactKeyPrefix),
 				TD(
 					TERNCached(
-						cs.IsEditing,
+						isEditingRow,
 						INPUT(
 							CLS("input input-bordered"),
 							TYPE("text"),
-							datastar.Model(name),
+							datastar.Model("name"),
 						),
-						DIV(datastar.Text(nameSignal)),
+						DIV(TXT(contact.Name)),
 					),
 				),
 				TD(
 					TERNCached(
-						cs.IsEditing,
+						isEditingRow,
 						INPUT(
 							TYPE("text"),
 							CLS("input input-bordered"),
-							datastar.Model(email),
+							datastar.Model("email"),
 						),
-						DIV(datastar.Text(emailSignal)),
+						DIV(TXT(contact.Email)),
 					),
 				),
 				TD(
 					CLS("flex justify-end"),
 					TERNCached(
-						cs.IsEditing,
+						isEditingRow,
 						DIV(
 							CLS("join"),
 							BUTTON(
 								CLS("btn btn-outline btn-warning join-item"),
-								datastar.FetchURLF("'/examples/edit_row/data/%d'", i),
+								datastar.FetchURLF("'/examples/edit_row/data'"),
 								datastar.On("click", datastar.GET_ACTION),
 								material_symbols.Cancel(),
 								TXT("Cancel"),
@@ -110,22 +103,26 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 								TXT("Save"),
 							),
 						),
-						BUTTON(
-							CLS("btn btn-info"),
-							datastar.FetchURLF("'/examples/edit_row/edit/%d'", i),
-							datastar.On("click", datastar.GET_ACTION),
-							material_symbols.Edit(),
-							TXT("Edit"),
+						IFCachedNode(
+							!isEditingAnyRow,
+							BUTTON(
+								CLS("btn btn-info btn-sm"),
+								datastar.FetchURLF("'/examples/edit_row/edit/%d'", i),
+								datastar.On("click", datastar.GET_ACTION),
+								material_symbols.Edit(),
+								TXT("Edit"),
+							),
 						),
 					),
 				),
 			)
 		}
 
-		contactsToNode := func() NODE {
+		contactsToNode := func(store *Store) NODE {
 			return DIV(
-				ID("contacts"),
+				ID("edit_row"),
 				CLS("flex flex-col"),
+				datastar.MergeStore(store),
 				TABLE(
 					CLS("table w-full"),
 					CAPTION(TXT("Contacts")),
@@ -138,7 +135,7 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 					),
 					TBODY(
 						RANGEI(contacts, func(i int, cs *ContactEdit) NODE {
-							return contactNode(i)
+							return contactNode(i, i == store.EditRowIndex, store.EditRowIndex != -1)
 						}),
 					),
 				),
@@ -152,16 +149,18 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 			)
 		}
 
+		emptyStore := &Store{EditRowIndex: -1}
+
 		editRowRouter.Get("/reset", func(w http.ResponseWriter, r *http.Request) {
 			sse := toolbelt.NewSSE(w, r)
 			contacts = starterEditContacts()
-			datastar.RenderFragment(sse, contactsToNode())
+			datastar.RenderFragment(sse, contactsToNode(emptyStore))
 		})
 
 		editRowRouter.Route("/data", func(dataRouter chi.Router) {
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(sse, contactsToNode())
+				datastar.RenderFragment(sse, contactsToNode(emptyStore))
 			})
 
 			dataRouter.Get("/{index}", func(w http.ResponseWriter, r *http.Request) {
@@ -172,8 +171,9 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 					http.Error(w, fmt.Sprintf("error parsing index: %s", err), http.StatusBadRequest)
 					return
 				}
-				contacts[i].IsEditing = false
-				datastar.RenderFragment(sse, contactNode(i))
+				store := &Store{EditRowIndex: i, Name: contacts[i].Name, Email: contacts[i].Email}
+
+				datastar.RenderFragment(sse, contactsToNode(store))
 			})
 		})
 
@@ -187,14 +187,14 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 				}
 
 				c := contacts[i]
-				c.IsEditing = true
+				store := &Store{EditRowIndex: i, Name: c.Name, Email: c.Email}
 
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(sse, contactNode(i))
+				datastar.RenderFragment(sse, contactsToNode(store))
 			})
 
 			editRouter.Patch("/", func(w http.ResponseWriter, r *http.Request) {
-				store := map[string]string{}
+				store := &Store{}
 				if err := datastar.BodyUnmarshal(r, &store); err != nil {
 					http.Error(w, fmt.Sprintf("error unmarshalling store : %s", err), http.StatusBadRequest)
 					return
@@ -207,15 +207,12 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 					return
 				}
 
-				prefix := fmt.Sprintf("contact_%d", i)
-
 				c := contacts[i]
-				c.Name = store[prefix+"_name"]
-				c.Email = store[prefix+"_email"]
-				c.IsEditing = false
+				c.Name = store.Name
+				c.Email = store.Email
 
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragment(sse, contactNode(i))
+				datastar.RenderFragment(sse, contactsToNode(emptyStore))
 			})
 		})
 	})

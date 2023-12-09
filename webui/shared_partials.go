@@ -26,11 +26,11 @@ func Page(children ...NODE) NODE {
 	externalPages := []ExternalPage{
 		{
 			Icon: simple_icons.Discord,
-			Link: "https://discord.com/channels/1035247242887561326/1149367785374359613",
+			Link: "https://discord.com/channels/725789699527933952/1180902694999838752",
 		},
 		{
 			Icon: simple_icons.Github,
-			Link: "https://github.com/delaneyj/datastar",
+			Link: "https://github.com/delaneyj/datastar/tree/main/library",
 		},
 		{
 			Icon: simple_icons.Npm,
@@ -95,7 +95,7 @@ func Page(children ...NODE) NODE {
 							DIV(
 								CLS("badge badge-accent flex-1 gap-1 text-xs p-1 w-full md:w-auto "),
 								tabler.FileZip(),
-								TXT(UpsertIIfeBuildSize()+" w/ all plugins"),
+								TXTF("< %s w/ all plugins", UpsertIIfeBuildSize()),
 							),
 						),
 					),

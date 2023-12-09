@@ -23,6 +23,7 @@ func setupExamplesLazyLoad(ctx context.Context, examplesRouter chi.Router) error
 			datastar.RenderFragment(
 				sse,
 				DIV(
+					ID("lazy_load"),
 					datastar.FetchURL("'/examples/lazy_load/graph'"),
 					datastar.On("load", datastar.GET_ACTION),
 					DIV(
@@ -41,6 +42,7 @@ func setupExamplesLazyLoad(ctx context.Context, examplesRouter chi.Router) error
 			datastar.RenderFragment(
 				sse,
 				IMG(
+					ID("lazy_load"),
 					CLS("transition-opacity"),
 					SRC(sp),
 				),

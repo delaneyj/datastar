@@ -58,7 +58,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 				INPUT(
 					CLS("checkbox"),
 					TYPE("checkbox"),
-					datastar.Model(key),
+					datastar.Model("selections."+key),
 				),
 			),
 			TD(TXT(cs.Name)),
@@ -73,18 +73,27 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 
 	contacts := starterActiveContacts()
 
-	store := map[string]bool{
-		"all": false,
-	}
-	for i := range contacts {
-		key := fmt.Sprintf("contact_%d", i)
-		store[key] = false
+	type SelectionStore struct {
+		Selections map[string]bool `json:"selections"`
 	}
 
-	contactsToNode := func(contacts []*ContactActive) NODE {
+	defaultSelectionStore := func() SelectionStore {
+		selections := map[string]bool{
+			"all": false,
+		}
+		for i := range contacts {
+			key := fmt.Sprintf("contact_%d", i)
+			selections[key] = false
+		}
+		return SelectionStore{
+			Selections: selections,
+		}
+	}
+
+	contactsToNode := func(selectionStore SelectionStore, contacts []*ContactActive) NODE {
 		return DIV(
 			ID("bulk_update"),
-			datastar.MergeStore(store),
+			datastar.MergeStore(selectionStore),
 			CLS("flex flex-col gap-2"),
 			TABLE(
 				CLS("table table-striped"),
@@ -95,8 +104,8 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 							INPUT(
 								CLS("checkbox"),
 								TYPE("checkbox"),
-								datastar.Model("all"),
-								datastar.On("change", "$$setAll('contact_', $all)"),
+								datastar.Model("selections.all"),
+								datastar.On("change", "$$setAll('contact_', $selections.all)"),
 							),
 						),
 						TH(TXT("Name")),
@@ -113,20 +122,21 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 			DIV(
 				CLS("join"),
 				BUTTON(
-					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $all)"),
+					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $selections.all)"),
 					datastar.FetchURL("'/examples/bulk_update/data/activate'"),
 					CLS("btn btn-success join-item"),
 					material_symbols.AccountCircle(),
 					TXT("Activate"),
 				),
 				BUTTON(
-					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $all)"),
+					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $selections.all)"),
 					datastar.FetchURL("'/examples/bulk_update/data/deactivate'"),
 					CLS("btn btn-warning join-item"),
 					material_symbols.AccountCircleOff(),
 					TXT("Deactivate"),
 				),
 			),
+			SignalStore,
 		)
 	}
 
@@ -139,14 +149,15 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 		bulkUpdateRouter.Route("/data", func(dataRouter chi.Router) {
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.RenderFragmentSelf(sse, contactsToNode(contacts))
+				datastar.RenderFragmentSelf(sse, contactsToNode(defaultSelectionStore(), contacts))
 			})
 
 			setActivation := func(w http.ResponseWriter, r *http.Request, isActive bool) {
 				sse := toolbelt.NewSSE(w, r)
-				datastar.BodyUnmarshal(r, &store)
+				store := &SelectionStore{}
+				datastar.BodyUnmarshal(r, store)
 
-				for key, wasSelected := range store {
+				for key, wasSelected := range store.Selections {
 					const prefix = "contact_"
 					if strings.HasPrefix(key, prefix) {
 						idStr := strings.TrimPrefix(key, prefix)
@@ -171,8 +182,8 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 					}
 				}
 
-				for k := range store {
-					store[k] = false
+				for k := range store.Selections {
+					store.Selections[k] = false
 				}
 				datastar.RenderFragment(
 					sse,

@@ -1,5 +1,5 @@
 import { Signal } from '../external/preact-core'
-import { AttributeContext, AttributePlugin } from '../types'
+import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
 
@@ -29,11 +29,24 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
   description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
+  preprocessors: {
+    post: [
+      {
+        name: 'ModelProcessor',
+        description: `Replacing model with ctx.store.model`,
+        regexp: /(?<whole>.+)/g,
+        replacer: (groups: RegexpGroups) => {
+          const { whole } = groups
+          return `ctx.store.${whole}`
+        },
+      },
+    ],
+  },
   allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
-  bypassExpressionFunctionCreation: () => true,
+  // bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: signalName } = ctx
-    const signal = store[signalName] as Signal<any>
+    const signal = ctx.expressionFn(ctx)
 
     const isInput = el.tagName.toLowerCase().includes('input')
     const isSelect = el.tagName.toLowerCase().includes('select')
@@ -48,13 +61,19 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     }
 
     const setInputFromSignal = () => {
-      const v = signal.value
       if (!signal) throw new Error(`Signal ${signalName} not found`)
-      if (isCheckbox) {
+      const v = signal.value
+      if (isInput) {
         const input = el as HTMLInputElement
-        input.checked = v
-      } else if (isFile) {
-        // console.warn('File input reading is not supported yet')
+        if (isCheckbox) {
+          input.checked = v
+        } else if (isFile) {
+          // console.warn('File input reading is not supported yet')
+        } else {
+          input.value = `${signal.value}`
+        }
+      } else if ('value' in el) {
+        ;(el as any).value = `${signal.value}`
       } else {
         el.setAttribute('value', `${signal.value}`)
       }
@@ -143,33 +162,11 @@ export const TextPlugin: AttributePlugin = {
     const { el, expressionFn } = ctx
     if (!(el instanceof HTMLElement)) throw new Error('Element is not HTMLElement')
     return ctx.reactivity.effect(() => {
-      el.textContent = `${expressionFn(ctx)}`
+      const res = expressionFn(ctx)
+      el.textContent = `${res}`
     })
   },
 }
-
-// export const PromptPlugin: AttributePlugin = {
-//   prefix: 'prompt',
-//   description: 'Sets the textContent of the element',
-//   preprocessors: new Set([
-//     {
-//       name: 'PromptPreprocessor',
-//       description: `Replacing prompt() with ctx.store.prompt`,
-//       regexp: /(?<whole>(?<signal>[^;]*);(?<label>.*))/gm,
-//       replacer: ({ signal, label }: RegexpGroups) =>
-//         `
-//           const v = prompt(\`${label}\`, ctx.store.${signal}.value);
-//           if (v && v !== ctx.store.${signal}.value) {
-//             ctx.store.${signal}.value = v
-//           };
-//           v
-//         `,
-//     },
-//   ]),
-//   onLoad: (ctx: AttributeContext) => {
-//     ctx.expressionFn(ctx)
-//   },
-// }
 
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',

@@ -16,6 +16,7 @@ export type AttributeContext = {
   store: any
   mergeStore: (store: DeepState) => void
   applyPlugins: (target: Element) => void
+  walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void
   actions: Readonly<Actions>
   refs: Record<string, HTMLorSVGElement>
@@ -49,7 +50,10 @@ export type AttributePlugin = {
   mustNotEmptyKey?: boolean // The key of the data-* attribute must not be empty after the prefix
   allowedTagRegexps?: Set<string> // If not provided, all tags are allowed
   disallowedTags?: Set<string> // If not provided, no tags are disallowed
-  preprocessors?: Set<Preprocesser> // If not provided, no preprocessors are used
+  preprocessors?: {
+    pre?: Preprocesser[]
+    post?: Preprocesser[]
+  }
   bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean // If true, the expression function is not created
 }
 

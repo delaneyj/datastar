@@ -63,6 +63,7 @@ func setupExamplesInfiniteScroll(ctx context.Context, examplesRouter chi.Router)
 			}
 
 			return DIV(
+				ID("infinite_scroll"),
 				CLS("flex flex-col gap-2"),
 				TABLE(
 					CLS("table w-full"),

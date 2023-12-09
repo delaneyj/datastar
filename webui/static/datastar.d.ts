@@ -6,8 +6,9 @@ declare type AtomicState = Array<unknown> | ((...args: unknown[]) => unknown) | 
 
 export declare type AttributeContext = {
     store: any;
-    mergeStore: (store: DeepState) => void;
+    mergeStore: (store: DeepSignal<any>) => void;
     applyPlugins: (target: Element) => void;
+    walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void;
     cleanupElementRemovals: (el: Element) => void;
     actions: Readonly<Actions>;
     refs: Record<string, HTMLorSVGElement>;
@@ -32,7 +33,10 @@ export declare type AttributePlugin = {
     mustNotEmptyKey?: boolean;
     allowedTagRegexps?: Set<string>;
     disallowedTags?: Set<string>;
-    preprocessors?: Set<Preprocesser>;
+    preprocessors?: {
+        pre?: Preprocesser[];
+        post?: Preprocesser[];
+    };
     bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean;
 };
 
@@ -67,6 +71,8 @@ export declare class Datastar {
     private mergeStore;
     signalByName<T>(name: string): Signal<T>;
     private applyPlugins;
+    private walkSignalsStore;
+    private walkSignals;
     private walkDownDOM;
 }
 
@@ -112,7 +118,7 @@ declare const identifier: unique symbol;
 
 export declare type InitContext = {
     store: any;
-    mergeStore: (store: DeepState) => void;
+    mergeStore: (store: DeepSignal<any>) => void;
     actions: Readonly<Actions>;
     refs: Record<string, HTMLorSVGElement>;
     reactivity: Reactivity;

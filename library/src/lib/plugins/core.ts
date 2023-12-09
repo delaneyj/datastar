@@ -1,8 +1,8 @@
 import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
 
-const validJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$]*`
+const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]*`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
-  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validJSIdentifier})${suffix})`, `g`)
+  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
 }
 
 const SignalProcessor: Preprocesser = {
@@ -55,8 +55,6 @@ const RefPlugin: AttributePlugin = {
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   bypassExpressionFunctionCreation: () => true,
-  preprocessors: new Set([]),
-
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx
     ctx.refs[expression] = el

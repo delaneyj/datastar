@@ -8,6 +8,7 @@ htmx is designed to allow you to use CSS transitions to add smooth animations an
 htmx also allows you to use the new View Transitions API for creating animations.
 
 <div
+  id="animations"
   data-fetch-url="'/examples/animations/data'"
     data-on-load="$$get"
   >

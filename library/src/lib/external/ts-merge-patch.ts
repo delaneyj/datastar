@@ -1,3 +1,5 @@
+// From https://github.com/riagominota/ts-merge-patch/blob/main/src/index.ts
+
 type mpObj<T> = { [k in keyof T | string | number | symbol]: any }
 export function apply<L, R>(target: mpObj<L>, patchItem: mpObj<R>): Partial<L> & Partial<R>
 export function apply<L, R>(target: mpObj<L>, patchItem: mpObj<R>): R

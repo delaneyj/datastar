@@ -1,3 +1,4 @@
+// From https://github.com/EthanStandel/deepsignal/blob/main/packages/core/src/core.ts
 import { Signal, batch, signal } from './preact-core'
 
 export type AtomicState =
