@@ -6,7 +6,7 @@ declare type AtomicState = Array<unknown> | ((...args: unknown[]) => unknown) | 
 
 export declare type AttributeContext = {
     store: any;
-    mergeStore: (store: DeepSignal<any>) => void;
+    mergeStore: (store: DeepState) => void;
     applyPlugins: (target: Element) => void;
     walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void;
     cleanupElementRemovals: (el: Element) => void;
@@ -118,7 +118,7 @@ declare const identifier: unique symbol;
 
 export declare type InitContext = {
     store: any;
-    mergeStore: (store: DeepSignal<any>) => void;
+    mergeStore: (store: DeepState) => void;
     actions: Readonly<Actions>;
     refs: Record<string, HTMLorSVGElement>;
     reactivity: Reactivity;
