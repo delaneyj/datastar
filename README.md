@@ -128,11 +128,11 @@ injectMockFetch({
       const searchParams = new URLSearchParams(queryString)
       const dsJSON = searchParams.get('dataStack')
       if (!dsJSON) throw new Error('No dataStack found in query params')
-      const dataStack = JSON.parse(dsJSON)
+      const dataStack = ds.JSONParse(dsJSON)
       await new Promise((resolve) => setTimeout(resolve, 1000))
       return {
         html: `
-      <pre data-swap="after">${JSON.stringify(dataStack, null, 2)}</pre>
+      <pre data-swap="after">${ds.JSONStringify(dataStack, null, 2)}</pre>
       <div id="foo">Bar</div>
       `,
       }

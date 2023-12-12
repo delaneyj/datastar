@@ -1,4 +1,5 @@
 import { idiomorph } from '../external/idiomorph'
+import { JSONStringify } from '../external/json-bigint'
 import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 const GET = 'get'
@@ -51,9 +52,9 @@ const MergeOptions = {
 } as const
 type MergeOption = (typeof MergeOptions)[keyof typeof MergeOptions]
 
+// Sets the header of the fetch request
 export const HeadersPlugin: AttributePlugin = {
   prefix: 'header',
-  description: 'Sets the header of the fetch request',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
 
@@ -67,9 +68,9 @@ export const HeadersPlugin: AttributePlugin = {
   },
 }
 
+// Sets the fetch url
 export const FetchURLPlugin: AttributePlugin = {
   prefix: 'fetchUrl',
-  description: 'Sets the fetch url',
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   onGlobalInit: ({ mergeStore }) => {
@@ -92,9 +93,9 @@ export const FetchURLPlugin: AttributePlugin = {
   },
 }
 
+// Sets the fetch indicator selector
 export const FetchIndicatorPlugin: AttributePlugin = {
   prefix: 'fetchIndicator',
-  description: 'Sets the fetch indicator selector',
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   onGlobalInit: () => {
@@ -140,7 +141,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
 
   const storeWithoutFetch = { ...store }
   delete storeWithoutFetch.fetch
-  const storeJSON = JSON.stringify(storeWithoutFetch)
+  const storeJSON = JSONStringify(storeWithoutFetch)
   // console.log(`Sending ${storeJSON}`)
   // debugger
 

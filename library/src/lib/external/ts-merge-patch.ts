@@ -1,5 +1,7 @@
 // From https://github.com/riagominota/ts-merge-patch/blob/main/src/index.ts
 
+import { JSONParse, JSONStringify } from './json-bigint'
+
 type mpObj<T> = { [k in keyof T | string | number | symbol]: any }
 export function apply<L, R>(target: mpObj<L>, patchItem: mpObj<R>): Partial<L> & Partial<R>
 export function apply<L, R>(target: mpObj<L>, patchItem: mpObj<R>): R
@@ -17,7 +19,7 @@ export function apply(target: any, patchItem: any): any {
    * the entire target with the entire patch.
    */
   if (typeof patchItem !== 'object' || Array.isArray(patchItem) || !patchItem) {
-    return JSON.parse(JSON.stringify(patchItem)) //return new instance of variable
+    return JSONParse(JSONStringify(patchItem)) //return new instance of variable
   }
 
   if (typeof patchItem === 'object' && patchItem.toJSON !== undefined && typeof patchItem.toJSON === 'function') {

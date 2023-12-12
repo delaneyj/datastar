@@ -64,6 +64,7 @@ const (
 	FragmentSelectorUseID = ""
 	SSEEventTypeFragment  = "datastar-fragment"
 	SSEEventTypeRedirect  = "datastar-redirect"
+	SSEEventTypeError     = "datastar-error"
 )
 
 type RenderFragmentOptions struct {
@@ -215,7 +216,7 @@ func RedirectF(sse *toolbelt.ServerSentEventsHandler, urlFormat string, args ...
 func Error(sse *toolbelt.ServerSentEventsHandler, err error) {
 	sse.Send(
 		fmt.Sprintf("error %s", err.Error()),
-		toolbelt.WithSSEEvent(SSEEventTypeRedirect),
+		toolbelt.WithSSEEvent(SSEEventTypeError),
 		toolbelt.WithSSERetry(0),
 		toolbelt.WithSSESkipMinBytesCheck(true),
 	)

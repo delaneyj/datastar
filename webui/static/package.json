@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "type": "module",
   "repository": "https://github.com/delaneyj/datastar",
   "files": [
@@ -17,7 +17,6 @@
     }
   },
   "scripts": {
-    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"

@@ -18,11 +18,12 @@ export declare type AttributeContext = {
     expression: Readonly<string>;
     expressionFn: ExpressionFunction;
     modifiers: Map<string, string[]>;
+    JSONStringify: <T>(value: T) => string;
+    JSONParse: <T>(value: string) => T;
 };
 
 export declare type AttributePlugin = {
     prefix: string;
-    description: string;
     requiredPluginPrefixes?: Iterable<string>;
     onGlobalInit?: (ctx: InitContext) => void;
     onLoad: (ctx: AttributeContext) => OnRemovalFn | void;
@@ -67,6 +68,8 @@ export declare class Datastar {
     removals: Map<Element, Set<OnRemovalFn>>;
     constructor(actions?: Actions, ...plugins: AttributePlugin[]);
     run(): void;
+    JSONStringify<T>(data: T): string;
+    JSONParse<T>(json: string): T;
     private cleanupElementRemovals;
     private mergeStore;
     signalByName<T>(name: string): Signal<T>;
@@ -138,8 +141,6 @@ declare type Node_2 = {
 export declare type OnRemovalFn = () => void;
 
 export declare type Preprocesser = {
-    name: string;
-    description: string;
     regexp: RegExp;
     replacer: (groups: RegexpGroups) => string;
 };

@@ -6,9 +6,9 @@ const DISPLAY = 'display'
 const NONE = 'none'
 const IMPORTANT = 'important'
 
+// Sets the display of the element
 export const ShowPlugin: AttributePlugin = {
   prefix: 'show',
-  description: 'Sets the display of the element',
   allowedModifiers: new Set([IMPORTANT]),
 
   onLoad: (ctx: AttributeContext) => {
@@ -39,9 +39,9 @@ const ONCE = 'once'
 const HALF = 'half'
 const FULL = 'full'
 
+// Run expression when element intersects with viewport
 export const IntersectionPlugin: AttributePlugin = {
   prefix: INTERSECTS,
-  description: `Run expression when element intersects with viewport`,
   allowedModifiers: new Set([ONCE, HALF, FULL]),
   mustHaveEmptyKey: true,
   onLoad: (ctx: AttributeContext) => {
@@ -69,9 +69,9 @@ export const IntersectionPlugin: AttributePlugin = {
 const PREPEND = 'prepend'
 const APPEND = 'append'
 const teleportParentErr = new Error('Target element must have a parent if using prepend or append')
+// Teleports the element to another element
 export const TeleportPlugin: AttributePlugin = {
   prefix: 'teleport',
-  description: 'Teleports the element to another element',
   allowedModifiers: new Set([PREPEND, APPEND]),
   allowedTagRegexps: new Set(['template']),
   bypassExpressionFunctionCreation: () => true,
@@ -102,9 +102,9 @@ export const TeleportPlugin: AttributePlugin = {
   },
 }
 
+// Scrolls the element into view
 export const ScrollIntoViewPlugin: AttributePlugin = {
   prefix: 'scrollIntoView',
-  description: 'Scrolls the element into view',
   onLoad: (ctx: AttributeContext) => {
     const { el } = ctx
     el.scrollIntoView({
@@ -116,9 +116,9 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
 }
 
 const viewTransitionID = 'ds-view-transition-stylesheet'
+// Setup view transition api
 export const ViewTransitionPlugin: AttributePlugin = {
   prefix: 'viewTransition',
-  description: 'Setup view transition api',
   onGlobalInit(ctx) {
     const viewTransitionStylesheet = document.createElement('style')
     viewTransitionStylesheet.id = viewTransitionID
@@ -139,7 +139,7 @@ export const ViewTransitionPlugin: AttributePlugin = {
     }
 
     ctx.mergeStore({
-      viewTransitions: {},
+      viewTransitionRefCounts: {},
     })
   },
   onLoad: (ctx: AttributeContext) => {
@@ -162,10 +162,10 @@ export const ViewTransitionPlugin: AttributePlugin = {
 
 `
     stylesheet.innerHTML += vtCls
-    let count = store.viewTransitions[name]
+    let count = store.viewTransitionRefCounts[name]
     if (!count) {
       count = ctx.reactivity.signal(0)
-      store.viewTransitions[name] = count
+      store.viewTransitionRefCounts[name] = count
     }
     count.value++
 
@@ -175,7 +175,7 @@ export const ViewTransitionPlugin: AttributePlugin = {
     return () => {
       count.value--
       if (count.value === 0) {
-        delete store.viewTransitions[name]
+        delete store.viewTransitionRefCounts[name]
         stylesheet.innerHTML = stylesheet.innerHTML.replace(vtCls, '')
       }
     }

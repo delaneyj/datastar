@@ -5,9 +5,8 @@ function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
   return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
 }
 
+// Replacing $signal with ctx.store.signal.value`
 const SignalProcessor: Preprocesser = {
-  name: 'SignalProcessor',
-  description: `Replacing $signal with ctx.store.signal.value`,
   regexp: wholePrefixSuffix('$', 'signal', ''),
   replacer: (groups: RegexpGroups) => {
     const { signal } = groups
@@ -15,9 +14,8 @@ const SignalProcessor: Preprocesser = {
   },
 }
 
+// Replacing $$action(args) with ctx.actions.action(ctx, args)
 const ActionProcessor: Preprocesser = {
-  name: 'ActionProcessor',
-  description: `Replacing $$action(args) with ctx.actions.action(ctx, args)`,
   regexp: wholePrefixSuffix('$\\$', 'action', '(?<call>\\((?<args>.*)\\))?'),
   replacer: ({ action, args }: RegexpGroups) => {
     const withCtx = [`ctx`]
@@ -29,9 +27,8 @@ const ActionProcessor: Preprocesser = {
   },
 }
 
+// Replacing #foo with ctx.refs.foo
 const RefProcessor: Preprocesser = {
-  name: 'RefProcessor',
-  description: `Replacing #foo with ctx.refs.foo`,
   regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
     return `data.refs.${ref}`
@@ -40,18 +37,31 @@ const RefProcessor: Preprocesser = {
 
 export const CorePreprocessors: Preprocesser[] = [ActionProcessor, SignalProcessor, RefProcessor]
 
+// Setup the global store
 const MergeStoreAttributePlugin: AttributePlugin = {
   prefix: 'mergeStore',
-  description: 'Setup the global store',
+  preprocessors: {
+    pre: [
+      {
+        // Replacing whole with JSONStringify(whole)
+        regexp: /(?<whole>.+)/g,
+        replacer: (groups: RegexpGroups) => {
+          const { whole } = groups
+
+          return `ctx.JSONParse('${whole.replace(/'/g, `\\'`)}')`
+        },
+      },
+    ],
+  },
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
   },
 }
 
+// Sets the value of the element
 const RefPlugin: AttributePlugin = {
   prefix: 'ref',
-  description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   bypassExpressionFunctionCreation: () => true,

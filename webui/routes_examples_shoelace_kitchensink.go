@@ -2,6 +2,7 @@ package webui
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/delaneyj/datastar"
@@ -9,6 +10,7 @@ import (
 	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/maragudk/gomponents"
+	"github.com/samber/lo"
 )
 
 func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Router) error {
@@ -21,11 +23,25 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 		shoelaceKitchenSinkRouter.Route("/data", func(dataRouter chi.Router) {
 			type Nested struct {
 				Label     string `json:"label"`
-				Selection int    `json:"selection"`
+				Selection int64  `json:"selection"`
 			}
 			type Input struct {
 				Nested *Nested `json:"nested"`
 			}
+
+			type Option struct {
+				Label string `json:"label"`
+				Value int64  `json:"value"`
+			}
+
+			options := lo.Map(lo.Range(10), func(i, index int) Option {
+				// offset := 100199071137923140 + int64(index)
+				offset := toolbelt.NextID()
+				return Option{
+					Label: fmt.Sprintf("Option %d", i),
+					Value: offset,
+				}
+			})
 
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 				sse := toolbelt.NewSSE(w, r)
@@ -33,7 +49,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 				input := &Input{
 					Nested: &Nested{
 						Label:     "Hello World",
-						Selection: 1,
+						Selection: options[0].Value,
 					},
 				}
 
@@ -47,36 +63,24 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 							DATA("model", "nested.label"),
 						),
 						gomponents.El("sl-select",
-							ATTR("label", "Select"),
+							ATTR("label", "Select (Checking if int64's work)"),
 							DATA("model", "nested.selection"),
-							gomponents.El("sl-option",
-								ATTR("value", "0"),
-								TXT("Option 1"),
-							),
-							gomponents.El("sl-option",
-								ATTR("value", "1"),
-								TXT("Option 2"),
-							),
-							gomponents.El("sl-option",
-								ATTR("value", "2"),
-								TXT("Option 3"),
-							),
+							RANGE(options, func(o Option) gomponents.Node {
+								return gomponents.El("sl-option",
+									ATTR("value", fmt.Sprint(o.Value)),
+									TXTF("%s (%d)", o.Label, o.Value),
+								)
+							}),
 						),
 						gomponents.El("sl-radio-group",
 							ATTR("label", "Radio Group"),
 							DATA("model", "nested.selection"),
-							gomponents.El("sl-radio-button",
-								ATTR("value", "0"),
-								TXT("Option 1"),
-							),
-							gomponents.El("sl-radio-button",
-								ATTR("value", "1"),
-								TXT("Option 2"),
-							),
-							gomponents.El("sl-radio-button",
-								ATTR("value", "2"),
-								TXT("Option 3"),
-							),
+							RANGE(options, func(o Option) gomponents.Node {
+								return gomponents.El("sl-radio-button",
+									ATTR("value", fmt.Sprint(o.Value)),
+									TXT(o.Label),
+								)
+							}),
 						),
 
 						SignalStore,

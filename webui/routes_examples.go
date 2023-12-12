@@ -185,5 +185,5 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 
 var SignalStore = GRP(
 	H4(TXT("Signal Store")),
-	PRE(datastar.Text("JSON.stringify(ctx.store,null,2)")),
+	PRE(datastar.Text("ds.JSONStringify(ctx.store)")),
 )

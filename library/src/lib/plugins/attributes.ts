@@ -3,9 +3,9 @@ import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
 
+// Sets the value of the element
 export const BindAttributePlugin: AttributePlugin = {
   prefix: 'bind',
-  description: 'Sets the value of the element',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
 
@@ -25,15 +25,14 @@ export const BindAttributePlugin: AttributePlugin = {
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/
 const updateModelEvents = ['change', 'input', 'keydown']
+
+// Sets the value of the element
 export const TwoWayBindingModelPlugin: AttributePlugin = {
   prefix: 'model',
-  description: 'Sets the value of the element',
   mustHaveEmptyKey: true,
   preprocessors: {
     post: [
       {
-        name: 'ModelProcessor',
-        description: `Replacing model with ctx.store.model`,
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups
@@ -70,12 +69,12 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         } else if (isFile) {
           // console.warn('File input reading is not supported yet')
         } else {
-          input.value = `${signal.value}`
+          input.value = `${v}`
         }
       } else if ('value' in el) {
-        ;(el as any).value = `${signal.value}`
+        ;(el as any).value = `${v}`
       } else {
-        el.setAttribute('value', `${signal.value}`)
+        el.setAttribute('value', `${v}`)
       }
     }
     const cleanupSetInputFromSignal = ctx.reactivity.effect(setInputFromSignal)
@@ -128,6 +127,8 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
             signal.value = Boolean(value)
           }
         } else if (typeof current === 'undefined') {
+        } else if (typeof current === 'bigint') {
+          signal.value = BigInt(value)
         } else {
           console.log(typeof current)
           throw new Error('Unsupported type')
@@ -153,9 +154,9 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   },
 }
 
+// Sets the textContent of the element
 export const TextPlugin: AttributePlugin = {
   prefix: 'text',
-  description: 'Sets the textContent of the element',
   mustHaveEmptyKey: true,
 
   onLoad: (ctx: AttributeContext) => {
@@ -168,9 +169,9 @@ export const TextPlugin: AttributePlugin = {
   },
 }
 
+// Sets the event listener of the element
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
-  description: 'Sets the event listener of the element',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
   allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle']),
@@ -218,9 +219,9 @@ export const EventPlugin: AttributePlugin = {
   },
 }
 
+// Sets the focus of the element
 export const FocusPlugin: AttributePlugin = {
   prefix: 'focus',
-  description: 'Sets the focus of the element',
   mustHaveEmptyKey: true,
   mustHaveEmptyExpression: true,
 

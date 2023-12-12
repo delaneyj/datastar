@@ -1,5 +1,6 @@
 import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
+import { JSONParse, JSONStringify } from './external/json-bigint'
 import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
@@ -31,14 +32,14 @@ export class Datastar {
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
     this.actions = Object.assign(this.actions, actions)
     plugins = [...CorePlugins, ...plugins]
-    if (!plugins.length) throw new Error('No plugins provided')
+    if (!plugins.length) throw new Error('no plugins')
 
     const allPluginPrefixes = new Set<string>()
     for (const p of plugins) {
       if (p.requiredPluginPrefixes) {
         for (const requiredPluginType of p.requiredPluginPrefixes) {
           if (!allPluginPrefixes.has(requiredPluginType)) {
-            throw new Error(`Plugin ${p.prefix} requires plugin ${requiredPluginType}`)
+            throw new Error(`${p.prefix} requires ${requiredPluginType}`)
           }
         }
       }
@@ -61,6 +62,14 @@ export class Datastar {
       }
     })
     this.applyPlugins(document.body)
+  }
+
+  public JSONStringify<T>(data: T): string {
+    return JSONStringify(data)
+  }
+
+  public JSONParse<T>(json: string): T {
+    return JSONParse(json)
   }
 
   private cleanupElementRemovals(element: Element) {
@@ -105,7 +114,7 @@ export class Datastar {
             const allowed = [...p.allowedTagRegexps].some((r) => lowerCaseTag.match(r))
             if (!allowed) {
               throw new Error(
-                `Tag '${el.tagName}' is not allowed for plugin '${dsKey}', allowed tags are: ${[
+                `'${el.tagName}' not allowed for '${dsKey}', allowed ${[
                   [...p.allowedTagRegexps].map((t) => `'${t}'`),
                 ].join(', ')}`,
               )
@@ -116,10 +125,10 @@ export class Datastar {
           let keyRaw = dsKey.slice(p.prefix.length)
           let [key, ...modifiersWithArgsArr] = keyRaw.split('.')
           if (p.mustHaveEmptyKey && key.length > 0) {
-            throw new Error(`Attribute '${dsKey}' must have empty key`)
+            throw new Error(`'${dsKey}' must have empty key`)
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            throw new Error(`Attribute '${dsKey}' must have non-empty key`)
+            throw new Error(`'${dsKey}' must have non-empty key`)
           }
           if (key.length) {
             key = key[0].toLowerCase() + key.slice(1)
@@ -132,7 +141,7 @@ export class Datastar {
           if (p.allowedModifiers) {
             for (const modifier of modifiersArr) {
               if (!p.allowedModifiers.has(modifier.label)) {
-                throw new Error(`Modifier '${modifier.label}' is not allowed`)
+                throw new Error(`'${modifier.label}' is not allowed`)
               }
             }
           }
@@ -142,10 +151,10 @@ export class Datastar {
           }
 
           if (p.mustHaveEmptyExpression && expression.length) {
-            throw new Error(`Attribute '${dsKey}' must have empty expression`)
+            throw new Error(`'${dsKey}' must have empty expression`)
           }
           if (p.mustNotEmptyExpression && !expression.length) {
-            throw new Error(`Attribute '${dsKey}' must have non-empty expression`)
+            throw new Error(`'${dsKey}' must have non-empty expression`)
           }
 
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
@@ -179,6 +188,8 @@ export class Datastar {
             expressionFn: () => {
               throw new Error('Expression function not created')
             },
+            JSONParse: this.JSONParse,
+            JSONStringify: this.JSONStringify,
             modifiers,
           }
 
@@ -189,7 +200,7 @@ export class Datastar {
 try {
   ${statements.join(';')}
 } catch (e) {
-  throw new Error(\`Error evaluating expression '${expression}' on ${el.id}\`)
+  throw new Error(\`Eval '${expression}' on ${el.id ? `#${el.id}` : el.tagName}\`)
 }
             `
             try {
@@ -197,7 +208,6 @@ try {
               ctx.expressionFn = fn
             } catch (e) {
               console.error(e)
-              console.error(`Error evaluating expression '${fnContent}' on ${el.id ? `#${el.id}` : el.tagName}`)
               return
             }
           }

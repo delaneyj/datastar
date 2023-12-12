@@ -26,6 +26,8 @@ export type AttributeContext = {
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
+  JSONStringify: <T>(value: T) => string
+  JSONParse: <T>(value: string) => T
 }
 
 export type InitContext = {
@@ -39,7 +41,6 @@ export type InitContext = {
 export type OnRemovalFn = () => void
 export type AttributePlugin = {
   prefix: string // The prefix of the `data-${prefix}` attribute
-  description: string // Used for debugging
   requiredPluginPrefixes?: Iterable<string> // If not provided, no plugins are required
   onGlobalInit?: (ctx: InitContext) => void // Called once on registration of the plugin
   onLoad: (ctx: AttributeContext) => OnRemovalFn | void // Return a function to be called on removal
@@ -59,8 +60,6 @@ export type AttributePlugin = {
 
 export type RegexpGroups = Record<string, string>
 export type Preprocesser = {
-  name: string
-  description: string
   regexp: RegExp
   replacer: (groups: RegexpGroups) => string
 }
