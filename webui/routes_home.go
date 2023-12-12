@@ -93,6 +93,7 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 					LI(TXT("Server Sent Events")),
 					LI(TXT("Redirects")),
 					LI(TXT("View Transition API")),
+					LI(TXT("BigInt Support")),
 				),
 			),
 		},

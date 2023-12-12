@@ -1,6 +1,6 @@
 // Originally from https://github.com/Ivan-Korolenko/json-with-bigint/blob/main/json-with-bigint.js
 
-const bigInts = /([\[:])?"(\d+)n"([,\}\]])/g
+// const bigInts = /([\[:])?"(\d+)n"([,\}\]])/g
 const numbersBiggerThanMaxInt =
   /([\[:])?(\d{17,}|(?:[9](?:[1-9]07199254740991|0[1-9]7199254740991|00[8-9]199254740991|007[2-9]99254740991|007199[3-9]54740991|0071992[6-9]4740991|00719925[5-9]740991|007199254[8-9]40991|0071992547[5-9]0991|00719925474[1-9]991|00719925474099[2-9])))([,\}\]])/g
 
@@ -11,10 +11,10 @@ const numbersBiggerThanMaxInt =
 export function JSONStringify<T>(data: T, space = 2): string {
   const preliminaryJSON = JSON.stringify(
     data,
-    (_, value) => (typeof value === 'bigint' ? value.toString() : value),
+    (_, value) => (typeof value === 'bigint' ? value.toString() + 'n' : value),
     space,
   )
-  return preliminaryJSON.replace(bigInts, '$1$2$3')
+  return preliminaryJSON.replace(/"(-?\d+)n"/g, (_, value) => value)
 }
 
 /*
@@ -30,14 +30,20 @@ export function JSONParse(json: string): any {
   */
   const serializedData = json.replace(numbersBiggerThanMaxInt, '$1"$2n"$3')
   return JSON.parse(serializedData, (_, value) => {
-    const isCustomFormatBigInt = typeof value === 'string' && value.match(/^\d+n$/)
-    if (isCustomFormatBigInt) return BigInt(value.substring(0, value.length - 1))
-
-    if (typeof value === 'number' && !Number.isSafeInteger(value)) {
-      const bi = BigInt(value)
-      console.log(`Converted ${value} to ${bi}`)
-      return bi
+    switch (typeof value) {
+      case 'number':
+        if (Number.isSafeInteger(value)) return value
+        return BigInt(value)
+      case 'string':
+        // Check if string matches bigIntString regex
+        if (value.match(/(-?\d+)n/g)?.length) {
+          // If string matches bigIntString regex, then it's a big integer
+          // Remove "n" character from the end of the string and parse it to BigInt
+          return BigInt(value.slice(0, -1))
+        }
+        return value
+      default:
+        return value
     }
-    return value
   })
 }
