@@ -24,6 +24,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 			type Nested struct {
 				Label     string `json:"label"`
 				Selection int64  `json:"selection"`
+				IsChecked bool   `json:"isChecked"`
 			}
 			type Input struct {
 				Nested *Nested `json:"nested"`
@@ -60,11 +61,11 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 						datastar.MergeStore(input),
 						gomponents.El("sl-input",
 							ATTR("label", "Label"),
-							DATA("model", "nested.label"),
+							datastar.Model("nested.label"),
 						),
 						gomponents.El("sl-select",
 							ATTR("label", "Select (Checking if int64's work)"),
-							DATA("model", "nested.selection"),
+							datastar.Model("nested.selection"),
 							RANGE(options, func(o Option) gomponents.Node {
 								return gomponents.El("sl-option",
 									ATTR("value", fmt.Sprint(o.Value)),
@@ -74,7 +75,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 						),
 						gomponents.El("sl-radio-group",
 							ATTR("label", "Radio Group"),
-							DATA("model", "nested.selection"),
+							datastar.Model("nested.selection"),
 							RANGE(options, func(o Option) gomponents.Node {
 								return gomponents.El("sl-radio-button",
 									ATTR("value", fmt.Sprint(o.Value)),
@@ -82,7 +83,10 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 								)
 							}),
 						),
-
+						gomponents.El("sl-checkbox",
+							datastar.Model("nested.isChecked"),
+							TXT("Checkbox"),
+						),
 						SignalStore,
 					),
 				)

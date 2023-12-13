@@ -46,13 +46,14 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const { store, el, expression: signalName } = ctx
     const signal = ctx.expressionFn(ctx)
+    const tnl = el.tagName.toLowerCase()
 
-    const isInput = el.tagName.toLowerCase().includes('input')
-    const isSelect = el.tagName.toLowerCase().includes('select')
-    const isTextarea = el.tagName.toLowerCase().includes('textarea')
-    const isRadio = el.tagName.toLowerCase().includes('radio')
+    const isInput = tnl.includes('input')
+    const isSelect = tnl.includes('select')
+    const isTextarea = tnl.includes('textarea')
+    const isRadio = tnl.includes('radio')
     const type = el.getAttribute('type')
-    const isCheckbox = isInput && type === 'checkbox'
+    const isCheckbox = tnl.includes('checkbox') || (isInput && type === 'checkbox')
     const isFile = isInput && type === 'file'
 
     if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
