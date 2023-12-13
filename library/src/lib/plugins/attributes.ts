@@ -107,26 +107,26 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         }
 
         return
-      } else {
-        const current = signal.value
-        if (typeof current === 'number') {
-          signal.value = Number(current)
-        } else if (typeof current === 'string') {
-          signal.value = current
-        } else if (typeof current === 'boolean') {
-          if (isCheckbox) {
-            const { checked } = el as HTMLInputElement
-            signal.value = checked
-          } else {
-            signal.value = Boolean(current)
-          }
-        } else if (typeof current === 'undefined') {
-        } else if (typeof current === 'bigint') {
-          signal.value = BigInt(current)
+      }
+
+      const current = signal.value
+      const input = el as HTMLInputElement
+      if (typeof current === 'number') {
+        signal.value = Number(input.value)
+      } else if (typeof current === 'string') {
+        signal.value = input.value
+      } else if (typeof current === 'boolean') {
+        if (isCheckbox) {
+          signal.value = input.checked
         } else {
-          console.log(typeof current)
-          throw new Error('Unsupported type')
+          signal.value = Boolean(input.value)
         }
+      } else if (typeof current === 'undefined') {
+      } else if (typeof current === 'bigint') {
+        signal.value = BigInt(input.value)
+      } else {
+        console.log(typeof current)
+        throw new Error('Unsupported type')
       }
     }
 

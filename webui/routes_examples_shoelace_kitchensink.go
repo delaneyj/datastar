@@ -3,6 +3,7 @@ package webui
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"net/http"
 
 	"github.com/delaneyj/datastar"
@@ -49,8 +50,8 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 
 				input := &Input{
 					Nested: &Nested{
-						Label:     "Hello World",
-						Selection: options[0].Value,
+						Label:     fmt.Sprintf("Hello World %d", rand.Intn(100)),
+						Selection: options[rand.Intn(len(options))].Value,
 						IsChecked: true,
 					},
 				}
