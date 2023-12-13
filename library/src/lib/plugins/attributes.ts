@@ -63,15 +63,11 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const setInputFromSignal = () => {
       if (!signal) throw new Error(`Signal ${signalName} not found`)
       const v = signal.value
-      if (isInput) {
-        const input = el as HTMLInputElement
-        if (isCheckbox) {
-          input.checked = v
-        } else if (isFile) {
-          // console.warn('File input reading is not supported yet')
-        } else {
-          input.value = `${v}`
-        }
+      if (isCheckbox) {
+        ;(el as HTMLInputElement).checked = v
+      } else if (isInput) {
+        if (!isFile) (el as HTMLInputElement).value = `${v}`
+        // console.warn('File input reading is not supported yet')
       } else if ('value' in el) {
         ;(el as any).value = `${v}`
       } else {
@@ -81,9 +77,6 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const cleanupSetInputFromSignal = ctx.reactivity.effect(setInputFromSignal)
 
     const setSignalFromInput = () => {
-      const value = (el as any).value
-      if (typeof value === 'undefined') return
-
       if (isFile) {
         const [f] = (el as any)?.files || []
         if (!f) {
@@ -117,19 +110,19 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       } else {
         const current = signal.value
         if (typeof current === 'number') {
-          signal.value = Number(value)
+          signal.value = Number(current)
         } else if (typeof current === 'string') {
-          signal.value = value
+          signal.value = current
         } else if (typeof current === 'boolean') {
           if (isCheckbox) {
             const { checked } = el as HTMLInputElement
             signal.value = checked
           } else {
-            signal.value = Boolean(value)
+            signal.value = Boolean(current)
           }
         } else if (typeof current === 'undefined') {
         } else if (typeof current === 'bigint') {
-          signal.value = BigInt(value)
+          signal.value = BigInt(current)
         } else {
           console.log(typeof current)
           throw new Error('Unsupported type')

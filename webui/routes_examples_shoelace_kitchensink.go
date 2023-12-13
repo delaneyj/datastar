@@ -51,6 +51,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 					Nested: &Nested{
 						Label:     "Hello World",
 						Selection: options[0].Value,
+						IsChecked: true,
 					},
 				}
 

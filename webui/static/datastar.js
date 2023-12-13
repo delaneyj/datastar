@@ -1,27 +1,27 @@
 function Ce(t) {
   return t instanceof HTMLElement || t instanceof SVGElement ? t : null;
 }
-function te() {
+function ee() {
   throw new Error("Cycle detected");
 }
 function Ze() {
   throw new Error("Computed cannot have side-effects");
 }
-const Xe = Symbol.for("preact-signals"), T = 1, H = 2, B = 4, x = 8, F = 16, M = 32;
-function ne() {
-  V++;
+const Xe = Symbol.for("preact-signals"), T = 1, I = 2, V = 4, H = 8, D = 16, M = 32;
+function te() {
+  U++;
 }
-function re() {
-  if (V > 1) {
-    V--;
+function ne() {
+  if (U > 1) {
+    U--;
     return;
   }
   let t, e = !1;
-  for (; U !== void 0; ) {
-    let n = U;
-    for (U = void 0, ae++; n !== void 0; ) {
+  for (; F !== void 0; ) {
+    let n = F;
+    for (F = void 0, ae++; n !== void 0; ) {
       const r = n._nextBatchedEffect;
-      if (n._nextBatchedEffect = void 0, n._flags &= ~H, !(n._flags & x) && xe(n))
+      if (n._nextBatchedEffect = void 0, n._flags &= ~I, !(n._flags & H) && xe(n))
         try {
           n._callback();
         } catch (s) {
@@ -30,20 +30,20 @@ function re() {
       n = r;
     }
   }
-  if (ae = 0, V--, e)
+  if (ae = 0, U--, e)
     throw t;
 }
 function Ye(t) {
-  if (V > 0)
+  if (U > 0)
     return t();
-  ne();
+  te();
   try {
     return t();
   } finally {
-    re();
+    ne();
   }
 }
-let h, U, V = 0, ae = 0, Q = 0;
+let h, F, U = 0, ae = 0, Y = 0;
 function Ie(t) {
   if (h === void 0)
     return;
@@ -109,12 +109,12 @@ Object.defineProperty(_.prototype, "value", {
   },
   set(t) {
     if (h instanceof L && Ze(), t !== this._value) {
-      ae > 100 && te(), this._value = t, this._version++, Q++, ne();
+      ae > 100 && ee(), this._value = t, this._version++, Y++, te();
       try {
         for (let e = this._targets; e !== void 0; e = e._nextTarget)
           e._target._notify();
       } finally {
-        re();
+        ne();
       }
     }
   }
@@ -146,29 +146,29 @@ function Fe(t) {
   t._sources = n;
 }
 function L(t) {
-  _.call(this, void 0), this._compute = t, this._sources = void 0, this._globalVersion = Q - 1, this._flags = B;
+  _.call(this, void 0), this._compute = t, this._sources = void 0, this._globalVersion = Y - 1, this._flags = V;
 }
 L.prototype = new _();
 L.prototype._refresh = function() {
-  if (this._flags &= ~H, this._flags & T)
+  if (this._flags &= ~I, this._flags & T)
     return !1;
-  if ((this._flags & (B | M)) === M || (this._flags &= ~B, this._globalVersion === Q))
+  if ((this._flags & (V | M)) === M || (this._flags &= ~V, this._globalVersion === Y))
     return !0;
-  if (this._globalVersion = Q, this._flags |= T, this._version > 0 && !xe(this))
+  if (this._globalVersion = Y, this._flags |= T, this._version > 0 && !xe(this))
     return this._flags &= ~T, !0;
   const t = h;
   try {
     De(this), h = this;
     const e = this._compute();
-    (this._flags & F || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~F, this._version++);
+    (this._flags & D || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~D, this._version++);
   } catch (e) {
-    this._value = e, this._flags |= F, this._version++;
+    this._value = e, this._flags |= D, this._version++;
   }
   return h = t, Fe(this), this._flags &= ~T, !0;
 };
 L.prototype._subscribe = function(t) {
   if (this._targets === void 0) {
-    this._flags |= B | M;
+    this._flags |= V | M;
     for (let e = this._sources; e !== void 0; e = e._nextSource)
       e._source._subscribe(e);
   }
@@ -182,22 +182,22 @@ L.prototype._unsubscribe = function(t) {
   }
 };
 L.prototype._notify = function() {
-  if (!(this._flags & H)) {
-    this._flags |= B | H;
+  if (!(this._flags & I)) {
+    this._flags |= V | I;
     for (let t = this._targets; t !== void 0; t = t._nextTarget)
       t._target._notify();
   }
 };
 L.prototype.peek = function() {
-  if (this._refresh() || te(), this._flags & F)
+  if (this._refresh() || ee(), this._flags & D)
     throw this._value;
   return this._value;
 };
 Object.defineProperty(L.prototype, "value", {
   get() {
-    this._flags & T && te();
+    this._flags & T && ee();
     const t = Ie(this);
-    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & F)
+    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & D)
       throw this._value;
     return this._value;
   }
@@ -208,15 +208,15 @@ function Qe(t) {
 function Ue(t) {
   const e = t._cleanup;
   if (t._cleanup = void 0, typeof e == "function") {
-    ne();
+    te();
     const n = h;
     h = void 0;
     try {
       e();
     } catch (r) {
-      throw t._flags &= ~T, t._flags |= x, fe(t), r;
+      throw t._flags &= ~T, t._flags |= H, fe(t), r;
     } finally {
-      h = n, re();
+      h = n, ne();
     }
   }
 }
@@ -228,15 +228,15 @@ function fe(t) {
 function et(t) {
   if (h !== this)
     throw new Error("Out-of-order effect");
-  Fe(this), h = t, this._flags &= ~T, this._flags & x && fe(this), re();
+  Fe(this), h = t, this._flags &= ~T, this._flags & H && fe(this), ne();
 }
-function G(t) {
+function q(t) {
   this._compute = t, this._cleanup = void 0, this._sources = void 0, this._nextBatchedEffect = void 0, this._flags = M;
 }
-G.prototype._callback = function() {
+q.prototype._callback = function() {
   const t = this._start();
   try {
-    if (this._flags & x || this._compute === void 0)
+    if (this._flags & H || this._compute === void 0)
       return;
     const e = this._compute();
     typeof e == "function" && (this._cleanup = e);
@@ -244,19 +244,19 @@ G.prototype._callback = function() {
     t();
   }
 };
-G.prototype._start = function() {
-  this._flags & T && te(), this._flags |= T, this._flags &= ~x, Ue(this), De(this), ne();
+q.prototype._start = function() {
+  this._flags & T && ee(), this._flags |= T, this._flags &= ~H, Ue(this), De(this), te();
   const t = h;
   return h = this, et.bind(this, t);
 };
-G.prototype._notify = function() {
-  this._flags & H || (this._flags |= H, this._nextBatchedEffect = U, U = this);
+q.prototype._notify = function() {
+  this._flags & I || (this._flags |= I, this._nextBatchedEffect = F, F = this);
 };
-G.prototype._dispose = function() {
-  this._flags |= x, this._flags & T || fe(this);
+q.prototype._dispose = function() {
+  this._flags |= H, this._flags & T || fe(this);
 };
 function de(t) {
-  const e = new G(t);
+  const e = new q(t);
   try {
     e._callback();
   } catch (n) {
@@ -438,11 +438,11 @@ class dt {
           if (!i.startsWith(r.prefix))
             continue;
           if (o.id.length === 0 && (o.id = `ds-${this.parentID}-${this.missingIDNext++}`), n.clear(), r.allowedTagRegexps) {
-            const u = o.tagName.toLowerCase();
-            if (![...r.allowedTagRegexps].some((g) => u.match(g)))
+            const p = o.tagName.toLowerCase();
+            if (![...r.allowedTagRegexps].some((v) => p.match(v)))
               throw new Error(
                 `'${o.tagName}' not allowed for '${i}', allowed ${[
-                  [...r.allowedTagRegexps].map((g) => `'${g}'`)
+                  [...r.allowedTagRegexps].map((v) => `'${v}'`)
                 ].join(", ")}`
               );
           }
@@ -452,44 +452,44 @@ class dt {
           if (r.mustNotEmptyKey && d.length === 0)
             throw new Error(`'${i}' must have non-empty key`);
           d.length && (d = d[0].toLowerCase() + d.slice(1));
-          const l = c.map((u) => {
-            const [b, ...g] = u.split("_");
-            return { label: b, args: g };
+          const l = c.map((p) => {
+            const [y, ...v] = p.split("_");
+            return { label: y, args: v };
           });
           if (r.allowedModifiers) {
-            for (const u of l)
-              if (!r.allowedModifiers.has(u.label))
-                throw new Error(`'${u.label}' is not allowed`);
+            for (const p of l)
+              if (!r.allowedModifiers.has(p.label))
+                throw new Error(`'${p.label}' is not allowed`);
           }
-          const v = /* @__PURE__ */ new Map();
-          for (const u of l)
-            v.set(u.label, u.args);
+          const m = /* @__PURE__ */ new Map();
+          for (const p of l)
+            m.set(p.label, p.args);
           if (r.mustHaveEmptyExpression && a.length)
             throw new Error(`'${i}' must have empty expression`);
           if (r.mustNotEmptyExpression && !a.length)
             throw new Error(`'${i}' must have non-empty expression`);
-          const w = [...r.preprocessors?.pre || [], ...lt, ...r.preprocessors?.post || []];
-          for (const u of w) {
-            if (n.has(u))
+          const b = [...r.preprocessors?.pre || [], ...lt, ...r.preprocessors?.post || []];
+          for (const p of b) {
+            if (n.has(p))
               continue;
-            n.add(u);
-            const b = [...a.matchAll(u.regexp)];
-            if (b.length)
-              for (const g of b) {
-                if (!g.groups)
+            n.add(p);
+            const y = [...a.matchAll(p.regexp)];
+            if (y.length)
+              for (const v of y) {
+                if (!v.groups)
                   continue;
-                const { groups: P } = g, { whole: O } = P;
-                a = a.replace(O, u.replacer(P));
+                const { groups: P } = v, { whole: R } = P;
+                a = a.replace(R, p.replacer(P));
               }
           }
-          const { store: E, reactivity: A, actions: y, refs: $ } = this, p = {
+          const { store: E, reactivity: A, actions: g, refs: O } = this, u = {
             store: E,
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),
-            actions: y,
-            refs: $,
+            actions: g,
+            refs: O,
             reactivity: A,
             el: o,
             key: d,
@@ -499,28 +499,28 @@ class dt {
             },
             JSONParse: this.JSONParse,
             JSONStringify: this.JSONStringify,
-            modifiers: v
+            modifiers: m
           };
-          if (!r.bypassExpressionFunctionCreation?.(p) && !r.mustHaveEmptyExpression && a.length) {
-            const u = a.split(";");
-            u[u.length - 1] = `return ${u[u.length - 1]}`;
-            const b = `
+          if (!r.bypassExpressionFunctionCreation?.(u) && !r.mustHaveEmptyExpression && a.length) {
+            const p = a.split(";");
+            p[p.length - 1] = `return ${p[p.length - 1]}`;
+            const y = `
 try {
-  ${u.join(";")}
+  ${p.join(";")}
 } catch (e) {
   throw new Error(\`Eval '${a}' on ${o.id ? `#${o.id}` : o.tagName}\`)
 }
             `;
             try {
-              const g = new Function("ctx", b);
-              p.expressionFn = g;
-            } catch (g) {
-              console.error(g);
+              const v = new Function("ctx", y);
+              u.expressionFn = v;
+            } catch (v) {
+              console.error(v);
               return;
             }
           }
-          const m = r.onLoad(p);
-          m && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(m));
+          const w = r.onLoad(u);
+          w && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(w));
         }
       });
     });
@@ -556,7 +556,7 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     const e = pt(t.key), r = `${t.expressionFn(t)}`;
     !r || r === "false" || r === "null" || r === "undefined" ? t.el.removeAttribute(e) : t.el.setAttribute(e, r);
   })
-}, mt = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, K = ["change", "input", "keydown"], gt = {
+}, mt = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, G = ["change", "input", "keydown"], gt = {
   prefix: "model",
   mustHaveEmptyKey: !0,
   preprocessors: {
@@ -573,75 +573,69 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
   allowedTagRegexps: /* @__PURE__ */ new Set(["input", "textarea", "select", "checkbox", "radio"]),
   // bypassExpressionFunctionCreation: () => true,
   onLoad: (t) => {
-    const { store: e, el: n, expression: r } = t, s = t.expressionFn(t), o = n.tagName.toLowerCase(), i = o.includes("input"), a = o.includes("select"), f = o.includes("textarea"), d = o.includes("radio"), c = n.getAttribute("type"), l = o.includes("checkbox") || i && c === "checkbox", v = i && c === "file";
+    const { store: e, el: n, expression: r } = t, s = t.expressionFn(t), o = n.tagName.toLowerCase(), i = o.includes("input"), a = o.includes("select"), f = o.includes("textarea"), d = o.includes("radio"), c = n.getAttribute("type"), l = o.includes("checkbox") || i && c === "checkbox", m = i && c === "file";
     if (!i && !a && !f && !l && !d)
       throw new Error("Element must be input, select, textarea, checkbox or radio");
-    const w = () => {
+    const b = () => {
       if (!s)
         throw new Error(`Signal ${r} not found`);
-      const p = s.value;
-      if (i) {
-        const m = n;
-        l ? m.checked = p : v || (m.value = `${p}`);
-      } else
-        "value" in n ? n.value = `${p}` : n.setAttribute("value", `${p}`);
-    }, E = t.reactivity.effect(w), A = () => {
-      const p = n.value;
-      if (!(typeof p > "u"))
-        if (v) {
-          const [m] = n?.files || [];
-          if (!m) {
-            s.value = "";
-            return;
-          }
-          const u = new FileReader();
-          u.onload = () => {
-            if (typeof u.result != "string")
-              throw new Error("Unsupported type");
-            const g = u.result.match(mt);
-            if (!g?.groups)
-              throw new Error("Invalid data URI");
-            const { mime: P, contents: O } = g.groups;
-            s.value = O;
-            const C = `${r}Mime`;
-            if (C in e) {
-              const D = e[`${C}`];
-              D.value = P;
-            }
-          }, u.readAsDataURL(m);
-          const b = `${r}Name`;
-          if (b in e) {
-            const g = e[`${b}`];
-            g.value = m.name;
-          }
+      const u = s.value;
+      l ? n.checked = u : i ? m || (n.value = `${u}`) : "value" in n ? n.value = `${u}` : n.setAttribute("value", `${u}`);
+    }, E = t.reactivity.effect(b), A = () => {
+      if (m) {
+        const [u] = n?.files || [];
+        if (!u) {
+          s.value = "";
           return;
-        } else {
-          const m = s.value;
-          if (typeof m == "number")
-            s.value = Number(p);
-          else if (typeof m == "string")
-            s.value = p;
-          else if (typeof m == "boolean")
-            if (l) {
-              const { checked: u } = n;
-              s.value = u;
-            } else
-              s.value = !!p;
-          else if (!(typeof m > "u"))
-            if (typeof m == "bigint")
-              s.value = BigInt(p);
-            else
-              throw console.log(typeof m), new Error("Unsupported type");
         }
-    }, y = n.tagName.split("-");
-    if (y.length > 1) {
-      const p = y[0].toLowerCase();
-      K.forEach((m) => {
-        K.push(`${p}-${m}`);
+        const w = new FileReader();
+        w.onload = () => {
+          if (typeof w.result != "string")
+            throw new Error("Unsupported type");
+          const y = w.result.match(mt);
+          if (!y?.groups)
+            throw new Error("Invalid data URI");
+          const { mime: v, contents: P } = y.groups;
+          s.value = P;
+          const R = `${r}Mime`;
+          if (R in e) {
+            const x = e[`${R}`];
+            x.value = v;
+          }
+        }, w.readAsDataURL(u);
+        const p = `${r}Name`;
+        if (p in e) {
+          const y = e[`${p}`];
+          y.value = u.name;
+        }
+        return;
+      } else {
+        const u = s.value;
+        if (typeof u == "number")
+          s.value = Number(u);
+        else if (typeof u == "string")
+          s.value = u;
+        else if (typeof u == "boolean")
+          if (l) {
+            const { checked: w } = n;
+            s.value = w;
+          } else
+            s.value = !!u;
+        else if (!(typeof u > "u"))
+          if (typeof u == "bigint")
+            s.value = BigInt(u);
+          else
+            throw console.log(typeof u), new Error("Unsupported type");
+      }
+    }, g = n.tagName.split("-");
+    if (g.length > 1) {
+      const u = g[0].toLowerCase();
+      G.forEach((w) => {
+        G.push(`${u}-${w}`);
       });
     }
-    return K.forEach((p) => n.addEventListener(p, A)), () => {
-      E(), K.forEach((p) => n.removeEventListener(p, A));
+    return G.forEach((u) => n.addEventListener(u, A)), () => {
+      E(), G.forEach((u) => n.removeEventListener(u, A));
     };
   }
 }, vt = {
@@ -656,7 +650,7 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       e.textContent = `${r}`;
     });
   }
-}, yt = {
+}, _t = {
   prefix: "on",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -668,12 +662,12 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     };
     const o = t.modifiers.get("debounce");
     if (o) {
-      const d = _e(o), c = W(o, "leading", !1), l = W(o, "noTrail", !0);
+      const d = ye(o), c = K(o, "leading", !1), l = K(o, "noTrail", !0);
       s = bt(s, d, c, l);
     }
     const i = t.modifiers.get("throttle");
     if (i) {
-      const d = _e(i), c = W(i, "noLead", !0), l = W(i, "noTrail", !0);
+      const d = ye(i), c = K(i, "noLead", !0), l = K(i, "noTrail", !0);
       s = Et(s, d, c, l);
     }
     const a = {
@@ -689,7 +683,7 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       e.removeEventListener(f, s);
     };
   }
-}, _t = {
+}, yt = {
   prefix: "focus",
   mustHaveEmptyKey: !0,
   mustHaveEmptyExpression: !0,
@@ -698,11 +692,11 @@ const pt = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
   ht,
   gt,
   vt,
-  _t,
+  yt,
   // PromptPlugin,
-  yt
+  _t
 ];
-function _e(t) {
+function ye(t) {
   if (!t || t?.length === 0)
     return 0;
   for (const e of t) {
@@ -717,7 +711,7 @@ function _e(t) {
   }
   return 0;
 }
-function W(t, e, n = !1) {
+function K(t, e, n = !1) {
   return t ? t.includes(e) || n : !1;
 }
 function bt(t, e, n = !1, r = !0) {
@@ -737,7 +731,7 @@ function Et(t, e, n = !0, r = !1) {
     }, e));
   };
 }
-const X = /* @__PURE__ */ new WeakSet();
+const Z = /* @__PURE__ */ new WeakSet();
 function St(t, e, n = {}) {
   t instanceof Document && (t = t.documentElement);
   let r;
@@ -771,12 +765,12 @@ function Je(t, e, n) {
     const r = Rt(e, t, n);
     if (!r)
       throw new Error("Could not find best match");
-    const s = r?.previousSibling, o = r?.nextSibling, i = Y(t, r, n);
+    const s = r?.previousSibling, o = r?.nextSibling, i = X(t, r, n);
     return r ? Pt(s, i, o) : [];
   } else
     throw "Do not understand how to morph style " + n.morphStyle;
 }
-function Y(t, e, n) {
+function X(t, e, n) {
   if (!(n.ignoreActive && t === document.activeElement))
     if (e == null) {
       if (n.callbacks.beforeNodeRemoved(t) === !1)
@@ -784,7 +778,7 @@ function Y(t, e, n) {
       t.remove(), n.callbacks.afterNodeRemoved(t);
       return;
     } else {
-      if (ee(t, e))
+      if (Q(t, e))
         return n.callbacks.beforeNodeMorphed(t, e) === !1 ? void 0 : (t instanceof HTMLHeadElement && n.head.ignore || (e instanceof HTMLHeadElement && t instanceof HTMLHeadElement && n.head.style !== "morph" ? Ge(e, t, n) : (Tt(e, t), qe(e, t, n))), n.callbacks.afterNodeMorphed(t, e), t);
       if (n.callbacks.beforeNodeRemoved(t) === !1 || n.callbacks.beforeNodeAdded(e) === !1)
         return;
@@ -799,26 +793,26 @@ function qe(t, e, n) {
     if (o = r, r = o.nextSibling, s == null) {
       if (n.callbacks.beforeNodeAdded(o) === !1)
         return;
-      e.appendChild(o), n.callbacks.afterNodeAdded(o), R(n, o);
+      e.appendChild(o), n.callbacks.afterNodeAdded(o), $(n, o);
       continue;
     }
     if (Ke(o, s, n)) {
-      Y(s, o, n), s = s.nextSibling, R(n, o);
+      X(s, o, n), s = s.nextSibling, $(n, o);
       continue;
     }
     let i = Lt(t, e, o, s, n);
     if (i) {
-      s = we(s, i, n), Y(i, o, n), R(n, o);
+      s = we(s, i, n), X(i, o, n), $(n, o);
       continue;
     }
     let a = Nt(t, o, s, n);
     if (a) {
-      s = we(s, a, n), Y(a, o, n), R(n, o);
+      s = we(s, a, n), X(a, o, n), $(n, o);
       continue;
     }
     if (n.callbacks.beforeNodeAdded(o) === !1)
       return;
-    e.insertBefore(o, s), n.callbacks.afterNodeAdded(o), R(n, o);
+    e.insertBefore(o, s), n.callbacks.afterNodeAdded(o), $(n, o);
   }
   for (; s !== null; ) {
     let i = s;
@@ -834,15 +828,15 @@ function Tt(t, e) {
       t.hasAttribute(r.name) || e.removeAttribute(r.name);
   }
   if ((n === Node.COMMENT_NODE || n === Node.TEXT_NODE) && e.nodeValue !== t.nodeValue && (e.nodeValue = t.nodeValue), t instanceof HTMLInputElement && e instanceof HTMLInputElement && t.type !== "file")
-    e.value = t.value || "", z(t, e, "value"), z(t, e, "checked"), z(t, e, "disabled");
+    e.value = t.value || "", W(t, e, "value"), W(t, e, "checked"), W(t, e, "disabled");
   else if (t instanceof HTMLOptionElement)
-    z(t, e, "selected");
+    W(t, e, "selected");
   else if (t instanceof HTMLTextAreaElement && e instanceof HTMLTextAreaElement) {
     const r = t.value, s = e.value;
     r !== s && (e.value = r), e.firstChild && e.firstChild.nodeValue !== r && (e.firstChild.nodeValue = r);
   }
 }
-function z(t, e, n) {
+function W(t, e, n) {
   const r = t.getAttribute(n), s = e.getAttribute(n);
   r !== s && (r ? e.setAttribute(n, r) : e.removeAttribute(n));
 }
@@ -851,8 +845,8 @@ function Ge(t, e, n) {
   for (const c of t.children)
     f.set(c.outerHTML, c);
   for (const c of e.children) {
-    let l = f.has(c.outerHTML), v = n.head.shouldReAppend(c), w = n.head.shouldPreserve(c);
-    l || w ? v ? s.push(c) : (f.delete(c.outerHTML), o.push(c)) : a === "append" ? v && (s.push(c), i.push(c)) : n.head.shouldRemove(c) !== !1 && s.push(c);
+    let l = f.has(c.outerHTML), m = n.head.shouldReAppend(c), b = n.head.shouldPreserve(c);
+    l || b ? m ? s.push(c) : (f.delete(c.outerHTML), o.push(c)) : a === "append" ? m && (s.push(c), i.push(c)) : n.head.shouldRemove(c) !== !1 && s.push(c);
   }
   i.push(...f.values()), console.log("to append: ", i);
   const d = [];
@@ -863,13 +857,13 @@ function Ge(t, e, n) {
       throw new Error("could not create new element from: " + c.outerHTML);
     if (console.log(l), n.callbacks.beforeNodeAdded(l)) {
       if (l.hasAttribute("href") || l.hasAttribute("src")) {
-        let v;
-        const w = new Promise((E) => {
-          v = E;
+        let m;
+        const b = new Promise((E) => {
+          m = E;
         });
         l.addEventListener("load", function() {
-          v(void 0);
-        }), d.push(w);
+          m(void 0);
+        }), d.push(b);
       }
       e.appendChild(l), n.callbacks.afterNodeAdded(l), r.push(l);
     }
@@ -917,9 +911,9 @@ function At(t, e, n) {
   };
 }
 function Ke(t, e, n) {
-  return !t || !e ? !1 : t.nodeType === e.nodeType && t.tagName === e.tagName ? t?.id?.length && t.id === e.id ? !0 : j(n, t, e) > 0 : !1;
+  return !t || !e ? !1 : t.nodeType === e.nodeType && t.tagName === e.tagName ? t?.id?.length && t.id === e.id ? !0 : B(n, t, e) > 0 : !1;
 }
-function ee(t, e) {
+function Q(t, e) {
   return !t || !e ? !1 : t.nodeType === e.nodeType && t.tagName === e.tagName;
 }
 function we(t, e, n) {
@@ -929,10 +923,10 @@ function we(t, e, n) {
       throw new Error("tempNode is null");
     We(r, n);
   }
-  return R(n, e), e.nextSibling;
+  return $(n, e), e.nextSibling;
 }
 function Lt(t, e, n, r, s) {
-  const o = j(s, n, e);
+  const o = B(s, n, e);
   let i = null;
   if (o > 0) {
     i = r;
@@ -940,7 +934,7 @@ function Lt(t, e, n, r, s) {
     for (; i != null; ) {
       if (Ke(n, i, s))
         return i;
-      if (a += j(s, i, t), a > o)
+      if (a += B(s, i, t), a > o)
         return null;
       i = i.nextSibling;
     }
@@ -950,11 +944,11 @@ function Lt(t, e, n, r, s) {
 function Nt(t, e, n, r) {
   let s = n, o = e.nextSibling, i = 0;
   for (; s && o; ) {
-    if (j(r, s, t) > 0)
+    if (B(r, s, t) > 0)
       return null;
-    if (ee(e, s))
+    if (Q(e, s))
       return s;
-    if (ee(o, s) && (i++, o = o.nextSibling, i >= 2))
+    if (Q(o, s) && (i++, o = o.nextSibling, i >= 2))
       return null;
     s = s.nextSibling;
   }
@@ -966,22 +960,22 @@ function kt(t) {
   if (e.match(/<\/html>/) || e.match(/<\/head>/) || e.match(/<\/body>/)) {
     const n = be.parseFromString(t, "text/html");
     if (e.match(/<\/html>/))
-      return X.add(n), n;
+      return Z.add(n), n;
     {
       let r = n.firstChild;
-      return r ? (X.add(r), r) : null;
+      return r ? (Z.add(r), r) : null;
     }
   } else {
     const r = be.parseFromString(`<body><template>${t}</template></body>`, "text/html").body.querySelector("template")?.content;
     if (!r)
       throw new Error("content is null");
-    return X.add(r), r;
+    return Z.add(r), r;
   }
 }
 function Mt(t) {
   if (t == null)
     return document.createElement("div");
-  if (X.has(t))
+  if (Z.has(t))
     return t;
   if (t instanceof Node) {
     const e = document.createElement("div");
@@ -1016,10 +1010,10 @@ function Rt(t, e, n) {
   return s;
 }
 function $t(t, e, n) {
-  return ee(t, e) ? 0.5 + j(n, t, e) : 0;
+  return Q(t, e) ? 0.5 + B(n, t, e) : 0;
 }
 function We(t, e) {
-  R(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
+  $(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
 function Ot(t, e) {
   return !t.deadIds.has(e);
@@ -1027,13 +1021,13 @@ function Ot(t, e) {
 function Ct(t, e, n) {
   return t.idMap.get(n)?.has(e) || !1;
 }
-function R(t, e) {
+function $(t, e) {
   const n = t.idMap.get(e);
   if (n)
     for (const r of n)
       t.deadIds.add(r);
 }
-function j(t, e, n) {
+function B(t, e, n) {
   const r = t.idMap.get(e);
   if (!r)
     return 0;
@@ -1067,7 +1061,7 @@ const Ht = "get", xt = "post", Dt = "put", Ft = "patch", Ut = "delete", Vt = [Ht
       await Te(e, n), s();
     });
   });
-}, t), {}), jt = "Accept", Jt = "Content-Type", qt = "datastar-request", Gt = "application/json", Kt = "text/event-stream", Wt = "true", J = "datastar-", q = `${J}indicator`, ue = `${q}-loading`, Se = `${J}settling`, Z = `${J}swapping`, zt = "self", S = {
+}, t), {}), jt = "Accept", Jt = "Content-Type", qt = "datastar-request", Gt = "application/json", Kt = "text/event-stream", Wt = "true", j = "datastar-", J = `${j}indicator`, ue = `${J}-loading`, Se = `${j}settling`, z = `${j}swapping`, zt = "self", S = {
   MorphElement: "morph_element",
   InnerElement: "inner_element",
   OuterElement: "outer_element",
@@ -1113,7 +1107,7 @@ const Ht = "get", xt = "post", Dt = "put", Ft = "patch", Ut = "delete", Vt = [Ht
   onGlobalInit: () => {
     const t = document.createElement("style");
     t.innerHTML = `
-.${q}{
+.${J}{
  opacity:0;
  transition: opacity 300ms ease-out;
 }
@@ -1129,7 +1123,7 @@ const Ht = "get", xt = "post", Dt = "put", Ft = "patch", Ut = "delete", Vt = [Ht
     const n = document.querySelector(e.value);
     if (!n)
       throw new Error(`No indicator found for ${e.value}`);
-    return n.classList.add(q), () => {
+    return n.classList.add(J), () => {
       delete t.store.fetch.indicatorSelectors[t.el.id];
     };
   })
@@ -1144,51 +1138,51 @@ async function Te(t, e) {
   let a = n, f = !1;
   const d = r.fetch.indicatorSelectors[n.id];
   if (d) {
-    const y = document.querySelector(d);
-    y && (a = y, a.classList.remove(q), a.classList.add(ue), f = !0);
+    const g = document.querySelector(d);
+    g && (a = g, a.classList.remove(J), a.classList.add(ue), f = !0);
   }
   const c = new URL(s.value, window.location.origin), l = new Headers();
   l.append(jt, Kt), l.append(Jt, Gt), l.append(qt, Wt);
-  const v = r.fetch.headers.value;
-  if (v)
-    for (const y in v) {
-      const $ = v[y];
-      l.append(y, $);
+  const m = r.fetch.headers.value;
+  if (m)
+    for (const g in m) {
+      const O = m[g];
+      l.append(g, O);
     }
   t = t.toUpperCase();
-  const w = { method: t, headers: l };
+  const b = { method: t, headers: l };
   if (t === "GET") {
-    const y = new URLSearchParams(c.search);
-    y.append("datastar", i), c.search = y.toString();
+    const g = new URLSearchParams(c.search);
+    g.append("datastar", i), c.search = g.toString();
   } else
-    w.body = i;
-  const E = await fetch(c, w);
+    b.body = i;
+  const E = await fetch(c, b);
   if (!E.ok)
     throw new Error(`Response was not ok, url: ${c}, status: ${E.status}`);
   if (!E.body)
     throw new Error("No response body");
   const A = E.body.pipeThrough(new TextDecoderStream()).getReader();
   for (; ; ) {
-    const { done: y, value: $ } = await A.read();
-    if (y)
+    const { done: g, value: O } = await A.read();
+    if (g)
       break;
-    $.split(`
+    O.split(`
 
-`).forEach((p) => {
-      const m = [...p.matchAll(en)];
-      if (m.length) {
-        let u = "", b = "morph_element", g = "", P = 0, O = !1, C = "", D, he = !1, me = !1;
-        for (const ge of m) {
+`).forEach((u) => {
+      const w = [...u.matchAll(en)];
+      if (w.length) {
+        let p = "", y = "morph_element", v = "", P = 0, R = !1, x = "", re, he = !1, me = !1;
+        for (const ge of w) {
           if (!ge.groups)
             continue;
           const { key: ze, value: N } = ge.groups;
           switch (ze) {
             case "event":
-              if (!N.startsWith(J))
+              if (!N.startsWith(j))
                 throw new Error(`Unknown event: ${N}`);
-              switch (N.slice(J.length)) {
+              switch (N.slice(j.length)) {
                 case "redirect":
-                  O = !0;
+                  R = !0;
                   break;
                 case "fragment":
                   me = !0;
@@ -1204,47 +1198,47 @@ async function Te(t, e) {
               const se = N.indexOf(" ");
               if (se === -1)
                 throw new Error("Missing space in data");
-              const ve = N.slice(0, se), I = N.slice(se + 1);
+              const ve = N.slice(0, se), C = N.slice(se + 1);
               switch (ve) {
                 case "selector":
-                  g = I;
+                  v = C;
                   break;
                 case "merge":
-                  const ye = I;
-                  if (!Object.values(S).includes(ye))
+                  const _e = C;
+                  if (!Object.values(S).includes(_e))
                     throw new Error(`Unknown merge option: ${N}`);
-                  b = ye;
+                  y = _e;
                   break;
                 case "settle":
-                  P = parseInt(I);
+                  P = parseInt(C);
                   break;
                 case "fragment":
                 case "html":
-                  u = I;
+                  p = C;
                   break;
                 case "redirect":
-                  C = I;
+                  x = C;
                   break;
                 case "error":
-                  D = new Error(I);
+                  re = new Error(C);
                   break;
                 default:
                   throw new Error(`Unknown data type: ${ve}`);
               }
           }
         }
-        if (he && D)
-          throw D;
-        if (O && C)
-          window.location.href = C;
-        else if (me && u)
-          tn(e, g, b, u, P);
+        if (he && re)
+          throw re;
+        if (R && x)
+          window.location.href = x;
+        else if (me && p)
+          tn(e, v, y, p, P);
         else
-          throw new Error(`Unknown event block: ${p}`);
+          throw new Error(`Unknown event block: ${u}`);
       }
     });
   }
-  f && (a.classList.remove(ue), a.classList.add(q));
+  f && (a.classList.remove(ue), a.classList.add(J));
 }
 const Ae = document.createElement("template");
 function tn(t, e, n, r, s) {
@@ -1263,15 +1257,15 @@ function tn(t, e, n, r, s) {
       throw new Error(`No target elements, selector: ${e}`);
   }
   for (const d of f) {
-    d.classList.add(Z);
+    d.classList.add(z);
     const c = d.outerHTML;
     let l = d;
     switch (n) {
       case S.MorphElement:
-        const w = St(l, i);
-        if (!w?.length)
+        const b = St(l, i);
+        if (!b?.length)
           throw new Error("Failed to morph element");
-        l = w[0];
+        l = b[0];
         break;
       case S.InnerElement:
         l.innerHTML = i.innerHTML;
@@ -1296,16 +1290,16 @@ function tn(t, e, n, r, s) {
         break;
       case S.UpsertAttributes:
         i.getAttributeNames().forEach((A) => {
-          const y = i.getAttribute(A);
-          l.setAttribute(A, y);
+          const g = i.getAttribute(A);
+          l.setAttribute(A, g);
         });
         break;
       default:
         throw new Error(`Unknown merge type: ${n}`);
     }
-    l.classList.add(Z), t.cleanupElementRemovals(d), t.applyPlugins(l), d.classList.remove(Z), l.classList.remove(Z);
-    const v = l.outerHTML;
-    c !== v && (l.classList.add(Se), setTimeout(() => {
+    l.classList.add(z), t.cleanupElementRemovals(d), t.applyPlugins(l), d.classList.remove(z), l.classList.remove(z);
+    const m = l.outerHTML;
+    c !== m && (l.classList.add(Se), setTimeout(() => {
       l.classList.remove(Se);
     }, s));
   }
