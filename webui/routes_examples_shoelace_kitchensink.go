@@ -68,6 +68,7 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 						gomponents.El("sl-select",
 							ATTR("label", "Select (Checking if int64's work)"),
 							datastar.Model("nested.selection"),
+							datastar.On("sl-change", "console.log('change')"),
 							RANGE(options, func(o Option) gomponents.Node {
 								return gomponents.El("sl-option",
 									ATTR("value", fmt.Sprint(o.Value)),

@@ -62,14 +62,14 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
 
     const setInputFromSignal = () => {
       if (!signal) throw new Error(`Signal ${signalName} not found`)
+      const hasValue = 'value' in el
       const v = signal.value
       if (isCheckbox) {
         ;(el as HTMLInputElement).checked = v
-      } else if (isInput) {
-        if (!isFile) (el as HTMLInputElement).value = `${v}`
+      } else if (isFile) {
         // console.warn('File input reading is not supported yet')
-      } else if ('value' in el) {
-        ;(el as any).value = `${v}`
+      } else if (hasValue) {
+        el.value = `${v}`
       } else {
         el.setAttribute('value', `${v}`)
       }
@@ -201,15 +201,13 @@ export const EventPlugin: AttributePlugin = {
     if (ctx.modifiers.has('passive')) evtListOpts.passive = true
     if (ctx.modifiers.has('once')) evtListOpts.once = true
 
-    if (key === 'load') {
+    const eventName = kebabize(key).toLowerCase()
+    if (eventName === 'load') {
       callback()
       return () => {}
     }
-    const eventType = key.toLowerCase()
-    el.addEventListener(eventType, callback, evtListOpts)
-    return () => {
-      el.removeEventListener(eventType, callback)
-    }
+    el.addEventListener(eventName, callback, evtListOpts)
+    return () => el.removeEventListener(eventName, callback)
   },
 }
 
@@ -234,7 +232,6 @@ export const AttributePlugins: AttributePlugin[] = [
   TwoWayBindingModelPlugin,
   TextPlugin,
   FocusPlugin,
-  // PromptPlugin,
   EventPlugin,
 ]
 
