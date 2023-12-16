@@ -143,7 +143,7 @@ export const ViewTransitionPlugin: AttributePlugin = {
     })
   },
   onLoad: (ctx: AttributeContext) => {
-    const { el, expressionFn, store } = ctx
+    const { el, expressionFn } = ctx
     let name = expressionFn(ctx)
     if (!name) {
       if (!el.id) throw new Error('Element must have an id if no name is provided')
@@ -162,10 +162,11 @@ export const ViewTransitionPlugin: AttributePlugin = {
 
 `
     stylesheet.innerHTML += vtCls
-    let count = store.viewTransitionRefCounts[name]
+    const s = ctx.store()
+    let count = s.viewTransitionRefCounts[name]
     if (!count) {
       count = ctx.reactivity.signal(0)
-      store.viewTransitionRefCounts[name] = count
+      s.viewTransitionRefCounts[name] = count
     }
     count.value++
 
@@ -175,7 +176,7 @@ export const ViewTransitionPlugin: AttributePlugin = {
     return () => {
       count.value--
       if (count.value === 0) {
-        delete store.viewTransitionRefCounts[name]
+        delete s.viewTransitionRefCounts[name]
         stylesheet.innerHTML = stylesheet.innerHTML.replace(vtCls, '')
       }
     }

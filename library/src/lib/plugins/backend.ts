@@ -59,7 +59,7 @@ export const HeadersPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
 
   onLoad: (ctx) => {
-    const headers = ctx.store.fetch.headers
+    const headers = ctx.store().fetch.headers
     const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
     headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
     return () => {
@@ -85,9 +85,10 @@ export const FetchURLPlugin: AttributePlugin = {
   onLoad: (ctx) => {
     return ctx.reactivity.effect(() => {
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
-      ctx.store.fetch.elementURLs[ctx.el.id] = c
+      const s = ctx.store()
+      s.fetch.elementURLs[ctx.el.id] = c
       return () => {
-        delete ctx.store.fetch.elementURLs[ctx.el.id]
+        delete s.fetch.elementURLs[ctx.el.id]
       }
     })
   },
@@ -115,14 +116,15 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   onLoad: (ctx) => {
     return ctx.reactivity.effect(() => {
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
-      ctx.store.fetch.indicatorSelectors[ctx.el.id] = c
+      const s = ctx.store()
+      s.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
       if (!indicator) throw new Error(`No indicator found for ${c.value}`)
       indicator.classList.add(INDICATOR_CLASS)
 
       return () => {
-        delete ctx.store.fetch.indicatorSelectors[ctx.el.id]
+        delete s.fetch.indicatorSelectors[ctx.el.id]
       }
     })
   },
@@ -132,22 +134,22 @@ export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchURLPlugin,
 
 const sseRegexp = /(?<key>\w*): (?<value>.*)/gm
 async function fetcher(method: string, ctx: AttributeContext) {
-  const { el, store } = ctx
-  const urlSignal: Signal<string> = store.fetch.elementURLs[el.id]
+  const s = ctx.store()
+  const urlSignal: Signal<string> = s.fetch.elementURLs[ctx.el.id]
   if (!urlSignal) {
     // throw new Error(`No signal for ${method} on ${el.id}`)
     return
   }
 
-  const storeWithoutFetch = { ...store.value }
+  const storeWithoutFetch = { ...s.value }
   delete storeWithoutFetch.fetch
   const storeJSON = JSONStringify(storeWithoutFetch)
   // console.log(`Sending ${storeJSON}`)
   // debugger
 
-  let loadingTarget = el
+  let loadingTarget = ctx.el
   let hasIndicator = false
-  const indicatorSelector = store.fetch.indicatorSelectors[el.id]
+  const indicatorSelector = s.fetch.indicatorSelectors[loadingTarget.id]
   if (indicatorSelector) {
     const indicator = document.querySelector(indicatorSelector)
     if (indicator) {
@@ -167,7 +169,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
   headers.append(CONTENT_TYPE, APPLICATION_JSON)
   headers.append(DATASTAR_REQUEST, TRUE_STRING)
 
-  const storeHeaders: Record<string, string> = store.fetch.headers.value
+  const storeHeaders: Record<string, string> = s.fetch.headers.value
   if (storeHeaders) {
     for (const key in storeHeaders) {
       const value = storeHeaders[key]

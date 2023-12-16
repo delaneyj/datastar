@@ -5,7 +5,7 @@ export declare type Actions = Record<string, Action>;
 declare type AtomicState = Array<unknown> | ((...args: unknown[]) => unknown) | string | boolean | number | bigint | symbol | undefined | null;
 
 export declare type AttributeContext = {
-    store: any;
+    store: () => any;
     mergeStore: (store: DeepState) => void;
     applyPlugins: (target: Element) => void;
     walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void;

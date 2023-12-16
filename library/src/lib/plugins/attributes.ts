@@ -36,7 +36,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups
-          return `ctx.store.${whole}`
+          return `ctx.store().${whole}`
         },
       },
     ],
@@ -44,7 +44,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   // bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
-    const { store, el, expression: signalName } = ctx
+    const { el, expression: signalName } = ctx
     const signal = ctx.expressionFn(ctx)
     const tnl = el.tagName.toLowerCase()
 
@@ -84,6 +84,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
           return
         }
         const reader = new FileReader()
+        const s = ctx.store()
         reader.onload = () => {
           if (typeof reader.result !== 'string') throw new Error('Unsupported type')
 
@@ -93,16 +94,16 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
           signal.value = contents
 
           const mimeName = `${signalName}Mime`
-          if (mimeName in store) {
-            const mimeSignal = store[`${mimeName}`] as Signal<string>
+          if (mimeName in s) {
+            const mimeSignal = s[`${mimeName}`] as Signal<string>
             mimeSignal.value = mime
           }
         }
         reader.readAsDataURL(f)
 
         const nameName = `${signalName}Name`
-        if (nameName in store) {
-          const nameSignal = store[`${nameName}`] as Signal<string>
+        if (nameName in s) {
+          const nameSignal = s[`${nameName}`] as Signal<string>
           nameSignal.value = f.name
         }
 

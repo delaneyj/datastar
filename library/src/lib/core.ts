@@ -82,8 +82,8 @@ export class Datastar {
     }
   }
 
-  private mergeStore<T extends object>(store: T) {
-    const revisedStore = apply(this.store.value, store) as DeepState
+  private mergeStore<T extends object>(patchStore: T) {
+    const revisedStore = apply(this.store.value, patchStore) as DeepState
     this.store = deepSignal(revisedStore)
   }
 
@@ -172,16 +172,15 @@ export class Datastar {
             }
           }
 
-          const { store, reactivity, actions, refs } = this
           const ctx: AttributeContext = {
-            store,
+            store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),
-            actions,
-            refs,
-            reactivity,
+            actions: this.actions,
+            refs: this.refs,
+            reactivity: this.reactivity,
             el,
             key,
             expression,
@@ -207,6 +206,7 @@ try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
+              console.error(`Error creating expression function for '${fnContent}'`)
               console.error(e)
               return
             }

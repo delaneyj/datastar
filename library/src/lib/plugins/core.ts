@@ -10,7 +10,7 @@ const SignalProcessor: Preprocesser = {
   regexp: wholePrefixSuffix('$', 'signal', ''),
   replacer: (groups: RegexpGroups) => {
     const { signal } = groups
-    return `ctx.store.${signal}.value`
+    return `ctx.store().${signal}.value`
   },
 }
 

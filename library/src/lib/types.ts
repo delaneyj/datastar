@@ -13,7 +13,7 @@ export type Reactivity = {
 }
 
 export type AttributeContext = {
-  store: any
+  store: () => any
   mergeStore: (store: DeepState) => void
   applyPlugins: (target: Element) => void
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
