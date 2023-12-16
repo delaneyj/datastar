@@ -139,7 +139,7 @@ async function fetcher(method: string, ctx: AttributeContext) {
     return
   }
 
-  const storeWithoutFetch = { ...store }
+  const storeWithoutFetch = { ...store.value }
   delete storeWithoutFetch.fetch
   const storeJSON = JSONStringify(storeWithoutFetch)
   // console.log(`Sending ${storeJSON}`)

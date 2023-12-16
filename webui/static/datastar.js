@@ -1123,7 +1123,7 @@ async function Te(t, e) {
   const { el: n, store: r } = e, s = r.fetch.elementURLs[n.id];
   if (!s)
     return;
-  const o = { ...r };
+  const o = { ...r.value };
   delete o.fetch;
   const i = Be(o);
   let a = n, u = !1;

@@ -3,6 +3,7 @@ package webui
 import (
 	"context"
 	"fmt"
+	"log"
 	"math/rand"
 	"net/http"
 
@@ -90,13 +91,26 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 							datastar.Model("nested.isChecked"),
 							TXT("Checkbox"),
 						),
+						gomponents.El("sl-button",
+							ATTR("type", "primary"),
+							TXT("Submit"),
+							datastar.FetchURLF("'%s'", r.URL.Path),
+							datastar.On("click", datastar.POST_ACTION),
+						),
 						SignalStore,
 					),
 				)
 			})
 
 			dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
+				sse := toolbelt.NewSSE(w, r)
+				var res any
+				if err := datastar.BodyUnmarshal(r, &res); err != nil {
+					datastar.Error(sse, err)
+					return
+				}
 
+				log.Printf("res: %#v", res)
 			})
 		})
 	})
