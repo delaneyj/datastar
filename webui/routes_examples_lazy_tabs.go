@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/delaneyj/datastar"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 )

@@ -16,7 +16,7 @@ import (
 	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
 	"github.com/delaneyj/gomponents-iconify/iconify/vscode_icons"
 	"github.com/delaneyj/gomponents-iconify/iconify/zondicons"
-	. "github.com/delaneyj/toolbelt/gomps"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 )

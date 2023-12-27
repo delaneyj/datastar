@@ -13,8 +13,8 @@ import (
 
 	"github.com/Jeffail/gabs/v2"
 	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -24,50 +24,47 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 	c := int32(toolbelt.Fit(rand.Float32(), 0, 1, -100, 100))
 	globalCount = &c
 
-	globalCountExample := func() NODE {
+	globalCountExample := func() ElementRenderer {
 		count := atomic.LoadInt32(globalCount)
-		return DIV(
-			ID("global-count-example"),
-			CLS("flex flex-col gap-2"),
-			DATAF("signal-count", "%d", count),
-			DIV(
-				CLS("flex gap-2 justify-between items-center"),
-				BUTTON(
-					CLS("btn btn-primary"),
-					DATA("on-click", "$count++"),
-					TXT("Increment Local State  +"),
-				),
-				BUTTON(
-					CLS("btn btn-primary"),
-					DATA("on-click", "$count--"),
-					TXT("Decrement Local State -"),
-				),
-				INPUT(
-					CLS("input input-bordered"),
-					TYPE("number"),
-					NAME("count"),
-					DATA("model", "count"),
-				),
-				DIV(DATA("text", "`Count is ${$count}`")),
-			),
-			DIV(
-				CLS("flex gap-4"),
-				BUTTON(
-					CLS("btn btn-secondary btn-lg flex-1"),
-					DATA("signal-get", "'/api/globalCount'"),
-					DATA("on-click", "@get"),
-					TXT("Load global count"),
-					material_symbols.Download(),
-				),
-				BUTTON(
-					CLS("btn btn-secondary btn-lg flex-1"),
-					DATA("signal-post", "'/api/globalCount'"),
-					DATA("on-click", "@post"),
-					TXT("Store global count"),
-					material_symbols.Upload(),
-				),
-			),
-		)
+		return DIV().
+			ID("global-count-example").
+			CLASS("flex flex-col gap-2").
+			CustomDataF("signal-count", "%d", count).
+			Children(
+				DIV().
+					CLASS("flex gap-2 justify-between items-center").
+					Children(
+						BUTTON().
+							CLASS("btn btn-primary").
+							CustomData("on-click", "$count++").
+							Text("Increment Local State  +"),
+						BUTTON().
+							CLASS("btn btn-primary").
+							CustomData("on-click", "$count--").
+							Text("Decrement Local State -"),
+						INPUT().
+							CLASS("input input-bordered").
+							TYPE("number").
+							NAME("count").
+							CustomData("model", "count"),
+						DIV().CustomData("text", "`Count is ${$count}`"),
+					),
+				DIV().
+					CLASS("flex gap-4").
+					Children(
+						BUTTON(material_symbols.Download()).
+							CLASS("btn btn-secondary btn-lg flex-1").
+							CustomData("signal-get", "'/api/globalCount'").
+							CustomData("on-click", "@get").
+							Text("Load global count"),
+						BUTTON(material_symbols.Upload()).
+							CLASS("btn btn-secondary btn-lg flex-1").
+							CustomData("signal-post", "'/api/globalCount'").
+							CustomData("on-click", "@post").
+							Text("Store global count"),
+					),
+			)
+
 	}
 
 	router.Route("/api", func(apiRouter chi.Router) {
@@ -78,8 +75,7 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 				w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 				w.Header().Set("Pragma", "no-cache")
 				w.Header().Set("Expires", "0")
-
-				Render(w, globalCountExample())
+				globalCountExample().Render(w)
 			})
 
 			globalCountRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
@@ -110,7 +106,7 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 				slog.Info("count", "count", count)
 
 				atomic.StoreInt32(globalCount, count)
-				Render(w, globalCountExample())
+				globalCountExample().Render(w)
 			})
 		})
 	})

@@ -6,8 +6,8 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/ggicci/httpin"
 	"github.com/go-chi/chi/v5"
 )

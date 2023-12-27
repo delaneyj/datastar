@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
 	"github.com/delaneyj/toolbelt/gomps"
 	"github.com/valyala/bytebufferpool"
@@ -17,31 +18,31 @@ const (
 	DELETE_ACTION = "$$delete"
 )
 
-func Header(header, expression string) gomps.NODE {
+func Header(header, expression string) ElementRenderer {
 	return gomps.DATA("header-"+toolbelt.Kebab(header), expression)
 }
 
-func FetchURL(expression string) gomps.NODE {
+func FetchURL(expression string) ElementRenderer {
 	return gomps.DATA("fetch-url", expression)
 }
 
-func FetchURLF(format string, args ...interface{}) gomps.NODE {
+func FetchURLF(format string, args ...interface{}) ElementRenderer {
 	return FetchURL(fmt.Sprintf(format, args...))
 }
 
-func FetchIndicator(expression string) gomps.NODE {
+func FetchIndicator(expression string) ElementRenderer {
 	return gomps.DATA("fetch-indicator", expression)
 }
 
-func FetchIndicatorF(format string, args ...interface{}) gomps.NODE {
+func FetchIndicatorF(format string, args ...interface{}) ElementRenderer {
 	return FetchIndicator(fmt.Sprintf(format, args...))
 }
 
-func FetchIndicatorID(id string) gomps.NODE {
+func FetchIndicatorID(id string) ElementRenderer {
 	return FetchIndicatorF("'#%s'", id)
 }
 
-func ServerSentEvents(expression string) gomps.NODE {
+func ServerSentEvents(expression string) ElementRenderer {
 	return gomps.DATA("sse", fmt.Sprintf(`'%s'`, expression))
 }
 
@@ -161,7 +162,7 @@ func Delete(sse *toolbelt.ServerSentEventsHandler, selector string, opts ...Rend
 	)
 }
 
-func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child gomps.NODE, opts ...RenderFragmentOption) error {
+func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child ElementRenderer, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
 		Merge:          FragmentMergeMorphElement,
@@ -195,7 +196,7 @@ func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child gomps.NODE, opt
 	return nil
 }
 
-func RenderFragmentSelf(sse *toolbelt.ServerSentEventsHandler, child gomps.NODE, opts ...RenderFragmentOption) error {
+func RenderFragmentSelf(sse *toolbelt.ServerSentEventsHandler, child ElementRenderer, opts ...RenderFragmentOption) error {
 	opts = append([]RenderFragmentOption{WithQuerySelectorSelf()}, opts...)
 	return RenderFragment(sse, child, opts...)
 }

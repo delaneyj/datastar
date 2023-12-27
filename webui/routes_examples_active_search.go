@@ -10,8 +10,8 @@ import (
 
 	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 	"github.com/lithammer/fuzzysearch/fuzzy"
@@ -91,9 +91,6 @@ func setupExamplesActiveSearch(ctx context.Context, examplesRouter chi.Router) e
 			datastar.RenderFragment(
 				sse,
 				DIV(
-					ID("active_search"),
-					CLS("flex flex-col gap-4"),
-					datastar.MergeStore(store),
 					DIV(
 						CLS("flex gap-2"),
 						DIV(
@@ -141,8 +138,10 @@ func setupExamplesActiveSearch(ctx context.Context, examplesRouter chi.Router) e
 							}),
 						),
 					),
-				),
-			)
+				).
+				ID("active_search"),
+				CLS("flex flex-col gap-4"),
+				datastar.MergeStore(store),
 		})
 	})
 

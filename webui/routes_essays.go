@@ -10,7 +10,7 @@ import (
 	"time"
 
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
-	. "github.com/delaneyj/toolbelt/gomps"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
@@ -70,7 +70,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 	type Essay struct {
 		Name        string
 		Title       string
-		Body        NODE
+		Body        ElementRenderer
 		LastUpdated time.Time
 	}
 
@@ -106,7 +106,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 		essay := Essay{
 			Name:        de.Name()[0 : len(de.Name())-3],
 			Title:       title,
-			Body:        RAW(buf.String()),
+			Body:        Text(buf.String()),
 			LastUpdated: lastUpdated,
 		}
 		essays[essay.Name] = essay
@@ -120,80 +120,54 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 				return a.LastUpdated.After(b.LastUpdated)
 			})
 
-			Render(w, Page(
+			Page(
 				DIV(
-					CLS("flex flex-col justify-center p-16"),
 					DIV(
-						CLS("flex flex-col gap-4"),
 						DIV(
-							H1(
-								CLS("text-xl md:text-6xl font-bold text-primary"),
-								TXT("Essays"),
-							),
-							HR(
-								CLS("divider border-primary"),
-							),
+							H1(Text("Essays")).CLASS("text-xl md:text-6xl font-bold text-primary"),
+							HR().CLASS("divider border-primary"),
 						),
 						UL(
-							CLS("menu text-xl md:text-4xl gap-8"),
-							RANGE(essayEntries, func(e Essay) NODE {
+							Range(essayEntries, func(e Essay) ElementRenderer {
 								return LI(
-									CLS("text-center"),
 									A(
-										HREF("/essays/"+e.Name),
-										CLS("flex flex-col gap-2 justify-center items-center"),
-										SPAN(
-											CLS("text-lg text-accent"),
-											TXT(humanize.Time(e.LastUpdated)),
-										),
-										SPAN(
-											CLS("text-center"),
-											TXT(e.Title),
-										),
-									),
-								)
+										SPAN(Text(humanize.Time(e.LastUpdated))).CLASS("text-lg text-accent"),
+										SPAN(Text(e.Title)).CLASS("text-center"),
+									).
+										HREF("/essays/" + e.Name).
+										CLASS("flex flex-col gap-2 justify-center items-center"),
+								).CLASS("text-center")
 							}),
-						),
-					),
-				),
-			))
+						).CLASS("menu text-xl md:text-4xl gap-8"),
+					).CLASS("flex flex-col gap-4"),
+				).CLASS("flex flex-col justify-center p-16"),
+			).Render(w)
 		})
 
 		essaysRouter.Get("/{essayName}", func(w http.ResponseWriter, r *http.Request) {
 			essayName := chi.URLParam(r, "essayName")
 			essay, ok := essays[essayName]
 
-			var contents NODE
+			var contents ElementRenderer
 			if !ok {
 				contents = ERR(fmt.Errorf("essay not found"))
 			} else {
 				contents = essay.Body
 			}
 
-			Render(w, Page(
+			Page(
 				DIV(
-					CLS("flex flex-col items-center justify-center p-8"),
 					DIV(
-						CLS("prose-sm md:prose lg:prose-xl xl:prose-2xl flex flex-col gap-8"),
 						DIV(
-							CLS("flex justify-start w-full"),
-							A(
-								CLS("btn btn-primary btn-sm"),
-								TXT("Other Essays"),
-								HREF("/essays"),
-							),
-						),
-
+							A(Text("Other Essays")).HREF("/essays").CLASS("btn btn-primary btn-sm"),
+						).CLASS("flex justify-start w-full"),
 						DIV(
-							H3(
-								CLS("text-6xl font-bold text-accent"),
-								TXT(essay.LastUpdated.Format("January 2, 2006")),
-							),
+							H3(Text(essay.LastUpdated.Format("January 2, 2006"))).CLASS("text-6xl font-bold text-accent"),
 							contents,
 						),
-					),
-				),
-			))
+					).CLASS("prose-sm md:prose lg:prose-xl xl:prose-2xl flex flex-col gap-8"),
+				).CLASS("flex flex-col items-center justify-center p-8"),
+			).Render(w)
 		})
 
 	})
