@@ -7,16 +7,14 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/carbon"
-	"github.com/delaneyj/gomponents-iconify/iconify/game_icons"
-	"github.com/delaneyj/gomponents-iconify/iconify/gridicons"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
-	"github.com/delaneyj/gomponents-iconify/iconify/mdi"
-	"github.com/delaneyj/gomponents-iconify/iconify/ph"
-	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
-	"github.com/delaneyj/gomponents-iconify/iconify/vscode_icons"
-	"github.com/delaneyj/gomponents-iconify/iconify/zondicons"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/game_icons"
+	"github.com/delaneyj/gostar/elements/iconify/gridicons"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
+	"github.com/delaneyj/gostar/elements/iconify/mdi"
+	"github.com/delaneyj/gostar/elements/iconify/ph"
+	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
+	"github.com/delaneyj/gostar/elements/iconify/vscode_icons"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 )
@@ -49,57 +47,57 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 
 	type Feature struct {
 		Description string
-		Icon        NODE
-		Details     NODE
+		Icon        ElementRenderer
+		Details     ElementRenderer
 	}
 
 	features := []Feature{
 		{
 			Description: "Fine Grained Reactivity via Signals",
 			Icon:        ph.GitDiff(),
-			Details:     DIV(TXT("No Virtual DOM. proxy wrappers, or re-rendering the entire page on every change.  Take the best available options and use hassle free.")),
+			Details:     DIV(Text("No Virtual DOM. proxy wrappers, or re-rendering the entire page on every change.  Take the best available options and use hassle free.")),
 		},
 		{
 			Description: "Fully Compliant",
 			Icon:        mdi.LanguageHtmlFive(),
-			Details:     DIV(TXT("No monkey patching, custom elements or attributes.  Just plain old HTML5 but works out of the box with custom web components.")),
+			Details:     DIV(Text("No monkey patching, custom elements or attributes.  Just plain old HTML5 but works out of the box with custom web components.")),
 		},
 		{
 			Description: "Everything is an Plugin",
 			Icon:        gridicons.Plugins(),
-			Details:     DIV(TXT("Disagree with the built-in behavior? No problem, just write your own plugin in a type safe way.  Take what you need, leave what you don't.")),
+			Details:     DIV(Text("Disagree with the built-in behavior? No problem, just write your own plugin in a type safe way.  Take what you need, leave what you don't.")),
 		},
 		{
 			Description: "Declarative Batteries Included (but optional)",
 			Icon:        game_icons.Batteries(),
-			Details: DIV(
-				CLS("breadcrumbs"),
-				UL(
-					CLS(
-						"flex flex-wrap gap-2 justify-center items-center",
-					),
-					LI(TXT("Custom Actions")),
-					LI(TXT("Attribute Binding")),
-					LI(TXT("Focus")),
-					LI(TXT("Signals")),
-					LI(TXT("DOM Events")),
-					LI(TXT("Refs")),
-					LI(TXT("Intersects")),
-					LI(TXT("Two-Way Binding")),
-					LI(TXT("Visibility")),
-					LI(TXT("Teleporting")),
-					LI(TXT("Text Replacement")),
-					LI(TXT("HTMX like features")),
-					LI(TXT("Server Sent Events")),
-					LI(TXT("Redirects")),
-					LI(TXT("View Transition API")),
-					LI(TXT("BigInt Support")),
+			Details: DIV().
+				CLASS("breadcrumbs").
+				Children(
+					UL().
+						CLASS("flex flex-wrap gap-2 justify-center items-center").
+						Children(
+							LI().Children(Text("Custom Actions")),
+							LI().Children(Text("Attribute Binding")),
+							LI().Children(Text("Focus")),
+							LI().Children(Text("Signals")),
+							LI().Children(Text("DOM Events")),
+							LI().Children(Text("Refs")),
+							LI().Children(Text("Intersects")),
+							LI().Children(Text("Two-Way Binding")),
+							LI().Children(Text("Visibility")),
+							LI().Children(Text("Teleporting")),
+							LI().Children(Text("Text Replacement")),
+							LI().Children(Text("HTMX like features")),
+							LI().Children(Text("Server Sent Events")),
+							LI().Children(Text("Redirects")),
+							LI().Children(Text("View Transition API")),
+							LI().Children(Text("BigInt Support")),
+						),
 				),
-			),
 		},
 	}
 
-	languages := []NodeFunc{
+	languages := []func(...ElementRenderer) *vscode_icons.VscodeIconsIcon{
 		vscode_icons.FileTypeAssembly,
 		vscode_icons.FileTypeApl,
 		vscode_icons.FileTypeC,
@@ -143,187 +141,139 @@ func setupHome(ctx context.Context, router *chi.Mux) error {
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		Render(w, Page(
-			DIV(
-				CLS("flex flex-col md:items-center text-center md:text-xl p-1 md:p-4 gap-8"),
-				DIV(
-					CLS("md:max-w-4xl flex flex-col items-center justify-center gap-16"),
-					DIV(
-						CLS("flex flex-col gap-6"),
-						// 						H3(
-						// 							CLS("text-3xl font-bold"),
-						// 							TXT("Global count example from Backend"),
-						// 						),
-						// 						DIV(
-						// 							ID("global-count-example"),
-						// 							CLS("flex justify-center p-4 items-center gap-2"),
-						// 							DATA("signal-get", "'/api/globalCount'"),
-						// 							DATA("on-load", "@get"),
-						// 							SPAN(TXT("Loading example on delay...")),
-						// 							svg_spinners.Eclipse(
-						// 								CLS("datastar-indicator"),
-						// 							),
-						// 						),
-						// 						H5(
-						// 							CLS("text-2xl font-bold"),
-						// 							TXT("Open the console to see the Fetch/XHR traffic"),
-						// 						),
-						// 					),
-						P(
-							CLS("text-xl md:text-3xl font-bold py-8"),
-							TXT("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use. 🚀"),
-						),
-						DIV(
-							CLS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content"),
-							DIV(
-								CLS("card-body flex flex-col justify-center items-center"),
-								UL(
-									CLS("flex flex-col gap-6 justify-center items-center text-2xl gap-4  max-w-xl"),
-									RANGE(features, func(f Feature) NODE {
-										return LI(
-											DIV(
-												CLS("flex flex-col gap-1 justify-center items-center"),
-												DIV(
-													CLS("flex gap-2 items-center"),
-													f.Icon,
-													TXT(f.Description),
-												),
-												DIV(
-													CLS("text-lg opacity-50 p-2 rounded"),
-
-													f.Details,
-												),
-											),
-										)
-									}),
+		Page(
+			DIV().
+				CLASS("flex flex-col md:items-center text-center md:text-xl p-1 md:p-4 gap-8").
+				Children(
+					DIV().
+						CLASS("md:max-w-4xl flex flex-col items-center justify-center gap-16").
+						Children(
+							DIV().
+								CLASS("flex flex-col gap-6").
+								Children(
+									H3().
+										CLASS("text-3xl font-bold").
+										Children(Text("Global count example from Backend")),
+									DIV().
+										ID("global-count-example").
+										CLASS("flex justify-center p-4 items-center gap-2").
+										DATASTAR_FETCH_URL("'/api/globalCount'").
+										DATASTAR_ON("load", datastar.GET_ACTION).
+										Children(
+											SPAN().
+												CLASS("text-2xl").
+												Text("Loading example on delay..."),
+											svg_spinners.Eclipse().
+												CLASS("datastar-indicator"),
+										),
+									H5().
+										CLASS("text-2xl font-bold").
+										Children(Text("Open the console to see the Fetch/XHR traffic")),
 								),
-							),
+							P().
+								CLASS("text-xl md:text-3xl font-bold py-8").
+								Children(Text("Takes the best of modern tooling and combines them with a heavy dose of declarative hypermedia into a single framework that is blazingly easy to use. 🚀")),
+							DIV().
+								CLASS("card w-full shadow-2xl ring-4 bg-base-300 ring-secondary text-secondary-content").
+								Children(
+									DIV().
+										CLASS("card-body flex flex-col justify-center items-center").
+										Children(
+											UL().
+												CLASS("flex flex-col gap-6 justify-center items-center text-2xl gap-4  max-w-xl").
+												Children(
+													Range(features, func(f Feature) ElementRenderer {
+														return LI().
+															Children(
+																DIV().
+																	CLASS("flex flex-col gap-1 justify-center items-center").
+																	Children(
+																		DIV().
+																			CLASS("flex gap-2 items-center").
+																			Children(
+																				f.Icon,
+																				Text(f.Description),
+																			),
+																		DIV().
+																			CLASS("text-lg opacity-50 p-2 rounded").
+																			Children(
+																				f.Details,
+																			),
+																	),
+															)
+													}),
+												),
+										),
+								),
 						),
-					),
-					DIV(
-						CLS("flex flex-col gap-4 items-center"),
-						datastar.MergeStore(map[string]any{
+					DIV().
+						CLASS("flex flex-col md:max-w-4xl gap-4 items-center").
+						DATASTAR_MERGE_STORE(map[string]any{
 							"label": "HTML on whatever backend you like",
 							"v":     1,
-						}),
-						DIV(
-							CLS("flex flex-col gap-2 items-center"),
-							H1(
-								CLS("text-2xl md:text-6xl font-bold"),
-								datastar.Text("$label"),
-							),
-							INPUT(
-								CLS("input input-bordered w-full"),
-								datastar.Model("label"),
-							),
-						),
-						DIV(
-							CLS("flex flex-wrap gap-1 md:gap-2 justify-center items-center text-6xl"),
-							RANGE(languages, func(fn NodeFunc) NODE {
-								return DIV(
-									CLS("avatar avatar-xl"),
-									fn(
-										CLS("w-16 h-12 md:w-24 md:h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-2 md:p-4 mask-hexagon"),
-									),
-								)
-							}),
-						),
-						A(
-							CLS("link link-accent text-xl md:text-4xl"),
-							HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/"),
-							TXT("It's the best idea since web rings"),
-						),
-					),
-					DIV(
-						CLS("flex flex-col gap-2 w-full"),
-						H3(
-							CLS("text-3xl font-bold"),
-							TXT("Simple count example code "),
-						),
-						DIV(
-							CLS("bg-base-100 shadow-inner text-base-content p-1 md:p-4 rounded-box text-xs md:text-base"),
-							HIGHLIGHT("html", `<body data-merge-store="{count:0}">
-	<div>
-		<button data-on-click="$count++">Increment +</button>
-		<button data-on-click="$count--">Decrement -</button>
-		<input type="number" data-model="count" />
-	</div>
-	<div data-text="$count">will get replaced with count</div>
-</body>
-`,
-							),
-						),
-						DIV(
-							CLS("flex flex-wrap gap-2 justify-center items-center"),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								tabler.FileZip(),
-								TXTF("< %s w/ all plugins", UpsertIIfeBuildSize()),
-							),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								DIV(
-									CLS("flex flex-wrap gap-1"),
-									carbon.ColumnDependency(),
-									TXTF("%d Dependencies", len(packageJSON.Dependencies)),
+						}).
+						Children(
+							DIV().
+								CLASS("flex flex-col gap-2 items-center").
+								Children(
+									H1().
+										CLASS("text-2xl md:text-6xl font-bold").
+										DATASTAR_TEXT("$label"),
+									INPUT().
+										CLASS("input input-bordered w-full").
+										DATASTAR_MODEL("label"),
 								),
-							),
-							DIV(
-								CLS("badge badge-accent flex-1 gap-1 text-xs p-4"),
-								zondicons.Checkmark(),
-								TXT("Fully Tree Shakeable"),
-							),
+							DIV().
+								CLASS("flex flex-wrap gap-1 md:gap-2 justify-center items-center text-6xl").
+								Children(
+									Range(languages, func(fn func(...ElementRenderer) *vscode_icons.VscodeIconsIcon) ElementRenderer {
+										return DIV().
+											CLASS("avatar avatar-xl").
+											Children(
+												fn().CLASS("w-16 h-12 md:w-24 md:h-24 mask bg-gradient-to-t from-base-200 to-base-300 p-2 md:p-4 mask-hexagon"),
+											)
+									}),
+								),
+							A().
+								CLASS("link link-accent text-xl md:text-4xl").
+								HREF("https://htmx.org/essays/hypermedia-on-whatever-youd-like/").
+								Children(
+									Text("It's the best idea since web rings"),
+								),
 						),
-					),
+					DIV().
+						Children(
+							DIV().
+								CLASS("w-full flex gap-2 items-center").
+								Children(
+									A().
+										CLASS("btn md:btn-lg flex-1").
+										HREF("/essays/2023-09-01_why-another-framework").
+										Children(
+											material_symbols.Help().
+												CLASS("md:visible hidden"),
+											Text("Why another framework?"),
+										),
+									A().
+										CLASS("btn md:btn-lg flex-1 btn-accent").
+										HREF("/examples").
+										Children(
+											mdi.RocketLaunch().
+												CLASS("md:visible hidden"),
+											Text("Show me what you got!"),
+										),
+									A().
+										CLASS("btn md:btn-lg flex-1").
+										HREF("/docs").
+										Children(
+											mdi.Book().
+												CLASS("md:visible hidden"),
+											Text("I'm do my own research"),
+										),
+								),
+						),
 				),
-
-				DIV(
-					CLS("flex flex-col gap-2 justify-center items-center"),
-					TXT("This site for example is built with just"),
-					DIV(
-						CLS("flex gap-1 justify-center items-center text-5xl"),
-						vscode_icons.FileTypeHtml(),
-						material_symbols.AddRounded(CLS("text-3xl")),
-						vscode_icons.FileTypeCss(),
-						material_symbols.AddRounded(CLS("text-3xl")),
-						vscode_icons.FileTypeGoGopher(),
-					),
-					DIV(
-						CLS("flex gap-2 justify-center items-center"),
-						TXT("by "),
-						A(
-							CLS("link-accent"),
-							HREF("http://github.com/delaneyj"),
-							TXT("Delaney"),
-						),
-						TXT("and looking for contributors!"),
-					),
-				),
-				DIV(
-					DIV(
-						CLS("w-full flex gap-2 items-center"),
-						A(
-							CLS("btn md:btn-lg flex-1"),
-							HREF("/essays/2023-09-01_why-another-framework"),
-							material_symbols.Help(CLS("md:visible hidden")),
-							TXT("Why another framework?"),
-						),
-						A(
-							CLS("btn md:btn-lg flex-1 btn-accent"),
-							HREF("/examples"),
-							mdi.RocketLaunch(CLS("md:visible hidden")),
-							TXT("Show me what you got!"),
-						),
-						A(
-							CLS("btn md:btn-lg flex-1"),
-							HREF("/docs"),
-							mdi.Book(CLS("md:visible hidden")),
-							TXT("I'm do my own research"),
-						),
-					),
-				),
-			),
-		))
+		).Render(w)
 	})
 
 	return nil

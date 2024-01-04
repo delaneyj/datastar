@@ -150,7 +150,7 @@ func setupEssays(ctx context.Context, router *chi.Mux) error {
 
 			var contents ElementRenderer
 			if !ok {
-				contents = ERR(fmt.Errorf("essay not found"))
+				contents = Error(fmt.Errorf("essay not found"))
 			} else {
 				contents = essay.Body
 			}

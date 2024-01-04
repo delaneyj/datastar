@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
@@ -22,56 +22,57 @@ func setupExamplesDeleteRow(ctx context.Context, deleteRowRouter chi.Router) err
 
 		contacts := starterActiveContacts()
 
-		contactNode := func(i int, cs *ContactActive) NODE {
-			return TR(
-				ID(fmt.Sprintf("contact_%d", i)),
-				TD(TXT(cs.Name)),
-				TD(TXT(cs.Email)),
-				TD(TERNCached(
-					cs.IsActive,
-					TXT("Active"),
-					TXT("Inactive"),
-				)),
-				TD(
-					CLS("flex justify-end"),
-					BUTTON(
-						CLS("btn btn-error"),
-						datastar.FetchURL(fmt.Sprintf("'/examples/delete_row/data/%d'", i)),
-						datastar.On("click", `confirm('Are you sure?') && $$delete`),
-						material_symbols.Delete(),
-						TXT("Delete"),
-					),
-				),
-			)
+		contactNode := func(i int, cs *ContactActive) ElementRenderer {
+			return TR().
+				ID(fmt.Sprintf("contact_%d", i)).
+				Children(
+					TD(Text(cs.Name)),
+					TD(Text(cs.Email)),
+					TD(Tern(cs.IsActive, Text("Active"), Text("Inactive"))),
+					TD().
+						CLASS("flex justify-end").
+						Children(
+							BUTTON().
+								CLASS("btn btn-error").
+								DATASTAR_FETCH_URL(fmt.Sprintf("'/examples/delete_row/data/%d'", i)).
+								DATASTAR_ON("click", `confirm('Are you sure?') && $$delete`).
+								Children(
+									material_symbols.Delete(),
+									Text("Delete"),
+								),
+						),
+				)
 		}
 
-		contactsToNode := func() NODE {
-			return DIV(
-				ID("contacts"),
-				CLS("flex flex-col gap-8"),
-				TABLE(
-					CLS("table w-full"),
-					CAPTION(TXT("Contacts")),
-					THEAD(
-						TR(
-							TH(TXT("Name")),
-							TH(TXT("Email")),
-							TH(TXT("Status")),
-							TH(TXT("Actions"), CLS("text-right")),
+		contactsToNode := func() ElementRenderer {
+			return DIV().
+				ID("contacts").
+				CLASS("flex flex-col gap-8").
+				Children(
+					TABLE().
+						CLASS("table w-full").
+						Children(
+							CAPTION(Text("Contacts")),
+							THEAD(
+								TR(
+									TH(Text("Name")),
+									TH(Text("Email")),
+									TH(Text("Status")),
+									TH(Text("Actions")).CLASS("text-right")),
+							),
+							TBODY(
+								RangeI(contacts, contactNode),
+							),
 						),
-					),
-					TBODY(
-						RANGEI(contacts, contactNode),
-					),
-				),
-				BUTTON(
-					CLS("btn btn-warning"),
-					datastar.FetchURL("'/examples/delete_row/data/reset'"),
-					datastar.On("click", datastar.GET_ACTION),
-					material_symbols.Refresh(),
-					TXT("Reset"),
-				),
-			)
+					BUTTON().
+						CLASS("btn btn-warning").
+						DATASTAR_FETCH_URL("'/examples/delete_row/data/reset'").
+						DATASTAR_ON("click", datastar.GET_ACTION).
+						Children(
+							material_symbols.Refresh(),
+							Text("Reset"),
+						),
+				)
 		}
 
 		deleteRowRouter.Route("/data", func(dataRouter chi.Router) {

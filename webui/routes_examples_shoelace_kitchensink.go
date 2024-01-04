@@ -11,7 +11,6 @@ import (
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
-	"github.com/maragudk/gomponents"
 	"github.com/samber/lo"
 )
 
@@ -58,47 +57,45 @@ func setupExamplesShoelaceKitchensink(ctx context.Context, examplesRouter chi.Ro
 				}
 
 				datastar.RenderFragment(sse,
-					DIV(
-						ID("shoelace_kitchensink"),
-						CLS("sl-theme-dark"),
-						datastar.MergeStore(input),
-						gomponents.El("sl-input",
-							ATTR("label", "Label"),
-							datastar.Model("nested.label"),
+					DIV().
+						ID("shoelace_kitchensink").
+						CLASS("sl-theme-dark").
+						DATASTAR_MERGE_STORE(input).
+						Children(
+							SL_INPUT().
+								LABEL("Label").
+								DATASTAR_MODEL("nested.label"),
+							SL_SELECT().
+								LABEL("Select (Checking if int64's work)").
+								DATASTAR_MODEL("nested.selection").
+								DATASTAR_ON("sl-change", "console.log('change')").
+								Children(
+									Range(options, func(o Option) ElementRenderer {
+										return SL_OPTION().
+											VALUE(fmt.Sprint(o.Value)).
+											TextF("%s (%d)", o.Label, o.Value)
+									}),
+								),
+							SL_RADIOGROUP().
+								LABEL("Radio Group").
+								DATASTAR_MODEL("nested.selection").
+								Children(
+									Range(options, func(o Option) ElementRenderer {
+										return SL_RADIOBUTTON().
+											VALUE(fmt.Sprint(o.Value)).
+											Text(o.Label)
+									}),
+								),
+							SL_CHECKBOX().
+								DATASTAR_MODEL("nested.isChecked").
+								Text("Checkbox"),
+							SL_BUTTON().
+								VARIANT(SLButtonVariant_primary).
+								Text("Submit").
+								DATASTAR_FETCH_URL(fmt.Sprintf("'%s'", r.URL.Path)).
+								DATASTAR_ON("click", datastar.POST_ACTION),
+							SignalStore,
 						),
-						gomponents.El("sl-select",
-							ATTR("label", "Select (Checking if int64's work)"),
-							datastar.Model("nested.selection"),
-							datastar.On("sl-change", "console.log('change')"),
-							RANGE(options, func(o Option) gomponents.Node {
-								return gomponents.El("sl-option",
-									ATTR("value", fmt.Sprint(o.Value)),
-									TXTF("%s (%d)", o.Label, o.Value),
-								)
-							}),
-						),
-						gomponents.El("sl-radio-group",
-							ATTR("label", "Radio Group"),
-							datastar.Model("nested.selection"),
-							RANGE(options, func(o Option) gomponents.Node {
-								return gomponents.El("sl-radio-button",
-									ATTR("value", fmt.Sprint(o.Value)),
-									TXT(o.Label),
-								)
-							}),
-						),
-						gomponents.El("sl-checkbox",
-							datastar.Model("nested.isChecked"),
-							TXT("Checkbox"),
-						),
-						gomponents.El("sl-button",
-							ATTR("type", "primary"),
-							TXT("Submit"),
-							datastar.FetchURLF("'%s'", r.URL.Path),
-							datastar.On("click", datastar.POST_ACTION),
-						),
-						SignalStore,
-					),
 				)
 			})
 

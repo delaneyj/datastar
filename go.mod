@@ -7,11 +7,10 @@ require (
 	github.com/TwiN/go-away v1.6.12
 	github.com/alecthomas/chroma/v2 v2.12.0
 	github.com/benbjohnson/hashfs v0.2.1
-	github.com/delaneyj/gomponents-iconify v0.0.20231025
-	github.com/delaneyj/gostar v0.4.4
+	github.com/delaneyj/gostar v0.5.12
 	github.com/delaneyj/toolbelt v0.2.0
 	github.com/dustin/go-humanize v1.0.1
-	github.com/ggicci/httpin v0.14.2
+	github.com/ggicci/httpin v0.15.2
 	github.com/go-chi/chi/v5 v5.0.11
 	github.com/go-faker/faker/v4 v4.2.0
 	github.com/goccy/go-json v0.10.2
@@ -30,7 +29,7 @@ require (
 )
 
 require (
-	github.com/ggicci/owl v0.6.1 // indirect
+	github.com/ggicci/owl v0.7.0 // indirect
 	github.com/igrmk/treemap/v2 v2.0.1 // indirect
 )
 
@@ -47,27 +46,26 @@ require (
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/klauspost/compress v1.17.4 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.6 // indirect
-	github.com/maragudk/gomponents v0.20.1
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/highwayhash v1.0.2 // indirect
 	github.com/nats-io/jwt/v2 v2.5.3 // indirect
 	github.com/nats-io/nats-server/v2 v2.10.7 // indirect
 	github.com/nats-io/nats.go v1.31.0 // indirect
-	github.com/nats-io/nkeys v0.4.6 // indirect
+	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rzajac/clock v0.2.0 // indirect
 	github.com/rzajac/zflake v0.8.0 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
-	github.com/ysmood/got v0.38.3 // indirect
+	github.com/ysmood/got v0.39.2 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
 	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/exp v0.0.0-20231226003508-02704c960a9b // indirect
-	golang.org/x/sync v0.5.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/exp v0.0.0-20240103183307-be819d1f06fc // indirect
+	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/protobuf v1.32.0 // indirect
 	modernc.org/libc v1.38.0 // indirect

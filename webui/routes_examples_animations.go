@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
-	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
+	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
@@ -52,19 +52,20 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 		renderViewTransition := func(sse *toolbelt.ServerSentEventsHandler, store *RestoreStore) {
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("view_transition"),
-					datastar.MergeStore(store),
-					CLS("slide-it"),
-					// DIV(TXT("View Transition")),
-					BUTTON(
-						CLS("btn btn-primary"),
-						datastar.FetchURL("'/examples/animations/data/view_transition'"),
-						datastar.On("click", datastar.GET_ACTION),
-						TERNCached(store.ShouldRestore, material_symbols.ArrowLeft(), material_symbols.ArrowRight()),
-						TERNCached(store.ShouldRestore, TXT("Restore It!"), TXT("Swap It!")),
+				DIV().
+					ID("view_transition").
+					DATASTAR_MERGE_STORE(store).
+					CLASS("slide-it").
+					Children(
+						BUTTON().
+							CLASS("btn btn-primary").
+							DATASTAR_FETCH_URL("'/examples/animations/data/view_transition'").
+							DATASTAR_ON("click", datastar.GET_ACTION).
+							Children(
+								Tern(store.ShouldRestore, material_symbols.ArrowLeft(), material_symbols.ArrowRight()),
+								Tern(store.ShouldRestore, Text("Restore It!"), Text("Swap It!")),
+							),
 					),
-				),
 			)
 		}
 
@@ -74,62 +75,64 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 
 				datastar.RenderFragment(
 					sse,
-					BUTTON(
-						ID("fade_out_swap"),
-						CLS("btn btn-error"),
-						datastar.FetchURL("'/examples/animations/data'"),
-						datastar.On("click", datastar.DELETE_ACTION),
-						material_symbols.Delete(),
-						TXT("Fade out then delete on click"),
-					),
+					BUTTON().
+						ID("fade_out_swap").
+						CLASS("btn btn-error").
+						DATASTAR_FETCH_URL("'/examples/animations/data'").
+						DATASTAR_ON("click", datastar.DELETE_ACTION).
+						Children(
+							material_symbols.Delete(),
+							Text("Fade out then delete on click"),
+						),
 				)
 
 				datastar.RenderFragment(
 					sse,
-					BUTTON(
-						ID("fade_me_in"),
-						CLS("btn btn-success"),
-						datastar.FetchURL("'/examples/animations/data/fade_me_in'"),
-						datastar.On("click", datastar.GET_ACTION),
-						material_symbols.Add(),
-						TXT("Fade me in on click"),
-					),
+					BUTTON().
+						ID("fade_me_in").
+						CLASS("btn btn-success").
+						DATASTAR_FETCH_URL("'/examples/animations/data/fade_me_in'").
+						DATASTAR_ON("click", datastar.GET_ACTION).
+						Children(
+							material_symbols.Add(),
+							Text("Fade me in on click"),
+						),
 				)
 
 				datastar.RenderFragment(
 					sse,
-					DIV(
-						ID("request_in_flight"),
-						CLS("flex flex-col gap-4"),
-						DIV(
-							CLS("form-control"),
-							LABEL(
-								CLS("label label-text"),
-								TXT("Name"),
-							),
-							DIV(
-								CLS("flex gap-2 items-center"),
-								INPUT(
-									TYPE("text"),
-									NAME("name"),
-									CLS("input input-bordered flex-1"),
+					DIV().
+						ID("request_in_flight").
+						CLASS("flex flex-col gap-4").
+						Children(
+							DIV().
+								CLASS("form-control").
+								Children(
+									LABEL(Text("Name")).CLASS("label label-text"),
+									DIV().
+										CLASS("flex gap-2 items-center").
+										Children(
+											INPUT().
+												TYPE("text").
+												NAME("name").
+												CLASS("input input-bordered flex-1"),
+											DIV().
+												ID("request_in_flight_indicator").
+												Children(
+													svg_spinners.BlocksWave().CLASS("text-xl"),
+												),
+										),
 								),
-								DIV(
-									ID("request_in_flight_indicator"),
-									svg_spinners.BlocksWave(CLS("text-xl")),
+							BUTTON().
+								ID("submit_request_in_flight").
+								CLASS("btn btn-primary").
+								DATASTAR_FETCH_URL("'/examples/animations/data/request_in_flight'").
+								DATASTAR_ON("click", datastar.POST_ACTION).
+								Children(
+									material_symbols.PersonAdd(),
+									Text("Submit"),
 								),
-							),
 						),
-						BUTTON(
-							ID("submit_request_in_flight"),
-							CLS("btn btn-primary"),
-							datastar.FetchURL("'/examples/animations/data/request_in_flight'"),
-							datastar.FetchIndicatorID("request_in_flight_indicator"),
-							datastar.On("click", datastar.POST_ACTION),
-							material_symbols.PersonAdd(),
-							TXT("Submit"),
-						),
-					),
 				)
 
 				renderViewTransition(sse, &RestoreStore{ShouldRestore: false})
@@ -145,12 +148,12 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 
 						datastar.RenderFragment(
 							sse,
-							DIV(
-								ID("color_throb"),
-								CLS("transition-all duration-1000 font-bold text-2xl text-center rounded-box p-4 uppercase"),
-								STYLEF("color: #%x; background-color: #%x;", fg.Value, bg.Value),
-								TXTF("%s on %s", fg.Label, bg.Label),
-							),
+							DIV().
+								ID("color_throb").
+								CLASS("transition-all duration-1000 font-bold text-2xl text-center rounded-box p-4 uppercase").
+								STYLEF("color", "#%x", fg.Value).
+								STYLEF("background-color", "#%x", bg.Value).
+								TextF("%s on %s", fg.Label, bg.Label),
 						)
 					}
 				}
@@ -160,14 +163,15 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
 					sse,
-					BUTTON(
-						ID("fade_out_swap"),
-						CLS("btn btn-error transition-all duration-[2000ms] opacity-0"),
-						datastar.FetchURL("'/examples/animations/data'"),
-						datastar.On("click", datastar.DELETE_ACTION),
-						material_symbols.Delete(),
-						TXT("Fade out then delete on click"),
-					),
+					BUTTON().
+						ID("fade_out_swap").
+						CLASS("btn btn-error transition-all duration-[2000ms] opacity-0").
+						DATASTAR_FETCH_URL("'/examples/animations/data'").
+						DATASTAR_ON("click", datastar.DELETE_ACTION).
+						Children(
+							material_symbols.Delete(),
+							Text("Fade out then delete on click"),
+						),
 				)
 				time.Sleep(2 * time.Second)
 				datastar.Delete(sse, "#fade_out_swap")
@@ -177,27 +181,29 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
 					sse,
-					BUTTON(
-						ID("fade_me_in"),
-						CLS("btn btn-success opacity-0"),
-						datastar.FetchURL("'/examples/animations/data/fade_me_in'"),
-						datastar.On("click", datastar.GET_ACTION),
-						material_symbols.Add(),
-						TXT("Fade me in on click"),
-					),
+					BUTTON().
+						ID("fade_me_in").
+						CLASS("btn btn-success opacity-0").
+						DATASTAR_FETCH_URL("'/examples/animations/data/fade_me_in'").
+						DATASTAR_ON("click", datastar.GET_ACTION).
+						Children(
+							material_symbols.Add(),
+							Text("Fade me in on click"),
+						),
 				)
 				time.Sleep(500 * time.Millisecond)
 
 				datastar.RenderFragment(
 					sse,
-					BUTTON(
-						ID("fade_me_in"),
-						CLS("btn btn-success transition-all duration-1000 opacity-1"),
-						datastar.FetchURL("'/examples/animations/data/fade_me_in'"),
-						datastar.On("click", datastar.GET_ACTION),
-						material_symbols.Add(),
-						TXT("Fade me in on click"),
-					),
+					BUTTON().
+						ID("fade_me_in").
+						CLASS("btn btn-success transition-all duration-1000 opacity-1").
+						DATASTAR_FETCH_URL("'/examples/animations/data/fade_me_in'").
+						DATASTAR_ON("click", datastar.GET_ACTION).
+						Children(
+							material_symbols.Add(),
+							Text("Fade me in on click"),
+						),
 				)
 			})
 
@@ -205,11 +211,10 @@ func setupExamplesAnimations(ctx context.Context, examplesRouter chi.Router) err
 				time.Sleep(2 * time.Second)
 				datastar.RenderFragment(
 					toolbelt.NewSSE(w, r),
-					DIV(
-						ID("request_in_flight"),
-						CLS("flex gap-2"),
-						TXT("Submitted!"),
-					),
+					DIV().
+						ID("request_in_flight").
+						CLASS("flex gap-2").
+						Text("Submitted!"),
 				)
 			})
 

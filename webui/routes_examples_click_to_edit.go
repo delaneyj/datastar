@@ -29,29 +29,29 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 			examplePage(w, r)
 		})
 
-		contactNode := func(c *Contact) NODE {
-			return DIV(
-				ID("contact_1"),
-				CLS("flex flex-col gap-2 max-w-sm"),
-				LABEL(TXTF("First Name: %s", goaway.Censor(c.FirstName))),
-				LABEL(TXTF("Last Name: %s", goaway.Censor(c.LastName))),
-				LABEL(TXTF("Email: %s", goaway.Censor(c.Email))),
-				DIV(
-					CLS("join"),
-					BUTTON(
-						CLS("btn btn-primary join-item"),
-						datastar.FetchURL("'/examples/click_to_edit/contact/1/edit'"),
-						datastar.On("click", "$$get"),
-						TXT("Edit"),
-					),
-					BUTTON(
-						CLS("btn btn-warning btn-outline join-item"),
-						datastar.FetchURL("'/examples/click_to_edit/contact/1/reset'"),
-						datastar.On("click", "$$patch"),
-						TXT("Reset"),
-					),
-				),
-			)
+		contactNode := func(c *Contact) ElementRenderer {
+			return DIV().
+				ID("contact_1").
+				CLASS("flex flex-col gap-2 max-w-sm").
+				Children(
+					LABEL(TextF("First Name: %s", goaway.Censor(c.FirstName))),
+					LABEL(TextF("Last Name: %s", goaway.Censor(c.LastName))),
+					LABEL(TextF("Email: %s", goaway.Censor(c.Email))),
+					DIV().
+						CLASS("join").
+						Children(
+							BUTTON().
+								CLASS("btn btn-primary join-item").
+								DATASTAR_FETCH_URL("'/examples/click_to_edit/contact/1/edit'").
+								DATASTAR_ON("click", datastar.GET_ACTION).
+								Text("Edit"),
+							BUTTON().
+								CLASS("btn btn-warning btn-outline join-item").
+								DATASTAR_FETCH_URL("'/examples/click_to_edit/contact/1/reset'").
+								DATASTAR_ON("click", datastar.PATCH_ACTION).
+								Text("Reset"),
+						),
+				)
 		}
 
 		c1 := &Contact{}
@@ -72,72 +72,71 @@ func setupExamplesClickToEdit(ctx context.Context, examplesRouter chi.Router) er
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
 					sse,
-					DIV(
-						ID("contact_1"),
-						CLS("flex flex-col gap-2"),
-						datastar.MergeStore(c1),
-						DIV(
-							CLS("form-control"),
-							LABEL(
-								CLS("label"),
-								SPAN(
-									CLS("label-text"),
-									TXT("First Name"),
+					DIV().
+						ID("contact_1").
+						CLASS("flex flex-col gap-2").
+						DATASTAR_MERGE_STORE(c1).
+						Children(
+							DIV().
+								CLASS("form-control").
+								Children(
+									LABEL().CLASS("label").
+										Children(
+											SPAN().
+												CLASS("label-text").
+												Text("First Name"),
+										),
+									INPUT().
+										CLASS("input input-bordered").
+										TYPE("text").
+										DATASTAR_MODEL("firstName"),
 								),
-							),
-							INPUT(
-								CLS("input input-bordered"),
-								TYPE("text"),
-								datastar.Model("firstName"),
-							),
-						),
-						DIV(
-							CLS("form-control"),
-							LABEL(
-								CLS("label"),
-								SPAN(
-									CLS("label-text"),
-									TXT("Last Name"),
+							DIV().
+								CLASS("form-control").
+								Children(
+									LABEL().CLASS("label").
+										Children(
+											SPAN().
+												CLASS("label-text").
+												Text("Last Name"),
+										),
+									INPUT().
+										CLASS("input input-bordered").
+										TYPE("text").
+										DATASTAR_MODEL("lastName"),
 								),
-							),
-							INPUT(
-								CLS("input input-bordered"),
-								TYPE("text"),
-								datastar.Model("lastName"),
-							),
-						),
-						DIV(
-							CLS("form-control"),
-							LABEL(
-								CLS("label"),
-								SPAN(
-									CLS("label-text"),
-									TXT("Email"),
+							DIV().
+								CLASS("form-control").
+								Children(
+									LABEL().
+										CLASS("label").
+										Children(
+											SPAN().
+												CLASS("label-text").
+												Text("Email"),
+										),
+									INPUT().
+										CLASS("input input-bordered").
+										TYPE("text").
+										DATASTAR_MODEL("email"),
 								),
-							),
-							INPUT(
-								CLS("input input-bordered"),
-								TYPE("text"),
-								datastar.Model("email"),
-							),
+							DIV().
+								CLASS("join").
+								Children(
+									BUTTON().
+										CLASS("btn btn-primary join-item").
+										DATASTAR_FETCH_URL("'/examples/click_to_edit/contact/1'").
+										DATASTAR_ON("click", datastar.PUT_ACTION).
+										Text("Save"),
+									BUTTON().
+										CLASS("btn btn-warning join-item").
+										DATASTAR_FETCH_URL("'/examples/click_to_edit/contact/1'").
+										DATASTAR_ON("click", datastar.GET_ACTION).
+										Text("Cancel"),
+								),
 						),
-						DIV(
-							CLS("join"),
-							BUTTON(
-								CLS("btn btn-primary join-item"),
-								datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
-								datastar.On("click", "$$put"),
-								TXT("Save"),
-							),
-							BUTTON(
-								CLS("btn btn-warning join-item"),
-								datastar.FetchURL("'/examples/click_to_edit/contact/1'"),
-								datastar.On("click", "$$get"),
-								TXT("Cancel"),
-							),
-						),
-					),
 				)
+
 			})
 
 			contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {

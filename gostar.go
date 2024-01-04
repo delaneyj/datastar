@@ -2,13 +2,49 @@ package datastar
 
 import (
 	"fmt"
+	"net/http"
 	"time"
 
-	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	"github.com/delaneyj/toolbelt/gomps"
+	"github.com/go-sanitize/sanitize"
+	"github.com/goccy/go-json"
 	"github.com/valyala/bytebufferpool"
 )
+
+func QueryStringUnmarshal(r *http.Request, store any) error {
+	dsJSON := r.URL.Query().Get("datastar")
+	if dsJSON != "" {
+		if err := json.Unmarshal([]byte(dsJSON), store); err != nil {
+			return fmt.Errorf("failed to unmarshal: %w", err)
+		}
+	}
+
+	return nil
+}
+
+func BodyUnmarshal(r *http.Request, store any) error {
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
+	if _, err := buf.ReadFrom(r.Body); err != nil {
+		return fmt.Errorf("failed to read body: %w", err)
+	}
+	b := buf.Bytes()
+	if err := json.Unmarshal(b, store); err != nil {
+		return fmt.Errorf("failed to unmarshal: %w", err)
+	}
+	return nil
+}
+
+func BodySanitize(r *http.Request, sanitizer *sanitize.Sanitizer, store any) error {
+	if err := BodyUnmarshal(r, store); err != nil {
+		return fmt.Errorf("failed to unmarshal: %w", err)
+	}
+	if err := sanitizer.Sanitize(store); err != nil {
+		return fmt.Errorf("failed to sanitize: %w", err)
+	}
+	return nil
+}
 
 const (
 	GET_ACTION    = "$$get"
@@ -17,34 +53,6 @@ const (
 	PATCH_ACTION  = "$$patch"
 	DELETE_ACTION = "$$delete"
 )
-
-func Header(header, expression string) ElementRenderer {
-	return gomps.DATA("header-"+toolbelt.Kebab(header), expression)
-}
-
-func FetchURL(expression string) ElementRenderer {
-	return gomps.DATA("fetch-url", expression)
-}
-
-func FetchURLF(format string, args ...interface{}) ElementRenderer {
-	return FetchURL(fmt.Sprintf(format, args...))
-}
-
-func FetchIndicator(expression string) ElementRenderer {
-	return gomps.DATA("fetch-indicator", expression)
-}
-
-func FetchIndicatorF(format string, args ...interface{}) ElementRenderer {
-	return FetchIndicator(fmt.Sprintf(format, args...))
-}
-
-func FetchIndicatorID(id string) ElementRenderer {
-	return FetchIndicatorF("'#%s'", id)
-}
-
-func ServerSentEvents(expression string) ElementRenderer {
-	return gomps.DATA("sse", fmt.Sprintf(`'%s'`, expression))
-}
 
 type FragmentMergeType string
 
@@ -145,7 +153,7 @@ func UpsertStore(sse *toolbelt.ServerSentEventsHandler, store any, opts ...Rende
 	opts = append([]RenderFragmentOption{WithMergeUpsertAttributes()}, opts...)
 	RenderFragment(
 		sse,
-		gomps.DIV(MergeStore(store)),
+		elements.DIV().DATASTAR_MERGE_STORE(store),
 		opts...,
 	)
 }
@@ -157,12 +165,12 @@ func Delete(sse *toolbelt.ServerSentEventsHandler, selector string, opts ...Rend
 	}, opts...)
 	RenderFragment(
 		sse,
-		gomps.DIV(),
+		elements.DIV(),
 		opts...,
 	)
 }
 
-func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
 		Merge:          FragmentMergeMorphElement,
@@ -196,7 +204,7 @@ func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child ElementRenderer
 	return nil
 }
 
-func RenderFragmentSelf(sse *toolbelt.ServerSentEventsHandler, child ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragmentSelf(sse *toolbelt.ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	opts = append([]RenderFragmentOption{WithQuerySelectorSelf()}, opts...)
 	return RenderFragment(sse, child, opts...)
 }

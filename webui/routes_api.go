@@ -12,8 +12,9 @@ import (
 	"time"
 
 	"github.com/Jeffail/gabs/v2"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
@@ -29,7 +30,9 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 		return DIV().
 			ID("global-count-example").
 			CLASS("flex flex-col gap-2").
-			CustomDataF("signal-count", "%d", count).
+			DATASTAR_MERGE_STORE(map[string]any{
+				"count": count,
+			}).
 			Children(
 				DIV().
 					CLASS("flex gap-2 justify-between items-center").
@@ -54,13 +57,13 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 					Children(
 						BUTTON(material_symbols.Download()).
 							CLASS("btn btn-secondary btn-lg flex-1").
-							CustomData("signal-get", "'/api/globalCount'").
-							CustomData("on-click", "@get").
+							DATASTAR_FETCH_URL("'/api/globalCount'").
+							DATASTAR_ON("click", datastar.GET_ACTION).
 							Text("Load global count"),
 						BUTTON(material_symbols.Upload()).
 							CLASS("btn btn-secondary btn-lg flex-1").
-							CustomData("signal-post", "'/api/globalCount'").
-							CustomData("on-click", "@post").
+							DATASTAR_FETCH_URL("'/api/globalCount'").
+							DATASTAR_ON("click", datastar.POST_ACTION).
 							Text("Store global count"),
 					),
 			)
@@ -75,7 +78,9 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 				w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
 				w.Header().Set("Pragma", "no-cache")
 				w.Header().Set("Expires", "0")
-				globalCountExample().Render(w)
+
+				sse := toolbelt.NewSSE(w, r)
+				datastar.RenderFragment(sse, globalCountExample())
 			})
 
 			globalCountRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {

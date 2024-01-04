@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
 	. "github.com/delaneyj/gostar/elements"
-	"gigithub.com/delaneyj/gostar/elements
+	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
+	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -22,16 +22,18 @@ func setupExamplesLazyLoad(ctx context.Context, examplesRouter chi.Router) error
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("lazy_load"),
-					datastar.FetchURL("'/examples/lazy_load/graph'"),
-					datastar.On("load", datastar.GET_ACTION),
-					DIV(
-						CLS("flex justify-center text-4xl gap-2"),
-						svg_spinners.BlocksWave(),
-						TXT("Loading..."),
+				DIV().
+					ID("lazy_load").
+					DATASTAR_FETCH_URL("'/examples/lazy_load/graph'").
+					DATASTAR_ON("load", datastar.GET_ACTION).
+					Children(
+						DIV().
+							CLASS("flex justify-center text-4xl gap-2").
+							Children(
+								svg_spinners.BlocksWave(),
+								Text("Loading..."),
+							),
 					),
-				),
 			)
 		})
 
@@ -41,11 +43,10 @@ func setupExamplesLazyLoad(ctx context.Context, examplesRouter chi.Router) error
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				IMG(
-					ID("lazy_load"),
-					CLS("transition-opacity"),
+				IMG().
+					ID("lazy_load").
+					CLASS("transition-opacity").
 					SRC(sp),
-				),
 				datastar.WithSettleDuration(150*time.Millisecond),
 			)
 		})

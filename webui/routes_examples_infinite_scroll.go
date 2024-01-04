@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
 	"github.com/delaneyj/toolbelt"
 	"github.com/ggicci/httpin"
 	"github.com/go-chi/chi/v5"
@@ -22,20 +22,18 @@ func setupExamplesInfiniteScroll(ctx context.Context, examplesRouter chi.Router)
 			Offset          int  `in:"query=offset;default=0"`
 		}
 
-		renderAgentRow := func(i int) NODE {
-			return TR(
-				ID(fmt.Sprintf("agent_%d", i)),
-				TD(TXT("Agent Smith")),
-				TD(TXT(fmt.Sprintf("void%d@null.org", i+1))),
-				TD(
-					CLS("uppercase"),
-					TXTF("%x", toolbelt.AliasHash(fmt.Sprint(i))),
-				),
-			)
+		renderAgentRow := func(i int) ElementRenderer {
+			return TR().
+				ID(fmt.Sprintf("agent_%d", i)).
+				Children(
+					TD(Text("Agent Smith")),
+					TD(TextF("void%d@null.org", i+1)),
+					TD().CLASS("uppercase").TextF("%x", toolbelt.AliasHash(fmt.Sprint(i))),
+				)
 		}
 
-		renderAgentRows := func(input *Input) NODES {
-			arr := make(NODES, input.Limit)
+		renderAgentRows := func(input *Input) []ElementRenderer {
+			arr := make([]ElementRenderer, input.Limit)
 			for i := range arr {
 				arr[i] = renderAgentRow(i + input.Offset)
 			}
@@ -43,45 +41,50 @@ func setupExamplesInfiniteScroll(ctx context.Context, examplesRouter chi.Router)
 			return arr
 		}
 
-		moreDiv := func(input *Input) NODE {
-			return DIV(
-				ID("more_btn"),
-				datastar.FetchURL(fmt.Sprintf("'/examples/infinite_scroll/data?offset=%d&limit=%d'", input.Offset+input.Limit, input.Limit)),
-				datastar.Intersects(datastar.GET_ACTION),
-				DIV(
-					CLS("flex justify-center text-4xl gap-2"),
-					svg_spinners.BlocksWave(),
-					TXT("Loading..."),
-				),
-			)
+		moreDiv := func(input *Input) ElementRenderer {
+			return DIV().
+				ID("more_btn").
+				DATASTAR_FETCH_URL(fmt.Sprintf("'/examples/infinite_scroll/data?offset=%d&limit=%d'", input.Offset+input.Limit, input.Limit)).
+				DATASTAR_INTERSECTS(datastar.GET_ACTION).
+				Children(
+					DIV().
+						CLASS("flex justify-center text-4xl gap-2").
+						Children(
+							svg_spinners.BlocksWave(),
+							Text("Loading..."),
+						),
+				)
 		}
 
-		renderAgentsTable := func(input *Input) NODE {
+		renderAgentsTable := func(input *Input) ElementRenderer {
 			arr := make([]int, input.Limit)
 			for i := range arr {
 				arr[i] = i + input.Offset
 			}
 
-			return DIV(
-				ID("infinite_scroll"),
-				CLS("flex flex-col gap-2"),
-				TABLE(
-					CLS("table w-full"),
-					CAPTION(TXT("Agents")),
-					THEAD(
-						TR(
-							TH(TXT("Name")),
-							TH(TXT("Email")),
-							TH(TXT("ID")),
+			return DIV().
+				ID("infinite_scroll").
+				CLASS("flex flex-col gap-2").
+				Children(
+					TABLE().
+						CLASS("table w-full").
+						Children(
+							CAPTION(Text("Agents")),
+							THEAD(
+								TR(
+									TH(Text("Name")),
+									TH(Text("Email")),
+									TH(Text("ID")),
+								),
+							),
+							TBODY().
+								ID("click_to_load_rows").
+								Children(
+									Group(renderAgentRows(input)...),
+								),
 						),
-					),
-					TBODY(
-						ID("click_to_load_rows"),
-						GRP(renderAgentRows(input)...),
-					),
-				),
-				moreDiv(input),
-			)
+					moreDiv(input),
+				)
 		}
 
 		infiniteScrollingRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {

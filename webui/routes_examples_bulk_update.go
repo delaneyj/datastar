@@ -8,8 +8,8 @@ import (
 	"strings"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
@@ -46,29 +46,20 @@ func starterActiveContacts() []*ContactActive {
 }
 
 func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) error {
-	contactToNode := func(i int, cs *ContactActive, wasChanged bool) NODE {
+	contactToNode := func(i int, cs *ContactActive, wasChanged bool) ElementRenderer {
 		key := fmt.Sprintf("contact_%d", i)
-		return TR(
-			ID(key),
-			CLSS{
-				"activate":   wasChanged && cs.IsActive,
-				"deactivate": wasChanged && !cs.IsActive,
-			},
-			TD(
-				INPUT(
-					CLS("checkbox"),
-					TYPE("checkbox"),
-					datastar.Model("selections."+key),
+		return TR().
+			ID(key).
+			IfCLASS(wasChanged && cs.IsActive, "activate").
+			IfCLASS(wasChanged && !cs.IsActive, "deactivate").
+			Children(
+				TD(
+					INPUT().CLASS("checkbox").TYPE("checkbox").DATASTAR_MODEL("selections."+key),
+					TD(Text(cs.Name)),
+					TD(Text(cs.Email)),
+					TD(Tern(cs.IsActive, Text("Active"), Text("Inactive"))),
 				),
-			),
-			TD(TXT(cs.Name)),
-			TD(TXT(cs.Email)),
-			TD(TERNCached(
-				cs.IsActive,
-				TXT("Active"),
-				TXT("Inactive"),
-			)),
-		)
+			)
 	}
 
 	contacts := starterActiveContacts()
@@ -90,54 +81,58 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 		}
 	}
 
-	contactsToNode := func(selectionStore SelectionStore, contacts []*ContactActive) NODE {
-		return DIV(
-			ID("bulk_update"),
-			datastar.MergeStore(selectionStore),
-			CLS("flex flex-col gap-2"),
-			TABLE(
-				CLS("table table-striped"),
-				CAPTION(TXT("Select Rows And Activate Or Deactivate Below")),
-				THEAD(
-					TR(
-						TH(
-							INPUT(
-								CLS("checkbox"),
-								TYPE("checkbox"),
-								datastar.Model("selections.all"),
-								datastar.On("change", "$$setAll('contact_', $selections.all)"),
+	contactsToNode := func(selectionStore SelectionStore, contacts []*ContactActive) ElementRenderer {
+		return DIV().
+			ID("bulk_update").
+			DATASTAR_MERGE_STORE(selectionStore).
+			CLASS("flex flex-col gap-2").
+			Children(
+				TABLE().
+					CLASS("table table-striped").
+					Children(
+						CAPTION(Text("Select Rows And Activate Or Deactivate Below")),
+						THEAD(
+							TR(
+								TH(
+									INPUT().
+										CLASS("checkbox").
+										TYPE("checkbox").
+										DATASTAR_MODEL("selections.all").
+										DATASTAR_ON("change", "$$setAll('contact_', $selections.all)"),
+								),
+								TH(Text("Name")),
+								TH(Text("Email")),
+								TH(Text("Status")),
 							),
 						),
-						TH(TXT("Name")),
-						TH(TXT("Email")),
-						TH(TXT("Status")),
+						TBODY(
+							RangeI(contacts, func(i int, cs *ContactActive) ElementRenderer {
+								return contactToNode(i, cs, false)
+							}),
+						),
 					),
-				),
-				TBODY(
-					RANGEI(contacts, func(i int, cs *ContactActive) NODE {
-						return contactToNode(i, cs, false)
-					}),
-				),
-			),
-			DIV(
-				CLS("join"),
-				BUTTON(
-					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $selections.all)"),
-					datastar.FetchURL("'/examples/bulk_update/data/activate'"),
-					CLS("btn btn-success join-item"),
-					material_symbols.AccountCircle(),
-					TXT("Activate"),
-				),
-				BUTTON(
-					datastar.On("click", "$$put; $all = false; $$setAll('contact_', $selections.all)"),
-					datastar.FetchURL("'/examples/bulk_update/data/deactivate'"),
-					CLS("btn btn-warning join-item"),
-					material_symbols.AccountCircleOff(),
-					TXT("Deactivate"),
-				),
-			),
-			SignalStore,
-		)
+				DIV().
+					CLASS("join").
+					Children(
+						BUTTON().
+							DATASTAR_ON("click", "$$put; $all = false; $$setAll('contact_', $selections.all)").
+							DATASTAR_FETCH_URL("'/examples/bulk_update/data/activate'").
+							CLASS("btn btn-success join-item").
+							Children(
+								material_symbols.AccountCircle(),
+								Text("Activate"),
+							),
+						BUTTON().
+							DATASTAR_ON("click", "$$put; $all = false; $$setAll('contact_', $selections.all)").
+							DATASTAR_FETCH_URL("'/examples/bulk_update/data/deactivate'").
+							CLASS("btn btn-warning join-item").
+							Children(
+								material_symbols.AccountCircleOff(),
+								Text("Deactivate"),
+							),
+					),
+				SignalStore,
+			)
 	}
 
 	examplesRouter.Route("/bulk_update", func(bulkUpdateRouter chi.Router) {
@@ -187,7 +182,7 @@ func setupExamplesBulkUpdate(ctx context.Context, examplesRouter chi.Router) err
 				}
 				datastar.RenderFragment(
 					sse,
-					DIV(datastar.MergeStore(store)),
+					DIV().DATASTAR_MERGE_STORE(store),
 					datastar.WithQuerySelector("#bulk_update"),
 					datastar.WithMergeType(datastar.FragmentMergeUpsertAttributes),
 				)

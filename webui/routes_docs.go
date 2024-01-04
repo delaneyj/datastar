@@ -8,10 +8,10 @@ import (
 	"regexp"
 
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/delaneyj/gomponents-iconify/iconify/gridicons"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
-	"github.com/delaneyj/gomponents-iconify/iconify/mdi"
 	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/gridicons"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
+	"github.com/delaneyj/gostar/elements/iconify/mdi"
 	"github.com/go-chi/chi/v5"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
