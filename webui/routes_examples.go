@@ -8,17 +8,16 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
 )
 
 var sanitizer *sanitize.Sanitizer
 
-func examplePage(w http.ResponseWriter, r *http.Request, children ...NODE) error {
+func examplePage(w http.ResponseWriter, r *http.Request, children ...ElementRenderer) error {
 	nameParts := strings.Split(r.URL.Path, "/")
 	name := nameParts[len(nameParts)-1]
 	markdownPath := fmt.Sprintf("static/examples/%s.md", name)
@@ -33,25 +32,28 @@ func examplePage(w http.ResponseWriter, r *http.Request, children ...NODE) error
 		return fmt.Errorf("error converting markdown: %w", err)
 	}
 
-	back := A(
-		HREF("/examples"),
-		CLS("btn btn-primary"),
-		material_symbols.ArrowBack(),
-		TXT("Back to Examples"),
-	)
+	back := A().
+		HREF("/examples").
+		CLASS("btn btn-primary").
+		Children(
+			material_symbols.ArrowBack(),
+			Text("Back to Examples"),
+		)
 
-	Render(w, Page(
-		DIV(
-			CLS("flex flex-col items-center p-8 gap-8"),
-			back,
-			DIV(
-				CLS("flex flex-col max-w-5xl w-full prose"),
-				RAW(mdBuf.String()),
-				GRP(children...),
+	Page(
+		DIV().
+			CLASS("flex flex-col items-center p-8 gap-8").
+			Children(
+				back,
+				DIV().
+					CLASS("flex flex-col max-w-5xl w-full prose").
+					Children(
+						Text(mdBuf.String()),
+						Group(children...),
+					),
+				back,
 			),
-			back,
-		),
-	))
+	).Render(w)
 
 	return nil
 }
@@ -106,54 +108,55 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 		}
 
 		examplesRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			Render(w, Page(
-				DIV(
-					CLS("flex flex-col items-center p-16"),
-					DIV(
-						CLS("flex flex-col gap-8 max-w-5xl"),
-						RANGE(examples, func(g ExampleGroup) NODE {
-							return DIV(
-								DIV(
-									DIV(
-										CLS("text-4xl font-bold text-primary"),
-										TXT(g.Label+"*"),
-									),
-									HR(
-										CLS("divider border-primary"),
-									),
-								),
-								TABLE(
-									CLS("table w-full"),
-									THEAD(TR(
-										TH(TXT("Pattern")),
-										TH(TXT("Description")),
-									)),
-									TBODY(
-										RANGE(g.Examples, func(e Example) NODE {
-											return TR(
-												CLS("hover"),
-												TD(A(
-													CLS("link-secondary disable"),
-													HREF("/examples/"+toolbelt.Cased(e.Pattern, toolbelt.Snake, toolbelt.Lower)),
-													TXT(e.Pattern),
-												)),
-												TD(
-													CLS("text-sm"),
-													TXT(e.Description),
+			Page(
+				DIV().
+					CLASS("flex flex-col items-center p-16").
+					Children(
+						DIV().
+							CLASS("flex flex-col gap-8 max-w-5xl").
+							Children(
+								Range(examples, func(g ExampleGroup) ElementRenderer {
+									return DIV(
+										DIV(
+											DIV().CLASS("text-4xl font-bold text-primary").Text(g.Label+"*"),
+											HR().CLASS("divider border-primary"),
+										),
+										TABLE().
+											CLASS("table w-full").
+											Children(
+												THEAD(
+													TR(
+														TH().Text("Pattern"),
+														TH().Text("Description"),
+													),
 												),
-											)
-										}),
-									),
-								),
-							)
-						}),
-						DIV(
-							CLS("text-accent font-bold italic"),
-							TXT("All examples use server-side logic in Go but you can use any language you like."),
-						),
+												TBODY(
+													Range(g.Examples, func(e Example) ElementRenderer {
+														return TR().
+															CLASS("hover").
+															Children(
+																TD().
+																	Children(
+																		A().
+																			CLASS("link-secondary disable").
+																			HREF("/examples/"+toolbelt.Cased(e.Pattern, toolbelt.Snake, toolbelt.Lower)).
+																			Text(e.Pattern),
+																	),
+																TD().
+																	CLASS("text-sm").
+																	Text(e.Description),
+															)
+													}),
+												),
+											),
+									)
+								}),
+								DIV().
+									CLASS("text-accent font-bold italic").
+									Text("All examples use server-side logic in Go but you can use any language you like."),
+							),
 					),
-				),
-			))
+			).Render(w)
 		})
 
 		if err := errors.Join(
@@ -183,7 +186,7 @@ func setupExamples(ctx context.Context, router *chi.Mux) (err error) {
 	})
 }
 
-var SignalStore = GRP(
-	H4(TXT("Signal Store")),
-	PRE(datastar.Text("ctx.JSONStringify(ctx.store())")),
+var SignalStore = Group(
+	H4(Text("Signal Store")),
+	PRE().DATASTAR_TEXT("ctx.JSONStringify(ctx.store())"),
 )

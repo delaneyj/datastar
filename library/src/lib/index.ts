@@ -3,10 +3,8 @@ export * from './dom'
 export * from './types'
 
 import { Datastar } from './core'
-import { AttributePlugins } from './plugins/attributes'
-import { BackendActions, BackendPlugins } from './plugins/backend'
+import { AttributePlugins, BackendActions, BackendPlugins, VisibilityPlugins } from './plugins'
 import { HelperActions } from './plugins/helpers'
-import { VisibilityPlugins } from './plugins/visibility'
 import { Actions, AttributePlugin } from './types'
 
 export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlugin[]) {
@@ -23,3 +21,7 @@ export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPl
   const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins]
   return runDatastarWith(actions, ...allPlugins)
 }
+
+const winAny = window as any
+winAny.ds = runDatastarWithAllPlugins()
+winAny.dispatchEvent(new CustomEvent('datastar-ready'))

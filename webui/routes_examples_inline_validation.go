@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -36,79 +36,76 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 				return isEmailValid, isFirstNameValid, isLastNameValid, isValid
 			}
 
-			fieldToNode := func(label, field string, isValid bool, isNotValidErrorLabelFmt string, labelArgs ...any) NODE {
-				return DIV(
-					CLS("form-control"),
-					LABEL(
-						CLS("label"),
-						SPAN(
-							CLS("label-text"),
-							TXT(label),
-						),
-					),
-					INPUT(
-						CLSS{
-							"input input-bordered": true,
-							"border-error":         !isValid,
-						},
-						datastar.Model(field),
-						datastar.FetchURL("'/examples/inline_validation/data'"),
-						datastar.OnDebounce("keydown", 2*time.Second, datastar.GET_ACTION),
-					),
-					IFCachedNode(
-						!isValid,
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text-alt text-error"),
-								TXTF(isNotValidErrorLabelFmt, labelArgs...),
+			fieldToNode := func(label, field string, isValid bool, isNotValidErrorLabelFmt string, labelArgs ...any) ElementRenderer {
+				return DIV().
+					CLASS("form-control").
+					Children(
+						LABEL().
+							CLASS("label").
+							Children(
+								SPAN().
+									CLASS("label-text").
+									Text(label),
 							),
+						INPUT().
+							CLASS("input input-bordered").
+							IfCLASS(!isValid, "border-error").
+							DATASTAR_MODEL(field).
+							DATASTAR_FETCH_URL("'/examples/inline_validation/data'").
+							DATASTAR_ON("keydown", datastar.GET_ACTION, InputOnModDebounce(2*time.Second)),
+						If(
+							!isValid,
+							LABEL().
+								CLASS("label").
+								Children(
+									SPAN().
+										CLASS("label-text-alt text-error").
+										TextF(isNotValidErrorLabelFmt, labelArgs...),
+								),
 						),
-					),
-				)
+					)
 			}
 
-			userToNode := func(u *User) NODE {
+			userToNode := func(u *User) ElementRenderer {
 				isEmailValid, isFirstNameValid, isLastNameValid, isValid := userValidation(u)
 				_, _ = isEmailValid, isFirstNameValid
-				return DIV(
-					ID("inline_validation"),
-					datastar.MergeStore(u),
-					CLS("flex flex-col gap-4"),
-					DIV(
-						CLS("font-bold text-2xl"),
-						TXT("Sign Up"),
-					),
-					DIV(
-						fieldToNode(
-							"Email Address",
-							"email",
-							isEmailValid,
-							"Email '%s' is already taken or is invalid.  Please enter another email.", u.Email,
+				return DIV().
+					ID("inline_validation").
+					CLASS("flex flex-col gap-4").
+					DATASTAR_MERGE_STORE(u).
+					Children(
+						DIV().CLASS("font-bold text-2xl").Text("Sign Up"),
+						DIV(
+							fieldToNode(
+								"Email Address",
+								"email",
+								isEmailValid,
+								"Email '%s' is already taken or is invalid.  Please enter another email.", u.Email,
+							),
+							fieldToNode(
+								"First Name",
+								"firstName",
+								isFirstNameValid,
+								"First name must be at least 8 characters.",
+							),
+							fieldToNode(
+								"Last Name",
+								"lastName",
+								isLastNameValid,
+								"Last name must be at least 8 characters.",
+							),
 						),
-						fieldToNode(
-							"First Name",
-							"firstName",
-							isFirstNameValid,
-							"First name must be at least 8 characters.",
-						),
-						fieldToNode(
-							"Last Name",
-							"lastName",
-							isLastNameValid,
-							"Last name must be at least 8 characters.",
-						),
-					),
-					BUTTON(
-						CLS("btn btn-primary"),
-						IFCachedNode(!isValid, DISABLED),
-						datastar.On("click", datastar.POST_ACTION),
-						datastar.FetchURL("'/examples/inline_validation/data'"),
-						material_symbols.PersonAdd(),
-						TXT("Submit"),
-					),
-					SignalStore,
-				)
+						BUTTON().
+							CLASS("btn btn-primary").
+							IfCLASS(!isValid, "disabled").
+							DATASTAR_ON("click", datastar.POST_ACTION).
+							DATASTAR_FETCH_URL("'/examples/inline_validation/data'").
+							Children(
+								material_symbols.PersonAdd(),
+								Text("Submit"),
+							),
+						SignalStore,
+					)
 			}
 
 			dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -131,16 +128,17 @@ func setupExampleInlineValidation(ctx context.Context, editRowRouter chi.Router)
 				_, _, _, isValid := userValidation(u)
 
 				sse := toolbelt.NewSSE(w, r)
-				var node NODE
+				var node ElementRenderer
 				if !isValid {
 					node = userToNode(u)
 				} else {
-					node = DIV(
-						ID("inline_validation"),
-						CLS("font-bold text-4xl alert alert-success"),
-						material_symbols.CheckCircle(),
-						TXT("Thank you for signing up!"),
-					)
+					node = DIV().
+						ID("inline_validation").
+						CLASS("font-bold text-4xl alert alert-success").
+						Children(
+							material_symbols.CheckCircle(),
+							Text("Thank you for signing up!"),
+						)
 				}
 
 				datastar.RenderFragment(sse, node)

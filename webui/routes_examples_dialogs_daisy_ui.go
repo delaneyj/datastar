@@ -5,11 +5,10 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
-	"github.com/maragudk/gomponents"
 )
 
 func setupExamplesDialogsDaisyUI(ctx context.Context, examplesRouter chi.Router) error {
@@ -22,57 +21,58 @@ func setupExamplesDialogsDaisyUI(ctx context.Context, examplesRouter chi.Router)
 			Prompt string `json:"prompt"`
 		}
 
-		dialogNode := DIV(
-			ID("dialogs"),
-			datastar.MergeStore(&Store{Prompt: "foo"}),
-			BUTTON(
-				CLS("btn btn-primary"),
-				ATTR("onclick", "my_modal_1.showModal()"),
-				TXT("Click Me"),
-			),
-			gomponents.El("dialog",
-				ID("my_modal_1"),
-				CLS("modal text-base-content"),
-				DIV(
-					CLS("modal-box"),
-					DIV(
-						CLS("font-bold text-xl"),
-						TXT("Hello!"),
-					),
-					DIV(
-						CLS("form-control"),
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text"),
-								TXT("Enter a string"),
+		dialogNode := DIV().
+			ID("dialogs").
+			DATASTAR_MERGE_STORE(&Store{Prompt: "foo"}).
+			Children(
+				BUTTON().
+					CLASS("btn btn-primary").
+					Attr("onclick", "my_modal_1.showModal()").
+					Text("Click Me"),
+				DIALOG().
+					ID("my_modal_1").
+					CLASS("modal text-base-content").
+					Children(
+						DIV().
+							CLASS("modal-box").
+							Children(
+								DIV().
+									CLASS("font-bold text-xl").
+									Text("Hello!"),
+								DIV().
+									CLASS("form-control").
+									Children(
+										LABEL().
+											CLASS("label").
+											Children(
+												SPAN().
+													CLASS("label-text").
+													Text("Enter a string"),
+											),
+										INPUT().
+											TYPE("text").
+											CLASS("input input-bordered").
+											DATASTAR_MODEL("prompt"),
+									),
+								DIV().
+									CLASS("modal-action").
+									Children(
+										FORM().
+											METHOD("dialog").
+											Children(
+												BUTTON().
+													CLASS("btn btn-ghost").
+													Text("CLOSE"),
+											),
+										BUTTON().
+											CLASS("btn btn-primary").
+											DATASTAR_FETCH_URL("'/examples/dialogs___daisy_ui/sure'").
+											DATASTAR_ON("click", "$$get").
+											Text("Submit"),
+									),
 							),
-						),
-						INPUT(
-							TYPE("text"),
-							CLS("input input-bordered"),
-							datastar.Model("prompt"),
-						),
 					),
-					DIV(
-						CLS("modal-action"),
-						FORM(
-							METHOD("dialog"),
-							BUTTON(
-								CLS("btn btn-ghost"),
-								TXT("CLOSE"),
-							),
-						),
-						BUTTON(
-							CLS("btn btn-primary"),
-							datastar.FetchURL("'/examples/dialogs___daisy_ui/sure'"),
-							datastar.On("click", "$$get"),
-							TXT("Submit"),
-						),
-					),
-				),
-			),
-		)
+			)
 
 		dialogsBrowserRouter.Get("/data", func(w http.ResponseWriter, r *http.Request) {
 			sse := toolbelt.NewSSE(w, r)
@@ -88,24 +88,23 @@ func setupExamplesDialogsDaisyUI(ctx context.Context, examplesRouter chi.Router)
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("dialogs"),
-					CLS("flex flex-col gap-4"),
-					DIV(
-						TXTF("You clicked the button and confirmed with prompt of  "),
-						SPAN(
-							CLS("font-bold text-accent"),
-							TXT(store.Prompt),
+				DIV().
+					ID("dialogs").
+					CLASS("flex flex-col gap-4").
+					Children(
+						DIV(
+							TextF("You clicked the button and confirmed with prompt of "),
+							SPAN().CLASS("font-bold text-accent").Text(store.Prompt),
+							Text("!"),
 						),
-						TXT("!"),
+						A().
+							CLASS("btn btn-secondary").
+							HREF("/examples/dialogs___daisy_ui").
+							Children(
+								material_symbols.ArrowBack(),
+								Text("Reset"),
+							),
 					),
-					A(
-						CLS("btn btn-secondary"),
-						HREF("/examples/dialogs___daisy_ui"),
-						material_symbols.ArrowBack(),
-						TXT("Reset"),
-					),
-				),
 			)
 		})
 	})

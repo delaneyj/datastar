@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -127,69 +127,63 @@ func setupExamplesValueSelect(ctx context.Context, examplesRouter chi.Router) er
 				sse := toolbelt.NewSSE(w, r)
 				datastar.RenderFragment(
 					sse,
-					DIV(
-						ID("value_select"),
-						datastar.MergeStore(input),
-						CLS("flex flex-col gap-2"),
-						DIV(
-							CLS("text-2xl font-bold"),
-							TXT("Pick a Make / Model"),
-						),
-						SELECT(
-							CLS("select select-bordered"),
-							datastar.Model("make"),
-							datastar.FetchURL("'/examples/value_select/data'"),
-							datastar.On("change", datastar.GET_ACTION),
-							OPTION(
-								DISABLED,
-								SELECTED,
-								TXT("Select a Make"),
-								VALUE(""),
-							),
-							RANGE(cars, func(item *Make) NODE {
-								return OPTION(
-									VALUE(item.ID),
-									TXT(item.Label),
-								)
-							}),
-						),
-						IF(
-							make != nil,
-							func() NODE {
-								return SELECT(
-									CLS("select select-bordered"),
-									datastar.Model("model"),
-									datastar.FetchURL("'/examples/value_select/data'"),
-									datastar.On("change", datastar.GET_ACTION),
-									OPTION(
-										DISABLED,
-										SELECTED,
-										TXT("Select a Model"),
+					DIV().
+						ID("value_select").
+						DATASTAR_MERGE_STORE(input).
+						CLASS("flex flex-col gap-2").
+						Children(
+							DIV().
+								CLASS("text-2xl font-bold").
+								Text("Pick a Make / Model"),
+							SELECT().
+								CLASS("select select-bordered").
+								DATASTAR_MODEL("make").
+								DATASTAR_FETCH_URL("'/examples/value_select/data'").
+								DATASTAR_ON("change", datastar.GET_ACTION).
+								Children(
+									OPTION().
+										DISABLED().
+										SELECTED().
+										Text("Select a Make").
 										VALUE(""),
+									Group(Range(cars, func(item *Make) ElementRenderer {
+										return OPTION().
+											VALUE(item.ID).
+											Text(item.Label)
+									})),
+								),
+							If(
+								make != nil,
+								SELECT().
+									CLASS("select select-bordered").
+									DATASTAR_MODEL("model").
+									DATASTAR_FETCH_URL("'/examples/value_select/data'").
+									DATASTAR_ON("change", datastar.GET_ACTION).
+									Children(
+										OPTION().
+											DISABLED().
+											SELECTED().
+											Text("Select a Model").
+											VALUE(""),
+										Group(Range(make.Models, func(item *Model) ElementRenderer {
+											return OPTION().
+												VALUE(item.ID).
+												Text(item.Label)
+										})),
 									),
-									RANGE(make.Models, func(item *Model) NODE {
-										return OPTION(
-											VALUE(item.ID),
-											TXT(item.Label),
-										)
-									}),
-								)
-							},
+							),
+							If(
+								isValid,
+								BUTTON().
+									CLASS("btn btn-primary").
+									DATASTAR_FETCH_URL("'/examples/value_select/data'").
+									DATASTAR_ON("click", datastar.POST_ACTION).
+									Children(
+										material_symbols.CarRepair(),
+										TextF("Submit selected '%s / %s' choice", make.Label, model.Label),
+									),
+							),
 						),
-						IF(
-							isValid,
-							func() NODE {
-								return BUTTON(
-									CLS("btn btn-primary"),
-									datastar.FetchURL("'/examples/value_select/data'"),
-									datastar.On("click", datastar.POST_ACTION),
-									material_symbols.CarRepair(),
-									TXTF("Submit selected '%s / %s' choice", make.Label, model.Label),
-								)
-							},
-						),
-					),
-					datastar.WithQuerySelectorUseID(),
 				)
 			})
 

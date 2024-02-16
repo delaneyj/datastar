@@ -5,9 +5,9 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -26,18 +26,17 @@ func setupExamplesDialogsBrowser(ctx context.Context, examplesRouter chi.Router)
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				BUTTON(
-					ID("dialogs"),
-					CLS("btn btn-primary"),
-					datastar.MergeStore(&Store{Prompt: "foo"}),
-					datastar.Prompt("prompt", "Enter a string"),
-					datastar.Confirm("confirm", "Are you sure?"),
-					datastar.FetchURL("'/examples/dialogs___browser/sure'"),
-					datastar.On("click", `$prompt = prompt('Enter a string',$prompt); $confirm = confirm('Are you sure?'); $confirm && $$get`),
-					CLS("flex flex-col gap-4"),
-					TXT("Click Me"),
-					material_symbols.QuestionMark(),
-				),
+				BUTTON().
+					ID("dialogs").
+					CLASS("btn btn-primary").
+					DATASTAR_MERGE_STORE(&Store{Prompt: "foo"}).
+					DATASTAR_FETCH_URL("'/examples/dialogs___browser/sure'").
+					DATASTAR_ON("click", `$prompt = prompt('Enter a string',$prompt); $confirm = confirm('Are you sure?'); $confirm && $$get`).
+					CLASS("flex flex-col gap-4").
+					Children(
+						Text("Click Me"),
+						material_symbols.QuestionMark(),
+					),
 			)
 		})
 
@@ -50,39 +49,35 @@ func setupExamplesDialogsBrowser(ctx context.Context, examplesRouter chi.Router)
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("dialogs"),
-					CLS("flex flex-col gap-4"),
-					TERN(
-						store.Confirm,
-						func() NODE {
-							return GRP(
+				DIV().
+					ID("dialogs").
+					CLASS("flex flex-col gap-4").
+					Children(
+						Tern(
+							store.Confirm,
+							Group(
 								DIV(
-									TXTF("You clicked the button and confirmed with prompt of "),
-									SPAN(
-										CLS("font-bold text-accent"),
-										TXT(store.Prompt),
+									TextF("You clicked the button and confirmed with prompt of "),
+									SPAN().CLASS("font-bold text-accent").Text(store.Prompt),
+									Text("!"),
+								),
+								BUTTON().
+									CLASS("btn btn-secondary").
+									DATASTAR_FETCH_URL("'/examples/dialogs___browser/data'").
+									DATASTAR_ON("click", datastar.GET_ACTION).
+									Children(
+										material_symbols.ArrowBack(),
+										Text("Reset"),
 									),
-									TXT("!"),
+							),
+							DIV().
+								CLASS("alert alert-error").
+								Children(
+									material_symbols.ErrorIcon(),
+									Text("You clicked the button and did not confirm! Should not see this"),
 								),
-								BUTTON(
-									CLS("btn btn-secondary"),
-									datastar.FetchURL("'/examples/dialogs___browser/data'"),
-									datastar.On("click", datastar.GET_ACTION),
-									material_symbols.ArrowBack(),
-									TXT("Reset"),
-								),
-							)
-						},
-						func() NODE {
-							return DIV(
-								CLS("alert alert-error"),
-								material_symbols.Error(),
-								TXT("You clicked the button and did not confirm! Should not see this"),
-							)
-						},
+						),
 					),
-				),
 			)
 		})
 	})

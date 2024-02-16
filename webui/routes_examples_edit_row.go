@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -55,98 +55,104 @@ func setupExamplesEditRow(ctx context.Context, editRowRouter chi.Router) error {
 			Email        string `json:"email"`
 		}
 
-		contactNode := func(i int, isEditingRow, isEditingAnyRow bool) NODE {
+		contactNode := func(i int, isEditingRow, isEditingAnyRow bool) ElementRenderer {
 			contact := contacts[i]
 			contactKeyPrefix := fmt.Sprintf("contact_%d", i)
-			return TR(
-				ID(contactKeyPrefix),
-				TD(
-					TERNCached(
+			return TR().
+				ID(contactKeyPrefix).
+				Children(
+					TD(Tern(
 						isEditingRow,
-						INPUT(
-							CLS("input input-bordered"),
-							TYPE("text"),
-							datastar.Model("name"),
-						),
-						DIV(TXT(contact.Name)),
-					),
-				),
-				TD(
-					TERNCached(
+						INPUT().
+							TYPE("text").
+							CLASS("input input-bordered").
+							DATASTAR_MODEL("name"),
+						DIV().Text(contact.Name),
+					)),
+					TD(Tern(
 						isEditingRow,
-						INPUT(
-							TYPE("text"),
-							CLS("input input-bordered"),
-							datastar.Model("email"),
-						),
-						DIV(TXT(contact.Email)),
-					),
-				),
-				TD(
-					CLS("flex justify-end"),
-					TERNCached(
-						isEditingRow,
-						DIV(
-							CLS("join"),
-							BUTTON(
-								CLS("btn btn-outline btn-warning join-item"),
-								datastar.FetchURLF("'/examples/edit_row/data'"),
-								datastar.On("click", datastar.GET_ACTION),
-								material_symbols.Cancel(),
-								TXT("Cancel"),
+						INPUT().
+							TYPE("text").
+							CLASS("input input-bordered").
+							DATASTAR_MODEL("email"),
+						DIV().Text(contact.Email),
+					)),
+					TD().
+						CLASS("flex justify-end").
+						Children(
+							Tern(
+								isEditingRow,
+								DIV().
+									CLASS("join").
+									Children(
+										BUTTON().
+											CLASS("btn btn-outline btn-warning join-item").
+											DATASTAR_FETCH_URL("'/examples/edit_row/data'").
+											DATASTAR_ON("click", datastar.GET_ACTION).
+											Children(
+												material_symbols.Cancel(),
+												Text("Cancel"),
+											),
+										BUTTON().
+											CLASS("btn btn-success join-item").
+											DATASTAR_FETCH_URL(fmt.Sprintf("'/examples/edit_row/edit/%d'", i)).
+											DATASTAR_ON("click", datastar.PATCH_ACTION).
+											Children(
+												material_symbols.Save(),
+												Text("Save"),
+											),
+									),
+								If(
+									isEditingAnyRow,
+									BUTTON().
+										CLASS("btn btn-info btn-sm").
+										DATASTAR_FETCH_URL(fmt.Sprintf("'/examples/edit_row/edit/%d'", i)).
+										DATASTAR_ON("click", datastar.GET_ACTION).
+										Children(
+											material_symbols.Edit(),
+											Text("Edit"),
+										),
+								),
 							),
-							BUTTON(
-								CLS("btn btn-success join-item"),
-								datastar.FetchURLF("'/examples/edit_row/edit/%d'", i),
-								datastar.On("click", datastar.PATCH_ACTION),
-								material_symbols.Save(),
-								TXT("Save"),
-							),
 						),
-						IFCachedNode(
-							!isEditingAnyRow,
-							BUTTON(
-								CLS("btn btn-info btn-sm"),
-								datastar.FetchURLF("'/examples/edit_row/edit/%d'", i),
-								datastar.On("click", datastar.GET_ACTION),
-								material_symbols.Edit(),
-								TXT("Edit"),
-							),
-						),
-					),
-				),
-			)
+				)
+
 		}
 
-		contactsToNode := func(store *Store) NODE {
-			return DIV(
-				ID("edit_row"),
-				CLS("flex flex-col"),
-				datastar.MergeStore(store),
-				TABLE(
-					CLS("table w-full"),
-					CAPTION(TXT("Contacts")),
-					THEAD(
-						TR(
-							TH(TXT("Name")),
-							TH(TXT("Email")),
-							TH(TXT("Actions"), CLS("text-right")),
+		contactsToNode := func(store *Store) ElementRenderer {
+			return DIV().
+				ID("edit_row").
+				CLASS("flex flex-col").
+				DATASTAR_MERGE_STORE(store).
+				Children(
+					TABLE().
+						CLASS("table w-full").
+						Children(
+							CAPTION(Text("Contacts")),
+							THEAD(
+								TR(
+									TH(Text("Name")),
+									TH(Text("Email")),
+									TH(Text("Actions")).CLASS("text-right"),
+								),
+							),
+							TBODY().
+								ID("edit_row_table_body").
+								Children(
+									RangeI(contacts, func(i int, cs *ContactEdit) ElementRenderer {
+										return contactNode(i, i == store.EditRowIndex, store.EditRowIndex != -1)
+									}),
+								),
 						),
-					),
-					TBODY(
-						RANGEI(contacts, func(i int, cs *ContactEdit) NODE {
-							return contactNode(i, i == store.EditRowIndex, store.EditRowIndex != -1)
-						}),
-					),
-				),
-				BUTTON(
-					CLS("btn btn-warning"),
-					datastar.FetchURL("'/examples/edit_row/reset'"),
-					datastar.On("click", datastar.GET_ACTION),
-					material_symbols.Refresh(),
-					TXT("Reset"),
-				),
-			)
+					BUTTON().
+						CLASS("btn btn-warning").
+						DATASTAR_FETCH_URL("'/examples/edit_row/reset'").
+						DATASTAR_ON("click", datastar.GET_ACTION).
+						Children(
+							material_symbols.Refresh(),
+							Text("Reset"),
+						),
+				)
 		}
 
 		emptyStore := &Store{EditRowIndex: -1}

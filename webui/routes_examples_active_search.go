@@ -9,9 +9,9 @@ import (
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/svg_spinners"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 	"github.com/lithammer/fuzzysearch/fuzzy"
@@ -90,58 +90,60 @@ func setupExamplesActiveSearch(ctx context.Context, examplesRouter chi.Router) e
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("active_search"),
-					CLS("flex flex-col gap-4"),
-					datastar.MergeStore(store),
-					DIV(
-						CLS("flex gap-2"),
-						DIV(
-							CLS("flex-1"),
-							TXT("Search Contacts"),
-						),
-					),
-					DIV(
-						CLS("form-control"),
-						DIV(
-							CLS("flex gap-2"),
-							INPUT(
-								CLS("input input-bordered flex-1"),
-								TYPE("text"),
-								PLACEHOLDER("Search..."),
-								datastar.Model("search"),
-								datastar.FetchURL("'/examples/active_search/data'"),
-								datastar.OnDebounce("input", 1*time.Second, datastar.GET_ACTION),
+				DIV().
+					ID("active_search").
+					CLASS("flex flex-col gap-4").
+					DATASTAR_MERGE_STORE(store).
+					Children(
+						DIV().
+							CLASS("flex gap-2").
+							Children(
+								DIV().
+									CLASS("flex-1").
+									Text("Search Contacts"),
 							),
-							svg_spinners.BlocksWave(
-								CLS("text-5xl datastar-indicator"),
+						DIV().
+							CLASS("form-control").
+							Children(
+								DIV().
+									CLASS("flex gap-2").
+									Children(
+										INPUT().
+											CLASS("input input-bordered flex-1").
+											TYPE("text").
+											PLACEHOLDER("Search...").
+											DATASTAR_MODEL("search").
+											DATASTAR_FETCH_URL("'/examples/active_search/data'").
+											DATASTAR_ON("input", datastar.GET_ACTION, InputOnModDebounce(1*time.Second)),
+										svg_spinners.BlocksWave().
+											CLASS("text-5xl datastar-indicator"),
+									),
 							),
-						),
-					),
-					TABLE(
-						CLS("table w-full"),
-						CAPTION(TXT("Contacts")),
-						THEAD(
-							TR(
-								TH(TXT("First Name")),
-								TH(TXT("Last Name")),
-								TH(TXT("Email")),
-								TH(TXT("Score")),
+						TABLE().
+							CLASS("table w-full").
+							Children(
+								CAPTION(Text("Contacts")),
+								THEAD(
+									TR(
+										TH(Text("First Name")),
+										TH(Text("Last Name")),
+										TH(Text("Email")),
+										TH(Text("Score")),
+									),
+								),
+								TBODY(
+									Range(filteredUsers, func(u *User) ElementRenderer {
+										score := scores[u.ID]
+										return TR(
+											TD(Text(u.FirstName)),
+											TD(Text(u.LastName)),
+											TD(Text(u.Email)),
+											TD(TextF("%0.2f", score)),
+										)
+									}),
+								),
 							),
-						),
-						TBODY(
-							RANGE(filteredUsers, func(u *User) NODE {
-								score := scores[u.ID]
-								return TR(
-									TD(TXT(u.FirstName)),
-									TD(TXT(u.LastName)),
-									TD(TXT(u.Email)),
-									TD(TXTF("%0.2f", score)),
-								)
-							}),
-						),
 					),
-				),
 			)
 		})
 	})

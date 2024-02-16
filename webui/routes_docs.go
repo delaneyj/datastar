@@ -8,20 +8,10 @@ import (
 	"regexp"
 
 	chromahtml "github.com/alecthomas/chroma/v2/formatters/html"
-	"github.com/delaneyj/gomponents-iconify/iconify/carbon"
-	"github.com/delaneyj/gomponents-iconify/iconify/cil"
-	"github.com/delaneyj/gomponents-iconify/iconify/clarity"
-	"github.com/delaneyj/gomponents-iconify/iconify/file_icons"
-	"github.com/delaneyj/gomponents-iconify/iconify/game_icons"
-	"github.com/delaneyj/gomponents-iconify/iconify/gis"
-	"github.com/delaneyj/gomponents-iconify/iconify/gridicons"
-	"github.com/delaneyj/gomponents-iconify/iconify/lucide"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
-	"github.com/delaneyj/gomponents-iconify/iconify/mdi"
-	"github.com/delaneyj/gomponents-iconify/iconify/ph"
-	"github.com/delaneyj/gomponents-iconify/iconify/streamline"
-	"github.com/delaneyj/gomponents-iconify/iconify/tabler"
-	. "github.com/delaneyj/toolbelt/gomps"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/gridicons"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
+	"github.com/delaneyj/gostar/elements/iconify/mdi"
 	"github.com/go-chi/chi/v5"
 	"github.com/yuin/goldmark"
 	emoji "github.com/yuin/goldmark-emoji"
@@ -36,247 +26,270 @@ import (
 
 func setupDocs(ctx context.Context, router *chi.Mux) error {
 
-	docsPage := func(current string, children ...NODE) NODE {
+	docsPage := func(current string, children ...ElementRenderer) ElementRenderer {
 		return Page(
-			DIV(
-				CLS("drawer lg:drawer-open"),
-				INPUT(
-					ID("drawer-toggle"),
-					TYPE("checkbox"),
-					CLS("drawer-toggle"),
+			DIV().
+				CLASS("drawer lg:drawer-open").
+				Children(
+					INPUT().
+						ID("drawer-toggle").
+						TYPE("checkbox").
+						CLASS("drawer-toggle"),
+					DIV().
+						CLASS("drawer-content flex flex-col text-sm md:text-md p-1 md:p-4 w-full gap-6").
+						Children(
+							LABEL(material_symbols.Menu()).
+								CLASS("btn btn-primary drawer-button lg:hidden").
+								FOR("drawer-toggle"),
+							Group(children...),
+						),
 				),
-				DIV(
-					CLS("drawer-content flex flex-col text-sm md:text-md p-1 md:p-4 w-full gap-6"),
-					LABEL(
-						ATTR("for", "drawer-toggle"),
-						CLS("btn btn-primary drawer-button lg:hidden"),
-						material_symbols.Menu(),
-					),
-					GRP(children...),
-				),
-				DIV(
-					CLS("drawer-side text-base-content"),
-					LABEL(
-						ATTR("for", "drawer-toggle"),
-						CLS("drawer-overlay"),
-					),
-					UL(
-						CLS("menu w-80 bg-base-200"),
-						LI(
-							DETAILS(
-								ATTR("open"),
-								SUMMARY(TXT("Overview")),
-								UL(
-									LI(
-										// CLS("disabled"),
-										A(
-											CLSS{"active": current == "overview-declarative"},
-											mdi.Xml(),
-											TXT("Declarative"),
+			DIV().
+				CLASS("drawer-side text-base-content").
+				Children(
+					LABEL().FOR("drawer-toggle").CLASS("drawer-overlay"),
+					UL().
+						CLASS("menu w-80 bg-base-200").
+						Children(
+							LI(
+								DETAILS(
+									SUMMARY(Text("Overview")),
+									UL(
+										LI(A().
+											Children(
+												mdi.Xml(), Text("Declarative"),
+											).
+											IfCLASS(current == "overview-declarative", "active").
 											HREF("/docs/overview-declarative"),
-										),
-									),
-									LI(
-										// CLS("disabled"),
-										A(
-											CLSS{"active": current == "overview-plugins"},
+										)),
+									LI(A().
+										Children(
 											gridicons.Plugins(),
-											TXT("Plugins"),
-											HREF("/docs/overview-plugins"),
-										),
+											Text("Plugins"),
+										).
+										IfCLASS(current == "overview-plugins", "active").
+										HREF("/docs/overview-plugins"),
 									),
-								),
+								).OPEN(),
 							),
 						),
-						LI(
-							DETAILS(
-								ATTR("open"),
-								SUMMARY(TXT("Included Plugins")),
-								UL(
-									LI(
-										DETAILS(
-											ATTR("open"),
-											SUMMARY(TXT("Core")),
-											UL(
-												LI(A(
-													CLSS{"active": current == "included-plugins-core-reactivity"},
-													streamline.InterfaceHierarchyTwoNodeOrganizationLinksStructureLinkNodesNetworkHierarchy(),
-													TXT("Reactivity"),
-													HREF("/docs/included-plugins-core-reactivity"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-core-sandboxed-functions"},
-													material_symbols.Function(),
-													TXT("Sandboxed Functions"),
-													HREF("/docs/included-plugins-core-sandboxed-functions"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-core-events"},
-													lucide.MousePointerClick(),
-													TXT("Events"),
-													HREF("/docs/included-plugins-core-events"),
-												)),
-											),
-										),
-									),
-									LI(
-										DETAILS(
-											ATTR("open"),
-											SUMMARY(TXT("UI")),
-											UL(
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-visibility"},
-													clarity.EyeShowSolid(),
-													TXT("Visibility"),
-													HREF("/docs/included-plugins-ui-visibility"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-text-node"},
-													material_symbols.TextFields(),
-													TXT("Text Node"),
-													HREF("/docs/included-plugins-ui-text-node"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-bind-attribute"},
-													file_icons.Binder(),
-													TXT("Bind"),
-													HREF("/docs/included-plugins-ui-bind-attribute"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-two-way-binding"},
-													tabler.BoxModel(),
-													TXT("Two-Way Binding"),
-													HREF("/docs/included-plugins-ui-two-way-binding"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-refs"},
-													carbon.AssemblyReference(),
-													TXT("Refs"),
-													HREF("/docs/included-plugins-ui-refs"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-focus"},
-													material_symbols.CenterFocusStrong(),
-													TXT("Focus"),
-													HREF("/docs/included-plugins-ui-focus"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-intersect"},
-													ph.IntersectFill(),
-													TXT("Intersects"),
-													HREF("/docs/included-plugins-ui-intersects"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-ui-teleport"},
-													game_icons.Teleport(),
-													TXT("Teleport"),
-													HREF("/docs/included-plugins-ui-teleport"),
-												)),
-											),
-										),
-									),
-									LI(
-										DETAILS(
-											ATTR("open"),
-											SUMMARY(TXT("HTML Partials")),
-											UL(
-												LI(A(
-													CLSS{"active": current == "included-plugins-html-partials-raw"},
-													cil.Transfer(),
-													TXT("Fragments"),
-													HREF("/docs/included-plugins-html-partials-fragments"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-html-partials-raw"},
-													material_symbols.Bookmark(),
-													TXT("Headers"),
-													HREF("/docs/included-plugins-html-partials-headers"),
-												)),
-												LI(A(
-													CLSS{"active": current == "included-plugins-html-partials-sse"},
-													streamline.InterfaceDownloadLaptopArrowComputerDownDownloadInternetLaptopNetworkServerUpload(),
-													TXT("Server Sent Events"),
-													HREF("/docs/included-plugins-html-partials-sse"),
-												)),
-											),
-										),
-									),
-								),
-							),
-						),
-						LI(
-							CLS("disabled"),
-							SUMMARY(TXT("Make Your Own Plugins")),
-							UL(
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-intro"},
-										gridicons.Plugins(),
-										TXT("Intro"),
-										HREF("/docs/make-your-own-plugins-intro"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-dataStack"},
-										mdi.Database(),
-										TXT("Data Stack"),
-										HREF("/docs/make-your-own-plugins-dataStack"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-reactivity"},
-										streamline.InterfaceHierarchyTwoNodeOrganizationLinksStructureLinkNodesNetworkHierarchy(),
-										TXT("Reactivity"),
-										HREF("/docs/make-your-own-plugins-reactivity"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-actions"},
-										mdi.PlayCircleOutline(),
-										TXT("Actions"),
-										HREF("/docs/make-your-own-plugins-actions"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-required"},
-										mdi.AlertCircleOutline(),
-										TXT("Required"),
-										HREF("/docs/make-your-own-plugins-required"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-modifiers"},
-										gis.ModifyLine(),
-										TXT("Modifiers"),
-										HREF("/docs/make-your-own-plugins-modifiers"),
-									),
-								),
-								LI(
-									CLS("disabled"),
-									A(
-										CLSS{"active": current == "make-your-own-plugins-expression"},
-										mdi.FunctionVariant(),
-										TXT("Expression"),
-										HREF("/docs/make-your-own-plugins-expression"),
-									),
-								),
-							),
-						),
-					),
 				),
-			),
 		)
+
+		// 	LABEL(
+		// 		ATTR("for", "drawer-toggle"),
+		// 		CLASS("drawer-overlay"),
+		// 	),
+		// 	UL(
+		// 		CLASS("menu w-80 bg-base-200"),
+		// 		LI(
+		// 			DETAILS(
+		// 				ATTR("open"),
+		// 				SUMMARY(TXT("Overview")),
+		// 				UL(
+		// 					LI(
+		// 						// CLASS("disabled"),
+		// 						A(
+		// 							CLASSS{"active": current == "overview-declarative"},
+		// 							mdi.Xml(),
+		// 							TXT("Declarative"),
+		// 							HREF("/docs/overview-declarative"),
+		// 						),
+		// 					),
+		// 					LI(
+		// 						// CLASS("disabled"),
+		// 						A(
+		// 							CLASSS{"active": current == "overview-plugins"},
+		// 							gridicons.Plugins(),
+		// 							TXT("Plugins"),
+		// 							HREF("/docs/overview-plugins"),
+		// 						),
+		// 					),
+		// 				),
+		// 			),
+		// 		),
+		// 		LI(
+		// 			DETAILS(
+		// 				ATTR("open"),
+		// 				SUMMARY(TXT("Included Plugins")),
+		// 				UL(
+		// 					LI(
+		// 						DETAILS(
+		// 							ATTR("open"),
+		// 							SUMMARY(TXT("Core")),
+		// 							UL(
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-core-reactivity"},
+		// 									streamline.InterfaceHierarchyTwoElementRendererOrganizationLinksStructureLinkElementRenderersNetworkHierarchy(),
+		// 									TXT("Reactivity"),
+		// 									HREF("/docs/included-plugins-core-reactivity"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-core-sandboxed-functions"},
+		// 									material_symbols.Function(),
+		// 									TXT("Sandboxed Functions"),
+		// 									HREF("/docs/included-plugins-core-sandboxed-functions"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-core-events"},
+		// 									lucide.MousePointerClick(),
+		// 									TXT("Events"),
+		// 									HREF("/docs/included-plugins-core-events"),
+		// 								)),
+		// 							),
+		// 						),
+		// 					),
+		// 					LI(
+		// 						DETAILS(
+		// 							ATTR("open"),
+		// 							SUMMARY(TXT("UI")),
+		// 							UL(
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-visibility"},
+		// 									clarity.EyeShowSolid(),
+		// 									TXT("Visibility"),
+		// 									HREF("/docs/included-plugins-ui-visibility"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-text-ElementRenderer"},
+		// 									material_symbols.TextFields(),
+		// 									TXT("Text ElementRenderer"),
+		// 									HREF("/docs/included-plugins-ui-text-ElementRenderer"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-bind-attribute"},
+		// 									file_icons.Binder(),
+		// 									TXT("Bind"),
+		// 									HREF("/docs/included-plugins-ui-bind-attribute"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-two-way-binding"},
+		// 									tabler.BoxModel(),
+		// 									TXT("Two-Way Binding"),
+		// 									HREF("/docs/included-plugins-ui-two-way-binding"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-refs"},
+		// 									carbon.AssemblyReference(),
+		// 									TXT("Refs"),
+		// 									HREF("/docs/included-plugins-ui-refs"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-focus"},
+		// 									material_symbols.CenterFocusStrong(),
+		// 									TXT("Focus"),
+		// 									HREF("/docs/included-plugins-ui-focus"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-intersect"},
+		// 									ph.IntersectFill(),
+		// 									TXT("Intersects"),
+		// 									HREF("/docs/included-plugins-ui-intersects"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-ui-teleport"},
+		// 									game_icons.Teleport(),
+		// 									TXT("Teleport"),
+		// 									HREF("/docs/included-plugins-ui-teleport"),
+		// 								)),
+		// 							),
+		// 						),
+		// 					),
+		// 					LI(
+		// 						DETAILS(
+		// 							ATTR("open"),
+		// 							SUMMARY(TXT("HTML Partials")),
+		// 							UL(
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-html-partials-raw"},
+		// 									cil.Transfer(),
+		// 									TXT("Fragments"),
+		// 									HREF("/docs/included-plugins-html-partials-fragments"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-html-partials-raw"},
+		// 									material_symbols.Bookmark(),
+		// 									TXT("Headers"),
+		// 									HREF("/docs/included-plugins-html-partials-headers"),
+		// 								)),
+		// 								LI(A(
+		// 									CLASSS{"active": current == "included-plugins-html-partials-sse"},
+		// 									streamline.InterfaceDownloadLaptopArrowComputerDownDownloadInternetLaptopNetworkServerUpload(),
+		// 									TXT("Server Sent Events"),
+		// 									HREF("/docs/included-plugins-html-partials-sse"),
+		// 								)),
+		// 							),
+		// 						),
+		// 					),
+		// 				),
+		// 			),
+		// 		),
+		// 		LI(
+		// 			CLASS("disabled"),
+		// 			SUMMARY(TXT("Make Your Own Plugins")),
+		// 			UL(
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-intro"},
+		// 						gridicons.Plugins(),
+		// 						TXT("Intro"),
+		// 						HREF("/docs/make-your-own-plugins-intro"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-dataStack"},
+		// 						mdi.Database(),
+		// 						TXT("Data Stack"),
+		// 						HREF("/docs/make-your-own-plugins-dataStack"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-reactivity"},
+		// 						streamline.InterfaceHierarchyTwoElementRendererOrganizationLinksStructureLinkElementRenderersNetworkHierarchy(),
+		// 						TXT("Reactivity"),
+		// 						HREF("/docs/make-your-own-plugins-reactivity"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-actions"},
+		// 						mdi.PlayCircleOutline(),
+		// 						TXT("Actions"),
+		// 						HREF("/docs/make-your-own-plugins-actions"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-required"},
+		// 						mdi.AlertCircleOutline(),
+		// 						TXT("Required"),
+		// 						HREF("/docs/make-your-own-plugins-required"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-modifiers"},
+		// 						gis.ModifyLine(),
+		// 						TXT("Modifiers"),
+		// 						HREF("/docs/make-your-own-plugins-modifiers"),
+		// 					),
+		// 				),
+		// 				LI(
+		// 					CLASS("disabled"),
+		// 					A(
+		// 						CLASSS{"active": current == "make-your-own-plugins-expression"},
+		// 						mdi.FunctionVariant(),
+		// 						TXT("Expression"),
+		// 						HREF("/docs/make-your-own-plugins-expression"),
+		// 					)
 	}
 
 	md := goldmark.New(
@@ -321,7 +334,7 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 	regExpImg := regexp.MustCompile(`(?P<whole>!\[[^\]]+]\((?P<path>[^)]+)\))`)
 	prefix := []byte("/static/")
 
-	docNodes := map[string]NODE{}
+	docElementRenderers := map[string]ElementRenderer{}
 	for _, de := range docs {
 		fullPath := "static/docs/" + de.Name()
 
@@ -353,7 +366,7 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 
 		name := de.Name()[0 : len(de.Name())-3]
 
-		docNodes[name] = RAW(buf.String())
+		docElementRenderers[name] = Text(buf.String())
 	}
 
 	router.Route("/docs", func(docsRouter chi.Router) {
@@ -363,31 +376,27 @@ func setupDocs(ctx context.Context, router *chi.Mux) error {
 
 		docsRouter.Get("/{docName}", func(w http.ResponseWriter, r *http.Request) {
 			docName := chi.URLParam(r, "docName")
-			doc, ok := docNodes[docName]
+			doc, ok := docElementRenderers[docName]
 
-			var contents NODE
+			var contents ElementRenderer
 			if !ok {
 				contents = DIV(
 					DIV(
-						CLS("alert alert-error"),
 						mdi.AlertOctagonOutline(),
-						TXTF("'%s' doc not found!", docName),
-					),
-					IMG(
-						SRC(staticPath("docs_missing.jpg")),
-					),
+						TextF("'%s' doc not found!", docName),
+					).CLASS("alert alert-error"),
+					IMG().SRC(staticPath("docs_missing.jpg")),
 				)
 			} else {
 				contents = doc
 			}
 
-			Render(w, docsPage(
+			docsPage(
 				docName,
 				DIV(
-					CLS("prose xl:prose-xl "),
 					contents,
-				),
-			))
+				).CLASS("prose xl:prose-xl "),
+			).Render(w)
 		})
 
 	})

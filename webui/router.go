@@ -7,9 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"log/slog"
 	"net/http"
-	"os"
 	"strconv"
 
 	"github.com/benbjohnson/hashfs"
@@ -63,7 +61,7 @@ func RunBlocking(ctx context.Context) error {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}
 
-	portStr := os.Getenv("PORT")
+	portStr := "" // os.Getenv("PORT")
 	if portStr == "" {
 		portStr = "8080"
 	}
@@ -89,25 +87,9 @@ func RunBlocking(ctx context.Context) error {
 		return ctx.Err()
 	}
 
-	maybeHotReload := func(ctx context.Context) error {
-		hotReload := os.Getenv("HOT_RELOAD") == "true"
-		hotReloadPath := os.Getenv("HOT_RELOAD_PATH")
-
-		slog.Info("hotReload",
-			slog.Bool("hotReload", hotReload),
-			slog.String("hotReloadPath", hotReloadPath),
-		)
-
-		if hotReload && hotReloadPath != "" {
-			return toolbelt.RunHotReload(port, hotReloadPath)(ctx)
-		}
-		return nil
-	}
-
 	eg := toolbelt.NewErrGroupSharedCtx(ctx,
 		runHTTPServer,
 		shutdownHTTPServer,
-		maybeHotReload,
 	)
 
 	return eg.Wait()

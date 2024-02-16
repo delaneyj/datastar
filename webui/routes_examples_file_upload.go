@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/gomponents-iconify/iconify/material_symbols"
+	. "github.com/delaneyj/gostar/elements"
+	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 )
@@ -32,32 +32,32 @@ func setupExamplesFileUpload(ctx context.Context, examplesRouter chi.Router) err
 			sse := toolbelt.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("file_upload"),
-					CLS("flex flex-col gap-4"),
-					datastar.MergeStore(store),
-					DIV(
-						CLS("form-control"),
-						LABEL(
-							CLS("label"),
-							SPAN(
-								CLS("label-text"),
-								TXT("Pick anything reasonably sized"),
+				DIV().
+					ID("file_upload").
+					CLASS("flex flex-col gap-4").
+					DATASTAR_MERGE_STORE(store).
+					Children(
+						DIV().
+							CLASS("form-control").
+							Children(
+								LABEL().
+									CLASS("label").
+									Children(
+										SPAN().
+											CLASS("label-text").
+											Text("Pick anything reasonably sized"),
+									),
+								INPUT().
+									TYPE("file").
+									CLASS("file-input file-input-bordered").
+									DATASTAR_MODEL("file"),
 							),
-						),
-						INPUT(
-							TYPE("file"),
-							CLS("file-input file-input-bordered"),
-							datastar.Model("file"),
-						),
+						BUTTON().
+							CLASS("btn btn-primary").
+							Text("Submit").
+							DATASTAR_FETCH_URL("'/examples/file_upload/upload'").
+							DATASTAR_ON("click", datastar.POST_ACTION),
 					),
-					BUTTON(
-						CLS("btn btn-primary"),
-						TXT("Submit"),
-						datastar.FetchURL("'/examples/file_upload/upload'"),
-						datastar.On("click", datastar.POST_ACTION),
-					),
-				),
 			)
 		})
 
@@ -69,12 +69,13 @@ func setupExamplesFileUpload(ctx context.Context, examplesRouter chi.Router) err
 			if err := datastar.BodyUnmarshal(r, store); err != nil {
 				datastar.RenderFragment(
 					sse,
-					DIV(
-						ID("file_upload"),
-						CLS("alert alert-error"),
-						material_symbols.Error(),
-						TXTF("Error: %s", err),
-					),
+					DIV().
+						ID("file_upload").
+						CLASS("alert alert-error").
+						Children(
+							material_symbols.ErrorIcon(),
+							TextF("Error: %s", err),
+						),
 				)
 				return
 			}
@@ -83,29 +84,30 @@ func setupExamplesFileUpload(ctx context.Context, examplesRouter chi.Router) err
 			fileBytesLen := uint64(len(store.File))
 			datastar.RenderFragment(
 				sse,
-				DIV(
-					ID("file_upload"),
-					CLS("card bg-base-300"),
-					DIV(
-						CLS("card-body"),
-						TABLE(
-							CLS("table table-zebra"),
-							CAPTION(TXT("File Upload Results")),
-							TBODY(
-								TR(TH(TXT("File Name")), TD(TXT(store.FileName))),
-								TR(TH(TXT("File Size")), TD(TXT(humanize.Bytes(fileBytesLen)))),
-								TR(TH(TXT("File Mime")), TD(TXT(store.FileMime))),
-								TR(
-									TH(TXT("SHA256 Hash")),
-									TD(
-										CLS("text-ellipsis overflow-hidden"),
-										TXTF("%x", sha256Hash),
+				DIV().
+					ID("file_upload").
+					CLASS("card bg-base-300").
+					Children(
+						DIV().
+							CLASS("card-body").
+							Children(
+								TABLE().
+									CLASS("table table-zebra").
+									Children(
+										CAPTION(Text("File Upload Results")),
+										TBODY().
+											Children(
+												TR(TH(Text("File Name")), TD(Text(store.FileName))),
+												TR(TH(Text("File Size")), TD(Text(humanize.Bytes(fileBytesLen)))),
+												TR(TH(Text("File Mime")), TD(Text(store.FileMime))),
+												TR(
+													TH(Text("SHA256 Hash")),
+													TD().CLASS("text-ellipsis overflow-hidden").TextF("%x", sha256Hash),
+												),
+											),
 									),
-								),
 							),
-						),
 					),
-				),
 			)
 		})
 	})

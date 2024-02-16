@@ -7,8 +7,8 @@ import (
 	"strconv"
 
 	"github.com/delaneyj/datastar"
+	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
-	. "github.com/delaneyj/toolbelt/gomps"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 )
@@ -19,39 +19,37 @@ func setupExamplesLazyTabs(ctx context.Context, examplesRouter chi.Router) error
 			examplePage(w, r)
 		})
 
-		tabs := make(NODES, 8)
+		tabs := make([]ElementRenderer, 8)
 		for i := range tabs {
-			paragraphs := make(NODES, 5)
+			paragraphs := make([]ElementRenderer, 5)
 			for j := range paragraphs {
-				paragraphs[j] = P(TXT(faker.Paragraph()))
+				paragraphs[j] = P(Text(faker.Paragraph()))
 			}
-			tabs[i] = GRP(paragraphs...)
+			tabs[i] = Group(paragraphs...)
 		}
 
-		tabsToNode := func(activeIdx int) NODE {
-			return DIV(
-				ID("lazy_tabs"),
-				DIV(
-					CLS("tabs tabs-bordered"),
-					RANGEI(tabs, func(i int, t NODE) NODE {
-						return BUTTON(
-							ID(fmt.Sprintf("tab_%d", i)),
-							CLSS{
-								"tab":        true,
-								"tab-active": i == activeIdx,
-							},
-							TXTF("Tab %d", i),
-							datastar.FetchURLF("'/examples/lazy_tabs/data?tabId=%d'", i),
-							datastar.On("click", datastar.GET_ACTION),
-						)
-					}),
-				),
-				DIV(
-					ID("tab_content"),
-					CLS("p-4 shadow-lg bg-base-200"),
-					tabs[activeIdx],
-				),
-			)
+		tabsToNode := func(activeIdx int) ElementRenderer {
+			return DIV().
+				ID("lazy_tabs").
+				Children(
+					DIV().
+						CLASS("tabs tabs-bordered").
+						Children(
+							RangeI(tabs, func(i int, t ElementRenderer) ElementRenderer {
+								return BUTTON().
+									ID(fmt.Sprintf("tab_%d", i)).
+									CLASS("tab").
+									IfCLASS(i == activeIdx, "tab-active").
+									TextF("Tab %d", i).
+									DATASTAR_FETCH_URL(fmt.Sprintf("'/examples/lazy_tabs/data?tabId=%d'", i)).
+									DATASTAR_ON("click", datastar.GET_ACTION)
+							}),
+							DIV().
+								ID("tab_content").
+								CLASS("p-4 shadow-lg bg-base-200").
+								Children(tabs[activeIdx]),
+						),
+				)
 		}
 
 		lazyLoadRouter.Get("/data", func(w http.ResponseWriter, r *http.Request) {
