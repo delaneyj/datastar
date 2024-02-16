@@ -4,10 +4,10 @@ function Oe(t) {
 function ne() {
   throw new Error("Cycle detected");
 }
-function Ze() {
+function Xe() {
   throw new Error("Computed cannot have side-effects");
 }
-const Xe = Symbol.for("preact-signals"), S = 1, O = 2, B = 4, C = 8, F = 16, k = 32;
+const Ye = Symbol.for("preact-signals"), S = 1, O = 2, B = 4, C = 8, F = 16, k = 32;
 function re() {
   V++;
 }
@@ -33,7 +33,7 @@ function se() {
   if (le = 0, V--, e)
     throw t;
 }
-function Ye(t) {
+function Qe(t) {
   if (V > 0)
     return t();
   re();
@@ -65,7 +65,7 @@ function Ce(t) {
 function v(t) {
   this._value = t, this._version = 0, this._node = void 0, this._targets = void 0;
 }
-v.prototype.brand = Xe;
+v.prototype.brand = Ye;
 v.prototype._refresh = function() {
   return !0;
 };
@@ -108,7 +108,7 @@ Object.defineProperty(v.prototype, "value", {
     return t !== void 0 && (t._version = this._version), this._value;
   },
   set(t) {
-    if (m instanceof A && Ze(), t !== this._value) {
+    if (m instanceof A && Xe(), t !== this._value) {
       le > 100 && ne(), this._value = t, this._version++, ee++, re();
       try {
         for (let e = this._targets; e !== void 0; e = e._nextTarget)
@@ -202,7 +202,7 @@ Object.defineProperty(A.prototype, "value", {
     return this._value;
   }
 });
-function Qe(t) {
+function et(t) {
   return new A(t);
 }
 function Fe(t) {
@@ -225,7 +225,7 @@ function de(t) {
     e._source._unsubscribe(e);
   t._compute = void 0, t._sources = void 0, Fe(t);
 }
-function et(t) {
+function tt(t) {
   if (m !== this)
     throw new Error("Out-of-order effect");
   De(this), m = t, this._flags &= ~S, this._flags & C && de(this), se();
@@ -247,7 +247,7 @@ G.prototype._callback = function() {
 G.prototype._start = function() {
   this._flags & S && ne(), this._flags |= S, this._flags &= ~C, Fe(this), xe(this), re();
   const t = m;
-  return m = this, et.bind(this, t);
+  return m = this, tt.bind(this, t);
 };
 G.prototype._notify = function() {
   this._flags & O || (this._flags |= O, this._nextBatchedEffect = U, U = this);
@@ -269,7 +269,7 @@ class Ue {
     return ue(this);
   }
   set value(e) {
-    Ye(() => tt(this, e));
+    Qe(() => nt(this, e));
   }
   peek() {
     return ue(this, { peek: !0 });
@@ -285,10 +285,10 @@ const ce = (t) => Object.assign(
     },
     {}
   )
-), tt = (t, e) => Object.keys(e).forEach((n) => t[n].value = e[n]), ue = (t, { peek: e = !1 } = {}) => Object.entries(t).reduce(
+), nt = (t, e) => Object.keys(e).forEach((n) => t[n].value = e[n]), ue = (t, { peek: e = !1 } = {}) => Object.entries(t).reduce(
   (n, [r, s]) => (s instanceof v ? n[r] = e ? s.peek() : s.value : s instanceof Ue && (n[r] = ue(s, { peek: e })), n),
   {}
-), nt = /([\[:])?(\d{17,}|(?:[9](?:[1-9]07199254740991|0[1-9]7199254740991|00[8-9]199254740991|007[2-9]99254740991|007199[3-9]54740991|0071992[6-9]4740991|00719925[5-9]740991|007199254[8-9]40991|0071992547[5-9]0991|00719925474[1-9]991|00719925474099[2-9])))([,\}\]])/g;
+), rt = /([\[:])?(\d{17,}|(?:[9](?:[1-9]07199254740991|0[1-9]7199254740991|00[8-9]199254740991|007[2-9]99254740991|007199[3-9]54740991|0071992[6-9]4740991|00719925[5-9]740991|007199254[8-9]40991|0071992547[5-9]0991|00719925474[1-9]991|00719925474099[2-9])))([,\}\]])/g;
 function Ve(t, e = 2) {
   return JSON.stringify(
     t,
@@ -296,8 +296,8 @@ function Ve(t, e = 2) {
     e
   ).replace(/"(-?\d+)n"/g, (r, s) => s);
 }
-function rt(t) {
-  const e = t.replace(nt, '$1"$2n"$3');
+function st(t) {
+  const e = t.replace(rt, '$1"$2n"$3');
   return JSON.parse(e, (n, r) => {
     switch (typeof r) {
       case "number":
@@ -319,17 +319,17 @@ function Be(t, e) {
     n.hasOwnProperty(r) || (n[r] = e[r]), e[r] === null ? delete n[r] : n[r] = Be(n[r], e[r]);
   }), n;
 }
-const st = "[a-zA-Z_$][0-9a-zA-Z_$.]*";
+const ot = "[a-zA-Z_$][0-9a-zA-Z_$.]*";
 function he(t, e, n) {
-  return new RegExp(`(?<whole>\\${t}(?<${e}>${st})${n})`, "g");
+  return new RegExp(`(?<whole>\\${t}(?<${e}>${ot})${n})`, "g");
 }
-const ot = {
+const it = {
   regexp: he("$", "signal", ""),
   replacer: (t) => {
     const { signal: e } = t;
     return `ctx.store().${e}.value`;
   }
-}, it = {
+}, at = {
   regexp: he("$\\$", "action", "(?<call>\\((?<args>.*)\\))?"),
   replacer: ({ action: t, args: e }) => {
     const n = ["ctx"];
@@ -337,12 +337,12 @@ const ot = {
     const r = n.join(",");
     return `ctx.actions.${t}(${r})`;
   }
-}, at = {
+}, lt = {
   regexp: he("~", "ref", ""),
   replacer({ ref: t }) {
     return `data.refs.${t}`;
   }
-}, lt = [it, ot, at], ct = {
+}, ct = [at, it, lt], ut = {
   prefix: "mergeStore",
   preprocessors: {
     pre: [
@@ -360,7 +360,7 @@ const ot = {
     const e = t.expressionFn(t);
     t.mergeStore(e);
   }
-}, ut = {
+}, ft = {
   prefix: "ref",
   mustHaveEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -369,22 +369,22 @@ const ot = {
     const { el: e, expression: n } = t;
     return t.refs[n] = e, () => delete t.refs[n];
   }
-}, ft = [ct, ut];
-class dt {
+}, dt = [ut, ft];
+class pt {
   plugins = [];
   store = ce({});
   actions = {};
   refs = {};
   reactivity = {
     signal: Ie,
-    computed: Qe,
+    computed: et,
     effect: pe
   };
   parentID = "";
   missingIDNext = 0;
   removals = /* @__PURE__ */ new Map();
   constructor(e = {}, ...n) {
-    if (this.actions = Object.assign(this.actions, e), n = [...ft, ...n], !n.length)
+    if (this.actions = Object.assign(this.actions, e), n = [...dt, ...n], !n.length)
       throw new Error("no plugins");
     const r = /* @__PURE__ */ new Set();
     for (const s of n) {
@@ -411,7 +411,7 @@ class dt {
     return Ve(e);
   }
   JSONParse(e) {
-    return rt(e);
+    return st(e);
   }
   cleanupElementRemovals(e) {
     const n = this.removals.get(e);
@@ -461,15 +461,15 @@ class dt {
               if (!r.allowedModifiers.has(d.label))
                 throw new Error(`'${d.label}' is not allowed`);
           }
-          const _ = /* @__PURE__ */ new Map();
+          const y = /* @__PURE__ */ new Map();
           for (const d of l)
-            _.set(d.label, d.args);
+            y.set(d.label, d.args);
           if (r.mustHaveEmptyExpression && a.length)
             throw new Error(`'${i}' must have empty expression`);
           if (r.mustNotEmptyExpression && !a.length)
             throw new Error(`'${i}' must have non-empty expression`);
-          const y = [...r.preprocessors?.pre || [], ...lt, ...r.preprocessors?.post || []];
-          for (const d of y) {
+          const _ = [...r.preprocessors?.pre || [], ...ct, ...r.preprocessors?.post || []];
+          for (const d of _) {
             if (n.has(d))
               continue;
             n.add(d);
@@ -499,7 +499,7 @@ class dt {
             },
             JSONParse: this.JSONParse,
             JSONStringify: this.JSONStringify,
-            modifiers: _
+            modifiers: y
           };
           if (!r.bypassExpressionFunctionCreation?.(w) && !r.mustHaveEmptyExpression && a.length) {
             const d = a.split(";");
@@ -508,7 +508,7 @@ class dt {
 try {
   ${d.join(";")}
 } catch (e) {
-  throw new Error(\`Eval '${a}' on ${o.id ? `#${o.id}` : o.tagName}\`)
+  throw e
 }
             `;
             try {
@@ -548,7 +548,7 @@ try {
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), pt = {
+const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ht = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -556,7 +556,7 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     const e = je(t.key), r = `${t.expressionFn(t)}`;
     !r || r === "false" || r === "null" || r === "undefined" ? t.el.removeAttribute(e) : t.el.setAttribute(e, r);
   })
-}, ht = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, W = ["change", "input", "keydown"], mt = {
+}, mt = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, W = ["change", "input", "keydown"], gt = {
   prefix: "model",
   mustHaveEmptyKey: !0,
   preprocessors: {
@@ -576,12 +576,12 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     const { el: e, expression: n } = t, r = t.expressionFn(t), s = e.tagName.toLowerCase(), o = s.includes("input"), i = s.includes("select"), a = s.includes("textarea"), f = s.includes("radio"), u = e.getAttribute("type"), c = s.includes("checkbox") || o && u === "checkbox", l = o && u === "file";
     if (!o && !i && !a && !c && !f)
       throw new Error("Element must be input, select, textarea, checkbox or radio");
-    const _ = () => {
+    const y = () => {
       if (!r)
         throw new Error(`Signal ${n} not found`);
       const h = "value" in e, p = r.value;
       c ? e.checked = p : l || (h ? e.value = `${p}` : e.setAttribute("value", `${p}`));
-    }, y = t.reactivity.effect(_), w = () => {
+    }, _ = t.reactivity.effect(y), w = () => {
       if (l) {
         const [E] = e?.files || [];
         if (!E) {
@@ -592,7 +592,7 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
         T.onload = () => {
           if (typeof T.result != "string")
             throw new Error("Unsupported type");
-          const P = T.result.match(ht);
+          const P = T.result.match(mt);
           if (!P?.groups)
             throw new Error("Invalid data URI");
           const { mime: H, contents: x } = P.groups;
@@ -630,10 +630,10 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       });
     }
     return W.forEach((h) => e.addEventListener(h, w)), () => {
-      y(), W.forEach((h) => e.removeEventListener(h, w));
+      _(), W.forEach((h) => e.removeEventListener(h, w));
     };
   }
-}, gt = {
+}, vt = {
   prefix: "text",
   mustHaveEmptyKey: !0,
   onLoad: (t) => {
@@ -645,7 +645,7 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       e.textContent = `${r}`;
     });
   }
-}, vt = {
+}, yt = {
   prefix: "on",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -657,13 +657,13 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     };
     const o = t.modifiers.get("debounce");
     if (o) {
-      const u = _e(o), c = z(o, "leading", !1), l = z(o, "noTrail", !0);
-      s = wt(s, u, c, l);
+      const u = ye(o), c = z(o, "leading", !1), l = z(o, "noTrail", !0);
+      s = Et(s, u, c, l);
     }
     const i = t.modifiers.get("throttle");
     if (i) {
-      const u = _e(i), c = z(i, "noLead", !0), l = z(i, "noTrail", !0);
-      s = Et(s, u, c, l);
+      const u = ye(i), c = z(i, "noLead", !0), l = z(i, "noTrail", !0);
+      s = bt(s, u, c, l);
     }
     const a = {
       capture: !0,
@@ -680,14 +680,14 @@ const je = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
   mustHaveEmptyKey: !0,
   mustHaveEmptyExpression: !0,
   onLoad: (t) => (t.el.tabIndex || t.el.setAttribute("tabindex", "0"), t.el.focus(), t.el.scrollIntoView({ block: "center", inline: "center" }), () => t.el.blur())
-}, yt = [
-  pt,
-  mt,
+}, wt = [
+  ht,
   gt,
+  vt,
   _t,
-  vt
+  yt
 ];
-function _e(t) {
+function ye(t) {
   if (!t || t?.length === 0)
     return 0;
   for (const e of t) {
@@ -705,7 +705,7 @@ function _e(t) {
 function z(t, e, n = !1) {
   return t ? t.includes(e) || n : !1;
 }
-function wt(t, e, n = !1, r = !0) {
+function Et(t, e, n = !1, r = !0) {
   let s;
   const o = () => s && clearTimeout(s);
   return function(...a) {
@@ -714,7 +714,7 @@ function wt(t, e, n = !1, r = !0) {
     }, e);
   };
 }
-function Et(t, e, n = !0, r = !1) {
+function bt(t, e, n = !0, r = !1) {
   let s = !1, o = null;
   return function(...a) {
     s ? o = a : (s = !0, n ? t(...a) : o = a, setTimeout(() => {
@@ -723,11 +723,11 @@ function Et(t, e, n = !0, r = !1) {
   };
 }
 const Y = /* @__PURE__ */ new WeakSet();
-function bt(t, e, n = {}) {
+function St(t, e, n = {}) {
   t instanceof Document && (t = t.documentElement);
   let r;
-  typeof e == "string" ? r = Nt(e) : r = e;
-  const s = kt(r), o = Tt(t, s, n);
+  typeof e == "string" ? r = kt(e) : r = e;
+  const s = Mt(r), o = At(t, s, n);
   return Je(t, s, o);
 }
 function Je(t, e, n) {
@@ -753,11 +753,11 @@ function Je(t, e, n) {
   if (n.morphStyle === "innerHTML")
     return qe(e, t, n), t.children;
   if (n.morphStyle === "outerHTML" || n.morphStyle == null) {
-    const r = Pt(e, t, n);
+    const r = Rt(e, t, n);
     if (!r)
       throw new Error("Could not find best match");
     const s = r?.previousSibling, o = r?.nextSibling, i = Q(t, r, n);
-    return r ? Mt(s, i, o) : [];
+    return r ? Pt(s, i, o) : [];
   } else
     throw "Do not understand how to morph style " + n.morphStyle;
 }
@@ -770,7 +770,7 @@ function Q(t, e, n) {
       return;
     } else {
       if (te(t, e))
-        return n.callbacks.beforeNodeMorphed(t, e) === !1 ? void 0 : (t instanceof HTMLHeadElement && n.head.ignore || (e instanceof HTMLHeadElement && t instanceof HTMLHeadElement && n.head.style !== "morph" ? Ge(e, t, n) : (St(e, t), qe(e, t, n))), n.callbacks.afterNodeMorphed(t, e), t);
+        return n.callbacks.beforeNodeMorphed(t, e) === !1 ? void 0 : (t instanceof HTMLHeadElement && n.head.ignore || (e instanceof HTMLHeadElement && t instanceof HTMLHeadElement && n.head.style !== "morph" ? Ge(e, t, n) : (Tt(e, t), qe(e, t, n))), n.callbacks.afterNodeMorphed(t, e), t);
       if (n.callbacks.beforeNodeRemoved(t) === !1 || n.callbacks.beforeNodeAdded(e) === !1)
         return;
       if (!t.parentElement)
@@ -791,14 +791,14 @@ function qe(t, e, n) {
       Q(s, o, n), s = s.nextSibling, R(n, o);
       continue;
     }
-    let i = At(t, e, o, s, n);
+    let i = Lt(t, e, o, s, n);
     if (i) {
-      s = ye(s, i, n), Q(i, o, n), R(n, o);
+      s = _e(s, i, n), Q(i, o, n), R(n, o);
       continue;
     }
-    let a = Lt(t, o, s, n);
+    let a = Nt(t, o, s, n);
     if (a) {
-      s = ye(s, a, n), Q(a, o, n), R(n, o);
+      s = _e(s, a, n), Q(a, o, n), R(n, o);
       continue;
     }
     if (n.callbacks.beforeNodeAdded(o) === !1)
@@ -810,7 +810,7 @@ function qe(t, e, n) {
     s = s.nextSibling, We(i, n);
   }
 }
-function St(t, e) {
+function Tt(t, e) {
   let n = t.nodeType;
   if (n === 1) {
     for (const r of t.attributes)
@@ -836,8 +836,8 @@ function Ge(t, e, n) {
   for (const c of t.children)
     f.set(c.outerHTML, c);
   for (const c of e.children) {
-    let l = f.has(c.outerHTML), _ = n.head.shouldReAppend(c), y = n.head.shouldPreserve(c);
-    l || y ? _ ? s.push(c) : (f.delete(c.outerHTML), o.push(c)) : a === "append" ? _ && (s.push(c), i.push(c)) : n.head.shouldRemove(c) !== !1 && s.push(c);
+    let l = f.has(c.outerHTML), y = n.head.shouldReAppend(c), _ = n.head.shouldPreserve(c);
+    l || _ ? y ? s.push(c) : (f.delete(c.outerHTML), o.push(c)) : a === "append" ? y && (s.push(c), i.push(c)) : n.head.shouldRemove(c) !== !1 && s.push(c);
   }
   i.push(...f.values()), console.log("to append: ", i);
   const u = [];
@@ -848,13 +848,13 @@ function Ge(t, e, n) {
       throw new Error("could not create new element from: " + c.outerHTML);
     if (console.log(l), n.callbacks.beforeNodeAdded(l)) {
       if (l.hasAttribute("href") || l.hasAttribute("src")) {
-        let _;
-        const y = new Promise((w) => {
-          _ = w;
+        let y;
+        const _ = new Promise((w) => {
+          y = w;
         });
         l.addEventListener("load", function() {
-          _(void 0);
-        }), u.push(y);
+          y(void 0);
+        }), u.push(_);
       }
       e.appendChild(l), n.callbacks.afterNodeAdded(l), r.push(l);
     }
@@ -869,14 +869,14 @@ function Ge(t, e, n) {
 }
 function N() {
 }
-function Tt(t, e, n) {
+function At(t, e, n) {
   return {
     target: t,
     newContent: e,
     config: n,
     morphStyle: n.morphStyle,
     ignoreActive: n.ignoreActive,
-    idMap: Ct(t, e),
+    idMap: It(t, e),
     deadIds: /* @__PURE__ */ new Set(),
     callbacks: Object.assign(
       {
@@ -907,7 +907,7 @@ function Ke(t, e, n) {
 function te(t, e) {
   return !t || !e ? !1 : t.nodeType === e.nodeType && t.tagName === e.tagName;
 }
-function ye(t, e, n) {
+function _e(t, e, n) {
   for (; t !== e; ) {
     const r = t;
     if (t = t?.nextSibling, !r)
@@ -916,7 +916,7 @@ function ye(t, e, n) {
   }
   return R(n, e), e.nextSibling;
 }
-function At(t, e, n, r, s) {
+function Lt(t, e, n, r, s) {
   const o = j(s, n, e);
   let i = null;
   if (o > 0) {
@@ -932,7 +932,7 @@ function At(t, e, n, r, s) {
   }
   return i;
 }
-function Lt(t, e, n, r) {
+function Nt(t, e, n, r) {
   let s = n, o = e.nextSibling, i = 0;
   for (; s && o; ) {
     if (j(r, s, t) > 0)
@@ -946,7 +946,7 @@ function Lt(t, e, n, r) {
   return s;
 }
 const we = new DOMParser();
-function Nt(t) {
+function kt(t) {
   const e = t.replace(/<svg(\s[^>]*>|>)([\s\S]*?)<\/svg>/gim, "");
   if (e.match(/<\/html>/) || e.match(/<\/head>/) || e.match(/<\/body>/)) {
     const n = we.parseFromString(t, "text/html");
@@ -963,7 +963,7 @@ function Nt(t) {
     return Y.add(r), r;
   }
 }
-function kt(t) {
+function Mt(t) {
   if (t == null)
     return document.createElement("div");
   if (Y.has(t))
@@ -978,7 +978,7 @@ function kt(t) {
     return e;
   }
 }
-function Mt(t, e, n) {
+function Pt(t, e, n) {
   const r = [], s = [];
   for (; t; )
     r.push(t), t = t.previousSibling;
@@ -992,24 +992,24 @@ function Mt(t, e, n) {
     e?.parentElement?.insertBefore(r.pop(), e.nextSibling);
   return s;
 }
-function Pt(t, e, n) {
+function Rt(t, e, n) {
   let r = t.firstChild, s = r, o = 0;
   for (; r; ) {
-    let i = Rt(r, e, n);
+    let i = $t(r, e, n);
     i > o && (s = r, o = i), r = r.nextSibling;
   }
   return s;
 }
-function Rt(t, e, n) {
+function $t(t, e, n) {
   return te(t, e) ? 0.5 + j(n, t, e) : 0;
 }
 function We(t, e) {
   R(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
-function $t(t, e) {
+function Ot(t, e) {
   return !t.deadIds.has(e);
 }
-function Ot(t, e, n) {
+function Ct(t, e, n) {
   return t.idMap.get(n)?.has(e) || !1;
 }
 function R(t, e) {
@@ -1024,7 +1024,7 @@ function j(t, e, n) {
     return 0;
   let s = 0;
   for (const o of r)
-    $t(t, o) && Ot(t, o, n) && ++s;
+    Ot(t, o) && Ct(t, o, n) && ++s;
   return s;
 }
 function Ee(t, e) {
@@ -1037,11 +1037,11 @@ function Ee(t, e) {
     }
   }
 }
-function Ct(t, e) {
+function It(t, e) {
   const n = /* @__PURE__ */ new Map();
   return Ee(t, n), Ee(e, n), n;
 }
-const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It, Ht, xt, Dt, Ft], Vt = Ut.reduce((t, e) => (t[e] = async (n) => {
+const Ht = "get", xt = "post", Dt = "put", Ft = "patch", Ut = "delete", Vt = [Ht, xt, Dt, Ft, Ut], Bt = Vt.reduce((t, e) => (t[e] = async (n) => {
   const r = Document;
   if (!r.startViewTransition) {
     await Se(e, n);
@@ -1052,7 +1052,7 @@ const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It
       await Se(e, n), s();
     });
   });
-}, t), {}), Bt = "Accept", jt = "Content-Type", Jt = "datastar-request", qt = "application/json", Gt = "text/event-stream", Kt = "true", J = "datastar-", q = `${J}indicator`, fe = `${q}-loading`, be = `${J}settling`, X = `${J}swapping`, Wt = "self", b = {
+}, t), {}), jt = "Accept", Jt = "Content-Type", qt = "datastar-request", Gt = "application/json", Kt = "text/event-stream", Wt = "true", J = "datastar-", q = `${J}indicator`, fe = `${q}-loading`, be = `${J}settling`, X = `${J}swapping`, zt = "self", b = {
   MorphElement: "morph_element",
   InnerElement: "inner_element",
   OuterElement: "outer_element",
@@ -1062,7 +1062,7 @@ const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It
   AfterElement: "after_element",
   DeleteElement: "delete_element",
   UpsertAttributes: "upsert_attributes"
-}, zt = {
+}, Zt = {
   prefix: "header",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1072,7 +1072,7 @@ const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It
       delete e[n];
     };
   }
-}, Zt = {
+}, Xt = {
   prefix: "fetchUrl",
   mustHaveEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1091,7 +1091,7 @@ const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It
       delete n.fetch.elementURLs[t.el.id];
     };
   })
-}, Xt = {
+}, Yt = {
   prefix: "fetchIndicator",
   mustHaveEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1118,7 +1118,7 @@ const It = "get", Ht = "post", xt = "put", Dt = "patch", Ft = "delete", Ut = [It
       delete n.fetch.indicatorSelectors[t.el.id];
     };
   })
-}, Yt = [zt, Zt, Xt], Qt = /(?<key>\w*): (?<value>.*)/gm;
+}, Qt = [Zt, Xt, Yt], en = /(?<key>\w*): (?<value>.*)/gm;
 async function Se(t, e) {
   const n = e.store(), r = n.fetch.elementURLs[e.el.id];
   if (!r)
@@ -1133,7 +1133,7 @@ async function Se(t, e) {
     g && (i = g, i.classList.remove(q), i.classList.add(fe), a = !0);
   }
   const u = new URL(r.value, window.location.origin), c = new Headers();
-  c.append(Bt, Gt), c.append(jt, qt), c.append(Jt, Kt);
+  c.append(jt, Kt), c.append(Jt, Gt), c.append(qt, Wt);
   const l = n.fetch.headers.value;
   if (l)
     for (const g in l) {
@@ -1141,18 +1141,18 @@ async function Se(t, e) {
       c.append(g, d);
     }
   t = t.toUpperCase();
-  const _ = { method: t, headers: c };
+  const y = { method: t, headers: c };
   if (t === "GET") {
     const g = new URLSearchParams(u.search);
     g.append("datastar", o), u.search = g.toString();
   } else
-    _.body = o;
-  const y = await fetch(u, _);
-  if (!y.ok)
-    throw new Error(`Response was not ok, url: ${u}, status: ${y.status}`);
-  if (!y.body)
+    y.body = o;
+  const _ = await fetch(u, y);
+  if (!_.ok)
+    throw new Error(`Response was not ok, url: ${u}, status: ${_.status}`);
+  if (!_.body)
     throw new Error("No response body");
-  const w = y.body.pipeThrough(new TextDecoderStream()).getReader();
+  const w = _.body.pipeThrough(new TextDecoderStream()).getReader();
   for (; ; ) {
     const { done: g, value: d } = await w.read();
     if (g)
@@ -1160,14 +1160,14 @@ async function Se(t, e) {
     d.split(`
 
 `).forEach((h) => {
-      const p = [...h.matchAll(Qt)];
+      const p = [...h.matchAll(en)];
       if (p.length) {
         let E = "", T = "morph_element", M = "", I = 0, P = !1, H = "", x, D = !1, K = !1;
         for (const me of p) {
           if (!me.groups)
             continue;
-          const { key: ze, value: L } = me.groups;
-          switch (ze) {
+          const { key: Ze, value: L } = me.groups;
+          switch (Ze) {
             case "event":
               if (!L.startsWith(J))
                 throw new Error(`Unknown event: ${L}`);
@@ -1223,7 +1223,7 @@ async function Se(t, e) {
         if (P && H)
           window.location.href = H;
         else if (K && E)
-          en(e, M, T, E, I);
+          tn(e, M, T, E, I);
         else
           throw new Error(`Unknown event block: ${h}`);
       }
@@ -1232,13 +1232,13 @@ async function Se(t, e) {
   a && (i.classList.remove(fe), i.classList.add(q));
 }
 const Te = document.createElement("template");
-function en(t, e, n, r, s) {
+function tn(t, e, n, r, s) {
   const { el: o } = t;
   Te.innerHTML = r;
   const i = Te.content.firstChild;
   if (!(i instanceof Element))
     throw new Error(`Fragment is not an element, source '${r}'`);
-  const a = e === Wt;
+  const a = e === zt;
   let f;
   if (a)
     f = [o];
@@ -1253,10 +1253,10 @@ function en(t, e, n, r, s) {
     let l = u;
     switch (n) {
       case b.MorphElement:
-        const y = bt(l, i);
-        if (!y?.length)
+        const _ = St(l, i);
+        if (!_?.length)
           throw new Error("Failed to morph element");
-        l = y[0];
+        l = _[0];
         break;
       case b.InnerElement:
         l.innerHTML = i.innerHTML;
@@ -1289,22 +1289,13 @@ function en(t, e, n, r, s) {
         throw new Error(`Unknown merge type: ${n}`);
     }
     l.classList.add(X), t.cleanupElementRemovals(u), t.applyPlugins(l), u.classList.remove(X), l.classList.remove(X);
-    const _ = l.outerHTML;
-    c !== _ && (l.classList.add(be), setTimeout(() => {
+    const y = l.outerHTML;
+    c !== y && (l.classList.add(be), setTimeout(() => {
       l.classList.remove(be);
     }, s));
   }
 }
-const tn = {
-  setAll: async (t, e, n) => {
-    const r = new RegExp(e);
-    t.walkSignals((s, o) => r.test(s) && (o.value = n));
-  },
-  toggleAll: async (t, e) => {
-    const n = new RegExp(e);
-    t.walkSignals((r, s) => n.test(r) && (s.value = !s.value));
-  }
-}, ie = "display", Ae = "none", ae = "important", nn = {
+const ie = "display", Ae = "none", ae = "important", nn = {
   prefix: "show",
   allowedModifiers: /* @__PURE__ */ new Set([ae]),
   onLoad: (t) => {
@@ -1412,21 +1403,33 @@ const tn = {
   on,
   an,
   ln
-];
-function un(t = {}, ...e) {
-  const n = performance.now(), r = new dt(t, ...e);
+], un = {
+  setAll: async (t, e, n) => {
+    const r = new RegExp(e);
+    t.walkSignals((s, o) => r.test(s) && (o.value = n));
+  },
+  toggleAll: async (t, e) => {
+    const n = new RegExp(e);
+    t.walkSignals((r, s) => n.test(r) && (s.value = !s.value));
+  }
+};
+function fn(t = {}, ...e) {
+  const n = performance.now(), r = new pt(t, ...e);
   r.run();
   const s = performance.now();
   return console.log(`Datastar loaded and attached to all DOM elements in ${s - n}ms`), r;
 }
-function pn(t = {}, ...e) {
-  const n = Object.assign({}, tn, Vt, t), r = [...Yt, ...cn, ...yt, ...e];
-  return un(n, ...r);
+function dn(t = {}, ...e) {
+  const n = Object.assign({}, un, Bt, t), r = [...Qt, ...cn, ...wt, ...e];
+  return fn(n, ...r);
 }
+const ze = window;
+ze.ds = dn();
+ze.dispatchEvent(new CustomEvent("datastar-ready"));
 export {
-  dt as Datastar,
-  un as runDatastarWith,
-  pn as runDatastarWithAllPlugins,
+  pt as Datastar,
+  fn as runDatastarWith,
+  dn as runDatastarWithAllPlugins,
   Oe as toHTMLorSVGElement
 };
 //# sourceMappingURL=datastar.js.map

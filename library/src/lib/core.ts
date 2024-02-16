@@ -199,7 +199,7 @@ export class Datastar {
 try {
   ${statements.join(';')}
 } catch (e) {
-  throw new Error(\`Eval '${expression}' on ${el.id ? `#${el.id}` : el.tagName}\`)
+  throw e
 }
             `
             try {

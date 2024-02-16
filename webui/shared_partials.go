@@ -25,7 +25,7 @@ func Page(children ...ElementRenderer) ElementRenderer {
 	externalPages := []ExternalPage{
 		{
 			Icon: simple_icons.Discord,
-			Link: "https://discord.com/channels/725789699527933952/1180902694999838752",
+			Link: "https://discord.gg/CHvPMrAp6F",
 		},
 		{
 			Icon: simple_icons.Github,
@@ -117,16 +117,8 @@ func Page(children ...ElementRenderer) ElementRenderer {
 					Children(children...),
 				SCRIPT().
 					TYPE("module").
-					DEFER().
-					Text(
-						fmt.Sprintf(`
-import { runDatastarWithAllPlugins } from '%s'
-window.ds = runDatastarWithAllPlugins()
-window.dispatchEvent(new CustomEvent('datastar-ready'))
-`,
-							staticPath("datastar.js"),
-						),
-					),
+					SRC(staticPath("datastar.js")).
+					DEFER(),
 			),
 		)
 }
