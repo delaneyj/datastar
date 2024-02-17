@@ -3,7 +3,6 @@ module github.com/delaneyj/datastar
 go 1.21.5
 
 require (
-	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/TwiN/go-away v1.6.12
 	github.com/alecthomas/chroma/v2 v2.12.0
 	github.com/benbjohnson/hashfs v0.2.1

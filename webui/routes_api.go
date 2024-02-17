@@ -1,17 +1,12 @@
 package webui
 
 import (
-	"bytes"
 	"context"
-	"io"
-	"log/slog"
-	"math"
 	"math/rand"
 	"net/http"
 	"sync/atomic"
 	"time"
 
-	"github.com/Jeffail/gabs/v2"
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
@@ -25,14 +20,18 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 	c := int32(toolbelt.Fit(rand.Float32(), 0, 1, -100, 100))
 	globalCount = &c
 
+	type Store struct {
+		Count int32 `json:"count"`
+	}
+
 	globalCountExample := func() ElementRenderer {
-		count := atomic.LoadInt32(globalCount)
+		store := &Store{
+			Count: atomic.LoadInt32(globalCount),
+		}
 		return DIV().
 			ID("global-count-example").
 			CLASS("flex flex-col gap-2").
-			DATASTAR_MERGE_STORE(map[string]any{
-				"count": count,
-			}).
+			DATASTAR_MERGE_STORE(store).
 			Children(
 				DIV().
 					CLASS("flex gap-2 justify-between items-center").
@@ -84,33 +83,13 @@ func setupAPI(ctx context.Context, router *chi.Mux) error {
 			})
 
 			globalCountRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-
-				buf := bytes.NewBuffer(nil)
-				if _, err := io.Copy(buf, r.Body); err != nil {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				slog.Info("body", "body", buf.String())
-
-				parsed, err := gabs.ParseJSON(buf.Bytes())
-				if err != nil {
+				store := &Store{}
+				if err := datastar.BodyUnmarshal(r, store); err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 
-				countF64, ok := parsed.Path("signals.count").Data().(float64)
-				if !ok {
-					http.Error(w, err.Error(), http.StatusInternalServerError)
-					return
-				}
-				// if !ok {
-				// 	http.Error(w, err.Error(), http.StatusInternalServerError)
-				// 	return
-				// }
-				count := int32(math.Round(countF64))
-				slog.Info("count", "count", count)
-
-				atomic.StoreInt32(globalCount, count)
+				atomic.StoreInt32(globalCount, store.Count)
 				globalCountExample().Render(w)
 			})
 		})
