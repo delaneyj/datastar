@@ -63,7 +63,7 @@ func setupHome(router chi.Router) error {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
 		page(
-			DIV().CLASS("min-h-screen md:flex md:items-center flex-col md:p-8 bg-gradient-to-br from-accent-700 to-accent-900 overflow-scroll").Children(
+			DIV().CLASS("min-h-screen md:flex md:items-center flex-col md:p-8 bg-gradient-to-br from-accent-700 to-accent-900").Children(
 				DIV().
 					CLASS("p-4 md:max-w-md md:max-w-2xl md:flex flex-col gap-8 md:flex-wrap md:items-center").
 					Children(

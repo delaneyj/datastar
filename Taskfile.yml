@@ -35,12 +35,23 @@ tasks:
       - "src/**/*.ts"
       - "package.json"
     cmds:
-      - echo "{{.BACKEND_STATIC_DIR}}"
+      # - echo "{{.BACKEND_STATIC_DIR}}"
       - pnpm i
       # - pnpm vitest --watch=false
       - pnpm build
       - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}
+
+  css:
+    vars:
+      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/css"
+    dir: library
+    generates:
+      - "{{.BACKEND_STATIC_DIR}}"
+    sources:
+      - "../backends/go/site/**/*.go"
+    cmds:
+      - pnpm unocss
 
   kill:
     cmds:
