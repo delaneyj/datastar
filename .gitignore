@@ -1,5 +1,1 @@
 *_bin*
-gen
-node_modules
-*.blend[0-9]
-vite.config.ts.*

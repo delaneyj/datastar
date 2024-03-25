@@ -5,7 +5,7 @@ version: "3"
 interval: 100ms
 
 vars:
-  NAME: "webui"
+  NAME: "site"
   BIN_NAME: "{{.NAME}}_bin"
   VERSION:
     sh: cat library/package.json| jq -r .version
@@ -26,35 +26,21 @@ tasks:
       - task: deploy
 
   library:
-    dir: ./library
+    vars:
+      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/library"
+    dir: library
     generates:
-      - "../{{.NAME}}/static/datastar*"
+      - "{{.BACKEND_STATIC_DIR}}"
     sources:
       - "src/**/*.ts"
       - "package.json"
     cmds:
+      - echo "{{.BACKEND_STATIC_DIR}}"
       - pnpm i
       # - pnpm vitest --watch=false
-      - pnpm vite build
-      - cp -Rfpvd dist/* ../{{.NAME}}/static
-      - cp package.json ../{{.NAME}}/static
-
-  tailwind:
-    dir: ./{{.NAME}}/assetgen/css
-    generates:
-      - "../../static/tailwind.css"
-    sources:
-      - "*.css"
-      - "../../**/*.go"
-      - "tailwind.config.js"
-    cmds:
-      - pnpm i
-      - pnpm tailwindcss -o ../../static/tailwind.css --minify
-
-  frontend:
-    deps:
-      - tailwind
-      - library
+      - pnpm build
+      - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
+      - rsync -av package.json {{.BACKEND_STATIC_DIR}}
 
   kill:
     cmds:
@@ -62,24 +48,17 @@ tasks:
 
   hot:
     desc: Server hot reload
-
+    dir: backends/go
     sources:
       - "**/*.go"
-      - "webui/static/**/*"
       - "{{.NAME}}/static/**/*"
     deps:
       - kill
-      - frontend
 
     cmds:
       - go mod tidy
       - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
       - ./{{.BIN_NAME}}
-
-  gen:
-    dir: gen/{{.NAME}}
-    cmds:
-      - wget --mirror http://localhost:1337
 
   deploy:
     cmds:
@@ -88,4 +67,4 @@ tasks:
   default:
     deps:
       - hot
-    silent: false
+    silent: true
