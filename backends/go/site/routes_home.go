@@ -15,11 +15,11 @@ import (
 
 func setupHome(router chi.Router) error {
 
-	chartWidth := 512
+	chartWidth := 384
 	graph := chart.BarChart{
 		Title:  "File Size (Hello World) first load",
 		Width:  chartWidth,
-		Height: chartWidth * 9 / 16,
+		Height: chartWidth,
 		Background: chart.Style{
 			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
 			FontColor: drawing.ColorWhite,
@@ -63,27 +63,25 @@ func setupHome(router chi.Router) error {
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
 		page(
-			DIV().CLASS("w-full min-h-screen flex flex-col items-center justify-center p-8 bg-gradient-to-br from-accent-700 to-accent-900").Children(
+			DIV().CLASS("min-h-screen md:flex md:items-center flex-col md:p-8 bg-gradient-to-br from-accent-700 to-accent-900 overflow-scroll").Children(
 				DIV().
-					CLASS("max-w-2xl flex flex-col gap-8").
+					CLASS("p-4 md:max-w-md md:max-w-2xl md:flex flex-col gap-8 md:flex-wrap md:items-center").
 					Children(
 						datastarLogo().CLASS(
-							"w-full md:w-64 md:h-64 fill-current text-accent-200",
+							"w-24 md:w-64 md:h-64 fill-current text-accent-200",
 							"animate__animated animate__pulse  animate__infinite animate__faster",
 						),
 						DIV().
-							CLASS("font-brand font-bold text-6xl text-primary-200").
+							CLASS("font-brand font-bold text-3xl md:text-6xl text-primary-200").
 							Text("DATASTAR"),
 						DIV().CLASS("font-brand text-lg").Text("Real-time hypermedia framework"),
-						DIV(
-							P().
-								CLASS("text-primary-100 text-center").
-								TextF(
-									`Using a single <span class="font-bold text-lg text-primary-300">%s</span> CDN link and have access to everything needed to rival a full-stack SPA framework; all in the language of your choice.`,
-									iifeBuildSize,
-								),
-						),
-						DIV().CLASS("w-full").Text(svgChart),
+						P().
+							CLASS("text-primary-100 md:text-center").
+							TextF(
+								`Using a single <span class="text-lg font-bold text-primary-300">%s</span> CDN link and have access to everything needed to rival a full-stack SPA framework; all in the language of your choice.`,
+								iifeBuildSize,
+							),
+						DIV().CLASS("md:flex md:justify-center md:items-center md:p-4").Text(svgChart),
 						DIV().
 							CLASS(
 								"flex flex-col gap-6 border-dashed border-2 border-primary-300 p-4 rounded-lg",

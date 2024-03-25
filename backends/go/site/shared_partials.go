@@ -308,7 +308,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 									CustomData("show", "$sidebarOpen").
 									Children(
 										ASIDE().
-											CLASS("px-4 py-8 w-52 bg-accent-800 text-accent-200 relative z-30 h-full flex flex-col gap-4").
+											CLASS("px-4 py-8 w-64 bg-accent-800 text-accent-200 relative z-30 h-full flex flex-col gap-4").
 											Children(
 												DIV().
 													CLASS("flex justify-end").
@@ -328,13 +328,13 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 											CLASS("fixed inset-0 bg-primary-900 bg-opacity-70 z-10"),
 									),
 								ASIDE(sidebarContents).
-									CLASS("hidden md:flex flex-col px-4 py-8 min-w-52 bg-accent-800 text-accent-200 hidden md:visible gap-4"),
+									CLASS("hidden md:flex flex-col px-4 py-8 min-w-64 bg-accent-800 text-accent-200 hidden md:visible gap-4"),
 							)
 						}),
 						DIV().
-							CLASS("flex sm:justify-center px-2 py-4 sm:px-4 w-full overflow-y-scroll").
+							CLASS("md:flex md:justify-center px-2 py-4 md:px-4 w-full overflow-y-scroll").
 							Children(
-								DIV(contents).CLASS("prose prose-sm md:prose-2xl"),
+								DIV(contents).CLASS("prose prose-xs md:prose-2xl"),
 							),
 						DynIf(len(asideAnchors) > 0, func() ElementRenderer {
 							return ASIDE().

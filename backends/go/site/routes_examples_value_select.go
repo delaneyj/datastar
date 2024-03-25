@@ -8,6 +8,7 @@ import (
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
+	"github.com/samber/lo"
 )
 
 func setupExamplesValueSelect(examplesRouter chi.Router) error {
@@ -201,7 +202,41 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 			}
 
 			sse := toolbelt.NewSSE(w, r)
-			datastar.Redirect(sse, "/examples/value_select")
+
+			make, ok := lo.Find(cars, func(item *Make) bool {
+				return item.ID == store.Make
+			})
+			if !ok {
+				http.Error(w, "invalid input", http.StatusBadRequest)
+				return
+			}
+
+			model, ok := lo.Find(make.Models, func(item *Model) bool {
+				return item.ID == store.Model
+			})
+
+			if !ok {
+				http.Error(w, "invalid input", http.StatusBadRequest)
+				return
+			}
+
+			datastar.RenderFragment(sse,
+				DIV().
+					ID("value_select").
+					Children(
+						Text("You selected"),
+						BR(),
+						TextF("Make '%s' db id:%s", make.Label, make.ID),
+						BR(),
+						TextF("Model '%s' db id:%s", model.Label, model.ID),
+						BUTTON().CLASS("flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600").
+							DATASTAR_ON("click", datastar.GET("/examples/value_select/data")).
+							Children(
+								material_symbols.ResetWrench(),
+								TextF("Resest form"),
+							),
+					),
+			)
 		})
 	})
 
