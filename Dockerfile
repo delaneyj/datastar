@@ -1,16 +1,16 @@
-FROM docker.io/golang:1.21.5-alpine AS build
+FROM docker.io/golang:1.22.1-alpine AS build
 
 RUN apk add --no-cache upx
 ENV PORT=8080
 
 WORKDIR /src
-COPY go.* .
+COPY backends/go/go.* .
 RUN go mod download
-COPY . .
+COPY backends/go/. .
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -o /out/webui cmd/webui/main.go
-RUN upx /out/webui
+    go build -o /out/site cmd/site/main.go
+RUN upx /out/site
 
 FROM scratch
-COPY --from=build /out/webui /
-ENTRYPOINT ["/webui"]
+COPY --from=build /out/site /
+ENTRYPOINT ["/site"]

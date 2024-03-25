@@ -1,6 +1,5 @@
 import { idiomorph } from '../external/idiomorph'
 import { JSONStringify } from '../external/json-bigint'
-import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 const GET = 'get'
 const POST = 'post'
@@ -10,16 +9,17 @@ const DELETE = 'delete'
 const Methods = [GET, POST, PUT, PATCH, DELETE]
 
 export const BackendActions: Actions = Methods.reduce((acc, method) => {
-  acc[method] = async (ctx) => {
+  acc[method] = async (ctx, urlExpression) => {
     const da = Document as any
     if (!da.startViewTransition) {
-      await fetcher(method, ctx)
+      await fetcher(method, urlExpression, ctx)
       return
     }
-    return new Promise((resolve) => {
+
+    new Promise((resolve) => {
       da.startViewTransition(async () => {
-        await fetcher(method, ctx)
-        resolve()
+        await fetcher(method, urlExpression, ctx)
+        resolve(void 0)
       })
     })
   }
@@ -68,32 +68,6 @@ export const HeadersPlugin: AttributePlugin = {
   },
 }
 
-// Sets the fetch url
-export const FetchURLPlugin: AttributePlugin = {
-  prefix: 'fetchUrl',
-  mustHaveEmptyKey: true,
-  mustNotEmptyExpression: true,
-  onGlobalInit: ({ mergeStore }) => {
-    mergeStore({
-      fetch: {
-        headers: {},
-        elementURLs: {},
-        indicatorSelectors: {},
-      },
-    })
-  },
-  onLoad: (ctx) => {
-    return ctx.reactivity.effect(() => {
-      const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
-      const s = ctx.store()
-      s.fetch.elementURLs[ctx.el.id] = c
-      return () => {
-        delete s.fetch.elementURLs[ctx.el.id]
-      }
-    })
-  },
-}
-
 // Sets the fetch indicator selector
 export const FetchIndicatorPlugin: AttributePlugin = {
   prefix: 'fetchIndicator',
@@ -130,13 +104,13 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchURLPlugin, FetchIndicatorPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
 const sseRegexp = /(?<key>\w*): (?<value>.*)/gm
-async function fetcher(method: string, ctx: AttributeContext) {
+async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
-  const urlSignal: Signal<string> = s.fetch.elementURLs[ctx.el.id]
-  if (!urlSignal) {
+
+  if (!urlExpression) {
     // throw new Error(`No signal for ${method} on ${el.id}`)
     return
   }
@@ -149,9 +123,9 @@ async function fetcher(method: string, ctx: AttributeContext) {
 
   let loadingTarget = ctx.el
   let hasIndicator = false
-  const indicatorSelector = s.fetch.indicatorSelectors[loadingTarget.id]
+  const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
   if (indicatorSelector) {
-    const indicator = document.querySelector(indicatorSelector)
+    const indicator = document.querySelector(indicatorSelector.value)
     if (indicator) {
       loadingTarget = indicator
       loadingTarget.classList.remove(INDICATOR_CLASS)
@@ -162,14 +136,14 @@ async function fetcher(method: string, ctx: AttributeContext) {
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
 
-  const url = new URL(urlSignal.value, window.location.origin)
+  const url = new URL(urlExpression, window.location.origin)
 
   const headers = new Headers()
   headers.append(ACCEPT, TEXT_EVENT_STREAM)
   headers.append(CONTENT_TYPE, APPLICATION_JSON)
   headers.append(DATASTAR_REQUEST, TRUE_STRING)
 
-  const storeHeaders: Record<string, string> = s.fetch.headers.value
+  const storeHeaders: Record<string, string> = s.fetch?.headers.value || {}
   if (storeHeaders) {
     for (const key in storeHeaders) {
       const value = storeHeaders[key]
@@ -198,13 +172,13 @@ async function fetcher(method: string, ctx: AttributeContext) {
     if (done) break
 
     value.split('\n\n').forEach((evtBlock) => {
-      // console.log(evtBlock)
+      console.log(`Received event block:\n${evtBlock}`)
       const matches = [...evtBlock.matchAll(sseRegexp)]
       if (matches.length) {
         let fragment = '',
           merge: MergeOption = 'morph_element',
           selector = '',
-          settleTime = 0,
+          settleTime = 500,
           isRedirect = false,
           redirectURL = '',
           error: Error | undefined = undefined,
@@ -372,8 +346,10 @@ export function mergeHTMLFragment(
     ctx.cleanupElementRemovals(initialTarget)
     ctx.applyPlugins(modifiedTarget)
 
-    initialTarget.classList.remove(SWAPPING_CLASS)
-    modifiedTarget.classList.remove(SWAPPING_CLASS)
+    setTimeout(() => {
+      initialTarget.classList.remove(SWAPPING_CLASS)
+      modifiedTarget.classList.remove(SWAPPING_CLASS)
+    }, 1000)
 
     const revisedHTML = modifiedTarget.outerHTML
 
