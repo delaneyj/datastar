@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"sync/atomic"
 
-	datastar "github.com/delaneyj/datastar/backends/go"
+	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"

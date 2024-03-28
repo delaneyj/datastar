@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"time"
 
-	datastar "github.com/delaneyj/datastar/backends/go"
+	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
 	"github.com/delaneyj/toolbelt"
