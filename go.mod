@@ -1,4 +1,4 @@
-module github.com/delaneyj/datastar/backends/go
+module github.com/delaneyj/datastar
 
 go 1.22.1
 
