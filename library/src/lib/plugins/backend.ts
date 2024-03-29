@@ -1,14 +1,15 @@
+import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { JSONStringify } from '../external/json-bigint'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
-const GET = 'get'
-const POST = 'post'
-const PUT = 'put'
-const PATCH = 'patch'
-const DELETE = 'delete'
-const Methods = [GET, POST, PUT, PATCH, DELETE]
 
-export const BackendActions: Actions = Methods.reduce((acc, method) => {
+const GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete'
+
+export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce((acc, method) => {
   acc[method] = async (ctx, urlExpression) => {
     const da = Document as any
     if (!da.startViewTransition) {
@@ -26,11 +27,9 @@ export const BackendActions: Actions = Methods.reduce((acc, method) => {
   return acc
 }, {} as Actions)
 
-const ACCEPT = 'Accept'
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
-const TEXT_EVENT_STREAM = 'text/event-stream'
 const TRUE_STRING = 'true'
 const DATASTAR_CLASS_PREFIX = 'datastar-'
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
@@ -94,7 +93,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
       s.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
-      if (!indicator) throw new Error(`No indicator found for ${c.value}`)
+      if (!indicator) throw new Error(`No indicator found`)
       indicator.classList.add(INDICATOR_CLASS)
 
       return () => {
@@ -106,53 +105,131 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-const sseRegexp = /(?<key>\w*): (?<value>.*)/gm
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
 
   if (!urlExpression) {
-    // throw new Error(`No signal for ${method} on ${el.id}`)
-    return
+    throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
   const storeWithoutFetch = { ...s.value }
   delete storeWithoutFetch.fetch
   const storeJSON = JSONStringify(storeWithoutFetch)
-  // console.log(`Sending ${storeJSON}`)
-  // debugger
-
-  let loadingTarget = ctx.el
-  let hasIndicator = false
-  const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
-  if (indicatorSelector) {
-    const indicator = document.querySelector(indicatorSelector.value)
-    if (indicator) {
-      loadingTarget = indicator
-      loadingTarget.classList.remove(INDICATOR_CLASS)
-      loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
-      hasIndicator = true
-    }
-  }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
-
+  let hasIndicator = false,
+    loadingTarget = ctx.el
   const url = new URL(urlExpression, window.location.origin)
+  method = method.toUpperCase()
+  const req: FetchEventSourceInit = {
+    method,
+    headers: {
+      [CONTENT_TYPE]: APPLICATION_JSON,
+      [DATASTAR_REQUEST]: TRUE_STRING,
+    },
+    onopen: async () => {
+      const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
+      if (indicatorSelector) {
+        const indicator = document.querySelector(indicatorSelector.value)
+        if (indicator) {
+          loadingTarget = indicator
+          loadingTarget.classList.remove(INDICATOR_CLASS)
+          loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
+          hasIndicator = true
+        }
+      }
+    },
+    onmessage: (evt) => {
+      if (!evt.event) return
+      let fragment = '',
+        merge: MergeOption = 'morph_element',
+        selector = '',
+        settleTime = 500,
+        isRedirect = false,
+        redirectURL = '',
+        error: Error | undefined = undefined,
+        isError = false,
+        isFragment = false
+      if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) throw new Error(`Unknown event: ${evt.event}`)
+      const eventType = evt.event.slice(DATASTAR_CLASS_PREFIX.length)
+      switch (eventType) {
+        case 'redirect':
+          isRedirect = true
+          break
+        case 'fragment':
+          isFragment = true
+          break
+        case 'error':
+          isError = true
+          break
+        default:
+          throw `Unknown event: ${evt}`
+      }
 
-  const headers = new Headers()
-  headers.append(ACCEPT, TEXT_EVENT_STREAM)
-  headers.append(CONTENT_TYPE, APPLICATION_JSON)
-  headers.append(DATASTAR_REQUEST, TRUE_STRING)
+      evt.data.split('\n').forEach((dataLine) => {
+        const offset = dataLine.indexOf(' ')
+        if (offset === -1) {
+          throw new Error(`Missing space in data`)
+        }
 
-  const storeHeaders: Record<string, string> = s.fetch?.headers.value || {}
-  if (storeHeaders) {
-    for (const key in storeHeaders) {
-      const value = storeHeaders[key]
-      headers.append(key, value)
+        const type = dataLine.slice(0, offset)
+        const contents = dataLine.slice(offset + 1)
+
+        switch (type) {
+          case 'selector':
+            selector = contents
+            break
+          case 'merge':
+            const vmo = contents as MergeOption
+            const exists = Object.values(MergeOptions).includes(vmo)
+            if (!exists) {
+              throw new Error(`Unknown merge option: ${vmo}`)
+            }
+            merge = vmo
+            break
+          case 'settle':
+            settleTime = parseInt(contents)
+            break
+          case 'fragment':
+          case 'html':
+            fragment = contents
+            break
+          case 'redirect':
+            redirectURL = contents
+            break
+          case 'error':
+            error = new Error(contents)
+            break
+          default:
+            throw new Error(`Unknown data type`)
+        }
+      })
+
+      if (isError && error) {
+        throw error
+      } else if (isRedirect && redirectURL) {
+        window.location.href = redirectURL
+      } else if (isFragment && fragment) {
+        mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+      } else {
+        throw new Error(`Unknown event: ${evt}`)
+      }
+    },
+    onclose: () => {
+      if (hasIndicator) {
+        loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
+        loadingTarget.classList.add(INDICATOR_CLASS)
+      }
+    },
+  }
+
+  if (s.fetch?.headers.value && req.headers) {
+    for (const key in s.fetch.headers.value) {
+      const value = s.fetch.headers.value[key]
+      req.headers[key] = value
     }
   }
 
-  method = method.toUpperCase()
-  const req: RequestInit = { method, headers }
   if (method === 'GET') {
     const queryParams = new URLSearchParams(url.search)
     queryParams.append('datastar', storeJSON)
@@ -161,109 +238,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     req.body = storeJSON
   }
 
-  const response = await fetch(url, req)
-
-  if (!response.ok) throw new Error(`Response was not ok, url: ${url}, status: ${response.status}`)
-
-  if (!response.body) throw new Error(`No response body`)
-  const reader = response.body.pipeThrough(new TextDecoderStream()).getReader()
-  while (true) {
-    const { done, value } = await reader.read()
-    if (done) break
-
-    value.split('\n\n').forEach((evtBlock) => {
-      console.log(`Received event block:\n${evtBlock}`)
-      const matches = [...evtBlock.matchAll(sseRegexp)]
-      if (matches.length) {
-        let fragment = '',
-          merge: MergeOption = 'morph_element',
-          selector = '',
-          settleTime = 500,
-          isRedirect = false,
-          redirectURL = '',
-          error: Error | undefined = undefined,
-          isError = false,
-          isFragment = false
-
-        for (const match of matches) {
-          if (!match.groups) continue
-          const { key, value } = match.groups
-          switch (key) {
-            case 'event':
-              if (!value.startsWith(DATASTAR_CLASS_PREFIX)) {
-                throw new Error(`Unknown event: ${value}`)
-              }
-              const eventType = value.slice(DATASTAR_CLASS_PREFIX.length)
-              switch (eventType) {
-                case 'redirect':
-                  isRedirect = true
-                  break
-                case 'fragment':
-                  isFragment = true
-                  break
-                case 'error':
-                  isError = true
-                  break
-                default:
-                  throw new Error(`Unknown event: ${value}`)
-              }
-              break
-            case 'data':
-              const offset = value.indexOf(' ')
-              if (offset === -1) {
-                throw new Error(`Missing space in data`)
-              }
-              const type = value.slice(0, offset)
-              const contents = value.slice(offset + 1)
-
-              switch (type) {
-                case 'selector':
-                  selector = contents
-                  break
-                case 'merge':
-                  const vmo = contents as MergeOption
-                  const exists = Object.values(MergeOptions).includes(vmo)
-                  if (!exists) {
-                    throw new Error(`Unknown merge option: ${value}`)
-                  }
-                  merge = vmo
-                  break
-                case 'settle':
-                  settleTime = parseInt(contents)
-                  break
-                case 'fragment':
-                case 'html':
-                  fragment = contents
-                  break
-                case 'redirect':
-                  redirectURL = contents
-                  break
-                case 'error':
-                  error = new Error(contents)
-                  break
-                default:
-                  throw new Error(`Unknown data type: ${type}`)
-              }
-          }
-        }
-
-        if (isError && error) {
-          throw error
-        } else if (isRedirect && redirectURL) {
-          window.location.href = redirectURL
-        } else if (isFragment && fragment) {
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
-        } else {
-          throw new Error(`Unknown event block: ${evtBlock}`)
-        }
-      }
-    })
-  }
-
-  if (hasIndicator) {
-    loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
-    loadingTarget.classList.add(INDICATOR_CLASS)
-  }
+  await fetchEventSource(url, req)
 }
 
 const fragContainer = document.createElement('template')
@@ -279,7 +254,7 @@ export function mergeHTMLFragment(
   fragContainer.innerHTML = fragment
   const frag = fragContainer.content.firstChild
   if (!(frag instanceof Element)) {
-    throw new Error(`Fragment is not an element, source '${fragment}'`)
+    throw new Error(`No fragment found`)
   }
 
   const useElAsTarget = selector === SELECTOR_SELF_SELECTOR
@@ -290,7 +265,7 @@ export function mergeHTMLFragment(
   } else {
     const selectorOrID = selector || `#${frag.getAttribute('id')}`
     targets = document.querySelectorAll(selectorOrID) || []
-    if (!!!targets) throw new Error(`No target elements, selector: ${selector}`)
+    if (!!!targets) throw new Error(`No targets found for ${selectorOrID}`)
   }
 
   for (const initialTarget of targets) {
@@ -303,7 +278,7 @@ export function mergeHTMLFragment(
     switch (merge) {
       case MergeOptions.MorphElement:
         const result = idiomorph(modifiedTarget, frag)
-        if (!result?.length) throw new Error(`Failed to morph element`)
+        if (!result?.length) throw new Error(`No morph result`)
         const first = result[0] as Element
         modifiedTarget = first
         break

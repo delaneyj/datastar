@@ -32,7 +32,7 @@ tasks:
       BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/library"
     dir: library
     generates:
-      - "{{.BACKEND_STATIC_DIR}}"
+      - "dist/**/*"
     sources:
       - "src/**/*.ts"
       - "package.json"
@@ -40,6 +40,7 @@ tasks:
       # - echo "{{.BACKEND_STATIC_DIR}}"
       - pnpm i
       # - pnpm vitest --watch=false
+      - pnpm prettier src -w --log-level silent
       - pnpm build
       - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}
@@ -67,6 +68,7 @@ tasks:
       - "{{.NAME}}/static/**/*"
     deps:
       - kill
+      - library
 
     cmds:
       - go mod tidy

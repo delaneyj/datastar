@@ -52,7 +52,7 @@ func page(children ...ElementRenderer) ElementRenderer {
 					),
 				SCRIPT(Text(`
 				function initHotReload() {
-				console.log("Hot reload intiralizing");
+				console.log("Hot reload initializing")
 				if (typeof(EventSource) !== "undefined") {
 					const es = new EventSource("/__hotreload");
 					es.onmessage = function(event) {
@@ -135,7 +135,7 @@ func markdownRenders(staticMdPath string) (mdElementRenderers map[string]Element
 			}
 		}
 
-		mdParser := parser.NewWithExtensions(parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock)
+		mdParser := parser.NewWithExtensions(parser.CommonExtensions | parser.AutoHeadingIDs | parser.NoEmptyLineBeforeBlock | parser.Footnotes)
 		doc := mdParser.Parse(b)
 		renderedHTML := string(markdown.Render(doc, mdRenderer()))
 

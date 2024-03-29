@@ -121,13 +121,13 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 							material_symbols.AccountCircle(),
 							Text("Activate"),
 						).
-							DATASTAR_ON("click", "$$put('/examples/bulk_update/data/activate'); $all = false; $$setAll('contact_', $selections.all)").
+							DATASTAR_ON("click", "$$put('/examples/bulk_update/data/activate'); $selections.all = false; $$setAll('contact_', $selections.all)").
 							CLASS(activateButtonCSS),
 						BUTTON(
 							material_symbols.AccountCircleOff(),
 							Text("Deactivate"),
 						).
-							DATASTAR_ON("click", "$$put('/examples/bulk_update/data/deactivate'); $all = false; $$setAll('contact_', $selections.all)").
+							DATASTAR_ON("click", "$$put('/examples/bulk_update/data/deactivate'); $selections.all = false; $$setAll('contact_', $selections.all)").
 							CLASS(deactivateButtonCSS),
 					),
 				SignalStore,

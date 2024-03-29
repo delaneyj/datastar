@@ -11,6 +11,9 @@ export default defineConfig({
     // algorithm: 'brotliCompress',
     // }),
     visualizer({
+      brotliSize: true,
+      // gzipSize: true,
+      template: 'treemap',
       // open: true,
     }),
     splitVendorChunkPlugin(),
@@ -18,6 +21,7 @@ export default defineConfig({
   build: {
     target: 'esnext',
     minify: 'esbuild',
+    copyPublicDir: false,
     reportCompressedSize: true,
     sourcemap: true,
     lib: {

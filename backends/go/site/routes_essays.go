@@ -23,6 +23,7 @@ func setupEssays(router chi.Router) error {
 		"grugs_around_fire",
 		"i_am_a_teapot",
 		"event_streams_all_the_way_down",
+		"another_dependency",
 	}
 
 	essayLabels := lo.Map(essayNames, func(name string, i int) string {

@@ -337,14 +337,14 @@ function handleHeadElement(newHeadTag: HTMLHeadElement, currentHead: HTMLHeadEle
   // Push the remaining new head elements in the Map into the
   // nodes to append to the head tag
   nodesToAppend.push(...srcToNewHeadNodes.values())
-  console.log('to append: ', nodesToAppend)
+  // console.log('to append: ', nodesToAppend)
 
   const promises = []
   for (const newNode of nodesToAppend) {
-    console.log('adding: ', newNode)
+    // console.log('adding: ', newNode)
     const newElt = document.createRange().createContextualFragment(newNode.outerHTML).firstChild as Element | null
     if (!newElt) throw new Error('could not create new element from: ' + newNode.outerHTML)
-    console.log(newElt)
+    // console.log(newElt)
     if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
       if (newElt.hasAttribute('href') || newElt.hasAttribute('src')) {
         let resolver: (value: unknown) => void

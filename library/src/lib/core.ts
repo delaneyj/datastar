@@ -161,15 +161,26 @@ export class Datastar {
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
             appliedProcessors.add(processor)
-            const matches = [...expression.matchAll(processor.regexp)]
-            if (matches.length) {
-              for (const match of matches) {
-                if (!match.groups) continue
-                const { groups } = match
-                const { whole } = groups
-                expression = expression.replace(whole, processor.replacer(groups))
+
+            const expressionParts = expression.split(';')
+            const revisedParts: string[] = []
+
+            expressionParts.forEach((exp) => {
+              let revised = exp
+              const matches = [...revised.matchAll(processor.regexp)]
+              if (matches.length) {
+                for (const match of matches) {
+                  if (!match.groups) continue
+                  const { groups } = match
+                  const { whole } = groups
+                  revised = revised.replace(whole, processor.replacer(groups))
+                }
               }
-            }
+              revisedParts.push(revised)
+            })
+            // })
+
+            expression = revisedParts.join('; ')
           }
 
           const ctx: AttributeContext = {
@@ -193,11 +204,11 @@ export class Datastar {
           }
 
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
-            const statements = expression.split(';')
+            const statements = expression.split(';').map((s) => s.trim())
             statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
             const fnContent = `
 try {
-  ${statements.join(';')}
+${statements.map((s) => `  ${s}`).join(';\n')}
 } catch (e) {
   throw e
 }
@@ -206,9 +217,7 @@ try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
-              console.error(`Error creating expression function for '${fnContent}'`)
-              console.error(e)
-              return
+              throw new Error(`Error creating expression function for '${fnContent}'`)
             }
           }
 
