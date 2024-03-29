@@ -16,6 +16,8 @@ tasks:
       - echo {{.VERSION}}
   libpub:
     dir: ./library
+    deps:
+      - library
     cmds:
       - git push origin
       - git tag v{{.VERSION}}
@@ -72,6 +74,8 @@ tasks:
       - ./{{.BIN_NAME}}
 
   deploy:
+    deps:
+      - library
     cmds:
       - fly deploy --local-only
 
