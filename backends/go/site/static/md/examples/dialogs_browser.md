@@ -13,7 +13,7 @@
 
 ## Explanation
 
-Dialogs can be triggered with the hx-prompt and hx-confirmattributes. These are triggered by the user interaction that would trigger the AJAX request, but the request is only sent if the dialog is accepted.
+Dialogs can be triggered with the standard browser `prompt` and `confirm` within an expression. These are triggered by the user interaction that would trigger the fetch, but the request is only sent if the dialog is accepted.
 
 ```html
 <button

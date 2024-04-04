@@ -20,24 +20,16 @@ To begin we start with a default value for the make select: Audi. We render the 
 Here is the code:
 
 ```html
-<div>
-  <label>Make</label>
+<div id="value_select" data-store='{"make":"","model":""}'>
+  <div>Pick a Make / Model</div>
   <select
-    name="make"
-    hx-get="/models"
-    hx-target="#models"
-    hx-indicator=".htmx-indicator"
+    data-model="make"
+    data-on-change="$$get('/examples/value_select/data')"
   >
-    <option value="audi">Audi</option>
-    <option value="toyota">Toyota</option>
-    <option value="bmw">BMW</option>
-  </select>
-</div>
-<div>
-  <label>Model</label>
-  <select id="models" name="model">
-    <option value="a1">A1</option>
-    ...
+    <option disabled>Select a Make</option>
+    <option value="HYAABHANLTMQC">Audi</option>
+    <option value="HZAABHANLTMQC">Toyota</option>
+    <option value="H2AABHANLTMQC">Ford</option>
   </select>
 </div>
 ```
@@ -45,9 +37,27 @@ Here is the code:
 When a request is made to the /models end point, we return the models for that make:
 
 ```html
-<option value="325i">325i</option>
-<option value="325ix">325ix</option>
-<option value="X5">X5</option>
+<div id="value_select" data-store='{"make":"HZAABHANLTMQC","model":""}'>
+  <div>Pick a Make / Model</div>
+  <select
+    data-model="make"
+    data-on-change="$$get('/examples/value_select/data')"
+  >
+    <option disabled>Select a Make</option>
+    <option value="HYAABHANLTMQC">Audi</option>
+    <option value="HZAABHANLTMQC">Toyota</option>
+    <option value="H2AABHANLTMQC">Ford</option>
+  </select>
+  <select
+    data-model="model"
+    data-on-change="$$get('/examples/value_select/data')"
+  >
+    <option disabled="" selected="" value="">Select a Model</option>
+    <option value="HZIABHANLTMQC">Land Cruiser</option>
+    <option value="HZQABHANLTMQC">Corolla</option>
+    <option value="HZYABHANLTMQC">Camry</option>
+  </select>
+</div>
 ```
 
 And they become available in the model select.

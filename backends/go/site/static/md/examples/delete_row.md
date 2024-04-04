@@ -51,7 +51,7 @@ table body:
 </table>
 ```
 
-The row has a normal [`confirm`]([@/attributes/hx-confirm.md] to confirm the delete action. There is no need for an `hx-confirm` and easy enough to use directly when desired. We also use the following CSS to fade out.
+The row has a normal [`confirm`](https://developer.mozilla.org/en-US/docs/Web/API/Window/confirm) to confirm the delete action. We also use the following CSS to fade out.
 
 ```css
 tr.datastar-swapping td {
