@@ -55,7 +55,7 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 			return DIV().
 				ID("inline_validation").
 				CLASS("flex flex-col gap-4").
-				DATASTAR_MERGE_STORE(u).
+				DATASTAR_STORE(u).
 				Children(
 					DIV().CLASS("font-bold text-2xl").Text("Sign Up"),
 					DIV(

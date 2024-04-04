@@ -343,7 +343,7 @@ const nt = {
     return `data.refs.${t}`;
   }
 }, ot = [rt, nt, st], it = {
-  prefix: "mergeStore",
+  prefix: "store",
   preprocessors: {
     pre: [
       {

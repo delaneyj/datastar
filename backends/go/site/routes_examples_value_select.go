@@ -128,7 +128,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 				sse,
 				DIV().
 					ID("value_select").
-					DATASTAR_MERGE_STORE(store).
+					DATASTAR_STORE(store).
 					CLASS("flex flex-col gap-2").
 					Children(
 						DIV().

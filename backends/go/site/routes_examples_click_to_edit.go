@@ -95,7 +95,7 @@ func setupExamplesClickToEdit(examplesRouter chi.Router) error {
 				DIV().
 					ID("contact_1").
 					CLASS("flex flex-col gap-2").
-					DATASTAR_MERGE_STORE(c1).
+					DATASTAR_STORE(c1).
 					Children(
 						labelInputModel("First Name", "firstName"),
 						labelInputModel("Last Name", "lastName"),

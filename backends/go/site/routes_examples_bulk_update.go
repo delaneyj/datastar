@@ -88,7 +88,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 	contactsToNode := func(selectionStore SelectionStore, contacts []*ContactActive) ElementRenderer {
 		return DIV().
 			ID("bulk_update").
-			DATASTAR_MERGE_STORE(selectionStore).
+			DATASTAR_STORE(selectionStore).
 			CLASS("flex flex-col gap-2").
 			Children(
 				TABLE().
@@ -176,7 +176,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 			}
 			datastar.RenderFragment(
 				sse,
-				DIV().DATASTAR_MERGE_STORE(store),
+				DIV().DATASTAR_STORE(store),
 				// datastar.WithQuerySelector("#bulk_update"),
 				datastar.WithMergeType(datastar.FragmentMergeUpsertAttributes),
 			)

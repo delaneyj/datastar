@@ -53,7 +53,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 				DIV().
 					ID("shoelace_kitchensink").
 					CLASS("sl-theme-dark flex flex-col gap-4").
-					DATASTAR_MERGE_STORE(input).
+					DATASTAR_STORE(input).
 					Children(
 						SL_INPUT().
 							LABEL("Label").

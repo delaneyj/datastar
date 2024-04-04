@@ -9,7 +9,7 @@ These are the only plugins that are required in order to have a working system. 
 ### MergeStore
 
 ```html
-<div data-merge-store="{foo:1234}"></div>
+<div data-store="{foo:1234}"></div>
 ```
 
 Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It then merges the contents into the store. This can be used anywhere as the store is a global singleton. All keys are converted into signals, works with nested objects.

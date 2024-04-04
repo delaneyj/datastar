@@ -72,7 +72,7 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 						),
 						TBODY().
 							ID("click_to_load_rows").
-							DATASTAR_MERGE_STORE(input).
+							DATASTAR_STORE(input).
 							Children(
 								Group(renderAgentRows(input)...),
 							),

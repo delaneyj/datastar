@@ -38,8 +38,8 @@ const RefProcessor: Preprocesser = {
 export const CorePreprocessors: Preprocesser[] = [ActionProcessor, SignalProcessor, RefProcessor]
 
 // Setup the global store
-const MergeStoreAttributePlugin: AttributePlugin = {
-  prefix: 'mergeStore',
+const StoreAttributePlugin: AttributePlugin = {
+  prefix: 'store',
   preprocessors: {
     pre: [
       {
@@ -72,4 +72,4 @@ const RefPlugin: AttributePlugin = {
   },
 }
 
-export const CorePlugins: AttributePlugin[] = [MergeStoreAttributePlugin, RefPlugin]
+export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, RefPlugin]

@@ -30,7 +30,7 @@ func setupExamplesLazyTabs(examplesRouter chi.Router) error {
 		log.Printf("tabsToNode: %d", activeIdx)
 		return DIV().
 			ID("lazy_tabs").
-			DATASTAR_MERGE_STORE(Store{TabID: activeIdx}).
+			DATASTAR_STORE(Store{TabID: activeIdx}).
 			CLASS("flex flex-col").
 			Children(
 				UL().

@@ -61,7 +61,7 @@ The difference is if you change `a` or `b`, `c` will auto schedule for updates. 
 Ok so back to our hypothecial framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
 
 ```html
-<div data-merge-store="{value:'hello world'}"></div>
+<div data-store="{value:'hello world'}"></div>
 ```
 
 The contents is just a set of data that can evaluated by [JSON.parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) and will convert this data into a tree of signals and merge into a store that tracks all of the reactivity on the page. In this case we want there to be a a single `value` signal with the contents of `'hello world'`.
@@ -71,7 +71,7 @@ The contents is just a set of data that can evaluated by [JSON.parse](https://de
 Let's replace the hard coded value in the input with another attribute
 
 ```html
-<div data-merge-store="{value:'hello world'}">
+<div data-store="{value:'hello world'}">
   <label>HELLO WORLD</label>
   <input data-model="value" />
 </div>
@@ -84,7 +84,7 @@ Here we've created a new attribute `data-model` with the contents of `value`. We
 Now we want to update the label relationship.
 
 ```html
-<div data-merge-store="{value:'hello world'}">
+<div data-store="{value:'hello world'}">
   <label data-text="$value"></label>
   <input data-model="value" />
 </div>
@@ -95,7 +95,7 @@ Here we've added another attribute `data-text` but the content has a `$` prefix.
 However it doesn't yet match the original intent, which was to make it uppercase, so let's make a quick adjustment.
 
 ```html
-<div data-merge-store="{value:'hello world'}">
+<div data-store="{value:'hello world'}">
   <label data-text="$value.toUpperCase()"></label>
   <input data-model="value" />
 </div>

@@ -28,7 +28,7 @@ func setupAPI(router chi.Router) error {
 		return DIV().
 			ID("global-count-example").
 			CLASS("flex flex-col gap-2").
-			DATASTAR_MERGE_STORE(store).
+			DATASTAR_STORE(store).
 			Children(
 				DIV().
 					CLASS("flex gap-2 justify-between items-center").

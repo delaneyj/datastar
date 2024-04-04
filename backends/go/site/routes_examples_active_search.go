@@ -89,7 +89,7 @@ func setupExamplesActiveSearch(examplesRouter chi.Router) error {
 			DIV().
 				ID("active_search").
 				CLASS("flex flex-col gap-4").
-				DATASTAR_MERGE_STORE(store).
+				DATASTAR_STORE(store).
 				Children(
 					DIV().
 						CLASS("flex gap-2").

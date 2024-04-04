@@ -29,7 +29,7 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 			DIV().
 				ID("file_upload").
 				CLASS("flex flex-col gap-4").
-				DATASTAR_MERGE_STORE(store).
+				DATASTAR_STORE(store).
 				Children(
 					DIV().
 						CLASS("form-control").

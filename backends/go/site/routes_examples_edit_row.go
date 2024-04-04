@@ -117,7 +117,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 		return DIV().
 			ID("edit_row").
 			CLASS("flex flex-col").
-			DATASTAR_MERGE_STORE(store).
+			DATASTAR_STORE(store).
 			Children(
 				TABLE().
 					CLASS("table w-full").

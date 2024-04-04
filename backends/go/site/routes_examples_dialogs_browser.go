@@ -23,7 +23,7 @@ func setupExamplesDialogsBrowser(examplesRouter chi.Router) error {
 			BUTTON().
 				ID("dialogs").
 				CLASS("flex items-center justify-center gap-1 px-2 py-1 rounded-sm text-xs bg-primary-600 hover:bg-primary-500").
-				DATASTAR_MERGE_STORE(&Store{Prompt: "foo"}).
+				DATASTAR_STORE(&Store{Prompt: "foo"}).
 				DATASTAR_ON("click", `$prompt = prompt('Enter a string',$prompt);$confirm = confirm('Are you sure?');$confirm && $$get('/examples/dialogs_browser/sure')`).
 				Children(
 					Text("Click Me"),

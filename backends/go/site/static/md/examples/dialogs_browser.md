@@ -18,7 +18,7 @@ Dialogs can be triggered with the hx-prompt and hx-confirmattributes. These are 
 ```html
 <button
   id="dialogs"
-  data-merge-store="{prompt:'foo',confirm:false}"
+  data-store="{prompt:'foo',confirm:false}"
   data-fetch-url=""
   data-on-click="$prompt=prompt('Enter a string',$prompt);$confirm=confirm('Are you sure?');$confirm && $$get('/examples/dialogs___browser/sure')"
 >

@@ -52,7 +52,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 			sse,
 			DIV().
 				ID("view_transition").
-				DATASTAR_MERGE_STORE(store).
+				DATASTAR_STORE(store).
 				CLASS("slide-it").
 				Children(
 					BUTTON().

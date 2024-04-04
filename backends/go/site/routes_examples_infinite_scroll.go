@@ -65,7 +65,7 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 
 		return DIV().
 			ID("infinite_scroll").
-			DATASTAR_MERGE_STORE(store).
+			DATASTAR_STORE(store).
 			CLASS("flex flex-col gap-2").
 			Children(
 				TABLE().

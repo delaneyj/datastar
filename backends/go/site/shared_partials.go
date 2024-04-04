@@ -202,7 +202,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 	return page(
 		highlightCSS,
 		DIV().
-			DATASTAR_MERGE_STORE(map[string]any{
+			DATASTAR_STORE(map[string]any{
 				"sidebarOpen": false,
 			}).
 			CLASS("grid grid-rows-[auto_1fr] h-screen").

@@ -161,7 +161,7 @@ func UpsertStore(sse *toolbelt.ServerSentEventsHandler, store any, opts ...Rende
 	opts = append([]RenderFragmentOption{WithMergeUpsertAttributes()}, opts...)
 	RenderFragment(
 		sse,
-		elements.DIV().DATASTAR_MERGE_STORE(store),
+		elements.DIV().DATASTAR_STORE(store),
 		opts...,
 	)
 }

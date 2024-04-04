@@ -6,7 +6,7 @@ require (
 	github.com/TwiN/go-away v1.6.13
 	github.com/alecthomas/chroma v0.10.0
 	github.com/benbjohnson/hashfs v0.2.2
-	github.com/delaneyj/gostar v0.6.3
+	github.com/delaneyj/gostar v0.7.1
 	github.com/delaneyj/toolbelt v0.2.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.12

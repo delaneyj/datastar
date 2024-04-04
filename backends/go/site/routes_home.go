@@ -104,7 +104,7 @@ func setupHome(router chi.Router) error {
 							),
 						buttonLink().
 							CLASS("w-full").
-							HREF("/docs/intro").
+							HREF("/docs/"+docNames[0]).
 							Text("Let's Get Started"),
 					).CLASS("flex flex-col justify-center items-center"),
 			),

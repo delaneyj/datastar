@@ -9,18 +9,19 @@ import (
 	"github.com/samber/lo"
 )
 
+var docNames = []string{
+	"getting_started",
+	"think_declaratively",
+	"howl",
+	"batteries_included",
+	"streaming_backend",
+}
+
+
 func setupDocs(router chi.Router) error {
 	mdElementRenderers, mdAnchors, err := markdownRenders("docs")
 	if err != nil {
 		return err
-	}
-
-	docNames := []string{
-		"intro",
-		"think_declaratively",
-		"howl",
-		"batteries_included",
-		"streaming_backend",
 	}
 
 	docLabels := lo.Map(docNames, func(name string, i int) string {
@@ -29,7 +30,7 @@ func setupDocs(router chi.Router) error {
 
 	router.Route("/docs", func(docsRouter chi.Router) {
 		docsRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			http.Redirect(w, r, "/docs/intro", http.StatusFound)
+			http.Redirect(w, r, "/docs/"+docNames[0], http.StatusFound)
 		})
 
 		sidebarContents := func(r *http.Request) ElementRenderer {
