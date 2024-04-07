@@ -338,7 +338,7 @@ export function mergeHTMLFragment(
     modifiedTarget.classList.add(SWAPPING_CLASS)
 
     ctx.cleanupElementRemovals(initialTarget)
-    ctx.applyPlugins(modifiedTarget)
+    ctx.applyPlugins(document.body)
 
     setTimeout(() => {
       initialTarget.classList.remove(SWAPPING_CLASS)

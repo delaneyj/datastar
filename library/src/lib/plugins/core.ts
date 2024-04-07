@@ -46,7 +46,7 @@ const StoreAttributePlugin: AttributePlugin = {
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups
-          return `Object.assign({}, ${whole})`
+          return `Object.assign(ctx.store() || {}, ${whole})`
         },
       },
     ],

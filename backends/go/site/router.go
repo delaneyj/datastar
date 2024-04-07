@@ -77,9 +77,8 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 
 func setupRoutes(router chi.Router) error {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
-	defer router.Get("/__hotreload", func(w http.ResponseWriter, r *http.Request) {
+	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
 		sse := toolbelt.NewSSE(w, r)
-
 		<-r.Context().Done()
 		sse.Send("reload", toolbelt.WithSSERetry(250))
 	})
