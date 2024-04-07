@@ -63,6 +63,8 @@ tasks:
   hot:
     desc: Server hot reload
     dir: backends/go
+    env:
+      ENV: dev
     sources:
       - "**/*.go"
       - "{{.NAME}}/static/**/*"

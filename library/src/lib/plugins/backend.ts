@@ -1,6 +1,6 @@
+import { DATASTAR_ERROR } from '..'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
-import { JSONStringify } from '../external/json-bigint'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 
 const GET = 'get',
@@ -93,7 +93,10 @@ export const FetchIndicatorPlugin: AttributePlugin = {
       s.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
-      if (!indicator) throw new Error(`No indicator found`)
+      if (!indicator) {
+        // throw new Error(`No indicator found`)
+        throw DATASTAR_ERROR
+      }
       indicator.classList.add(INDICATOR_CLASS)
 
       return () => {
@@ -109,12 +112,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   const s = ctx.store()
 
   if (!urlExpression) {
-    throw new Error(`No signal for ${method} on ${urlExpression}`)
+    // throw new Error(`No signal for ${method} on ${urlExpression}`)
+    throw DATASTAR_ERROR
   }
 
   const storeWithoutFetch = { ...s.value }
   delete storeWithoutFetch.fetch
-  const storeJSON = JSONStringify(storeWithoutFetch)
+  const storeJSON = JSON.stringify(storeWithoutFetch)
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
   let hasIndicator = false,
@@ -150,7 +154,10 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         error: Error | undefined = undefined,
         isError = false,
         isFragment = false
-      if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) throw new Error(`Unknown event: ${evt.event}`)
+      if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
+        // throw new Error(`Unknown event: ${evt.event}`)
+        throw DATASTAR_ERROR
+      }
       const eventType = evt.event.slice(DATASTAR_CLASS_PREFIX.length)
       switch (eventType) {
         case 'redirect':
@@ -169,7 +176,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       evt.data.split('\n').forEach((dataLine) => {
         const offset = dataLine.indexOf(' ')
         if (offset === -1) {
-          throw new Error(`Missing space in data`)
+          // throw new Error(`Missing space in data`)
+          throw DATASTAR_ERROR
         }
 
         const type = dataLine.slice(0, offset)
@@ -183,7 +191,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             const vmo = contents as MergeOption
             const exists = Object.values(MergeOptions).includes(vmo)
             if (!exists) {
-              throw new Error(`Unknown merge option: ${vmo}`)
+              // throw new Error(`Unknown merge option: ${vmo}`)
+              throw DATASTAR_ERROR
             }
             merge = vmo
             break
@@ -201,7 +210,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             error = new Error(contents)
             break
           default:
-            throw new Error(`Unknown data type`)
+            // throw new Error(`Unknown data type`)
+            throw DATASTAR_ERROR
         }
       })
 
@@ -212,7 +222,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } else if (isFragment && fragment) {
         mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
       } else {
-        throw new Error(`Unknown event: ${evt}`)
+        // throw new Error(`Unknown event: ${evt}`)
+        throw DATASTAR_ERROR
       }
     },
     onclose: () => {
@@ -254,7 +265,8 @@ export function mergeHTMLFragment(
   fragContainer.innerHTML = fragment
   const frag = fragContainer.content.firstChild
   if (!(frag instanceof Element)) {
-    throw new Error(`No fragment found`)
+    // throw new Error(`No fragment found`)
+    throw DATASTAR_ERROR
   }
 
   const useElAsTarget = selector === SELECTOR_SELF_SELECTOR
@@ -265,7 +277,10 @@ export function mergeHTMLFragment(
   } else {
     const selectorOrID = selector || `#${frag.getAttribute('id')}`
     targets = document.querySelectorAll(selectorOrID) || []
-    if (!!!targets) throw new Error(`No targets found for ${selectorOrID}`)
+    if (!!!targets) {
+      // throw new Error(`No targets found for ${selectorOrID}`)
+      throw DATASTAR_ERROR
+    }
   }
 
   for (const initialTarget of targets) {
@@ -278,7 +293,10 @@ export function mergeHTMLFragment(
     switch (merge) {
       case MergeOptions.MorphElement:
         const result = idiomorph(modifiedTarget, frag)
-        if (!result?.length) throw new Error(`No morph result`)
+        if (!result?.length) {
+          //  throw new Error(`No morph result`)
+          throw DATASTAR_ERROR
+        }
         const first = result[0] as Element
         modifiedTarget = first
         break
@@ -314,12 +332,13 @@ export function mergeHTMLFragment(
         })
         break
       default:
-        throw new Error(`Unknown merge type: ${merge}`)
+        // throw new Error(`Unknown merge type: ${merge}`)
+        throw DATASTAR_ERROR
     }
     modifiedTarget.classList.add(SWAPPING_CLASS)
 
     ctx.cleanupElementRemovals(initialTarget)
-    ctx.applyPlugins(modifiedTarget)
+    ctx.applyPlugins(document.body)
 
     setTimeout(() => {
       initialTarget.classList.remove(SWAPPING_CLASS)

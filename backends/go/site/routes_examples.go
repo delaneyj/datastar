@@ -16,7 +16,7 @@ var (
 	sanitizer   *sanitize.Sanitizer
 	SignalStore = Group(
 		H4(Text("Signal Store")),
-		PRE().DATASTAR_TEXT("ctx.JSONStringify(ctx.store())"),
+		PRE().DATASTAR_TEXT("JSON.stringify(ctx.store())"),
 	)
 )
 

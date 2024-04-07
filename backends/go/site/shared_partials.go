@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	. "github.com/delaneyj/gostar/elements"
@@ -17,6 +18,8 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 	"github.com/samber/lo"
 )
+
+var isDEV = os.Getenv("ENV") == "dev"
 
 func page(children ...ElementRenderer) ElementRenderer {
 
@@ -50,11 +53,12 @@ func page(children ...ElementRenderer) ElementRenderer {
 							CLASS("bg-accent-900 text-primary-50 w-full h-full").
 							Children(children...),
 					),
-				SCRIPT(Text(`
+				If(isDEV,
+					SCRIPT(Text(`
 				function initHotReload() {
 				console.log("Hot reload initializing")
 				if (typeof(EventSource) !== "undefined") {
-					const es = new EventSource("/__hotreload");
+					const es = new EventSource("/hotreload");
 					es.onmessage = function(event) {
 						location.reload();
 					}
@@ -68,6 +72,7 @@ func page(children ...ElementRenderer) ElementRenderer {
 				}
 				initHotReload();
 				// 							`)),
+				),
 				SCRIPT().
 					TYPE("module").
 					SRC(staticPath("library/datastar.js")).
@@ -101,7 +106,8 @@ func upsertIIfeBuildSize() string {
 		panic(err)
 	}
 	w.Close()
-	iifeBuildSize = humanize.Bytes(uint64(buf.Len()))
+	log.Printf("iife build size: %s", humanize.IBytes(uint64(buf.Len())))
+	iifeBuildSize = humanize.IBytes(uint64(buf.Len()))
 	return iifeBuildSize
 }
 
@@ -188,7 +194,7 @@ func header(r *http.Request) ElementRenderer {
 			),
 			HEADER().CLASS("md:hidden bg-accent-800 text-accent-200 px-4 py-2 flex flex-wrap gap-2 justify-between items-center").Children(
 				BUTTON().
-					CustomData("show", "!$sidebarOpen").
+					// CustomData("show", "!$sidebarOpen;debugger;!x").
 					DATASTAR_ON("click", "$sidebarOpen = true").
 					CLASS("bg-accent-600 hover:bg-accent-700 text-primary-50 p-2 rounded-md").
 					Children(mdi.Menu()),
@@ -220,16 +226,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 										ASIDE().
 											CLASS("px-4 py-8 w-64 bg-accent-800 text-accent-200 relative z-30 h-full flex flex-col gap-4").
 											Children(
-												DIV().
-													CLASS("flex justify-end").
-													Children(
-														BUTTON().
-															CLASS("text-xl p-2 rounded-full hover:bg-accent-600").
-															DATASTAR_ON("click", "$sidebarOpen = false").
-															TYPE("button").
-															VALUE("Close sidebar").
-															Children(mdi.Close()),
-													),
+
 												IMG().SRC(staticPath("images/datastar.svg")).ALT("logo").CLASS("h-8"),
 												DIV(sidebarContents).CLASS("overflow-y-auto h-full flex flex-col"),
 											),
@@ -244,6 +241,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 						DIV().
 							CLASS("md:flex md:justify-center px-2 py-4 md:px-4 w-full overflow-y-scroll scroll-mb-16").
 							Children(
+								// SignalStore,
 								DIV(contents).CLASS("prose prose-xs md:prose-2xl"),
 							),
 						DynIf(len(asideAnchors) > 0, func() ElementRenderer {

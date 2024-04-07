@@ -26,8 +26,6 @@ export type AttributeContext = {
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
-  JSONStringify: <T>(value: T) => string
-  JSONParse: <T>(value: string) => T
 }
 
 export type InitContext = {

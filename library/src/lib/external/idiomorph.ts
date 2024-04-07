@@ -1,3 +1,5 @@
+import { DATASTAR_ERROR } from '..'
+
 const generatedByIdiomorphId = new WeakSet()
 
 //=============================================================================
@@ -52,7 +54,10 @@ function morphNormalizedContent(oldNode: Element, normalizedNewContent: Element,
     // otherwise find the best element match in the new content, morph that, and merge its siblings
     // into either side of the best match
     const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx)
-    if (!bestMatch) throw new Error('Could not find best match')
+    if (!bestMatch) {
+      // throw new Error('Could not find best match')
+      throw DATASTAR_ERROR
+    }
 
     // stash the siblings that will need to be inserted on either side of the best match
     const previousSibling = bestMatch?.previousSibling as Element
@@ -93,7 +98,10 @@ function morphOldNodeTo(oldNode: Element, newContent: Element, ctx: any) {
     if (ctx.callbacks.beforeNodeRemoved(oldNode) === false) return
     if (ctx.callbacks.beforeNodeAdded(newContent) === false) return
 
-    if (!oldNode.parentElement) throw new Error('oldNode has no parentElement')
+    if (!oldNode.parentElement) {
+      // throw new Error('oldNode has no parentElement')
+      throw DATASTAR_ERROR
+    }
     oldNode.parentElement.replaceChild(newContent, oldNode)
     ctx.callbacks.afterNodeAdded(newContent)
     ctx.callbacks.afterNodeRemoved(oldNode)
@@ -343,7 +351,10 @@ function handleHeadElement(newHeadTag: HTMLHeadElement, currentHead: HTMLHeadEle
   for (const newNode of nodesToAppend) {
     // console.log('adding: ', newNode)
     const newElt = document.createRange().createContextualFragment(newNode.outerHTML).firstChild as Element | null
-    if (!newElt) throw new Error('could not create new element from: ' + newNode.outerHTML)
+    if (!newElt) {
+      // throw new Error('could not create new element from: ' + newNode.outerHTML)
+      throw DATASTAR_ERROR
+    }
     // console.log(newElt)
     if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
       if (newElt.hasAttribute('href') || newElt.hasAttribute('src')) {
@@ -438,7 +449,10 @@ function removeNodesBetween(startInclusive: Element, endExclusive: Element, ctx:
   while (startInclusive !== endExclusive) {
     const tempNode = startInclusive
     startInclusive = startInclusive?.nextSibling as Element
-    if (!tempNode) throw new Error('tempNode is null')
+    if (!tempNode) {
+      // throw new Error('tempNode is null')
+      throw DATASTAR_ERROR
+    }
     removeNode(tempNode, ctx)
   }
   removeIdsFromConsideration(ctx, endExclusive)
@@ -561,7 +575,10 @@ function parseContent(newContent: string) {
     // deal with touchy tags like tr, tbody, etc.
     const responseDoc = parser.parseFromString(`<body><template>${newContent}</template></body>`, 'text/html')
     const content = responseDoc.body.querySelector('template')?.content
-    if (!content) throw new Error('content is null')
+    if (!content) {
+      // throw new Error('content is null')
+      throw DATASTAR_ERROR
+    }
     generatedByIdiomorphId.add(content)
     return content
   }
