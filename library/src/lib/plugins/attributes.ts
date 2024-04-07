@@ -1,3 +1,4 @@
+import { DATASTAR_ERROR } from '..'
 import { Signal } from '../external/preact-core'
 import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
@@ -57,11 +58,15 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const isFile = isInput && type === 'file'
 
     if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
-      throw new Error('Element must be input, select, textarea, checkbox or radio')
+      // throw new Error('Element must be input, select, textarea, checkbox or radio')
+      throw DATASTAR_ERROR
     }
 
     const setInputFromSignal = () => {
-      if (!signal) throw new Error(`Signal ${signalName} not found`)
+      if (!signal) {
+        // throw new Error(`Signal ${signalName} not found`)
+        throw DATASTAR_ERROR
+      }
       const hasValue = 'value' in el
       const v = signal.value
       if (isCheckbox) {
@@ -86,10 +91,16 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         const reader = new FileReader()
         const s = ctx.store()
         reader.onload = () => {
-          if (typeof reader.result !== 'string') throw new Error('Unsupported type')
+          if (typeof reader.result !== 'string') {
+            // throw new Error('Unsupported type')
+            throw DATASTAR_ERROR
+          }
 
           const match = reader.result.match(dataURIRegex)
-          if (!match?.groups) throw new Error('Invalid data URI')
+          if (!match?.groups) {
+            // throw new Error('Invalid data URI')
+            throw DATASTAR_ERROR
+          }
           const { mime, contents } = match.groups
           signal.value = contents
 
@@ -127,7 +138,8 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         signal.value = BigInt(input.value)
       } else {
         console.log(typeof current)
-        throw new Error('Unsupported type')
+        // throw new Error('Unsupported type')
+        throw DATASTAR_ERROR
       }
     }
 
@@ -156,7 +168,10 @@ export const TextPlugin: AttributePlugin = {
 
   onLoad: (ctx: AttributeContext) => {
     const { el, expressionFn } = ctx
-    if (!(el instanceof HTMLElement)) throw new Error('Element is not HTMLElement')
+    if (!(el instanceof HTMLElement)) {
+      // throw new Error('Element is not HTMLElement')
+      throw DATASTAR_ERROR
+    }
     return ctx.reactivity.effect(() => {
       const res = expressionFn(ctx)
       el.textContent = `${res}`

@@ -1,10 +1,14 @@
 // From https://github.com/preactjs/signals/blob/main/packages/core/src/index.ts
 
+import { DATASTAR_ERROR } from '..'
+
 function cycleDetected(): never {
-  throw new Error('Cycle detected')
+  // throw new Error('Cycle detected')
+  throw DATASTAR_ERROR
 }
 function mutationDetected(): never {
-  throw new Error('Computed cannot have side-effects')
+  // throw new Error('Computed cannot have side-effects')
+  throw DATASTAR_ERROR
 }
 
 const identifier = Symbol.for('preact-signals')

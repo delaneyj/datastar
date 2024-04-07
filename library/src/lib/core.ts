@@ -1,6 +1,5 @@
 import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
-import { JSONParse, JSONStringify } from './external/json-bigint'
 import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
@@ -14,6 +13,8 @@ import {
   Preprocesser,
   Reactivity,
 } from './types'
+
+export const DATASTAR_ERROR = new Error('Datastar error')
 
 export class Datastar {
   plugins: AttributePlugin[] = []
@@ -32,14 +33,15 @@ export class Datastar {
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
     this.actions = Object.assign(this.actions, actions)
     plugins = [...CorePlugins, ...plugins]
-    if (!plugins.length) throw new Error('no plugins')
+    if (!plugins.length) throw DATASTAR_ERROR
 
     const allPluginPrefixes = new Set<string>()
     for (const p of plugins) {
       if (p.requiredPluginPrefixes) {
         for (const requiredPluginType of p.requiredPluginPrefixes) {
           if (!allPluginPrefixes.has(requiredPluginType)) {
-            throw new Error(`${p.prefix} requires ${requiredPluginType}`)
+            //throw new Error(`${p.prefix} requires ${requiredPluginType}`)
+            throw DATASTAR_ERROR
           }
         }
       }
@@ -62,14 +64,6 @@ export class Datastar {
       }
     })
     this.applyPlugins(document.body)
-  }
-
-  public JSONStringify<T>(data: T): string {
-    return JSONStringify(data)
-  }
-
-  public JSONParse<T>(json: string): T {
-    return JSONParse(json)
   }
 
   private cleanupElementRemovals(element: Element) {
@@ -125,10 +119,12 @@ export class Datastar {
           let keyRaw = dsKey.slice(p.prefix.length)
           let [key, ...modifiersWithArgsArr] = keyRaw.split('.')
           if (p.mustHaveEmptyKey && key.length > 0) {
-            throw new Error(`'${dsKey}' must have empty key`)
+            // throw new Error(`'${dsKey}' must have empty key`)
+            throw DATASTAR_ERROR
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            throw new Error(`'${dsKey}' must have non-empty key`)
+            // throw new Error(`'${dsKey}' must have non-empty key`)
+            throw DATASTAR_ERROR
           }
           if (key.length) {
             key = key[0].toLowerCase() + key.slice(1)
@@ -141,7 +137,8 @@ export class Datastar {
           if (p.allowedModifiers) {
             for (const modifier of modifiersArr) {
               if (!p.allowedModifiers.has(modifier.label)) {
-                throw new Error(`'${modifier.label}' is not allowed`)
+                // throw new Error(`'${modifier.label}' is not allowed`)
+                throw DATASTAR_ERROR
               }
             }
           }
@@ -151,10 +148,12 @@ export class Datastar {
           }
 
           if (p.mustHaveEmptyExpression && expression.length) {
-            throw new Error(`'${dsKey}' must have empty expression`)
+            // throw new Error(`'${dsKey}' must have empty expression`)
+            throw DATASTAR_ERROR
           }
           if (p.mustNotEmptyExpression && !expression.length) {
-            throw new Error(`'${dsKey}' must have non-empty expression`)
+            // throw new Error(`'${dsKey}' must have non-empty expression`)
+            throw DATASTAR_ERROR
           }
 
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
@@ -196,10 +195,9 @@ export class Datastar {
             key,
             expression,
             expressionFn: () => {
-              throw new Error('Expression function not created')
+              // throw new Error('Expression function not created')
+              throw DATASTAR_ERROR
             },
-            JSONParse: this.JSONParse,
-            JSONStringify: this.JSONStringify,
             modifiers,
           }
 
@@ -217,7 +215,8 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
-              throw new Error(`Error creating expression function for '${fnContent}'`)
+              // throw new Error(`Error creating expression function for '${fnContent}'`)
+              throw DATASTAR_ERROR
             }
           }
 

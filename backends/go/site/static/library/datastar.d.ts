@@ -18,8 +18,6 @@ export declare type AttributeContext = {
     expression: Readonly<string>;
     expressionFn: ExpressionFunction;
     modifiers: Map<string, string[]>;
-    JSONStringify: <T>(value: T) => string;
-    JSONParse: <T>(value: string) => T;
 };
 
 export declare type AttributePlugin = {
@@ -68,8 +66,6 @@ export declare class Datastar {
     removals: Map<Element, Set<OnRemovalFn>>;
     constructor(actions?: Actions, ...plugins: AttributePlugin[]);
     run(): void;
-    JSONStringify<T>(data: T): string;
-    JSONParse<T>(json: string): T;
     private cleanupElementRemovals;
     private mergeStore;
     signalByName<T>(name: string): Signal<T>;
@@ -78,6 +74,8 @@ export declare class Datastar {
     private walkSignals;
     private walkDownDOM;
 }
+
+export declare const DATASTAR_ERROR: Error;
 
 export declare type DatastarPlugin = {};
 

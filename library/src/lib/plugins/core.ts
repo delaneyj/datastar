@@ -43,12 +43,10 @@ const StoreAttributePlugin: AttributePlugin = {
   preprocessors: {
     pre: [
       {
-        // Replacing whole with JSONStringify(whole)
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups
-
-          return `ctx.JSONParse('${whole.replace(/'/g, `\\'`)}')`
+          return `Object.assign({}, ${whole})`
         },
       },
     ],

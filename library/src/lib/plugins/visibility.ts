@@ -1,3 +1,4 @@
+import { DATASTAR_ERROR } from '..'
 import { toHTMLorSVGElement } from '../dom'
 import { effect } from '../external/preact-core'
 import { AttributeContext, AttributePlugin } from '../types'
@@ -77,18 +78,25 @@ export const TeleportPlugin: AttributePlugin = {
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, modifiers, expression } = ctx
-    if (!(el instanceof HTMLTemplateElement)) throw new Error() // type guard
+    if (!(el instanceof HTMLTemplateElement)) throw DATASTAR_ERROR // type guard
 
     const target = document.querySelector(expression)
-    if (!target) throw new Error(`Target element not found: ${expression}`)
+    if (!target) {
+      // throw new Error(`Target element not found: ${expression}`)
+      throw DATASTAR_ERROR
+    }
 
     if (!el.content) {
-      throw new Error('Template element must have content')
+      // throw new Error('Template element must have content')
+      throw DATASTAR_ERROR
     }
 
     const n = el.content.cloneNode(true)
     const nEl = toHTMLorSVGElement(n as Element)
-    if (nEl?.firstElementChild) throw new Error('Empty template')
+    if (nEl?.firstElementChild) {
+      // throw new Error('Empty template')
+      throw DATASTAR_ERROR
+    }
 
     if (modifiers.has(PREPEND)) {
       if (!target.parentNode) throw teleportParentErr
@@ -146,12 +154,18 @@ export const ViewTransitionPlugin: AttributePlugin = {
     const { el, expressionFn } = ctx
     let name = expressionFn(ctx)
     if (!name) {
-      if (!el.id) throw new Error('Element must have an id if no name is provided')
+      if (!el.id) {
+        // throw new Error('Element must have an id if no name is provided')
+        throw DATASTAR_ERROR
+      }
       name = el.id
     }
 
     const stylesheet = document.getElementById(viewTransitionID) as HTMLStyleElement
-    if (!stylesheet) throw new Error('View transition stylesheet not found')
+    if (!stylesheet) {
+      // throw new Error('View transition stylesheet not found')
+      throw DATASTAR_ERROR
+    }
 
     const clsName = `ds-vt-${name}`
     // add view transition class
