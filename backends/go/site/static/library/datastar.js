@@ -520,7 +520,7 @@ ${p.map((h) => `  ${h}`).join(`;
         this.walkDownDOM(e, n, s++), e = e.nextElementSibling;
   }
 }
-const lt = "0.11.1", xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.11.2", xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1179,9 +1179,11 @@ const xt = "get", Ft = "post", Vt = "put", jt = "patch", Bt = "delete", Ut = [xt
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
   onLoad: (t) => {
-    const e = t.store().fetch.headers, n = t.key[0].toUpperCase() + t.key.slice(1);
-    return e[n] = t.reactivity.computed(() => t.expressionFn(t)), () => {
-      delete e[n];
+    const e = t.store();
+    e.fetch || (e.fetch = {}), e.fetch.headers || (e.fetch.headers = {});
+    const n = e.fetch.headers, s = t.key[0].toUpperCase() + t.key.slice(1);
+    return n[s] = t.reactivity.computed(() => t.expressionFn(t)), () => {
+      delete n[s];
     };
   }
 }, Zt = {
@@ -1203,7 +1205,7 @@ const xt = "get", Ft = "post", Vt = "put", jt = "patch", Bt = "delete", Ut = [xt
   },
   onLoad: (t) => t.reactivity.effect(() => {
     const e = t.reactivity.computed(() => `${t.expressionFn(t)}`), n = t.store();
-    n.fetch.indicatorSelectors[t.el.id] = e;
+    n.fetch || (n.fetch = {}), n.fetch.indicatorSelectors || (n.fetch.indicatorSelectors = {}), n.fetch.indicatorSelectors[t.el.id] = e;
     const s = document.querySelector(e.value);
     if (!s)
       throw f;
@@ -1296,10 +1298,12 @@ async function ye(t, e, n) {
         throw f;
     },
     onclose: () => {
-      i && (a.classList.remove(le), a.classList.add(B));
+      i && setTimeout(() => {
+        a.classList.remove(le), a.classList.add(B);
+      }, 300);
     }
   };
-  if (s.fetch?.headers.value && d.headers)
+  if (s.fetch?.headers?.value && d.headers)
     for (const l in s.fetch.headers.value) {
       const c = s.fetch.headers.value[l];
       d.headers[l] = c;

@@ -71,6 +71,7 @@ tasks:
     deps:
       - kill
       - library
+      # - css
 
     cmds:
       - go mod tidy

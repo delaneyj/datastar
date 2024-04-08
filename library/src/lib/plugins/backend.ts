@@ -58,7 +58,10 @@ export const HeadersPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
 
   onLoad: (ctx) => {
-    const headers = ctx.store().fetch.headers
+    const s = ctx.store()
+    if (!s.fetch) s.fetch = {}
+    if (!s.fetch.headers) s.fetch.headers = {}
+    const headers = s.fetch.headers
     const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
     headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
     return () => {
@@ -90,6 +93,8 @@ export const FetchIndicatorPlugin: AttributePlugin = {
     return ctx.reactivity.effect(() => {
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
       const s = ctx.store()
+      if (!s.fetch) s.fetch = {}
+      if (!s.fetch.indicatorSelectors) s.fetch.indicatorSelectors = {}
       s.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
@@ -228,13 +233,15 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
     onclose: () => {
       if (hasIndicator) {
-        loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
-        loadingTarget.classList.add(INDICATOR_CLASS)
+        setTimeout(() => {
+          loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
+          loadingTarget.classList.add(INDICATOR_CLASS)
+        }, 300)
       }
     },
   }
 
-  if (s.fetch?.headers.value && req.headers) {
+  if (s.fetch?.headers?.value && req.headers) {
     for (const key in s.fetch.headers.value) {
       const value = s.fetch.headers.value[key]
       req.headers[key] = value

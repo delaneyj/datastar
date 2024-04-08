@@ -72,7 +72,6 @@
 .gap-6{gap:1.5rem;}
 .gap-8{gap:2rem;}
 .overflow-hidden{overflow:hidden;}
-.overflow-scroll{overflow:scroll;}
 .overflow-y-auto{overflow-y:auto;}
 .overflow-y-scroll{overflow-y:scroll;}
 .text-ellipsis{text-overflow:ellipsis;}
@@ -120,7 +119,6 @@
 .bg-success-700{--un-bg-opacity:1;background-color:rgb(63 123 81 / var(--un-bg-opacity));}
 .hover\:bg-accent-400:hover{--un-bg-opacity:1;background-color:rgb(95 129 201 / var(--un-bg-opacity));}
 .hover\:bg-accent-500:hover{--un-bg-opacity:1;background-color:rgb(55 97 187 / var(--un-bg-opacity));}
-.hover\:bg-accent-600:hover{--un-bg-opacity:1;background-color:rgb(44 78 150 / var(--un-bg-opacity));}
 .hover\:bg-accent-700:hover{--un-bg-opacity:1;background-color:rgb(33 58 112 / var(--un-bg-opacity));}
 .hover\:bg-error-500:hover{--un-bg-opacity:1;background-color:rgb(195 105 105 / var(--un-bg-opacity));}
 .hover\:bg-error-600:hover{--un-bg-opacity:1;background-color:rgb(159 84 84 / var(--un-bg-opacity));}

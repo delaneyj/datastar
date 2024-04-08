@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.11.1",
+  "version": "0.11.2",
   "type": "module",
   "homepage": "https://data-star.dev",
   "repository": "https://github.com/delaneyj/datastar",
@@ -25,6 +25,7 @@
   "devDependencies": {
     "@types/dom-view-transitions": "^1.0.4",
     "@types/node": "^20.11.30",
+    "@unocss/cli": "^0.59.0",
     "prettier": "^3.2.5",
     "prettier-plugin-organize-attributes": "^1.0.0",
     "rollup-plugin-visualizer": "^5.12.0",
