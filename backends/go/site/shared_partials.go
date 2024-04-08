@@ -33,10 +33,7 @@ func page(children ...ElementRenderer) ElementRenderer {
 					META().CHARSET("UTF-8"),
 					META().NAME("viewport").CONTENT("width=device-width, initial-scale=1"),
 					META().NAME("description").CONTENT("Datastar is declarative real-time hypermedia framework"),
-					//favicon png
 					LINK().REL("icon").HREF(staticPath("images/datastar_icon.svg")),
-					// LINK().REL("stylesheet").HREF("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/themes/light.css"),
-					// SCRIPT().TYPE("module").SRC("https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.14.0/cdn/shoelace-autoloader.js"),
 					LINK().REL("stylesheet").HREF(staticPath("css/site.css")),
 					cdnLink("@unocss/reset/tailwind.min.css"),
 					cdnLink("animate.css@4.1.1/animate.min.css"),

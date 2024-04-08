@@ -285,11 +285,8 @@ export function mergeHTMLFragment(
 
   for (const initialTarget of targets) {
     initialTarget.classList.add(SWAPPING_CLASS)
-
     const originalHTML = initialTarget.outerHTML
-
     let modifiedTarget = initialTarget
-
     switch (merge) {
       case MergeOptions.MorphElement:
         const result = idiomorph(modifiedTarget, frag)

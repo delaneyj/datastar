@@ -2,6 +2,7 @@ export * from './core'
 export * from './dom'
 export * from './types'
 
+import { version } from '../../package.json'
 import { Datastar } from './core'
 import { AttributePlugins, BackendActions, BackendPlugins, VisibilityPlugins } from './plugins'
 import { HelperActions } from './plugins/helpers'
@@ -12,7 +13,7 @@ export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlug
   const ds = new Datastar(actions, ...plugins)
   ds.run()
   const end = performance.now()
-  console.log(`Datastar loaded and attached to all DOM elements in ${end - start}ms`)
+  console.log(`Datastar v${version} loaded and attached to all DOM elements in ${end - start}ms`)
   return ds
 }
 

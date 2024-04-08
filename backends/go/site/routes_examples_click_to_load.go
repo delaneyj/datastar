@@ -24,8 +24,9 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 	}
 
 	type Input struct {
-		Limit  int `json:"limit"`
-		Offset int `json:"offset"`
+		SidebarOpen bool `json:"sidebarOpen"`
+		Limit       int  `json:"limit"`
+		Offset      int  `json:"offset"`
 	}
 
 	renderAgentRows := func(input *Input) []ElementRenderer {

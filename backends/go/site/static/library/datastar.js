@@ -1,4 +1,4 @@
-function Ne(t) {
+function Me(t) {
   return t instanceof HTMLElement || t instanceof SVGElement ? t : null;
 }
 function Q() {
@@ -21,7 +21,7 @@ function te() {
     let n = $;
     for ($ = void 0, oe++; n !== void 0; ) {
       const s = n._nextBatchedEffect;
-      if (n._nextBatchedEffect = void 0, n._flags &= ~I, !(n._flags & H) && Ce(n))
+      if (n._nextBatchedEffect = void 0, n._flags &= ~I, !(n._flags & H) && Re(n))
         try {
           n._callback();
         } catch (r) {
@@ -44,7 +44,7 @@ function ze(t) {
   }
 }
 let g, $, x = 0, oe = 0, X = 0;
-function Pe(t) {
+function Ne(t) {
   if (g === void 0)
     return;
   let e = t._node;
@@ -80,7 +80,7 @@ _.prototype._unsubscribe = function(t) {
 };
 _.prototype.subscribe = function(t) {
   const e = this;
-  return ue(function() {
+  return He(function() {
     const n = e.value, s = this._flags & C;
     this._flags &= ~C;
     try {
@@ -104,7 +104,7 @@ _.prototype.peek = function() {
 };
 Object.defineProperty(_.prototype, "value", {
   get() {
-    const t = Pe(this);
+    const t = Ne(this);
     return t !== void 0 && (t._version = this._version), this._value;
   },
   set(t) {
@@ -119,16 +119,16 @@ Object.defineProperty(_.prototype, "value", {
     }
   }
 });
-function Re(t) {
+function Pe(t) {
   return new _(t);
 }
-function Ce(t) {
+function Re(t) {
   for (let e = t._sources; e !== void 0; e = e._nextSource)
     if (e._source._version !== e._version || !e._source._refresh() || e._source._version !== e._version)
       return !0;
   return !1;
 }
-function Oe(t) {
+function Ce(t) {
   for (let e = t._sources; e !== void 0; e = e._nextSource) {
     const n = e._source._node;
     if (n !== void 0 && (e._rollbackNode = n), e._source._node = e, e._version = -1, e._nextSource === void 0) {
@@ -137,7 +137,7 @@ function Oe(t) {
     }
   }
 }
-function Ie(t) {
+function Oe(t) {
   let e = t._sources, n;
   for (; e !== void 0; ) {
     const s = e._prevSource;
@@ -154,17 +154,17 @@ P.prototype._refresh = function() {
     return !1;
   if ((this._flags & (F | C)) === C || (this._flags &= ~F, this._globalVersion === X))
     return !0;
-  if (this._globalVersion = X, this._flags |= k, this._version > 0 && !Ce(this))
+  if (this._globalVersion = X, this._flags |= k, this._version > 0 && !Re(this))
     return this._flags &= ~k, !0;
   const t = g;
   try {
-    Oe(this), g = this;
+    Ce(this), g = this;
     const e = this._compute();
     (this._flags & D || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~D, this._version++);
   } catch (e) {
     this._value = e, this._flags |= D, this._version++;
   }
-  return g = t, Ie(this), this._flags &= ~k, !0;
+  return g = t, Oe(this), this._flags &= ~k, !0;
 };
 P.prototype._subscribe = function(t) {
   if (this._targets === void 0) {
@@ -196,7 +196,7 @@ P.prototype.peek = function() {
 Object.defineProperty(P.prototype, "value", {
   get() {
     this._flags & k && Q();
-    const t = Pe(this);
+    const t = Ne(this);
     if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & D)
       throw this._value;
     return this._value;
@@ -205,7 +205,7 @@ Object.defineProperty(P.prototype, "value", {
 function Ze(t) {
   return new P(t);
 }
-function He(t) {
+function Ie(t) {
   const e = t._cleanup;
   if (t._cleanup = void 0, typeof e == "function") {
     ee();
@@ -223,12 +223,12 @@ function He(t) {
 function ce(t) {
   for (let e = t._sources; e !== void 0; e = e._nextSource)
     e._source._unsubscribe(e);
-  t._compute = void 0, t._sources = void 0, He(t);
+  t._compute = void 0, t._sources = void 0, Ie(t);
 }
 function Xe(t) {
   if (g !== this)
     throw new Error("Out-of-order effect");
-  Ie(this), g = t, this._flags &= ~k, this._flags & H && ce(this), te();
+  Oe(this), g = t, this._flags &= ~k, this._flags & H && ce(this), te();
 }
 function U(t) {
   this._compute = t, this._cleanup = void 0, this._sources = void 0, this._nextBatchedEffect = void 0, this._flags = C;
@@ -245,7 +245,7 @@ U.prototype._callback = function() {
   }
 };
 U.prototype._start = function() {
-  this._flags & k && Q(), this._flags |= k, this._flags &= ~H, He(this), Oe(this), ee();
+  this._flags & k && Q(), this._flags |= k, this._flags &= ~H, Ie(this), Ce(this), ee();
   const t = g;
   return g = this, Xe.bind(this, t);
 };
@@ -255,7 +255,7 @@ U.prototype._notify = function() {
 U.prototype._dispose = function() {
   this._flags |= H, this._flags & k || ce(this);
 };
-function ue(t) {
+function He(t) {
   const e = new U(t);
   try {
     e._callback();
@@ -281,7 +281,7 @@ const ie = (t) => Object.assign(
     (e, [n, s]) => {
       if (["value", "peek"].some((r) => r === n))
         throw f;
-      return typeof s != "object" || s === null || Array.isArray(s) ? e[n] = Re(s) : e[n] = ie(s), e;
+      return typeof s != "object" || s === null || Array.isArray(s) ? e[n] = Pe(s) : e[n] = ie(s), e;
     },
     {}
   )
@@ -300,17 +300,17 @@ function $e(t, e) {
   }), n;
 }
 const Qe = "[a-zA-Z_$][0-9a-zA-Z_$.]*";
-function fe(t, e, n) {
+function ue(t, e, n) {
   return new RegExp(`(?<whole>\\${t}(?<${e}>${Qe})${n})`, "g");
 }
 const et = {
-  regexp: fe("$", "signal", ""),
+  regexp: ue("$", "signal", ""),
   replacer: (t) => {
     const { signal: e } = t;
     return `ctx.store().${e}.value`;
   }
 }, tt = {
-  regexp: fe("$\\$", "action", "(?<call>\\((?<args>.*)\\))?"),
+  regexp: ue("$\\$", "action", "(?<call>\\((?<args>.*)\\))?"),
   replacer: ({ action: t, args: e }) => {
     const n = ["ctx"];
     e && n.push(...e.split(",").map((r) => r.trim()));
@@ -318,7 +318,7 @@ const et = {
     return `ctx.actions.${t}(${s})`;
   }
 }, nt = {
-  regexp: fe("~", "ref", ""),
+  regexp: ue("~", "ref", ""),
   replacer({ ref: t }) {
     return `data.refs.${t}`;
   }
@@ -330,14 +330,14 @@ const et = {
         regexp: /(?<whole>.+)/g,
         replacer: (t) => {
           const { whole: e } = t;
-          return `Object.assign(ctx.store() || {}, ${e})`;
+          return `Object.assign({...ctx.store()}, ${e})`;
         }
       }
     ]
   },
   onLoad: (t) => {
     const e = t.expressionFn(t);
-    t.mergeStore(e);
+    t.mergeStore(e), t.el.removeAttribute("data-store");
   }
 }, ot = {
   prefix: "ref",
@@ -355,9 +355,9 @@ class at {
   actions = {};
   refs = {};
   reactivity = {
-    signal: Re,
+    signal: Pe,
     computed: Ze,
-    effect: ue
+    effect: He
   };
   parentID = "";
   missingIDNext = 0;
@@ -405,7 +405,7 @@ class at {
     const n = /* @__PURE__ */ new Set();
     this.plugins.forEach((s, r) => {
       this.walkDownDOM(e, (o) => {
-        r === 0 && this.cleanupElementRemovals(o);
+        r || this.cleanupElementRemovals(o);
         for (const i in o.dataset) {
           let a = o.dataset[i] || "";
           if (!i.startsWith(s.prefix))
@@ -514,13 +514,13 @@ ${p.map((h) => `  ${h}`).join(`;
   walkDownDOM(e, n, s = 0) {
     if (!e)
       return;
-    const r = Ne(e);
+    const r = Me(e);
     if (r)
       for (n(r), s = 0, e = e.firstElementChild; e; )
         this.walkDownDOM(e, n, s++), e = e.nextElementSibling;
   }
 }
-const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), lt = {
+const lt = "0.11.1", xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -528,7 +528,7 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     const e = xe(t.key), s = `${t.expressionFn(t)}`;
     !s || s === "false" || s === "null" || s === "undefined" ? t.el.removeAttribute(e) : t.el.setAttribute(e, s);
   })
-}, ct = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, W = ["change", "input", "keydown"], ut = {
+}, ut = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, W = ["change", "input", "keydown"], ft = {
   prefix: "model",
   mustHaveEmptyKey: !0,
   preprocessors: {
@@ -564,7 +564,7 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
         y.onload = () => {
           if (typeof y.result != "string")
             throw f;
-          const N = y.result.match(ct);
+          const N = y.result.match(ut);
           if (!N?.groups)
             throw f;
           const { mime: A, contents: q } = N.groups;
@@ -605,7 +605,7 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       b(), W.forEach((m) => e.removeEventListener(m, w));
     };
   }
-}, ft = {
+}, dt = {
   prefix: "text",
   mustHaveEmptyKey: !0,
   onLoad: (t) => {
@@ -617,7 +617,7 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
       e.textContent = `${s}`;
     });
   }
-}, dt = {
+}, ht = {
   prefix: "on",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -629,13 +629,13 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     };
     const o = t.modifiers.get("debounce");
     if (o) {
-      const d = de(o), l = G(o, "leading", !1), c = G(o, "noTrail", !0);
-      r = mt(r, d, l, c);
+      const d = fe(o), l = G(o, "leading", !1), c = G(o, "noTrail", !0);
+      r = gt(r, d, l, c);
     }
     const i = t.modifiers.get("throttle");
     if (i) {
-      const d = de(i), l = G(i, "noLead", !0), c = G(i, "noTrail", !0);
-      r = gt(r, d, l, c);
+      const d = fe(i), l = G(i, "noLead", !0), c = G(i, "noTrail", !0);
+      r = vt(r, d, l, c);
     }
     const a = {
       capture: !0,
@@ -647,19 +647,19 @@ const xe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") +
     return u === "load" ? (r(), () => {
     }) : (e.addEventListener(u, r, a), () => e.removeEventListener(u, r));
   }
-}, ht = {
+}, pt = {
   prefix: "focus",
   mustHaveEmptyKey: !0,
   mustHaveEmptyExpression: !0,
   onLoad: (t) => (t.el.tabIndex || t.el.setAttribute("tabindex", "0"), t.el.focus(), t.el.scrollIntoView({ block: "center", inline: "center" }), () => t.el.blur())
-}, pt = [
-  lt,
-  ut,
+}, mt = [
+  ct,
   ft,
-  ht,
-  dt
+  dt,
+  pt,
+  ht
 ];
-function de(t) {
+function fe(t) {
   if (!t || t?.length === 0)
     return 0;
   for (const e of t) {
@@ -677,7 +677,7 @@ function de(t) {
 function G(t, e, n = !1) {
   return t ? t.includes(e) || n : !1;
 }
-function mt(t, e, n = !1, s = !0) {
+function gt(t, e, n = !1, s = !0) {
   let r;
   const o = () => r && clearTimeout(r);
   return function(...a) {
@@ -686,7 +686,7 @@ function mt(t, e, n = !1, s = !0) {
     }, e);
   };
 }
-function gt(t, e, n = !0, s = !1) {
+function vt(t, e, n = !0, s = !1) {
   let r = !1, o = null;
   return function(...a) {
     r ? o = a : (r = !0, n ? t(...a) : o = a, setTimeout(() => {
@@ -694,7 +694,7 @@ function gt(t, e, n = !0, s = !1) {
     }, e));
   };
 }
-function vt(t, {
+function yt(t, {
   signal: e,
   headers: n,
   onopen: s,
@@ -712,14 +712,14 @@ function vt(t, {
       v.abort(), document.hidden || h();
     }
     a || document.addEventListener("visibilitychange", b);
-    let w = yt, E = 0;
+    let w = _t, E = 0;
     function p() {
       document.removeEventListener("visibilitychange", b), window.clearTimeout(E), v.abort();
     }
     e?.addEventListener("abort", () => {
       p(), d();
     });
-    const m = s ?? _t;
+    const m = s ?? bt;
     async function h() {
       v = new AbortController();
       try {
@@ -728,12 +728,12 @@ function vt(t, {
           headers: c,
           signal: v.signal
         });
-        await m(S), await bt(
+        await m(S), await wt(
           S.body,
-          wt(
-            Et(
+          Et(
+            St(
               (y) => {
-                y ? c[he] = y : delete c[he];
+                y ? c[de] = y : delete c[de];
               },
               (y) => {
                 w = y;
@@ -755,12 +755,12 @@ function vt(t, {
     h();
   });
 }
-const Fe = "text/event-stream", yt = 1e3, he = "last-event-id";
-function _t(t) {
+const Fe = "text/event-stream", _t = 1e3, de = "last-event-id";
+function bt(t) {
   if (!t.headers.get("content-type")?.startsWith(Fe))
     throw f;
 }
-async function bt(t, e) {
+async function wt(t, e) {
   const n = t.getReader();
   for (; ; ) {
     const s = await n.read();
@@ -769,10 +769,10 @@ async function bt(t, e) {
     e(s.value);
   }
 }
-function wt(t) {
+function Et(t) {
   let e, n, s, r = !1;
   return function(i) {
-    e === void 0 ? (e = i, n = 0, s = -1) : e = St(e, i);
+    e === void 0 ? (e = i, n = 0, s = -1) : e = Tt(e, i);
     const a = e.length;
     let u = 0;
     for (; n < a; ) {
@@ -796,12 +796,12 @@ function wt(t) {
     u === a ? e = void 0 : u !== 0 && (e = e.subarray(u), n -= u);
   };
 }
-function Et(t, e, n) {
-  let s = pe();
+function St(t, e, n) {
+  let s = he();
   const r = new TextDecoder();
   return function(i, a) {
     if (i.length === 0)
-      n?.(s), s = pe();
+      n?.(s), s = he();
     else if (a > 0) {
       const u = r.decode(i.subarray(0, a)), d = a + (i[a + 1] === 32 ? 2 : 1), l = r.decode(i.subarray(d));
       switch (u) {
@@ -823,11 +823,11 @@ function Et(t, e, n) {
     }
   };
 }
-function St(t, e) {
+function Tt(t, e) {
   const n = new Uint8Array(t.length + e.length);
   return n.set(t), n.set(e, t.length), n;
 }
-function pe() {
+function he() {
   return {
     data: "",
     event: "",
@@ -836,11 +836,11 @@ function pe() {
   };
 }
 const z = /* @__PURE__ */ new WeakSet();
-function Tt(t, e, n = {}) {
+function At(t, e, n = {}) {
   t instanceof Document && (t = t.documentElement);
   let s;
-  typeof e == "string" ? s = Nt(e) : s = e;
-  const r = Pt(s), o = Lt(t, r, n);
+  typeof e == "string" ? s = Pt(e) : s = e;
+  const r = Rt(s), o = kt(t, r, n);
   return Ve(t, r, o);
 }
 function Ve(t, e, n) {
@@ -866,11 +866,11 @@ function Ve(t, e, n) {
   if (n.morphStyle === "innerHTML")
     return je(e, t, n), t.children;
   if (n.morphStyle === "outerHTML" || n.morphStyle == null) {
-    const s = Ct(e, t, n);
+    const s = Ot(e, t, n);
     if (!s)
       throw f;
     const r = s?.previousSibling, o = s?.nextSibling, i = Z(t, s, n);
-    return s ? Rt(r, i, o) : [];
+    return s ? Ct(r, i, o) : [];
   } else
     throw "Do not understand how to morph style " + n.morphStyle;
 }
@@ -883,7 +883,7 @@ function Z(t, e, n) {
       return;
     } else {
       if (Y(t, e))
-        return n.callbacks.beforeNodeMorphed(t, e) === !1 ? void 0 : (t instanceof HTMLHeadElement && n.head.ignore || (e instanceof HTMLHeadElement && t instanceof HTMLHeadElement && n.head.style !== "morph" ? Be(e, t, n) : (At(e, t), je(e, t, n))), n.callbacks.afterNodeMorphed(t, e), t);
+        return n.callbacks.beforeNodeMorphed(t, e) === !1 ? void 0 : (t instanceof HTMLHeadElement && n.head.ignore || (e instanceof HTMLHeadElement && t instanceof HTMLHeadElement && n.head.style !== "morph" ? Be(e, t, n) : (Lt(e, t), je(e, t, n))), n.callbacks.afterNodeMorphed(t, e), t);
       if (n.callbacks.beforeNodeRemoved(t) === !1 || n.callbacks.beforeNodeAdded(e) === !1)
         return;
       if (!t.parentElement)
@@ -904,14 +904,14 @@ function je(t, e, n) {
       Z(r, o, n), r = r.nextSibling, O(n, o);
       continue;
     }
-    let i = kt(t, e, o, r, n);
+    let i = Mt(t, e, o, r, n);
     if (i) {
-      r = me(r, i, n), Z(i, o, n), O(n, o);
+      r = pe(r, i, n), Z(i, o, n), O(n, o);
       continue;
     }
-    let a = Mt(t, o, r, n);
+    let a = Nt(t, o, r, n);
     if (a) {
-      r = me(r, a, n), Z(a, o, n), O(n, o);
+      r = pe(r, a, n), Z(a, o, n), O(n, o);
       continue;
     }
     if (n.callbacks.beforeNodeAdded(o) === !1)
@@ -923,7 +923,7 @@ function je(t, e, n) {
     r = r.nextSibling, qe(i, n);
   }
 }
-function At(t, e) {
+function Lt(t, e) {
   let n = t.nodeType;
   if (n === 1) {
     for (const s of t.attributes)
@@ -981,14 +981,14 @@ function Be(t, e, n) {
 }
 function R() {
 }
-function Lt(t, e, n) {
+function kt(t, e, n) {
   return {
     target: t,
     newContent: e,
     config: n,
     morphStyle: n.morphStyle,
     ignoreActive: n.ignoreActive,
-    idMap: Dt(t, e),
+    idMap: $t(t, e),
     deadIds: /* @__PURE__ */ new Set(),
     callbacks: Object.assign(
       {
@@ -1019,7 +1019,7 @@ function Ue(t, e, n) {
 function Y(t, e) {
   return !t || !e ? !1 : t.nodeType === e.nodeType && t.tagName === e.tagName;
 }
-function me(t, e, n) {
+function pe(t, e, n) {
   for (; t !== e; ) {
     const s = t;
     if (t = t?.nextSibling, !s)
@@ -1028,7 +1028,7 @@ function me(t, e, n) {
   }
   return O(n, e), e.nextSibling;
 }
-function kt(t, e, n, s, r) {
+function Mt(t, e, n, s, r) {
   const o = V(r, n, e);
   let i = null;
   if (o > 0) {
@@ -1044,7 +1044,7 @@ function kt(t, e, n, s, r) {
   }
   return i;
 }
-function Mt(t, e, n, s) {
+function Nt(t, e, n, s) {
   let r = n, o = e.nextSibling, i = 0;
   for (; r && o; ) {
     if (V(s, r, t) > 0)
@@ -1057,11 +1057,11 @@ function Mt(t, e, n, s) {
   }
   return r;
 }
-const ge = new DOMParser();
-function Nt(t) {
+const me = new DOMParser();
+function Pt(t) {
   const e = t.replace(/<svg(\s[^>]*>|>)([\s\S]*?)<\/svg>/gim, "");
   if (e.match(/<\/html>/) || e.match(/<\/head>/) || e.match(/<\/body>/)) {
-    const n = ge.parseFromString(t, "text/html");
+    const n = me.parseFromString(t, "text/html");
     if (e.match(/<\/html>/))
       return z.add(n), n;
     {
@@ -1069,13 +1069,13 @@ function Nt(t) {
       return s ? (z.add(s), s) : null;
     }
   } else {
-    const s = ge.parseFromString(`<body><template>${t}</template></body>`, "text/html").body.querySelector("template")?.content;
+    const s = me.parseFromString(`<body><template>${t}</template></body>`, "text/html").body.querySelector("template")?.content;
     if (!s)
       throw f;
     return z.add(s), s;
   }
 }
-function Pt(t) {
+function Rt(t) {
   if (t == null)
     return document.createElement("div");
   if (z.has(t))
@@ -1090,7 +1090,7 @@ function Pt(t) {
     return e;
   }
 }
-function Rt(t, e, n) {
+function Ct(t, e, n) {
   const s = [], r = [];
   for (; t; )
     s.push(t), t = t.previousSibling;
@@ -1104,24 +1104,24 @@ function Rt(t, e, n) {
     e?.parentElement?.insertBefore(s.pop(), e.nextSibling);
   return r;
 }
-function Ct(t, e, n) {
+function Ot(t, e, n) {
   let s = t.firstChild, r = s, o = 0;
   for (; s; ) {
-    let i = Ot(s, e, n);
+    let i = It(s, e, n);
     i > o && (r = s, o = i), s = s.nextSibling;
   }
   return r;
 }
-function Ot(t, e, n) {
+function It(t, e, n) {
   return Y(t, e) ? 0.5 + V(n, t, e) : 0;
 }
 function qe(t, e) {
   O(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
-function It(t, e) {
+function Ht(t, e) {
   return !t.deadIds.has(e);
 }
-function Ht(t, e, n) {
+function Dt(t, e, n) {
   return t.idMap.get(n)?.has(e) || !1;
 }
 function O(t, e) {
@@ -1136,10 +1136,10 @@ function V(t, e, n) {
     return 0;
   let r = 0;
   for (const o of s)
-    It(t, o) && Ht(t, o, n) && ++r;
+    Ht(t, o) && Dt(t, o, n) && ++r;
   return r;
 }
-function ve(t, e) {
+function ge(t, e) {
   const n = t.parentElement, s = t.querySelectorAll("[id]");
   for (const r of s) {
     let o = r;
@@ -1149,22 +1149,22 @@ function ve(t, e) {
     }
   }
 }
-function Dt(t, e) {
+function $t(t, e) {
   const n = /* @__PURE__ */ new Map();
-  return ve(t, n), ve(e, n), n;
+  return ge(t, n), ge(e, n), n;
 }
-const $t = "get", xt = "post", Ft = "put", Vt = "patch", jt = "delete", Bt = [$t, xt, Ft, Vt, jt].reduce((t, e) => (t[e] = async (n, s) => {
+const xt = "get", Ft = "post", Vt = "put", jt = "patch", Bt = "delete", Ut = [xt, Ft, Vt, jt, Bt].reduce((t, e) => (t[e] = async (n, s) => {
   const r = Document;
   if (!r.startViewTransition) {
-    await _e(e, s, n);
+    await ye(e, s, n);
     return;
   }
   new Promise((o) => {
     r.startViewTransition(async () => {
-      await _e(e, s, n), o(void 0);
+      await ye(e, s, n), o(void 0);
     });
   });
-}, t), {}), Ut = "Content-Type", qt = "datastar-request", Wt = "application/json", Gt = "true", j = "datastar-", B = `${j}indicator`, le = `${B}-loading`, ye = `${j}settling`, J = `${j}swapping`, Kt = "self", L = {
+}, t), {}), qt = "Content-Type", Wt = "datastar-request", Gt = "application/json", Kt = "true", j = "datastar-", B = `${j}indicator`, le = `${B}-loading`, ve = `${j}settling`, J = `${j}swapping`, Jt = "self", L = {
   MorphElement: "morph_element",
   InnerElement: "inner_element",
   OuterElement: "outer_element",
@@ -1174,7 +1174,7 @@ const $t = "get", xt = "post", Ft = "put", Vt = "patch", jt = "delete", Bt = [$t
   AfterElement: "after_element",
   DeleteElement: "delete_element",
   UpsertAttributes: "upsert_attributes"
-}, Jt = {
+}, zt = {
   prefix: "header",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1184,7 +1184,7 @@ const $t = "get", xt = "post", Ft = "put", Vt = "patch", jt = "delete", Bt = [$t
       delete e[n];
     };
   }
-}, zt = {
+}, Zt = {
   prefix: "fetchIndicator",
   mustHaveEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1211,8 +1211,8 @@ const $t = "get", xt = "post", Ft = "put", Vt = "patch", jt = "delete", Bt = [$t
       delete n.fetch.indicatorSelectors[t.el.id];
     };
   })
-}, Zt = [Jt, zt];
-async function _e(t, e, n) {
+}, Xt = [zt, Zt];
+async function ye(t, e, n) {
   const s = n.store();
   if (!e)
     throw f;
@@ -1225,8 +1225,8 @@ async function _e(t, e, n) {
   const d = {
     method: t,
     headers: {
-      [Ut]: Wt,
-      [qt]: Gt
+      [qt]: Gt,
+      [Wt]: Kt
     },
     onopen: async () => {
       const l = s.fetch?.indicatorSelectors?.[a.id] || null;
@@ -1291,7 +1291,7 @@ async function _e(t, e, n) {
       if (E && p)
         window.location.href = p;
       else if (S && c)
-        Xt(n, b, v, c, w);
+        Yt(n, b, v, c, w);
       else
         throw f;
     },
@@ -1309,16 +1309,16 @@ async function _e(t, e, n) {
     l.append("datastar", o), u.search = l.toString();
   } else
     d.body = o;
-  await vt(u, d);
+  await yt(u, d);
 }
-const be = document.createElement("template");
-function Xt(t, e, n, s, r) {
+const _e = document.createElement("template");
+function Yt(t, e, n, s, r) {
   const { el: o } = t;
-  be.innerHTML = s;
-  const i = be.content.firstChild;
+  _e.innerHTML = s;
+  const i = _e.content.firstChild;
   if (!(i instanceof Element))
     throw f;
-  const a = e === Kt;
+  const a = e === Jt;
   let u;
   if (a)
     u = [o];
@@ -1333,7 +1333,7 @@ function Xt(t, e, n, s, r) {
     let c = d;
     switch (n) {
       case L.MorphElement:
-        const b = Tt(c, i);
+        const b = At(c, i);
         if (!b?.length)
           throw f;
         c = b[0];
@@ -1372,38 +1372,38 @@ function Xt(t, e, n, s, r) {
       d.classList.remove(J), c.classList.remove(J);
     }, 1e3);
     const v = c.outerHTML;
-    l !== v && (c.classList.add(ye), setTimeout(() => {
-      c.classList.remove(ye);
+    l !== v && (c.classList.add(ve), setTimeout(() => {
+      c.classList.remove(ve);
     }, r));
   }
 }
-const se = "display", we = "none", re = "important", Yt = {
+const se = "display", be = "none", re = "important", Qt = {
   prefix: "show",
   allowedModifiers: /* @__PURE__ */ new Set([re]),
   onLoad: (t) => {
-    const { el: e, modifiers: n, expressionFn: s } = t;
-    return ue(() => {
-      const o = !!s(t), a = n.has(re) ? re : void 0;
-      o ? e.style.length === 1 && e.style.display === we ? e.style.removeProperty(se) : e.style.setProperty(se, "", a) : e.style.setProperty(se, we, a);
+    const { el: e, modifiers: n, expressionFn: s, reactivity: r } = t;
+    return r.effect(() => {
+      const i = !!s(t), u = n.has(re) ? re : void 0;
+      i ? e.style.length === 1 && e.style.display === be ? e.style.removeProperty(se) : e.style.setProperty(se, "", u) : e.style.setProperty(se, be, u);
     });
   }
-}, Qt = "intersects", Ee = "once", Se = "half", Te = "full", en = {
-  prefix: Qt,
-  allowedModifiers: /* @__PURE__ */ new Set([Ee, Se, Te]),
+}, en = "intersects", we = "once", Ee = "half", Se = "full", tn = {
+  prefix: en,
+  allowedModifiers: /* @__PURE__ */ new Set([we, Ee, Se]),
   mustHaveEmptyKey: !0,
   onLoad: (t) => {
     const { modifiers: e } = t, n = { threshold: 0 };
-    e.has(Te) ? n.threshold = 1 : e.has(Se) && (n.threshold = 0.5);
+    e.has(Se) ? n.threshold = 1 : e.has(Ee) && (n.threshold = 0.5);
     const s = new IntersectionObserver((r) => {
       r.forEach((o) => {
-        o.isIntersecting && (t.expressionFn(t), e.has(Ee) && s.disconnect());
+        o.isIntersecting && (t.expressionFn(t), e.has(we) && s.disconnect());
       });
     }, n);
     return s.observe(t.el), () => s.disconnect();
   }
-}, Ae = "prepend", Le = "append", ke = new Error("Target element must have a parent if using prepend or append"), tn = {
+}, Te = "prepend", Ae = "append", Le = new Error("Target element must have a parent if using prepend or append"), nn = {
   prefix: "teleport",
-  allowedModifiers: /* @__PURE__ */ new Set([Ae, Le]),
+  allowedModifiers: /* @__PURE__ */ new Set([Te, Ae]),
   allowedTagRegexps: /* @__PURE__ */ new Set(["template"]),
   bypassExpressionFunctionCreation: () => !0,
   onLoad: (t) => {
@@ -1414,20 +1414,20 @@ const se = "display", we = "none", re = "important", Yt = {
     if (!r || !e.content)
       throw f;
     const o = e.content.cloneNode(!0);
-    if (Ne(o)?.firstElementChild)
+    if (Me(o)?.firstElementChild)
       throw f;
-    if (n.has(Ae)) {
+    if (n.has(Te)) {
       if (!r.parentNode)
-        throw ke;
+        throw Le;
       r.parentNode.insertBefore(o, r);
-    } else if (n.has(Le)) {
+    } else if (n.has(Ae)) {
       if (!r.parentNode)
-        throw ke;
+        throw Le;
       r.parentNode.insertBefore(o, r.nextSibling);
     } else
       r.appendChild(o);
   }
-}, nn = {
+}, sn = {
   prefix: "scrollIntoView",
   onLoad: (t) => {
     const { el: e } = t;
@@ -1437,11 +1437,11 @@ const se = "display", we = "none", re = "important", Yt = {
       inline: "center"
     });
   }
-}, Me = "ds-view-transition-stylesheet", sn = {
+}, ke = "ds-view-transition-stylesheet", rn = {
   prefix: "viewTransition",
   onGlobalInit(t) {
     const e = document.createElement("style");
-    e.id = Me, document.head.appendChild(e);
+    e.id = ke, document.head.appendChild(e);
     let n = !1;
     if (document.head.childNodes.forEach((s) => {
       s instanceof HTMLMetaElement && s.name === "view-transition" && (n = !0);
@@ -1461,7 +1461,7 @@ const se = "display", we = "none", re = "important", Yt = {
         throw f;
       s = e.id;
     }
-    const r = document.getElementById(Me);
+    const r = document.getElementById(ke);
     if (!r)
       throw f;
     const o = `ds-vt-${s}`, i = `
@@ -1477,13 +1477,13 @@ const se = "display", we = "none", re = "important", Yt = {
       u.value--, u.value === 0 && (delete a.viewTransitionRefCounts[s], r.innerHTML = r.innerHTML.replace(i, ""));
     };
   }
-}, rn = [
-  Yt,
-  en,
+}, on = [
+  Qt,
   tn,
   nn,
-  sn
-], on = {
+  sn,
+  rn
+], an = {
   setAll: async (t, e, n) => {
     const s = new RegExp(e);
     t.walkSignals((r, o) => s.test(r) && (o.value = n));
@@ -1493,24 +1493,24 @@ const se = "display", we = "none", re = "important", Yt = {
     t.walkSignals((s, r) => n.test(s) && (r.value = !r.value));
   }
 };
-function an(t = {}, ...e) {
+function ln(t = {}, ...e) {
   const n = performance.now(), s = new at(t, ...e);
   s.run();
   const r = performance.now();
-  return console.log(`Datastar loaded and attached to all DOM elements in ${r - n}ms`), s;
+  return console.log(`Datastar v${lt} loaded and attached to all DOM elements in ${r - n}ms`), s;
 }
-function ln(t = {}, ...e) {
-  const n = Object.assign({}, on, Bt, t), s = [...Zt, ...rn, ...pt, ...e];
-  return an(n, ...s);
+function cn(t = {}, ...e) {
+  const n = Object.assign({}, an, Ut, t), s = [...Xt, ...on, ...mt, ...e];
+  return ln(n, ...s);
 }
 const We = window;
-We.ds = ln();
+We.ds = cn();
 We.dispatchEvent(new CustomEvent("datastar-ready"));
 export {
   f as DATASTAR_ERROR,
   at as Datastar,
-  an as runDatastarWith,
-  ln as runDatastarWithAllPlugins,
-  Ne as toHTMLorSVGElement
+  ln as runDatastarWith,
+  cn as runDatastarWithAllPlugins,
+  Me as toHTMLorSVGElement
 };
 //# sourceMappingURL=datastar.js.map

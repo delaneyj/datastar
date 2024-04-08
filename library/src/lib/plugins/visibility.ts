@@ -1,6 +1,5 @@
 import { DATASTAR_ERROR } from '..'
 import { toHTMLorSVGElement } from '../dom'
-import { effect } from '../external/preact-core'
 import { AttributeContext, AttributePlugin } from '../types'
 
 const DISPLAY = 'display'
@@ -13,9 +12,9 @@ export const ShowPlugin: AttributePlugin = {
   allowedModifiers: new Set([IMPORTANT]),
 
   onLoad: (ctx: AttributeContext) => {
-    const { el, modifiers, expressionFn } = ctx
+    const { el, modifiers, expressionFn, reactivity } = ctx
 
-    return effect(() => {
+    return reactivity.effect(() => {
       const expressionEvaluated = expressionFn(ctx)
       const shouldShow = !!expressionEvaluated
 

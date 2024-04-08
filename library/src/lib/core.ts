@@ -90,7 +90,7 @@ export class Datastar {
 
     this.plugins.forEach((p, pi) => {
       this.walkDownDOM(rootElement, (el) => {
-        if (pi === 0) this.cleanupElementRemovals(el)
+        if (!pi) this.cleanupElementRemovals(el)
 
         for (const dsKey in el.dataset) {
           let expression = el.dataset[dsKey] || ''

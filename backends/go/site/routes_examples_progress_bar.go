@@ -21,7 +21,7 @@ func setupExamplesProgressBar(examplesRouter chi.Router) error {
 		progress := 0
 
 		for progress < 100 {
-			progress = min(100, progress+rand.Intn(5)+1)
+			progress = min(100, progress+rand.Intn(10)+1)
 			datastar.RenderFragment(
 				sse,
 				DIV().

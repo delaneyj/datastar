@@ -46,7 +46,7 @@ const StoreAttributePlugin: AttributePlugin = {
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups
-          return `Object.assign(ctx.store() || {}, ${whole})`
+          return `Object.assign({...ctx.store()}, ${whole})`
         },
       },
     ],
@@ -54,6 +54,7 @@ const StoreAttributePlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
+    ctx.el.removeAttribute('data-store')
   },
 }
 
