@@ -33,7 +33,7 @@ Addtional `data` lines can be added to the response to override the default beha
 
 | Key                             | Description                                                                                                                                                      | Default |     |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --- |
-| `data: select #foo`             | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
+| `data: selector #foo`             | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
 | `data: merge morph_element`     | Merge the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph).                                                                               | \*      |
 | `data: merge inner_html`        | Replace target's innerHTML with fragment                                                                                                                         |         |
 | `data: merge outer_html`        | Replace target's outerHTML with fragment                                                                                                                         |         |
