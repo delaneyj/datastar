@@ -5,7 +5,7 @@
 ### Remotely
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
+<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
 ```
 
 ### Locally
