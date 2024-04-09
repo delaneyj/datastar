@@ -220,6 +220,8 @@ export const EventPlugin: AttributePlugin = {
     const eventName = kebabize(key).toLowerCase()
     if (eventName === 'load') {
       callback()
+
+      el.removeAttribute('data-on-load')
       return () => {}
     }
     el.addEventListener(eventName, callback, evtListOpts)
