@@ -4,7 +4,7 @@ RUN apk add --no-cache upx
 ENV PORT=8080
 
 WORKDIR /src
-COPY go.* datastar.go ./
+COPY go.* *.go ./
 RUN go mod download
 COPY backends/go/. ./backends/go/
 RUN --mount=type=cache,target=/root/.cache/go-build \
