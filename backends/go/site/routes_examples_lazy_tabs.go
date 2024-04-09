@@ -7,7 +7,6 @@ import (
 
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 )
@@ -66,7 +65,7 @@ func setupExamplesLazyTabs(examplesRouter chi.Router) error {
 			return
 		}
 
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(sse, tabsToNode(store.TabID))
 	})
 

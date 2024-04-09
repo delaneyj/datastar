@@ -9,7 +9,6 @@ import (
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -47,7 +46,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		ShouldRestore bool `json:"shouldRestore"`
 	}
 
-	renderViewTransition := func(sse *toolbelt.ServerSentEventsHandler, store *RestoreStore) {
+	renderViewTransition := func(sse *datastar.ServerSentEventsHandler, store *RestoreStore) {
 		datastar.RenderFragment(
 			sse,
 			DIV().
@@ -68,7 +67,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 
 	examplesRouter.Route("/animations/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 
 			datastar.RenderFragment(
 				sse,
@@ -155,7 +154,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		})
 
 		dataRouter.Delete("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
 				BUTTON().
@@ -172,7 +171,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		})
 
 		dataRouter.Get("/fade_me_in", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
 				BUTTON().
@@ -202,7 +201,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		dataRouter.Post("/request_in_flight", func(w http.ResponseWriter, r *http.Request) {
 			time.Sleep(2 * time.Second)
 			datastar.RenderFragment(
-				toolbelt.NewSSE(w, r),
+				datastar.NewSSE(w, r),
 				DIV().
 					ID("request_in_flight").
 					CLASS("flex gap-2").
@@ -217,7 +216,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 				return
 			}
 			store.ShouldRestore = !store.ShouldRestore
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			renderViewTransition(sse, store)
 		})
 	})

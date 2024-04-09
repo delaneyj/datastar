@@ -125,9 +125,21 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   delete storeWithoutFetch.fetch
   const storeJSON = JSON.stringify(storeWithoutFetch)
 
-  // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
   let hasIndicator = false,
     loadingTarget = ctx.el
+
+  const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
+  if (indicatorSelector) {
+    const indicator = document.querySelector(indicatorSelector.value)
+    if (indicator) {
+      loadingTarget = indicator
+      loadingTarget.classList.remove(INDICATOR_CLASS)
+      loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
+      hasIndicator = true
+    }
+  }
+
+  // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
   const url = new URL(urlExpression, window.location.origin)
   method = method.toUpperCase()
   const req: FetchEventSourceInit = {
@@ -135,18 +147,6 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     headers: {
       [CONTENT_TYPE]: APPLICATION_JSON,
       [DATASTAR_REQUEST]: TRUE_STRING,
-    },
-    onopen: async () => {
-      const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
-      if (indicatorSelector) {
-        const indicator = document.querySelector(indicatorSelector.value)
-        if (indicator) {
-          loadingTarget = indicator
-          loadingTarget.classList.remove(INDICATOR_CLASS)
-          loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
-          hasIndicator = true
-        }
-      }
     },
     onmessage: (evt) => {
       if (!evt.event) return

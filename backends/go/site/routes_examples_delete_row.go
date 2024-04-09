@@ -8,7 +8,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -74,18 +73,18 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 
 	examplesRouter.Route("/delete_row/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragmentSelf(sse, contactsToNode())
 		})
 
 		dataRouter.Get("/reset", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			contacts = starterActiveContacts()
 			datastar.RenderFragment(sse, contactsToNode())
 		})
 
 		dataRouter.Delete("/{index}", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			indexStr := chi.URLParam(r, "index")
 			index, err := strconv.Atoi(indexStr)
 			if err != nil {

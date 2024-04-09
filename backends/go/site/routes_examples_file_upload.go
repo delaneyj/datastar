@@ -7,7 +7,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 )
@@ -23,7 +22,7 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 		store := &Store{
 			File: []byte(""),
 		}
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			DIV().
@@ -56,7 +55,7 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 
 	examplesRouter.Post("/file_upload/upload", func(w http.ResponseWriter, r *http.Request) {
 		r.Body = http.MaxBytesReader(w, r.Body, 64*1024*1024)
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 
 		store := &Store{}
 		if err := datastar.BodyUnmarshal(r, store); err != nil {

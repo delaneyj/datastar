@@ -103,7 +103,7 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 			store.Limit = 10
 		}
 
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 
 		if store.Offset == 0 {
 			datastar.RenderFragment(sse, renderAgentsTable(store))

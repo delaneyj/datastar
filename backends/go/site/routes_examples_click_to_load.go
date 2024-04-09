@@ -101,7 +101,7 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 			input.Offset = 0
 		}
 
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 
 		if input.Offset == 0 {
 			datastar.RenderFragmentSelf(sse, renderAgentsTable(input))

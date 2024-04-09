@@ -9,7 +9,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -136,12 +135,12 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 
 	examplesRouter.Route("/bulk_update/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragmentSelf(sse, contactsToNode(defaultSelectionStore(), contacts))
 		})
 
 		setActivation := func(w http.ResponseWriter, r *http.Request, isActive bool) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			store := &SelectionStore{}
 			datastar.BodyUnmarshal(r, store)
 

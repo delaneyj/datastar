@@ -39,7 +39,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 		})
 
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 
 			input := &Input{
 				Nested: &Nested{
@@ -92,7 +92,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 		})
 
 		dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			var res any
 			if err := datastar.BodyUnmarshal(r, &res); err != nil {
 				datastar.Error(sse, err)

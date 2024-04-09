@@ -6,7 +6,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -17,7 +16,7 @@ func setupExamplesDialogsBrowser(examplesRouter chi.Router) error {
 	}
 
 	examplesRouter.Get("/dialogs_browser/data", func(w http.ResponseWriter, r *http.Request) {
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			BUTTON().
@@ -38,7 +37,7 @@ func setupExamplesDialogsBrowser(examplesRouter chi.Router) error {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			DIV().

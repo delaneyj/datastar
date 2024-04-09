@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/delaneyj/gostar/elements"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-sanitize/sanitize"
 	"github.com/goccy/go-json"
 	"github.com/valyala/bytebufferpool"
@@ -157,7 +156,7 @@ func WithQuerySelectorUseID() RenderFragmentOption {
 	return WithQuerySelector(FragmentSelectorUseID)
 }
 
-func UpsertStore(sse *toolbelt.ServerSentEventsHandler, store any, opts ...RenderFragmentOption) {
+func UpsertStore(sse *ServerSentEventsHandler, store any, opts ...RenderFragmentOption) {
 	opts = append([]RenderFragmentOption{WithMergeUpsertAttributes()}, opts...)
 	RenderFragment(
 		sse,
@@ -166,7 +165,7 @@ func UpsertStore(sse *toolbelt.ServerSentEventsHandler, store any, opts ...Rende
 	)
 }
 
-func Delete(sse *toolbelt.ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
+func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
 	opts = append([]RenderFragmentOption{
 		WithMergeDeleteElement(),
 		WithQuerySelector(selector),
@@ -178,7 +177,7 @@ func Delete(sse *toolbelt.ServerSentEventsHandler, selector string, opts ...Rend
 	)
 }
 
-func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
 		Merge:          FragmentMergeMorphElement,
@@ -210,40 +209,37 @@ func RenderFragment(sse *toolbelt.ServerSentEventsHandler, child elements.Elemen
 
 	sse.SendMultiData(
 		dataRows,
-		toolbelt.WithSSEEvent(SSEEventTypeFragment),
-		toolbelt.WithSSERetry(0),
-		toolbelt.WithSSESkipMinBytesCheck(true),
+		WithSSEEvent(SSEEventTypeFragment),
+		WithSSERetry(0),
 	)
 	return nil
 }
 
-func RenderFragmentSelf(sse *toolbelt.ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragmentSelf(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	opts = append([]RenderFragmentOption{WithQuerySelectorSelf()}, opts...)
 	return RenderFragment(sse, child, opts...)
 }
 
-func Redirect(sse *toolbelt.ServerSentEventsHandler, url string) {
+func Redirect(sse *ServerSentEventsHandler, url string) {
 	sse.Send(
 		fmt.Sprintf("redirect %s", url),
-		toolbelt.WithSSEEvent(SSEEventTypeRedirect),
-		toolbelt.WithSSERetry(0),
-		toolbelt.WithSSESkipMinBytesCheck(true),
+		WithSSEEvent(SSEEventTypeRedirect),
+		WithSSERetry(0),
 	)
 }
 
-func RedirectF(sse *toolbelt.ServerSentEventsHandler, urlFormat string, args ...interface{}) {
+func RedirectF(sse *ServerSentEventsHandler, urlFormat string, args ...interface{}) {
 	Redirect(sse, fmt.Sprintf(urlFormat, args...))
 }
 
-func Error(sse *toolbelt.ServerSentEventsHandler, err error) {
+func Error(sse *ServerSentEventsHandler, err error) {
 	sse.Send(
 		fmt.Sprintf("error %s", err.Error()),
-		toolbelt.WithSSEEvent(SSEEventTypeError),
-		toolbelt.WithSSERetry(0),
-		toolbelt.WithSSESkipMinBytesCheck(true),
+		WithSSEEvent(SSEEventTypeError),
+		WithSSERetry(0),
 	)
 }
 
-func ErrorF(sse *toolbelt.ServerSentEventsHandler, format string, args ...interface{}) {
+func ErrorF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
 	Error(sse, fmt.Errorf(format, args...))
 }

@@ -7,13 +7,12 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/svg_spinners"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
 func setupExamplesLazyLoad(examplesRouter chi.Router) error {
 	examplesRouter.Get("/lazy_load/data", func(w http.ResponseWriter, r *http.Request) {
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			DIV().
@@ -33,7 +32,7 @@ func setupExamplesLazyLoad(examplesRouter chi.Router) error {
 	examplesRouter.Get("/lazy_load/graph", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(3 * time.Second)
 		sp := staticPath("images/examples/tokyo.png")
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			IMG().

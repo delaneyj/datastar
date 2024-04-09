@@ -7,7 +7,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -96,7 +95,7 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, userToNode(u))
 		})
 
@@ -109,7 +108,7 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 
 			_, _, _, isValid := userValidation(u)
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			var node ElementRenderer
 			if !isValid {
 				node = userToNode(u)

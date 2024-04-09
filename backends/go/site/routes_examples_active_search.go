@@ -83,7 +83,7 @@ func setupExamplesActiveSearch(examplesRouter chi.Router) error {
 			return int(10000 * (scores[b.ID] - scores[a.ID]))
 		})
 
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
 			sse,
 			DIV().

@@ -14,6 +14,7 @@ import (
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/benbjohnson/hashfs"
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
@@ -55,7 +56,7 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 		router.Use(
 			middleware.Logger,
 			middleware.Recoverer,
-			toolbelt.CompressMiddleware(),
+			// toolbelt.CompressMiddleware(),
 		)
 
 		setupRoutes(router)
@@ -78,9 +79,9 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 func setupRoutes(router chi.Router) error {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		<-r.Context().Done()
-		sse.Send("reload", toolbelt.WithSSERetry(250))
+		sse.Send("reload", datastar.WithSSERetry(250))
 	})
 
 	htmlFormatter := html.New(html.WithClasses(true), html.TabWidth(2))

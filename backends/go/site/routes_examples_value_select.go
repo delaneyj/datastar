@@ -123,7 +123,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 
 			make, model, isValid := storeValidation(store)
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(
 				sse,
 				DIV().
@@ -201,7 +201,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 				return
 			}
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 
 			make, ok := lo.Find(cars, func(item *Make) bool {
 				return item.ID == store.Make

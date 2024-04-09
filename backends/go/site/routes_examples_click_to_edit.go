@@ -7,7 +7,6 @@ import (
 	goaway "github.com/TwiN/go-away"
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -65,7 +64,7 @@ func setupExamplesClickToEdit(examplesRouter chi.Router) error {
 
 	examplesRouter.Route("/click_to_edit/contact/{id}", func(contactRouter chi.Router) {
 		contactRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, contactNode(c1))
 		})
 
@@ -88,7 +87,7 @@ func setupExamplesClickToEdit(examplesRouter chi.Router) error {
 		}
 
 		contactRouter.Get("/edit", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 
 			datastar.RenderFragment(
 				sse,
@@ -119,7 +118,7 @@ func setupExamplesClickToEdit(examplesRouter chi.Router) error {
 
 		contactRouter.Patch("/reset", func(w http.ResponseWriter, r *http.Request) {
 			resetContact()
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, contactNode(c1))
 		})
 
@@ -137,7 +136,7 @@ func setupExamplesClickToEdit(examplesRouter chi.Router) error {
 			}
 
 			c1 = c // update the contact
-			datastar.RenderFragment(toolbelt.NewSSE(w, r), contactNode(c1))
+			datastar.RenderFragment(datastar.NewSSE(w, r), contactNode(c1))
 		})
 	})
 	// })

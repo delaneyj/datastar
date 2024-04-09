@@ -9,7 +9,6 @@ import (
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -154,7 +153,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 	emptyStore := &Store{EditRowIndex: -1}
 
 	examplesRouter.Get("/edit_row/reset", func(w http.ResponseWriter, r *http.Request) {
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 		contacts = starterEditContacts()
 		datastar.RenderFragment(sse, contactsToNode(emptyStore))
 	})
@@ -162,12 +161,12 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 	examplesRouter.Route("/edit_row/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, contactsToNode(emptyStore))
 		})
 
 		dataRouter.Get("/{index}", func(w http.ResponseWriter, r *http.Request) {
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			indexStr := chi.URLParam(r, "index")
 			i, err := strconv.Atoi(indexStr)
 			if err != nil {
@@ -196,7 +195,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 			c := contacts[i]
 			store = &Store{EditRowIndex: i, Name: c.Name, Email: c.Email}
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, contactsToNode(store))
 		})
 
@@ -216,7 +215,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 			c.Name = store.Name
 			c.Email = store.Email
 
-			sse := toolbelt.NewSSE(w, r)
+			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragment(sse, contactsToNode(emptyStore))
 		})
 	})

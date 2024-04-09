@@ -16,7 +16,7 @@ import (
 func setupExamplesProgressBar(examplesRouter chi.Router) error {
 
 	examplesRouter.Get("/progress_bar/data", func(w http.ResponseWriter, r *http.Request) {
-		sse := toolbelt.NewSSE(w, r)
+		sse := datastar.NewSSE(w, r)
 
 		progress := 0
 

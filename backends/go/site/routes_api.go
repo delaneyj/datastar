@@ -72,7 +72,7 @@ func setupAPI(router chi.Router) error {
 	router.Route("/api", func(apiRouter chi.Router) {
 		apiRouter.Route("/globalCount", func(globalCountRouter chi.Router) {
 			globalCountRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-				sse := toolbelt.NewSSE(w, r)
+				sse := datastar.NewSSE(w, r)
 				datastar.RenderFragment(sse, globalCountExample())
 			})
 
@@ -84,7 +84,7 @@ func setupAPI(router chi.Router) error {
 				}
 
 				atomic.StoreInt32(globalCount, store.Count)
-				sse := toolbelt.NewSSE(w, r)
+				sse := datastar.NewSSE(w, r)
 				datastar.RenderFragment(sse, globalCountExample())
 			})
 		})
