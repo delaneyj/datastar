@@ -337,7 +337,7 @@ const et = {
   },
   onLoad: (t) => {
     const e = t.expressionFn(t);
-    t.mergeStore(e), t.el.removeAttribute("data-store");
+    t.mergeStore(e);
   }
 }, ot = {
   prefix: "ref",
@@ -492,7 +492,7 @@ ${p.map((h) => `  ${h}`).join(`;
             }
           }
           const E = s.onLoad(w);
-          E && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(E));
+          E && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(E)), o.removeAttribute(i);
         }
       });
     });
@@ -520,7 +520,7 @@ ${p.map((h) => `  ${h}`).join(`;
         this.walkDownDOM(e, n, s++), e = e.nextElementSibling;
   }
 }
-const lt = "0.11.4", Fe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.11.5", Fe = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,

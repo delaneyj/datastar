@@ -14,6 +14,7 @@ require (
 	github.com/go-sanitize/sanitize v1.1.0
 	github.com/goccy/go-json v0.10.2
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
+	github.com/gorilla/sessions v1.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/samber/lo v1.39.0
@@ -32,6 +33,7 @@ require (
 	github.com/go-rod/rod v0.114.8 // indirect
 	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/igrmk/treemap/v2 v2.0.1 // indirect
 	github.com/klauspost/compress v1.17.7 // indirect

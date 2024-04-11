@@ -227,6 +227,8 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
             }
             this.removals.get(el)!.add(removal)
           }
+
+          el.removeAttribute(dsKey)
         }
       })
     })
