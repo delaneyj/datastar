@@ -20,6 +20,7 @@ require (
 	github.com/samber/lo v1.39.0
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/wcharczuk/go-chart/v2 v2.1.1
+	github.com/zeebo/xxh3 v1.0.2
 )
 
 require (
@@ -54,7 +55,6 @@ require (
 	github.com/ysmood/got v0.39.4 // indirect
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
-	github.com/zeebo/xxh3 v1.0.2 // indirect
 	golang.org/x/crypto v0.21.0 // indirect
 	golang.org/x/exp v0.0.0-20240318143956-a85f2c67cd81 // indirect
 	golang.org/x/image v0.15.0 // indirect

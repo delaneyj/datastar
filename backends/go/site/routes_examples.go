@@ -56,8 +56,6 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Edit Row", Description: "how to edit rows in a table"},
 				{Label: "Lazy Load", Description: "how to lazy load content"},
 				{Label: "Fetch Indicator", Description: "show a loading indicator when fetching data"},
-				{Label: "On Load", Description: "how to load data on page load"},
-				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Inline Validation", Description: "how to do inline field validation"},
 				{Label: "Infinite Scroll", Description: "infinite scrolling of a page"},
 				{Label: "Active Search", Description: "the active search box pattern"},
@@ -73,6 +71,14 @@ func setupExamples(router chi.Router) (err error) {
 			Label: "Web Components Examples",
 			Examples: []*Example{
 				{Label: "Shoelace Kitchensink", Description: "the Shoelace Web Components library"},
+			},
+		},
+		{
+			Label: "Reactive Examples",
+			Examples: []*Example{
+				{Label: "On Load", Description: "how to load data on page load"},
+				{Label: "Disable Button", Description: "how to disable a button while processing"},
+				{Label: "Merge Options", Description: "how to merge options in a select"},
 			},
 		},
 	}, func(g ExampleGroup, i int) ExampleGroup {
@@ -177,6 +183,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesFileUpload(examplesRouter),
 			setupExamplesDialogsBrowser(examplesRouter),
 			setupExamplesLazyTabs(examplesRouter),
+			setupExamplesMergeOptions(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 		); err != nil {
