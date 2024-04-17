@@ -1,6 +1,6 @@
 # Batteries Included
 
-## Build modularly, think globablly
+## Build modular, think globally
 
 Datastar was originally a branch of HTMX that was meant to make it more modular and easier to write plugins for. What was not expected is in creating what felt like essential plugins was actually able to recreate all the needed features of a full SPA frameworks, HTMX and Alpine and do it all in smaller package. While you can still build your own plugins, the core set of plugins is enough to build a full application. Let's explore some more features
 
@@ -34,7 +34,7 @@ When the button is clicked it will log `hello world` to the console.
 
 ## Actions
 
-Actions are helper functions that are made avaiable during a data-\* attribute evaluation. They are a way to do more complex operations without having to write a lot of javascript. Here are a few of the most common actions. They are prefixed with `$$` to avoid any conflicts with other attributes.
+Actions are helper functions that are made available during a data-\* attribute evaluation. They are a way to do more complex operations without having to write a lot of javascript. Here are a few of the most common actions. They are prefixed with `$$` to avoid any conflicts with other attributes.
 
 ### `$$setAll`
 

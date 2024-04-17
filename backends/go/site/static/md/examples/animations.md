@@ -4,9 +4,9 @@
 
 # Explanation
 
-htmx is designed to allow you to use CSS transitions to add smooth animations and transitions to your web page using only CSS and HTML. Below are a few examples of various animation techniques.
+Datastar is designed to allow you to use CSS transitions to add smooth animations and transitions to your web page using only CSS and HTML. Below are a few examples of various animation techniques.
 
-htmx also allows you to use the new View Transitions API for creating animations.
+Datastar also allows you to use the new View Transitions API for creating animations.
 
 <div id="animations" data-on-load="$$get('/examples/animations/data')">
 Replace me
@@ -20,7 +20,7 @@ Replace me
 <div id="color_throb">Color Throb Demo</div>
 </div>
 
-The simplest animation technique in htmx is to keep the id of an element stable across a content swap. If the id of an element is kept stable, htmx will swap it in such a way that CSS transitions can be written between the old version of the element and the new one.
+The simplest animation technique in Datastar is to keep the id of an element stable across a content swap. If the id of an element is kept stable, htmx will swap it in such a way that CSS transitions can be written between the old version of the element and the new one.
 
 Consider this div:
 

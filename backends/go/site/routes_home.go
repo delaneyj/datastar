@@ -15,7 +15,7 @@ import (
 
 func setupHome(router chi.Router) error {
 
-	chartWidth := 384
+	chartWidth := 480
 	graph := chart.BarChart{
 		Title:  "File Size (Hello World) first load",
 		Width:  chartWidth,
@@ -27,7 +27,7 @@ func setupHome(router chi.Router) error {
 		Canvas: chart.Style{
 			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
 			FontColor: drawing.ColorWhite,
-			FontSize:  8,
+			FontSize:  6,
 		},
 		TitleStyle: chart.Style{
 			FontColor: drawing.ColorWhite,
@@ -46,7 +46,7 @@ func setupHome(router chi.Router) error {
 		Bars: []chart.Value{
 			{Label: "Next.js", Value: 86221},
 			{Label: "SvelteKit", Value: 81920},
-			{Label: "HTMX+\nhyper", Value: 40653},
+			{Label: "HTMX+\nhyperscript", Value: 40653},
 			{Label: "HTMX+\nAlpine", Value: 37980},
 			{Label: "Datastar", Value: 10445},
 			{Label: "Datastar Core", Value: 4526},
@@ -65,7 +65,7 @@ func setupHome(router chi.Router) error {
 		page(
 			DIV().CLASS("min-h-screen md:flex md:items-center flex-col md:p-8 bg-gradient-to-br from-accent-700 to-accent-900").Children(
 				DIV().
-					CLASS("p-4 md:max-w-md md:max-w-2xl md:flex flex-col gap-8 md:flex-wrap md:items-center").
+					CLASS("p-4 md:max-w-md md:max-w-2xl md:flex flex-col gap-8 md:items-center").
 					Children(
 						datastarLogo().CLASS(
 							"w-24 md:w-64 md:h-64 fill-current text-accent-200",

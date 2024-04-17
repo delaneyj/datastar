@@ -11,12 +11,11 @@ import (
 
 var docNames = []string{
 	"getting_started",
-	"think_declaratively",
+	"von_deepa",
 	"howl",
 	"batteries_included",
 	"streaming_backend",
 }
-
 
 func setupDocs(router chi.Router) error {
 	mdElementRenderers, mdAnchors, err := markdownRenders("docs")
@@ -52,13 +51,19 @@ func setupDocs(router chi.Router) error {
 			contentGroup := []ElementRenderer{}
 			if docIdx > 0 {
 				contentGroup = append(contentGroup,
-					H2(link("/docs/"+docNames[docIdx-1], "Back to "+docLabels[docIdx-1], false)),
+					buttonLink().
+						CLASS("w-full no-underline").
+						HREF("/docs/"+docNames[docIdx-1]).
+						Text("Back to "+docLabels[docIdx-1]),
 				)
 			}
 			contentGroup = append(contentGroup, contents)
 			if docIdx < len(docNames)-1 {
 				contentGroup = append(contentGroup,
-					H2(link("/docs/"+docNames[docIdx+1], "Next "+docLabels[docIdx+1], false)),
+					buttonLink().
+						CLASS("w-full no-underline").
+						HREF("/docs/"+docNames[docIdx+1]).
+						Text("Next "+docLabels[docIdx+1]),
 				)
 			}
 
