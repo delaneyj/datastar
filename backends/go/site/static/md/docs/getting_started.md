@@ -2,14 +2,14 @@
 
 ## A Birds Eye View
 
-There are two parts to this that can help one make sense of Datastar. If you are familiar with libraries like [HTMX](https://htmx.org/) and [AlpineJs](https://alpinejs.dev/); Datastar brings them together. This breaks down essentially to:
+If you are familiar with libraries like [HTMX](https://htmx.org/) or [AlpineJs](https://alpinejs.dev/); Datastar brings them together. This breaks down essentially to:
 
-1. Send your current state with the UI via HTML from an endpoint on your backend like HTMX.
+1. Send the current UI from your backend via HTML fragments like HTMX.
 2. Manage client side state that wouldn't make sense to be managed by your backend like AlpineJS.
 
-I've had [thoughts](/essays/why_another_framework) on both of these which I have expressed. While I love them both and believe they are great libraries; I wanted to go in a different direction.
+I've had [thoughts](/essays/why_another_framework) on both of these in the past. TLDR; While both libraries are great, I wanted to go in a different direction.
 
-Datastar accomplishes both of these tasks all on it's own and it's [tiny](https://bundlephobia.com/package/@sudodevnull/datastar).
+Datastar accomplishes both tasks in a unified manner and it's [tiny](https://bundlephobia.com/package/@sudodevnull/datastar).
 
 ## Installation
 
@@ -20,8 +20,13 @@ To get started you must first get a copy of Datastar. There are a few ways to do
 You can include it directly into your html using a script tag:
 
 ```html
-<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
+<script
+  type="module"
+  defer
+  src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"
+></script>
 ```
+
 **NPM**
 
 For npm-style build systems, you can install Datastar via npm and then import this in your server file.
@@ -76,19 +81,21 @@ We have basic server set up. Now let's get to the fun part. Let's add some Datas
 Let's start out with how Datastar handles state. Enter the [store](/reference/plugins_core#merge-store) attribute.
 
 Go ahead and add this as a data attribute to the `<main>` element:
+
 ```html
-<main class="container" id="main" data-store='{ "input": "" }'>
+<main class="container" id="main" data-store='{ "input": "" }'></main>
 ```
 
-This is the global store. It is a global Singleton so if you make multiple stores they will actually merge into one store behind the scenes. Any fields and values will be merged together so if there are two fields with the same name, Datastar will have preference for the latters field and value.
+This is the global store, if you make multiple stores they will actually merge into one store behind the scenes. If there are two fields with the same name, Datastar will resolve as last in wins.
 
 The store is great and all but how can we use it? There are many ways. Let's check some of them out.
 
 ## Some Reactivity
 
-If you had a keen eye, you noticed we put `input` as a field on our store. What's that about? Glad you asked! It's Datastars way to sets up two-way data-binding on an element. In our case this `input` element. Say hi to the [Model](/reference/plugins_attributes#model) attribute.
+If you had a keen eye, you noticed we put `input` as a field on our store. What's that about? Glad you asked! It's Datastar's way to sets up two-way data binding on an element. In our case this `input` element. Say hi to the [Model](/reference/plugins_attributes#model) attribute.
 
 Stick this inside of your `<main>` element:
+
 ```html
 <input type="text" placeholder="Type here!" data-model="input" />
 ```
@@ -98,6 +105,7 @@ This binds to a signal so our store can stay up to date with whatever is typed i
 Good stuff so far. How can we see this? We can check the changes locally using the [data-text](/reference/plugins_attributes#text) attribute.
 
 Create a div in your `<main>` Element:
+
 ```html
 <div data-text="$input"></div>
 ```
@@ -107,6 +115,7 @@ Sets the text content of an element to the value of the signal. Now check it out
 Speaking of which, let's do some more! Let's play hide 'n seek with the [data-show](/reference/plugins_visibility#show) attribute.
 
 Add this to your store:
+
 ```js
 { input: "", show: false };
 ```
@@ -118,10 +127,11 @@ We can hide elements and show them without using JavaScript! How will we trigger
 We bring in the [On](/reference/plugins_attributes#on) attribute. This sets up an event listener on an element. In this example, we're using `data-on-click`. You will later see there are other `data-on` actions we can utilize.
 
 Add this inside of your `<main>` element:
+
 ```html
 <button data-on-click="$show=!$show">Toggle</button>
 <div data-show="$show">
- <span>Hello From Datastar!</span>
+  <span>Hello From Datastar!</span>
 </div>
 ```
 
@@ -136,6 +146,7 @@ Datastar uses [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_eve
 Let's set things up. Copy the below code to your server.
 
 Copy this to your server code:
+
 ```js
 function setHeaders(res) {
   res.set({
@@ -150,6 +161,7 @@ function setHeaders(res) {
 `setHeaders` is simple a utility function we will use on our endpoints to set our headers to use SSE.
 
 Copy this to your server code:
+
 ```js
 function sendSSE({ res, frag, selector, merge, mergeType, end }) {
   res.write("event: datastar-fragment\n");
@@ -167,14 +179,18 @@ We will use `sendSSE` as another utility function that will help us configure ou
 SSE messages are text-based and consist of one or more "events". Each event is separated by a pair (`\n\n`) of newline characters. An individual event consists of one or more lines of text, each followed by a newline character (`\n)`), and uses a simple key-value pair [format](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format).
 
 For our Datastar example:
+
 ```
-event: datastar-fragment <newline>
-id: 129618219840307262 <newline>
-data: merge morph_element <newline>
-data: fragment <div id="id">...</div> <newline><newline>
+event: datastar-fragment // \n
+id: 129618219840307262 // \n
+data: merge morph_element // \n
+data: fragment <div id="id">...</div> // \n\n
+
 ```
 
-Each data message in the event is separated by a (`\n`) newline and each event is separated by a pair of (`\n\n`) newlines. If you notice that is what we are doing in `sendSSE` except with a little flavor added so we can tell Datastar what we want to do using [Datastars format](/reference/plugins_backend#datastar-sse-event).
+**NOTE** in the real message the comments and newlines wouldn't be visible
+
+Each data message in the event is separated by a (`\n`) newline and each event is separated by a pair of (`\n\n`) newlines. If you notice that is what we are doing in `sendSSE` except with a little flavor added so we can tell Datastar what we want to do using [Datastar's format](/reference/plugins_backend#datastar-sse-event).
 
 Now let's make our route.
 
@@ -205,33 +221,33 @@ We need to make some changes now to reflect this.
 Go ahead and modify your html.
 
 Change this in your `<main>` element:
+
 ```html
-<div data-text="$input"></div>        
+<div data-text="$input"></div>
 ```
 
 To this:
+
 ```html
- <div id="output"></div>
+<div id="output"></div>
 ```
+
 Give ourselves a button to perform this action.
 
 Add this to your `<main>` element:
+
 ```html
 <button data-on-click="$$put('/put')">Send State</button>
 ```
 
 ...and give ourselves a place to show our new state on the client.
 
-Add this inside your `<main>` element:
-```html
-<div id="output"></div>;
-```
-
 Voila! Now if you check out what you've done, you'll find you're able to send data to your `/put` endpoint and respond with HTML updating the output `div`. Neato!
 
-Let's retreive the backend data we're not storing.
+Let's retrieve the backend data we're not storing.
 
 Add this to your server code:
+
 ```js
 app.get("/get", (req, res) => {
   setHeaders(res);
@@ -251,6 +267,7 @@ app.get("/get", (req, res) => {
 ```
 
 And this to your HTML:
+
 ```html
 <button data-on-click="$$get('/get')">Get Backend State</button>
 <div id="output2"></div>
@@ -261,6 +278,7 @@ We're now fetching state that's stored on the backend.
 Let's try something for fun. In your `/get` route, change your call to `sendSSE` so that we do not immediately end the request connection.
 
 Change your `sendSSE` function call in your `\get` route.
+
 ```js
 sendSSE({
   ...
@@ -269,6 +287,7 @@ sendSSE({
 ```
 
 Add this to your `sendSSE` function below the first call:
+
 ```js
 frag = `<div id="output3">Check this out!</div>;`;
 sendSSE({
@@ -281,11 +300,12 @@ sendSSE({
 });
 ```
 
-Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend_element` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastars event types [here](http://localhost:8080/reference/plugins_backend).
+Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend_element` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastar's event types [here](http://localhost:8080/reference/plugins_backend).
 
 There's one last thing we're going to do. Let's add a simple data feed upon loading the page.
 
 Copy this to your server code:
+
 ```js
 app.get("/feed", async (req, res) => {
   setHeaders(res);
@@ -307,6 +327,7 @@ app.get("/feed", async (req, res) => {
 ```
 
 Add this inside your `<main>` element:
+
 ```html
 <div>
   <span>Feed from server: </span>
@@ -316,15 +337,15 @@ Add this inside your `<main>` element:
 
 I told you we would use another `data-on` action earlier and here it is. `data-on-load` will perform this request when the page loads. If you check things out now you should see a feed that updates using SSE upon loading. Cool!
 
-Datastar supports all the verbs wiithout requireing a `<form>` element such as `GET, PUT, DELETE...` and so on.
+Datastar supports all the verbs without requiring a `<form>` element such as `GET, PUT, DELETE...` and so on.
 
-So that concludes our primer! Check out the full code for our Node example [here](/examples/node). 
+So that concludes our primer! Check out the full code for our Node example [here](/examples/node).
 
 If you're still here I imagine you want to know more. Let's define things a little better.
 
 ## A Better View
 
-To be more precise, think of Datastar as an extension to HTML [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also setup events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
+To be more precise, think of Datastar as an extension to HTML's [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also setup events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
 
 - Declare global state: `data-store = "{foo: ''}"`
 - Link-up HTML elements to state slots: `data-model = "foo"`
@@ -332,5 +353,5 @@ To be more precise, think of Datastar as an extension to HTML [data attributes](
 - Hookup other effects on your DOM to the state: `data-show= "$foo"`
 - Setup events using `data-on-(load or click) = "$$get(/endpoint)"`
 - Respond in HTML wrapped in SSE with a target element ID to update
-  
+
 It's that simple. To dive deeper check out some of the other links or just click below.
