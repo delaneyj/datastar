@@ -244,7 +244,7 @@ Add this to your `<main>` element:
 
 Voila! Now if you check out what you've done, you'll find you're able to send data to your `/put` endpoint and respond with HTML updating the output `div`. Neato!
 
-Let's retrieve the backend data we're not storing.
+Let's retrieve the backend data we're now storing.
 
 Add this to your server code:
 
