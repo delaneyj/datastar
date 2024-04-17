@@ -75,6 +75,18 @@ const (
 	FragmentMergeUpsertAttributes FragmentMergeType = "upsert_attributes"
 )
 
+var ValidFragementMergeTypes = []FragmentMergeType{
+	FragmentMergeMorphElement,
+	FragmentMergeInnerElement,
+	FragmentMergeOuterElement,
+	FragmentMergePrependElement,
+	FragmentMergeAppendElement,
+	FragmentMergeBeforeElement,
+	FragmentMergeAfterElement,
+	FragmentMergeDeleteElement,
+	FragmentMergeUpsertAttributes,
+}
+
 const (
 	FragmentSelectorSelf  = "self"
 	FragmentSelectorUseID = ""
