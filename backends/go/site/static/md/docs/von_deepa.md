@@ -121,7 +121,7 @@ However it doesn't yet match the original intent, which was to make it uppercase
 </div>
 ```
 
-So with this change and in a declartive nature you'd be able extend HTML and focus on relationships.
+So with this change and in a declarative nature you'd be able extend HTML and focus on relationships.
 
 Our HTML looks pretty neat but what would it take to make it actually work? Well just add:
 
