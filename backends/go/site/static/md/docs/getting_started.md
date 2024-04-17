@@ -100,7 +100,7 @@ Stick this inside of your `<main>` element:
 <input type="text" placeholder="Type here!" data-model="input" />
 ```
 
-This binds to a signal so our store can stay up to date with whatever is typed into this input.
+This binds to a signal so our store can stay up to date with whatever is typed into this input. You can even nest your state like this `{"nested":{"label":"foo"}}`  and use `data-model="nested.label"` or access it from the backend as needed.
 
 Good stuff so far. How can we see this? We can check the changes locally using the [data-text](/reference/plugins_attributes#text) attribute.
 
@@ -110,7 +110,7 @@ Create a div in your `<main>` Element:
 <div data-text="$input"></div>
 ```
 
-Sets the text content of an element to the value of the signal. Now check it out, client-side reactivity! We can have different types of state as well.
+Sets the text content of an element to the value of the signal. Now check it out, client-side reactivity! We can have different types of state as well. We can even do fun stuff like `data-text="$value.toUpperCase()"`.
 
 Speaking of which, let's do some more! Let's play hide 'n seek with the [data-show](/reference/plugins_visibility#show) attribute.
 
@@ -124,7 +124,7 @@ We can hide elements and show them without using JavaScript! How will we trigger
 
 ## Events
 
-We bring in the [On](/reference/plugins_attributes#on) attribute. This sets up an event listener on an element. In this example, we're using `data-on-click`. You will later see there are other `data-on` actions we can utilize.
+We bring in the [On](/reference/plugins_attributes#on) attribute. This sets up an event listener on an element. In this example, we're using `data-on-click`. You will later see there are other `data-on` actions we can utilize. You can also do silly things like `data-on-click="console.log('hello world')"`.
 
 Add this inside of your `<main>` element:
 
@@ -135,7 +135,9 @@ Add this inside of your `<main>` element:
 </div>
 ```
 
-So what else can we do? We haven't even gotten started yet really.
+So what else can we do? You can mess around and do some fun stuff with expressions. For instance, something like: `"$prompt=prompt('Enter something',$prompt);$confirm=confirm('Sure?');$confirm && $$get('/sure')"` is totally feasible.
+
+Anyhow, we haven't really even scratched the surface. Let's keep going.
 
 ## Backend Plumbing
 
@@ -337,7 +339,7 @@ Add this inside your `<main>` element:
 
 I told you we would use another `data-on` action earlier and here it is. `data-on-load` will perform this request when the page loads. If you check things out now you should see a feed that updates using SSE upon loading. Cool!
 
-Datastar supports all the verbs without requiring a `<form>` element such as `GET, PUT, DELETE...` and so on.
+Datastar supports all the verbs without requiring a `<form>` element: `GET, POST, PUT, PATCH, DELETE`.
 
 So that concludes our primer! Check out the full code for our Node example [here](/examples/node).
 
