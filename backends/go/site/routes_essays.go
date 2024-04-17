@@ -54,14 +54,20 @@ func setupEssays(router chi.Router) error {
 			contentGroup := []ElementRenderer{}
 			if docIdx > 0 {
 				contentGroup = append(contentGroup,
-					H2(link("/essays/"+essayNames[docIdx-1], "Back to "+essayLabels[docIdx-1], false)),
-				)
+					buttonLink().
+						CLASS("w-full").
+						HREF("/essays/"+essayNames[docIdx-1]).
+						Text("Back to "+essayLabels[docIdx-1]).
+						CLASS("flex flex-col justify-center items-center no-underline"))
 			}
 			contentGroup = append(contentGroup, contents)
 			if docIdx < len(essayNames)-1 {
 				contentGroup = append(contentGroup,
-					H2(link("/essays/"+essayNames[docIdx+1], "Next "+essayLabels[docIdx+1], false)),
-				)
+					buttonLink().
+						CLASS("w-full").
+						HREF("/essays/"+essayNames[docIdx+1]).
+						Text("Next "+essayLabels[docIdx+1]).
+						CLASS("flex flex-col justify-center items-center no-underline"))
 			}
 
 			anchors := mdAnchors[docName]

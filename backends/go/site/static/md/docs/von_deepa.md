@@ -1,4 +1,24 @@
-# Time to think declaratively
+# Von Deepa
+
+## Javascript Fatigue
+
+Web development has become a technical occultism activity, in which the focus is on JavaScript and the capabilities of making HTML content dynamic instead of making a better job of delivering HTML. This JavaScript religion has led to the rise of frontend frameworks such as React, Vue, Svelte, Solid, etc. In turn those were not enough for full application and progress led the industry to full-stack JavaScript frameworks like Next.js, Nuxt, Svelte and Solid Start. Once you need a framework for reactivity it makes sense to embrace it in the backend too for consistency.
+
+In reality almost all frameworks come down to updating the DOM as fast and as simply as possible with some effort around improving developer experience.
+
+## Philosophy
+
+- **Be declarative**
+- **Use signals**
+- **Supply a set of plugins that handle 99% of problems**
+
+Datastar started as just a plugin framework but found that by having no overlap in features, it was possible to replace any SPA framework and even hypermedia focused libraries like HTMX while being much smaller and _(we think)_ easier to use.
+
+With Datastar, even if you have never coded before, with a few examples, you can easily create high interconnected web assets. It doesn't matter if you are a making a user interface for bank or a simple blog. The approach is simplicity through declarative HTML.
+
+If Datastar doesn't match your needs, you still might be interested in using it as originally intended [and write your own library](https://github.com/delaneyj/datastar/tree/main/library/src/lib/plugins).
+
+## Time to think declaratively
 
 Declarative code is amazing.
 
@@ -14,7 +34,7 @@ This is SQL. As a user you don't have to know how the query will get executed, i
 
 HTML work in a similar fashion. You don't have to worry about how a `<div>Hello</div>` turned into pixels nor how the page uses resources when you tab away. This is wonderful for the majority of cases but at least in modern HTML is a bit limiting.
 
-For example
+For example:
 
 ```html
 ...PSEUDO CODE..
@@ -28,13 +48,13 @@ if you want to use the result of changing the input to modify the label you have
 
 ## Custom data attributes
 
-Luckily HTML5 has the concept of [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) which allows anyone to add there own attributes and still be valid HTML. The only real requirement is they be kebab-cased and start with `data-*`. Data star... that'd be a clever name... oh I get it!
+Luckily HTML5 has the concept of [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) which allows anyone to add thier own attributes and still be valid HTML. The only real requirement is they be kebab-cased and start with `data-*`. Data star... that'd be a clever name... oh I get it!
 
 Before we can actually use the `data-*` we need a quick aside about signals.
 
 ## Signals
 
-Signals are a way to do fine grain reactivity in a very efficient way. They are similar to formulas in Excel. Instead of doing something like
+Signals are a way to do fine grain reactivity in a very efficient way. They are similar to formulas in Excel. Instead of doing something like:
 
 ```js
 let a = 2;
@@ -43,7 +63,7 @@ let c = a * b;
 console.log(c);
 ```
 
-You can do
+You can do:
 
 ```js
 const a = signal(2);
@@ -56,9 +76,9 @@ effect(() => {
 
 The difference is if you change `a` or `b`, `c` will auto schedule for updates. So you spend your time declaring relationships more than procedures. They have been popularized by [Solid,js](https://www.solidjs.com/) but are now used by many frameworks.
 
-# The store
+## The Store
 
-Ok so back to our hypothecial framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
+Ok so back to our hypothetical framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
 
 ```html
 <div data-store="{value:'hello world'}"></div>
@@ -66,7 +86,7 @@ Ok so back to our hypothecial framework let's have a way to declare stuff that c
 
 The contents is just a set of data that can evaluated by [JSON.parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) and will convert this data into a tree of signals and merge into a store that tracks all of the reactivity on the page. In this case we want there to be a a single `value` signal with the contents of `'hello world'`.
 
-# Models
+## Models
 
 Let's replace the hard coded value in the input with another attribute
 
@@ -77,9 +97,9 @@ Let's replace the hard coded value in the input with another attribute
 </div>
 ```
 
-Here we've created a new attribute `data-model` with the contents of `value`. We are just saying when the signal `value` changes **or** input is edited on the page make sure you keep them in sync. We don't take how, just do it.
+Here we've created a new attribute `data-model` with the contents of `value`. We are just saying when the signal `value` changes **or** input is edited on the page make sure you keep them in sync. We don't care how, just do it.
 
-# Contents
+## Contents
 
 Now we want to update the label relationship.
 
@@ -103,7 +123,7 @@ However it doesn't yet match the original intent, which was to make it uppercase
 
 So with this change and in a declartive nature you'd be able extend HTML and focus on relationships.
 
-Our HTML looks pretty neat but what would it take to make it actuall work? Well just add
+Our HTML looks pretty neat but what would it take to make it actually work? Well just add:
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>

@@ -47,6 +47,13 @@ func setupExamples(router chi.Router) (err error) {
 	)
 	examples := lo.Map([]ExampleGroup{
 		{
+			Label: "Backend Examples",
+			Examples: []*Example{
+				{Label: "Node", Description: "example backend in node"},
+				{Label: "Python", Description: "example backend in python"},
+			},
+		},
+		{
 			Label: "Ported HTMX Examples",
 			Examples: []*Example{
 				{Label: "Click to Edit", Description: "inline editing of a data object"},
@@ -110,21 +117,27 @@ func setupExamples(router chi.Router) (err error) {
 			contentGroup := []ElementRenderer{}
 			if example.Prev != nil {
 				contentGroup = append(contentGroup,
-					H2(link(example.Prev.URL, "Back to "+example.Prev.Label, false)),
-				)
+					buttonLink().
+						CLASS("w-full").
+						HREF(example.Prev.URL).
+						Text("Back to "+example.Prev.Label).
+						CLASS("flex flex-col justify-center items-center no-underline"))
 			}
 			contentGroup = append(contentGroup, contents)
 			if example.Next != nil {
 				contentGroup = append(contentGroup,
-					H2(link(example.Next.URL, "Next "+example.Next.Label, false)),
-				)
+					buttonLink().
+						CLASS("w-full").
+						HREF(example.Next.URL).
+						Text("Next "+example.Next.Label).
+						CLASS("flex flex-col justify-center items-center no-underline"))
 			}
 
 			sidebarContents := Group(
 				Range(examples, func(g ExampleGroup) ElementRenderer {
 					return DIV(
 						DIV(
-							DIV().CLASS("text-2xl font-bold text-primary").Text(g.Label+"*"),
+							DIV().CLASS("text-2xl font-bold text-primary").Text(g.Label),
 							HR().CLASS("divider border-primary"),
 						),
 						TABLE().
@@ -149,9 +162,6 @@ func setupExamples(router chi.Router) (err error) {
 							),
 					)
 				}),
-				DIV().
-					CLASS("text-accent font-bold italic").
-					Text("*All examples use server-side logic in Go but you can use any language you like."),
 			)
 
 			pp := prosePage(r, sidebarContents, Group(contentGroup...), nil)

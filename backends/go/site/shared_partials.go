@@ -232,7 +232,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 											CLASS("fixed inset-0 bg-primary-900 bg-opacity-70 z-10"),
 									),
 								ASIDE(sidebarContents).
-									CLASS("hidden md:flex flex-col px-4 py-8 min-w-64 bg-accent-800 text-accent-200 hidden md:visible gap-4"),
+									CLASS("hidden md:flex flex-col px-4 py-8 min-w-64 bg-accent-800 text-accent-200 hidden md:visible gap-4 overflow-y-auto"),
 							)
 						}),
 						DIV().

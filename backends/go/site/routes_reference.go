@@ -102,13 +102,19 @@ func setupReferenceRoutes(router chi.Router) error {
 			contentGroup := []ElementRenderer{}
 			if ref.Prev != nil {
 				contentGroup = append(contentGroup,
-					H2(link(ref.Prev.URL, "Back to "+ref.Prev.Label, false)),
+					buttonLink().
+						CLASS("w-full no-underline").
+						HREF(ref.Prev.URL).
+						Text("Back to "+ref.Prev.Label),
 				)
 			}
 			contentGroup = append(contentGroup, contents)
 			if ref.Next != nil {
 				contentGroup = append(contentGroup,
-					H2(link(ref.Next.URL, "Next "+ref.Next.Label, false)),
+					buttonLink().
+						CLASS("w-full no-underline").
+						HREF(ref.Next.URL).
+						Text("Next "+ref.Next.Label),
 				)
 			}
 
