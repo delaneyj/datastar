@@ -33,8 +33,8 @@ export declare type AttributePlugin = {
     allowedTagRegexps?: Set<string>;
     disallowedTags?: Set<string>;
     preprocessors?: {
-        pre?: Preprocesser[];
-        post?: Preprocesser[];
+        pre?: Preprocessor[];
+        post?: Preprocessor[];
     };
     bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean;
 };
@@ -74,8 +74,6 @@ export declare class Datastar {
     private walkSignals;
     private walkDownDOM;
 }
-
-export declare const DATASTAR_ERROR: Error;
 
 export declare type DatastarPlugin = {};
 
@@ -138,7 +136,7 @@ declare type Node_2 = {
 
 export declare type OnRemovalFn = () => void;
 
-export declare type Preprocesser = {
+export declare type Preprocessor = {
     regexp: RegExp;
     replacer: (groups: RegexpGroups) => string;
 };

@@ -1,7 +1,7 @@
-import { DATASTAR_ERROR } from '..'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
+import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const GET = 'get',
   POST = 'post',
@@ -99,8 +99,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
       const indicator = document.querySelector(c.value)
       if (!indicator) {
-        // throw new Error(`No indicator found`)
-        throw DATASTAR_ERROR
+        throw new Error(`No indicator found`)
       }
       indicator.classList.add(INDICATOR_CLASS)
 
@@ -117,8 +116,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   const s = ctx.store()
 
   if (!urlExpression) {
-    // throw new Error(`No signal for ${method} on ${urlExpression}`)
-    throw DATASTAR_ERROR
+    throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
   const storeWithoutFetch = { ...s.value }
@@ -160,8 +158,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         isError = false,
         isFragment = false
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
-        // throw new Error(`Unknown event: ${evt.event}`)
-        throw DATASTAR_ERROR
+        throw new Error(`Unknown event: ${evt.event}`)
       }
       const eventType = evt.event.slice(DATASTAR_CLASS_PREFIX.length)
       switch (eventType) {
@@ -181,8 +178,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       evt.data.split('\n').forEach((dataLine) => {
         const offset = dataLine.indexOf(' ')
         if (offset === -1) {
-          // throw new Error(`Missing space in data`)
-          throw DATASTAR_ERROR
+          throw new Error(`Missing space in data`)
         }
 
         const type = dataLine.slice(0, offset)
@@ -196,8 +192,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             const vmo = contents as MergeOption
             const exists = Object.values(MergeOptions).includes(vmo)
             if (!exists) {
-              // throw new Error(`Unknown merge option: ${vmo}`)
-              throw DATASTAR_ERROR
+              throw new Error(`Unknown merge option: ${vmo}`)
             }
             merge = vmo
             break
@@ -215,8 +210,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             error = new Error(contents)
             break
           default:
-            // throw new Error(`Unknown data type`)
-            throw DATASTAR_ERROR
+            throw new Error(`Unknown data type`)
         }
       })
 
@@ -227,8 +221,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } else if (isFragment && fragment) {
         mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
       } else {
-        // throw new Error(`Unknown event: ${evt}`)
-        throw DATASTAR_ERROR
+        throw new Error(`Unknown event: ${evt}`)
       }
     },
     onclose: () => {
@@ -272,8 +265,7 @@ export function mergeHTMLFragment(
   fragContainer.innerHTML = fragment
   const frag = fragContainer.content.firstChild
   if (!(frag instanceof Element)) {
-    // throw new Error(`No fragment found`)
-    throw DATASTAR_ERROR
+    throw new Error(`No fragment found`)
   }
 
   const useElAsTarget = selector === SELECTOR_SELF_SELECTOR
@@ -285,77 +277,82 @@ export function mergeHTMLFragment(
     const selectorOrID = selector || `#${frag.getAttribute('id')}`
     targets = document.querySelectorAll(selectorOrID) || []
     if (!!!targets) {
-      // throw new Error(`No targets found for ${selectorOrID}`)
-      throw DATASTAR_ERROR
+      throw new Error(`No targets found for ${selectorOrID}`)
     }
   }
 
-  for (const initialTarget of targets) {
-    initialTarget.classList.add(SWAPPING_CLASS)
-    const originalHTML = initialTarget.outerHTML
-    let modifiedTarget = initialTarget
-    switch (merge) {
-      case MergeOptions.MorphElement:
-        const result = idiomorph(modifiedTarget, frag)
-        if (!result?.length) {
-          //  throw new Error(`No morph result`)
-          throw DATASTAR_ERROR
-        }
-        const first = result[0] as Element
-        modifiedTarget = first
-        break
-      case MergeOptions.InnerElement:
-        // Replace the contents of the target element with the response
-        modifiedTarget.innerHTML = frag.innerHTML
-        break
-      case MergeOptions.OuterElement:
-        // Replace the entire target element with the response
-        modifiedTarget.replaceWith(frag)
-        break
-      case MergeOptions.PrependElement:
-        modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
-        break
-      case MergeOptions.AppendElement:
-        modifiedTarget.append(frag) //  Insert the response after the last child of the target element
-        break
-      case MergeOptions.BeforeElement:
-        modifiedTarget.before(frag) //  Insert the response before the target element
-        break
-      case MergeOptions.AfterElement:
-        modifiedTarget.after(frag) //  Insert the response after the target element
-        break
-      case MergeOptions.DeleteElement:
-        //  Deletes the target element regardless of the response
-        setTimeout(() => modifiedTarget.remove(), settleTime)
-        break
-      case MergeOptions.UpsertAttributes:
-        //  Upsert the attributes of the target element
-        frag.getAttributeNames().forEach((attrName) => {
-          const value = frag.getAttribute(attrName)!
-          modifiedTarget.setAttribute(attrName, value)
-        })
-        break
-      default:
-        // throw new Error(`Unknown merge type: ${merge}`)
-        throw DATASTAR_ERROR
-    }
-    modifiedTarget.classList.add(SWAPPING_CLASS)
+  const applyToTargets = () => {
+    for (const initialTarget of targets) {
+      initialTarget.classList.add(SWAPPING_CLASS)
+      const originalHTML = initialTarget.outerHTML
+      let modifiedTarget = initialTarget
+      switch (merge) {
+        case MergeOptions.MorphElement:
+          const result = idiomorph(modifiedTarget, frag)
+          if (!result?.length) {
+            throw new Error(`No morph result`)
+          }
+          const first = result[0] as Element
+          modifiedTarget = first
+          break
+        case MergeOptions.InnerElement:
+          // Replace the contents of the target element with the response
+          modifiedTarget.innerHTML = frag.innerHTML
+          break
+        case MergeOptions.OuterElement:
+          // Replace the entire target element with the response
+          modifiedTarget.replaceWith(frag)
+          break
+        case MergeOptions.PrependElement:
+          modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
+          break
+        case MergeOptions.AppendElement:
+          modifiedTarget.append(frag) //  Insert the response after the last child of the target element
+          break
+        case MergeOptions.BeforeElement:
+          modifiedTarget.before(frag) //  Insert the response before the target element
+          break
+        case MergeOptions.AfterElement:
+          modifiedTarget.after(frag) //  Insert the response after the target element
+          break
+        case MergeOptions.DeleteElement:
+          //  Deletes the target element regardless of the response
+          setTimeout(() => modifiedTarget.remove(), settleTime)
+          break
+        case MergeOptions.UpsertAttributes:
+          //  Upsert the attributes of the target element
+          frag.getAttributeNames().forEach((attrName) => {
+            const value = frag.getAttribute(attrName)!
+            modifiedTarget.setAttribute(attrName, value)
+          })
+          break
+        default:
+          throw new Error(`Unknown merge type: ${merge}`)
+      }
+      modifiedTarget.classList.add(SWAPPING_CLASS)
 
-    ctx.cleanupElementRemovals(initialTarget)
-    ctx.applyPlugins(document.body)
+      ctx.cleanupElementRemovals(initialTarget)
+      ctx.applyPlugins(document.body)
 
-    setTimeout(() => {
-      initialTarget.classList.remove(SWAPPING_CLASS)
-      modifiedTarget.classList.remove(SWAPPING_CLASS)
-    }, 1000)
-
-    const revisedHTML = modifiedTarget.outerHTML
-
-    if (originalHTML !== revisedHTML) {
-      modifiedTarget.classList.add(SETTLING_CLASS)
       setTimeout(() => {
-        modifiedTarget.classList.remove(SETTLING_CLASS)
+        initialTarget.classList.remove(SWAPPING_CLASS)
+        modifiedTarget.classList.remove(SWAPPING_CLASS)
       }, settleTime)
+
+      const revisedHTML = modifiedTarget.outerHTML
+
+      if (originalHTML !== revisedHTML) {
+        modifiedTarget.classList.add(SETTLING_CLASS)
+        setTimeout(() => {
+          modifiedTarget.classList.remove(SETTLING_CLASS)
+        }, settleTime)
+      }
     }
+  }
+
+  if (supportsViewTransitions) {
+    docWithViewTransitionAPI.startViewTransition(() => applyToTargets())
+  } else {
+    applyToTargets()
   }
 }

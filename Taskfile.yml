@@ -67,6 +67,7 @@ tasks:
       ENV: dev
     sources:
       - "**/*.go"
+      - "**/*.md"
       - "{{.NAME}}/static/**/*"
     deps:
       - kill

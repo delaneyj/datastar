@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.11.5",
+  "version": "0.12.0",
   "type": "module",
   "homepage": "https://data-star.dev",
   "repository": "https://github.com/delaneyj/datastar",
@@ -23,7 +23,6 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/dom-view-transitions": "^1.0.4",
     "@types/node": "^20.11.30",
     "@unocss/cli": "^0.59.0",
     "prettier": "^3.2.5",

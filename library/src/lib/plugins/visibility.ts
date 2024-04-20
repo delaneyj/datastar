@@ -1,4 +1,3 @@
-import { DATASTAR_ERROR } from '..'
 import { toHTMLorSVGElement } from '../dom'
 import { AttributeContext, AttributePlugin } from '../types'
 
@@ -77,24 +76,23 @@ export const TeleportPlugin: AttributePlugin = {
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, modifiers, expression } = ctx
-    if (!(el instanceof HTMLTemplateElement)) throw DATASTAR_ERROR // type guard
+    if (!(el instanceof HTMLTemplateElement)) {
+      throw new Error(`el must be a template element`)
+    }
 
     const target = document.querySelector(expression)
     if (!target) {
-      // throw new Error(`Target element not found: ${expression}`)
-      throw DATASTAR_ERROR
+      throw new Error(`Target element not found: ${expression}`)
     }
 
     if (!el.content) {
-      // throw new Error('Template element must have content')
-      throw DATASTAR_ERROR
+      throw new Error('Template element must have content')
     }
 
     const n = el.content.cloneNode(true)
     const nEl = toHTMLorSVGElement(n as Element)
     if (nEl?.firstElementChild) {
-      // throw new Error('Empty template')
-      throw DATASTAR_ERROR
+      throw new Error('Empty template')
     }
 
     if (modifiers.has(PREPEND)) {
@@ -122,15 +120,28 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
   },
 }
 
-const viewTransitionID = 'ds-view-transition-stylesheet'
+export interface DocumentSupportingViewTransitionAPI {
+  startViewTransition(updateCallback: () => Promise<void> | void): ViewTransition
+}
+
+export interface ViewTransition {
+  finished: Promise<void>
+  ready: Promise<void>
+  updateCallbackDone: Promise<void>
+  skipTransition(): void
+}
+
+export interface CSSStyleDeclaration {
+  viewTransitionName: string
+}
+
+export const docWithViewTransitionAPI = document as unknown as DocumentSupportingViewTransitionAPI
+export const supportsViewTransitions = !!docWithViewTransitionAPI.startViewTransition
+
 // Setup view transition api
 export const ViewTransitionPlugin: AttributePlugin = {
   prefix: 'viewTransition',
   onGlobalInit(ctx) {
-    const viewTransitionStylesheet = document.createElement('style')
-    viewTransitionStylesheet.id = viewTransitionID
-    document.head.appendChild(viewTransitionStylesheet)
-
     let hasViewTransitionMeta = false
     document.head.childNodes.forEach((node) => {
       if (node instanceof HTMLMetaElement && node.name === 'view-transition') {
@@ -149,50 +160,20 @@ export const ViewTransitionPlugin: AttributePlugin = {
       viewTransitionRefCounts: {},
     })
   },
-  onLoad: (ctx: AttributeContext) => {
-    const { el, expressionFn } = ctx
-    let name = expressionFn(ctx)
-    if (!name) {
-      if (!el.id) {
-        // throw new Error('Element must have an id if no name is provided')
-        throw DATASTAR_ERROR
-      }
-      name = el.id
+  onLoad: (ctx) => {
+    if (!supportsViewTransitions) {
+      console.error('Browser does not support view transitions')
+      return
     }
 
-    const stylesheet = document.getElementById(viewTransitionID) as HTMLStyleElement
-    if (!stylesheet) {
-      // throw new Error('View transition stylesheet not found')
-      throw DATASTAR_ERROR
-    }
+    return ctx.reactivity.effect(() => {
+      const { el, expressionFn } = ctx
+      let name = expressionFn(ctx)
+      if (!name) return
 
-    const clsName = `ds-vt-${name}`
-    // add view transition class
-    const vtCls = `
-.${clsName} {
-  view-transition: ${name};
-}
-
-`
-    stylesheet.innerHTML += vtCls
-    const s = ctx.store()
-    let count = s.viewTransitionRefCounts[name]
-    if (!count) {
-      count = ctx.reactivity.signal(0)
-      s.viewTransitionRefCounts[name] = count
-    }
-    count.value++
-
-    // add class to element
-    el.classList.add(clsName)
-
-    return () => {
-      count.value--
-      if (count.value === 0) {
-        delete s.viewTransitionRefCounts[name]
-        stylesheet.innerHTML = stylesheet.innerHTML.replace(vtCls, '')
-      }
-    }
+      const elVTASTyle = el.style as unknown as CSSStyleDeclaration
+      elVTASTyle.viewTransitionName = name
+    })
   },
 }
 
