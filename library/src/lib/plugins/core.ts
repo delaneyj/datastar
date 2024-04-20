@@ -1,4 +1,4 @@
-import { AttributeContext, AttributePlugin, Preprocesser, RegexpGroups } from '../types'
+import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
 
 const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]*`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
@@ -6,7 +6,7 @@ function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
 }
 
 // Replacing $signal with ctx.store.signal.value`
-const SignalProcessor: Preprocesser = {
+const SignalProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('$', 'signal', ''),
   replacer: (groups: RegexpGroups) => {
     const { signal } = groups
@@ -15,7 +15,7 @@ const SignalProcessor: Preprocesser = {
 }
 
 // Replacing $$action(args) with ctx.actions.action(ctx, args)
-const ActionProcessor: Preprocesser = {
+const ActionProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('$\\$', 'action', '(?<call>\\((?<args>.*)\\))?'),
   replacer: ({ action, args }: RegexpGroups) => {
     const withCtx = [`ctx`]
@@ -28,14 +28,14 @@ const ActionProcessor: Preprocesser = {
 }
 
 // Replacing #foo with ctx.refs.foo
-const RefProcessor: Preprocesser = {
+const RefProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
     return `data.refs.${ref}`
   },
 }
 
-export const CorePreprocessors: Preprocesser[] = [ActionProcessor, SignalProcessor, RefProcessor]
+export const CorePreprocessors: Preprocessor[] = [ActionProcessor, SignalProcessor, RefProcessor]
 
 // Setup the global store
 const StoreAttributePlugin: AttributePlugin = {

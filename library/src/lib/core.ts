@@ -10,7 +10,7 @@ import {
   ExpressionFunction,
   HTMLorSVGElement,
   OnRemovalFn,
-  Preprocesser,
+  Preprocessor,
   Reactivity,
 } from './types'
 
@@ -86,7 +86,7 @@ export class Datastar {
   }
 
   private applyPlugins(rootElement: Element) {
-    const appliedProcessors = new Set<Preprocesser>()
+    const appliedProcessors = new Set<Preprocessor>()
 
     this.plugins.forEach((p, pi) => {
       this.walkDownDOM(rootElement, (el) => {

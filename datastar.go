@@ -75,7 +75,7 @@ const (
 	FragmentMergeUpsertAttributes FragmentMergeType = "upsert_attributes"
 )
 
-var ValidFragementMergeTypes = []FragmentMergeType{
+var ValidFragmentMergeTypes = []FragmentMergeType{
 	FragmentMergeMorphElement,
 	FragmentMergeInnerElement,
 	FragmentMergeOuterElement,

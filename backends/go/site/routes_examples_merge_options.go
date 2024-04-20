@@ -21,7 +21,7 @@ func setupExamplesMergeOptions(examplesRouter chi.Router) error {
 			DIV().ID("target").TextF("Target DIV"),
 			DIV().CLASS("flex gap-2 flex-wrap").
 				Children(
-					Range(datastar.ValidFragementMergeTypes, func(mergeMode datastar.FragmentMergeType) ElementRenderer {
+					Range(datastar.ValidFragmentMergeTypes, func(mergeMode datastar.FragmentMergeType) ElementRenderer {
 						return BUTTON().
 							CLASS("border-2 border-accent-500 px-4 py-2 rounded text-accent-200").
 							DATASTAR_ON("click", datastar.GET("/examples/merge_options/%s", mergeMode)).
@@ -75,12 +75,12 @@ func setupExamplesMergeOptions(examplesRouter chi.Router) error {
 	examplesRouter.Get("/merge_options/{mergeMode}", func(w http.ResponseWriter, r *http.Request) {
 		mergeModeRaw := chi.URLParam(r, "mergeMode")
 		mergeMode := datastar.FragmentMergeType(mergeModeRaw)
-		if !lo.Contains(datastar.ValidFragementMergeTypes, mergeMode) {
+		if !lo.Contains(datastar.ValidFragmentMergeTypes, mergeMode) {
 			http.Error(w, "invalid merge mode", http.StatusBadRequest)
 			return
 		}
 
-		idx := lo.IndexOf(datastar.ValidFragementMergeTypes, mergeMode)
+		idx := lo.IndexOf(datastar.ValidFragmentMergeTypes, mergeMode)
 		now := time.Now().UTC().Format(time.RFC3339)
 		h := xxh3.HashString(now)
 		updatedTarget := DIV().
