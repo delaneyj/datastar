@@ -1,4 +1,3 @@
-import { DATASTAR_ERROR } from '..'
 import { Signal } from '../external/preact-core'
 import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
@@ -58,14 +57,12 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const isFile = isInput && type === 'file'
 
     if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
-      // throw new Error('Element must be input, select, textarea, checkbox or radio')
-      throw DATASTAR_ERROR
+      throw new Error('Element must be input, select, textarea, checkbox or radio')
     }
 
     const setInputFromSignal = () => {
       if (!signal) {
-        // throw new Error(`Signal ${signalName} not found`)
-        throw DATASTAR_ERROR
+        throw new Error(`Signal ${signalName} not found`)
       }
       const hasValue = 'value' in el
       const v = signal.value
@@ -92,14 +89,12 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         const s = ctx.store()
         reader.onload = () => {
           if (typeof reader.result !== 'string') {
-            // throw new Error('Unsupported type')
-            throw DATASTAR_ERROR
+            throw new Error('Unsupported type')
           }
 
           const match = reader.result.match(dataURIRegex)
           if (!match?.groups) {
-            // throw new Error('Invalid data URI')
-            throw DATASTAR_ERROR
+            throw new Error('Invalid data URI')
           }
           const { mime, contents } = match.groups
           signal.value = contents
@@ -138,8 +133,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         signal.value = BigInt(input.value)
       } else {
         console.log(typeof current)
-        // throw new Error('Unsupported type')
-        throw DATASTAR_ERROR
+        throw new Error('Unsupported type')
       }
     }
 
@@ -169,8 +163,7 @@ export const TextPlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const { el, expressionFn } = ctx
     if (!(el instanceof HTMLElement)) {
-      // throw new Error('Element is not HTMLElement')
-      throw DATASTAR_ERROR
+      throw new Error('Element is not HTMLElement')
     }
     return ctx.reactivity.effect(() => {
       const res = expressionFn(ctx)

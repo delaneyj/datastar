@@ -55,4 +55,4 @@ Scrolls the element into view. Useful when updating DOM from the server and you 
 <div data-view-transition="foo"></div>
 ```
 
-Adds needed classes to interact with the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API). (Currently in draft)
+Page level transitions are automatically handled by an injected meta tag. Inter-page elements are automatically transitioned if the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API). To set phe `view-transition-name` style attribute explictily you use the `data-view-transition` attribute. The spec is still in draft and not available in all browsers but Datastar will do best effort.

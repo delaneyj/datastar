@@ -184,7 +184,6 @@
 .font-mono{font-family:"Fira Code",ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace;}
 .font-sans{font-family:"Inter",ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";}
 .uppercase{text-transform:uppercase;}
-.italic{font-style:italic;}
 .underline{text-decoration-line:underline;}
 .decoration-primary-300{-webkit-text-decoration-color:rgb(214 189 135 / var(--un-line-opacity));--un-line-opacity:1;text-decoration-color:rgb(214 189 135 / var(--un-line-opacity));}
 .no-underline{text-decoration:none;}
@@ -195,6 +194,7 @@
 .focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px;}
 .focus\:ring-accent-400:focus{--un-ring-opacity:1;--un-ring-color:rgb(95 129 201 / var(--un-ring-opacity));}
 .focus\:ring-primary-400:focus{--un-ring-opacity:1;--un-ring-color:rgb(201 167 95 / var(--un-ring-opacity));}
+.transition{transition-property:color,background-color,border-color,outline-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms;}
 .transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms;}
 .transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms;}
 .duration-\[2000ms\]{transition-duration:2000ms;}
@@ -209,7 +209,6 @@
 .md\:max-w-md{max-width:28rem;}
 .md\:w-64{width:16rem;}
 .md\:flex{display:flex;}
-.md\:flex-wrap{flex-wrap:wrap;}
 .md\:items-center{align-items:center;}
 .md\:justify-center{justify-content:center;}
 .md\:p-4{padding:1rem;}

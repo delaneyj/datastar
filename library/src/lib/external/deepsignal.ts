@@ -1,5 +1,4 @@
 // From https://github.com/EthanStandel/deepsignal/blob/main/packages/core/src/core.ts
-import { DATASTAR_ERROR } from '..'
 import { Signal, batch, signal } from './preact-core'
 
 export type AtomicState =
@@ -50,8 +49,7 @@ export const deepSignal = <T extends DeepState>(initialValue: T): DeepSignalType
     Object.entries(initialValue).reduce(
       (acc, [key, value]) => {
         if (['value', 'peek'].some((iKey) => iKey === key)) {
-          // throw new Error(`${key} is a reserved property name`)
-          throw DATASTAR_ERROR
+          throw new Error(`${key} is a reserved property name`)
         } else if (typeof value !== 'object' || value === null || Array.isArray(value)) {
           acc[key] = signal(value)
         } else {

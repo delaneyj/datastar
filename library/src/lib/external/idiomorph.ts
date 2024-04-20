@@ -1,5 +1,3 @@
-import { DATASTAR_ERROR } from '..'
-
 const generatedByIdiomorphId = new WeakSet()
 
 //=============================================================================
@@ -55,8 +53,7 @@ function morphNormalizedContent(oldNode: Element, normalizedNewContent: Element,
     // into either side of the best match
     const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx)
     if (!bestMatch) {
-      // throw new Error('Could not find best match')
-      throw DATASTAR_ERROR
+      throw new Error('Could not find best match')
     }
 
     // stash the siblings that will need to be inserted on either side of the best match
@@ -99,8 +96,7 @@ function morphOldNodeTo(oldNode: Element, newContent: Element, ctx: any) {
     if (ctx.callbacks.beforeNodeAdded(newContent) === false) return
 
     if (!oldNode.parentElement) {
-      // throw new Error('oldNode has no parentElement')
-      throw DATASTAR_ERROR
+      throw new Error('oldNode has no parentElement')
     }
     oldNode.parentElement.replaceChild(newContent, oldNode)
     ctx.callbacks.afterNodeAdded(newContent)
@@ -352,8 +348,7 @@ function handleHeadElement(newHeadTag: HTMLHeadElement, currentHead: HTMLHeadEle
     // console.log('adding: ', newNode)
     const newElt = document.createRange().createContextualFragment(newNode.outerHTML).firstChild as Element | null
     if (!newElt) {
-      // throw new Error('could not create new element from: ' + newNode.outerHTML)
-      throw DATASTAR_ERROR
+      throw new Error('could not create new element from: ' + newNode.outerHTML)
     }
     // console.log(newElt)
     if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
@@ -450,8 +445,7 @@ function removeNodesBetween(startInclusive: Element, endExclusive: Element, ctx:
     const tempNode = startInclusive
     startInclusive = startInclusive?.nextSibling as Element
     if (!tempNode) {
-      // throw new Error('tempNode is null')
-      throw DATASTAR_ERROR
+      throw new Error('tempNode is null')
     }
     removeNode(tempNode, ctx)
   }
@@ -576,8 +570,7 @@ function parseContent(newContent: string) {
     const responseDoc = parser.parseFromString(`<body><template>${newContent}</template></body>`, 'text/html')
     const content = responseDoc.body.querySelector('template')?.content
     if (!content) {
-      // throw new Error('content is null')
-      throw DATASTAR_ERROR
+      throw new Error('content is null')
     }
     generatedByIdiomorphId.add(content)
     return content
