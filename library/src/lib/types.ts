@@ -50,14 +50,14 @@ export type AttributePlugin = {
   allowedTagRegexps?: Set<string> // If not provided, all tags are allowed
   disallowedTags?: Set<string> // If not provided, no tags are disallowed
   preprocessors?: {
-    pre?: Preprocesser[]
-    post?: Preprocesser[]
+    pre?: Preprocessor[]
+    post?: Preprocessor[]
   }
   bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean // If true, the expression function is not created
 }
 
 export type RegexpGroups = Record<string, string>
-export type Preprocesser = {
+export type Preprocessor = {
   regexp: RegExp
   replacer: (groups: RegexpGroups) => string
 }

@@ -337,7 +337,7 @@ export function mergeHTMLFragment(
       setTimeout(() => {
         initialTarget.classList.remove(SWAPPING_CLASS)
         modifiedTarget.classList.remove(SWAPPING_CLASS)
-      }, 1000)
+      }, settleTime)
 
       const revisedHTML = modifiedTarget.outerHTML
 
