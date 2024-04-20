@@ -1,7 +1,5 @@
 // From https://github.com/Azure/fetch-event-source
 
-import { DATASTAR_ERROR } from '..'
-
 export interface FetchEventSourceInit extends RequestInit {
   /**
    * The request headers. FetchEventSource only supports the Record<string,string> format.
@@ -177,8 +175,7 @@ const enum ControlChars {
 function defaultOnOpen(response: Response) {
   const contentType = response.headers.get('content-type')
   if (!contentType?.startsWith(EventStreamContentType)) {
-    // throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`)
-    throw DATASTAR_ERROR
+    throw new Error(`Expected content-type to be ${EventStreamContentType}, Actual: ${contentType}`)
   }
 }
 

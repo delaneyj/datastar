@@ -75,8 +75,6 @@ export declare class Datastar {
     private walkDownDOM;
 }
 
-export declare const DATASTAR_ERROR: Error;
-
 export declare type DatastarPlugin = {};
 
 declare class DeepSignal<T extends DeepState> implements DeepSignalAccessors<T> {

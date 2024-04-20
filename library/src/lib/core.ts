@@ -14,8 +14,6 @@ import {
   Reactivity,
 } from './types'
 
-export const DATASTAR_ERROR = new Error('Datastar error')
-
 export class Datastar {
   plugins: AttributePlugin[] = []
   store: DeepSignal<any> = deepSignal({})
@@ -33,15 +31,14 @@ export class Datastar {
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
     this.actions = Object.assign(this.actions, actions)
     plugins = [...CorePlugins, ...plugins]
-    if (!plugins.length) throw DATASTAR_ERROR
+    if (!plugins.length) throw new Error('No plugins provided')
 
     const allPluginPrefixes = new Set<string>()
     for (const p of plugins) {
       if (p.requiredPluginPrefixes) {
         for (const requiredPluginType of p.requiredPluginPrefixes) {
           if (!allPluginPrefixes.has(requiredPluginType)) {
-            //throw new Error(`${p.prefix} requires ${requiredPluginType}`)
-            throw DATASTAR_ERROR
+            throw new Error(`${p.prefix} requires ${requiredPluginType}`)
           }
         }
       }
@@ -119,12 +116,10 @@ export class Datastar {
           let keyRaw = dsKey.slice(p.prefix.length)
           let [key, ...modifiersWithArgsArr] = keyRaw.split('.')
           if (p.mustHaveEmptyKey && key.length > 0) {
-            // throw new Error(`'${dsKey}' must have empty key`)
-            throw DATASTAR_ERROR
+            throw new Error(`'${dsKey}' must have empty key`)
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            // throw new Error(`'${dsKey}' must have non-empty key`)
-            throw DATASTAR_ERROR
+            throw new Error(`'${dsKey}' must have non-empty key`)
           }
           if (key.length) {
             key = key[0].toLowerCase() + key.slice(1)
@@ -137,8 +132,7 @@ export class Datastar {
           if (p.allowedModifiers) {
             for (const modifier of modifiersArr) {
               if (!p.allowedModifiers.has(modifier.label)) {
-                // throw new Error(`'${modifier.label}' is not allowed`)
-                throw DATASTAR_ERROR
+                throw new Error(`'${modifier.label}' is not allowed`)
               }
             }
           }
@@ -148,12 +142,10 @@ export class Datastar {
           }
 
           if (p.mustHaveEmptyExpression && expression.length) {
-            // throw new Error(`'${dsKey}' must have empty expression`)
-            throw DATASTAR_ERROR
+            throw new Error(`'${dsKey}' must have empty expression`)
           }
           if (p.mustNotEmptyExpression && !expression.length) {
-            // throw new Error(`'${dsKey}' must have non-empty expression`)
-            throw DATASTAR_ERROR
+            throw new Error(`'${dsKey}' must have non-empty expression`)
           }
 
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
@@ -195,8 +187,7 @@ export class Datastar {
             key,
             expression,
             expressionFn: () => {
-              // throw new Error('Expression function not created')
-              throw DATASTAR_ERROR
+              throw new Error('Expression function not created')
             },
             modifiers,
           }
@@ -204,19 +195,21 @@ export class Datastar {
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
             const statements = expression.split(';').map((s) => s.trim())
             statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
-            const fnContent = `
+            let fnContent = `
 try {
 ${statements.map((s) => `  ${s}`).join(';\n')}
 } catch (e) {
   throw e
 }
             `
+            // const regexp = new RegExp(/\u201C|\u201D/g)
+            // fnContent = fnContent.replaceAll(regexp, '"')
+
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
-              // throw new Error(`Error creating expression function for '${fnContent}'`)
-              throw DATASTAR_ERROR
+              throw new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
             }
           }
 
@@ -228,7 +221,8 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
             this.removals.get(el)!.add(removal)
           }
 
-          el.removeAttribute(dsKey)
+          console.log(`Removing attribute '${dsKey}' from '${el.tagName}'`)
+          delete el.dataset[dsKey]
         }
       })
     })

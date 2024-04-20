@@ -86,6 +86,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "On Load", Description: "how to load data on page load"},
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Merge Options", Description: "how to merge options in a select"},
+				{Label: "View Transition API", Description: "using the view transition API"},
 			},
 		},
 	}, func(g ExampleGroup, i int) ExampleGroup {
@@ -130,14 +131,20 @@ func setupExamples(router chi.Router) (err error) {
 						CLASS("flex flex-col justify-center items-center no-underline"))
 			}
 			contentGroup = append(contentGroup, contents)
+
+			nextHREF := "/reference"
+			nextLabel := "Dive deeper"
+
 			if example.Next != nil {
-				contentGroup = append(contentGroup,
-					buttonLink().
-						CLASS("w-full").
-						HREF(example.Next.URL).
-						Text("Next "+example.Next.Label).
-						CLASS("flex flex-col justify-center items-center no-underline"))
+				nextHREF = example.Next.URL
+				nextLabel = "Next " + example.Next.Label
 			}
+			contentGroup = append(contentGroup,
+				buttonLink().
+					CLASS("w-full").
+					HREF(nextHREF).
+					Text(nextLabel).
+					CLASS("flex flex-col justify-center items-center no-underline"))
 
 			sidebarContents := Group(
 				Range(examples, func(g ExampleGroup) ElementRenderer {
@@ -196,6 +203,8 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesMergeOptions(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
+			//
+			setupExamplesViewTransitionAPI(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}
