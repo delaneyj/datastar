@@ -524,7 +524,7 @@ ${p.map((d) => `  ${d}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const lt = "0.12.0", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.12.1", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -1474,7 +1474,7 @@ function on(t, e, n, r, s) {
       }
       f.classList.add(J), t.cleanupElementRemovals(l), t.applyPlugins(document.body), setTimeout(() => {
         l.classList.remove(J), f.classList.remove(J);
-      }, 1e3);
+      }, s);
       const b = f.outerHTML;
       c !== b && (f.classList.add(Ae), setTimeout(() => {
         f.classList.remove(Ae);
