@@ -1,5 +1,5 @@
 # flyctl launch added from .gitignore
-**/*_bin*
+**/debug_bin*
 **/gen
 **/node_modules
 
