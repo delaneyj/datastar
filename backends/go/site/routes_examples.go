@@ -84,6 +84,7 @@ func setupExamples(router chi.Router) (err error) {
 			Label: "Reactive Examples",
 			Examples: []*Example{
 				{Label: "On Load", Description: "how to load data on page load"},
+				{Label: "Model Binding", Description: "two-way data binding to signals"},
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Merge Options", Description: "how to merge options in a select"},
 				{Label: "View Transition API", Description: "using the view transition API"},
@@ -205,6 +206,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
 			setupExamplesViewTransitionAPI(examplesRouter),
+			setupExamplesModelBinding(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}

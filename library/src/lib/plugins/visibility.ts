@@ -141,7 +141,7 @@ export const supportsViewTransitions = !!docWithViewTransitionAPI.startViewTrans
 // Setup view transition api
 export const ViewTransitionPlugin: AttributePlugin = {
   prefix: 'viewTransition',
-  onGlobalInit(ctx) {
+  onGlobalInit() {
     let hasViewTransitionMeta = false
     document.head.childNodes.forEach((node) => {
       if (node instanceof HTMLMetaElement && node.name === 'view-transition') {
@@ -155,10 +155,6 @@ export const ViewTransitionPlugin: AttributePlugin = {
       meta.content = 'same-origin'
       document.head.appendChild(meta)
     }
-
-    ctx.mergeStore({
-      viewTransitionRefCounts: {},
-    })
   },
   onLoad: (ctx) => {
     if (!supportsViewTransitions) {

@@ -51,13 +51,20 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const isInput = tnl.includes('input')
     const isSelect = tnl.includes('select')
     const isTextarea = tnl.includes('textarea')
-    const isRadio = tnl.includes('radio')
     const type = el.getAttribute('type')
     const isCheckbox = tnl.includes('checkbox') || (isInput && type === 'checkbox')
+    const isRadio = tnl.includes('radio') || (isInput && type === 'radio')
     const isFile = isInput && type === 'file'
 
     if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
       throw new Error('Element must be input, select, textarea, checkbox or radio')
+    }
+
+    if (isRadio) {
+      const name = el.getAttribute('name')
+      if (!name?.length) {
+        el.setAttribute('name', signalName)
+      }
     }
 
     const setInputFromSignal = () => {
@@ -66,10 +73,17 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       }
       const hasValue = 'value' in el
       const v = signal.value
-      if (isCheckbox) {
-        ;(el as HTMLInputElement).checked = v
+      if (isCheckbox || isRadio) {
+        const input = el as HTMLInputElement
+        if (isCheckbox) {
+          input.checked = v
+        } else if (isRadio) {
+          // evaluate the value as string to handle any type casting
+          // automatically since the attribute has to be a string anyways
+          input.checked = `${v}` === input.value
+        }
       } else if (isFile) {
-        // console.warn('File input reading is not supported yet')
+        throw new Error('File input reading is not supported yet')
       } else if (hasValue) {
         el.value = `${v}`
       } else {

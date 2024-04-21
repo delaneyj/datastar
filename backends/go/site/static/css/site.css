@@ -110,6 +110,7 @@
 .bg-error-700{--un-bg-opacity:1;background-color:rgb(123 63 63 / var(--un-bg-opacity));}
 .bg-primary-300{--un-bg-opacity:1;background-color:rgb(214 189 135 / var(--un-bg-opacity));}
 .bg-primary-400{--un-bg-opacity:1;background-color:rgb(201 167 95 / var(--un-bg-opacity));}
+.bg-primary-500{--un-bg-opacity:1;background-color:rgb(187 145 55 / var(--un-bg-opacity));}
 .bg-primary-600{--un-bg-opacity:1;background-color:rgb(150 116 44 / var(--un-bg-opacity));}
 .bg-primary-900{--un-bg-opacity:1;background-color:rgb(37 29 11 / var(--un-bg-opacity));}
 .bg-red-500{--un-bg-opacity:1;background-color:rgb(239 68 68 / var(--un-bg-opacity));}
@@ -142,9 +143,10 @@
 .px-2{padding-left:0.5rem;padding-right:0.5rem;}
 .px-3{padding-left:0.75rem;padding-right:0.75rem;}
 .px-4{padding-left:1rem;padding-right:1rem;}
+.py,
+.py-4{padding-top:1rem;padding-bottom:1rem;}
 .py-1{padding-top:0.25rem;padding-bottom:0.25rem;}
 .py-2{padding-top:0.5rem;padding-bottom:0.5rem;}
-.py-4{padding-top:1rem;padding-bottom:1rem;}
 .py-8{padding-top:2rem;padding-bottom:2rem;}
 .py-px{padding-top:1px;padding-bottom:1px;}
 .pl-4{padding-left:1rem;}
@@ -162,6 +164,7 @@
 .text-accent-100{--un-text-opacity:1;color:rgb(215 223 241 / var(--un-text-opacity));}
 .text-accent-200{--un-text-opacity:1;color:rgb(175 192 228 / var(--un-text-opacity));}
 .text-accent-300{--un-text-opacity:1;color:rgb(135 160 214 / var(--un-text-opacity));}
+.text-accent-50{--un-text-opacity:1;color:rgb(235 239 248 / var(--un-text-opacity));}
 .text-accent-800{--un-text-opacity:1;color:rgb(22 39 75 / var(--un-text-opacity));}
 .text-error-100{--un-text-opacity:1;color:rgb(243 225 225 / var(--un-text-opacity));}
 .text-error-400{--un-text-opacity:1;color:rgb(207 135 135 / var(--un-text-opacity));}
@@ -169,6 +172,7 @@
 .text-primary-200{--un-text-opacity:1;color:rgb(228 211 175 / var(--un-text-opacity));}
 .text-primary-300{--un-text-opacity:1;color:rgb(214 189 135 / var(--un-text-opacity));}
 .text-primary-50{--un-text-opacity:1;color:rgb(248 244 235 / var(--un-text-opacity));}
+.text-primary-700{--un-text-opacity:1;color:rgb(112 87 33 / var(--un-text-opacity));}
 .text-primary-800{--un-text-opacity:1;color:rgb(75 58 22 / var(--un-text-opacity));}
 .text-success-100{--un-text-opacity:1;color:rgb(225 243 233 / var(--un-text-opacity));}
 .text-success-800{--un-text-opacity:1;color:rgb(42 87 56 / var(--un-text-opacity));}

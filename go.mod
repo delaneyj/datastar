@@ -6,7 +6,7 @@ require (
 	github.com/TwiN/go-away v1.6.13
 	github.com/alecthomas/chroma v0.10.0
 	github.com/benbjohnson/hashfs v0.2.2
-	github.com/delaneyj/gostar v0.7.1
+	github.com/delaneyj/gostar v0.7.2
 	github.com/delaneyj/toolbelt v0.2.0
 	github.com/dustin/go-humanize v1.0.1
 	github.com/go-chi/chi/v5 v5.0.12
@@ -17,6 +17,7 @@ require (
 	github.com/gorilla/sessions v1.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/lithammer/fuzzysearch v1.1.8
+	github.com/martinusso/inflect v0.0.0-20161215184957-e234d1ee70de
 	github.com/samber/lo v1.39.0
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/wcharczuk/go-chart/v2 v2.1.1

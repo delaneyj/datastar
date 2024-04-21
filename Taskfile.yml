@@ -52,6 +52,7 @@ tasks:
     generates:
       - "{{.BACKEND_STATIC_DIR}}"
     sources:
+      - "**/*.md"
       - "../backends/go/site/**/*.go"
     cmds:
       - pnpm unocss

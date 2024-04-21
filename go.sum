@@ -18,8 +18,8 @@ github.com/chewxy/math32 v1.10.1/go.mod h1:dOB2rcuFrCn6UHrze36WSLVPKtzPMRAQvBvUw
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
-github.com/delaneyj/gostar v0.7.1 h1:m3WQEXVV2/Q7pPoDp/IeY/NHnN1iThTQBAVwzH94C7c=
-github.com/delaneyj/gostar v0.7.1/go.mod h1:mlxRWAVbntRR2VWlpXAzt7y9HY+bQtEm/lsyFnGLx/w=
+github.com/delaneyj/gostar v0.7.2 h1:hpmxebJR4XskCKYbu+inTJ/vPixBLFXOJSggTZ5ZJeA=
+github.com/delaneyj/gostar v0.7.2/go.mod h1:mlxRWAVbntRR2VWlpXAzt7y9HY+bQtEm/lsyFnGLx/w=
 github.com/delaneyj/toolbelt v0.2.0 h1:WtamPZG++HnFh20TzvF4Y8EKYz0VrbfC76wrHzQAHu4=
 github.com/delaneyj/toolbelt v0.2.0/go.mod h1:Nxnuv8Ie4ptBzsfRi581vOlLaJOd5qqkQUiUSev+TPs=
 github.com/denisbrodbeck/machineid v1.0.1 h1:geKr9qtkB876mXguW2X6TU4ZynleN6ezuMSRhl4D7AQ=
@@ -69,6 +69,8 @@ github.com/klauspost/cpuid/v2 v2.2.7/go.mod h1:Lcz8mBdAVJIBVzewtcLocK12l3Y+JytZY
 github.com/klauspost/pgzip v1.2.6/go.mod h1:Ch1tH69qFZu15pkjo5kYi6mth2Zzwzt50oCQKQE9RUs=
 github.com/lithammer/fuzzysearch v1.1.8 h1:/HIuJnjHuXS8bKaiTMeeDlW2/AyIWk2brx1V8LFgLN4=
 github.com/lithammer/fuzzysearch v1.1.8/go.mod h1:IdqeyBClc3FFqSzYq/MXESsS4S0FsZ5ajtkr5xPLts4=
+github.com/martinusso/inflect v0.0.0-20161215184957-e234d1ee70de h1:2sPklhtW00/Z2nUdayKIcEW0+BjBpKj9bj3Ipn8wzb8=
+github.com/martinusso/inflect v0.0.0-20161215184957-e234d1ee70de/go.mod h1:L8gPtc+Y3+Q1UhOD/RPuQeO228CepFrsHlVjfv2AmGs=
 github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWEY=
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/minio/highwayhash v1.0.2 h1:Aak5U0nElisjDCfPSG79Tgzkn2gl66NxOMspRrKnA/g=

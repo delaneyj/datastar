@@ -3,6 +3,7 @@ package site
 import (
 	"fmt"
 	"log"
+	"math"
 	"math/rand"
 	"net/http"
 
@@ -17,7 +18,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 	examplesRouter.Route("/shoelace_kitchensink/data", func(dataRouter chi.Router) {
 		type Nested struct {
 			Label     string `json:"label"`
-			Selection int64  `json:"selection"`
+			Selection uint32 `json:"selection"`
 			IsChecked bool   `json:"isChecked"`
 		}
 		type Input struct {
@@ -26,7 +27,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 
 		type Option struct {
 			Label string `json:"label"`
-			Value int64  `json:"value"`
+			Value uint32 `json:"value"`
 		}
 
 		options := lo.Map(lo.Range(7), func(i, index int) Option {
@@ -34,7 +35,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 			offset := toolbelt.NextID()
 			return Option{
 				Label: fmt.Sprintf("Option %d", i),
-				Value: offset,
+				Value: uint32(offset % math.MaxUint32),
 			}
 		})
 
@@ -59,7 +60,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 							LABEL("Label").
 							DATASTAR_MODEL("nested.label"),
 						SL_SELECT().
-							LABEL("Select (Checking if int64's work)").
+							LABEL("Select").
 							DATASTAR_MODEL("nested.selection").
 							DATASTAR_ON("sl-change", "console.log('change')").
 							Children(
