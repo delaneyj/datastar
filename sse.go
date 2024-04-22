@@ -128,5 +128,6 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 	}
 	sse.w.Write([]byte("\n\n"))
 	sse.flusher.Flush()
+
 	// log.Printf("flushed %d bytes", totalSize)
 }

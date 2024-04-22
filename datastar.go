@@ -190,6 +190,16 @@ func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmen
 }
 
 func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
+	buf := bytebufferpool.Get()
+	defer bytebufferpool.Put(buf)
+	if err := child.Render(buf); err != nil {
+		return fmt.Errorf("failed to render: %w", err)
+	}
+
+	return RenderFragmentString(sse, buf.String(), opts...)
+}
+
+func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
 		Merge:          FragmentMergeMorphElement,
@@ -197,12 +207,6 @@ func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer
 	}
 	for _, opt := range opts {
 		opt(options)
-	}
-
-	buf := bytebufferpool.Get()
-	defer bytebufferpool.Put(buf)
-	if err := child.Render(buf); err != nil {
-		return fmt.Errorf("failed to render: %w", err)
 	}
 
 	dataRows := []string{}
@@ -215,7 +219,7 @@ func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer
 	if options.SettleDuration > 0 {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
-	dataRows = append(dataRows, fmt.Sprintf("fragment %s", buf.String()))
+	dataRows = append(dataRows, fmt.Sprintf("fragment %s", fragment))
 
 	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
 
