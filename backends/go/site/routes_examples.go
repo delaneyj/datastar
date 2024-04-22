@@ -88,6 +88,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Merge Options", Description: "how to merge options in a select"},
 				{Label: "View Transition API", Description: "using the view transition API"},
+				{Label: "Title Select", Description: "target singletons on the page"},
 			},
 		},
 	}, func(g ExampleGroup, i int) ExampleGroup {
@@ -207,6 +208,7 @@ func setupExamples(router chi.Router) (err error) {
 			//
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
+			setupExamplesTitleSelect(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}
