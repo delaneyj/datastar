@@ -337,7 +337,7 @@ const et = {
   },
   onLoad: (t) => {
     const e = t.expressionFn(t);
-    t.mergeStore(e);
+    t.mergeStore(e), delete t.el.dataset.store;
   }
 }, ot = {
   prefix: "ref",
@@ -496,7 +496,7 @@ ${p.map((d) => `  ${d}`).join(`;
             }
           }
           const E = r.onLoad(y);
-          E && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(E)), delete o.dataset[i];
+          E && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(E));
         }
       });
     });
@@ -524,7 +524,7 @@ ${p.map((d) => `  ${d}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const lt = "0.12.2", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.12.3", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -656,8 +656,10 @@ const lt = "0.12.2", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
     };
     t.modifiers.has("capture") || (a.capture = !1), t.modifiers.has("passive") && (a.passive = !0), t.modifiers.has("once") && (a.once = !0);
     const u = De(n).toLowerCase();
-    return u === "load" ? (s(), e.removeAttribute("data-on-load"), () => {
-    }) : (e.addEventListener(u, s, a), () => e.removeEventListener(u, s));
+    return u === "load" ? (s(), delete e.dataset.onLoad, () => {
+    }) : (e.addEventListener(u, s, a), () => {
+      e.removeEventListener(u, s);
+    });
   }
 }, pt = {
   prefix: "focus",

@@ -71,8 +71,8 @@ tasks:
       - "**/*.md"
       - "{{.NAME}}/static/**/*"
     deps:
-      - kill
       - library
+      - kill
       # - css
 
     cmds:

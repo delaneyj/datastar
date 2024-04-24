@@ -227,12 +227,14 @@ export const EventPlugin: AttributePlugin = {
     const eventName = kebabize(key).toLowerCase()
     if (eventName === 'load') {
       callback()
-
-      el.removeAttribute('data-on-load')
+      delete el.dataset.onLoad
       return () => {}
     }
     el.addEventListener(eventName, callback, evtListOpts)
-    return () => el.removeEventListener(eventName, callback)
+    return () => {
+      // console.log(`Removing event listener for ${eventName} on ${el}`)
+      el.removeEventListener(eventName, callback)
+    }
   },
 }
 

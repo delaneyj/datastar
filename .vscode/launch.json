@@ -10,6 +10,13 @@
             "request": "launch",
             "mode": "auto",
             "program": "${workspaceFolder}/backends/go/cmd/site/main.go"
+        },
+        {
+            "name": "Go test example",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/backends/example/go/main.go"
         }
     ]
 }

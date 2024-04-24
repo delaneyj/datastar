@@ -88,6 +88,8 @@
 .border-accent-600{--un-border-opacity:1;border-color:rgb(44 78 150 / var(--un-border-opacity));}
 .border-accent-700{--un-border-opacity:1;border-color:rgb(33 58 112 / var(--un-border-opacity));}
 .border-primary-300{--un-border-opacity:1;border-color:rgb(214 189 135 / var(--un-border-opacity));}
+.border-primary-400{--un-border-opacity:1;border-color:rgb(201 167 95 / var(--un-border-opacity));}
+.border-primary-500{--un-border-opacity:1;border-color:rgb(187 145 55 / var(--un-border-opacity));}
 .focus\:border-accent-400:focus{--un-border-opacity:1;border-color:rgb(95 129 201 / var(--un-border-opacity));}
 .focus\:border-primary-400:focus{--un-border-opacity:1;border-color:rgb(201 167 95 / var(--un-border-opacity));}
 .rounded{border-radius:0.25rem;}
@@ -110,8 +112,8 @@
 .bg-error-700{--un-bg-opacity:1;background-color:rgb(123 63 63 / var(--un-bg-opacity));}
 .bg-primary-300{--un-bg-opacity:1;background-color:rgb(214 189 135 / var(--un-bg-opacity));}
 .bg-primary-400{--un-bg-opacity:1;background-color:rgb(201 167 95 / var(--un-bg-opacity));}
-.bg-primary-500{--un-bg-opacity:1;background-color:rgb(187 145 55 / var(--un-bg-opacity));}
 .bg-primary-600{--un-bg-opacity:1;background-color:rgb(150 116 44 / var(--un-bg-opacity));}
+.bg-primary-700{--un-bg-opacity:1;background-color:rgb(112 87 33 / var(--un-bg-opacity));}
 .bg-primary-900{--un-bg-opacity:1;background-color:rgb(37 29 11 / var(--un-bg-opacity));}
 .bg-red-500{--un-bg-opacity:1;background-color:rgb(239 68 68 / var(--un-bg-opacity));}
 .bg-success-300{--un-bg-opacity:1;background-color:rgb(165 219 187 / var(--un-bg-opacity));}
@@ -140,6 +142,7 @@
 .p-2{padding:0.5rem;}
 .p-2\.5{padding:0.625rem;}
 .p-4{padding:1rem;}
+.p-8{padding:2rem;}
 .px-2{padding-left:0.5rem;padding-right:0.5rem;}
 .px-3{padding-left:0.75rem;padding-right:0.75rem;}
 .px-4{padding-left:1rem;padding-right:1rem;}
@@ -172,7 +175,6 @@
 .text-primary-200{--un-text-opacity:1;color:rgb(228 211 175 / var(--un-text-opacity));}
 .text-primary-300{--un-text-opacity:1;color:rgb(214 189 135 / var(--un-text-opacity));}
 .text-primary-50{--un-text-opacity:1;color:rgb(248 244 235 / var(--un-text-opacity));}
-.text-primary-700{--un-text-opacity:1;color:rgb(112 87 33 / var(--un-text-opacity));}
 .text-primary-800{--un-text-opacity:1;color:rgb(75 58 22 / var(--un-text-opacity));}
 .text-success-100{--un-text-opacity:1;color:rgb(225 243 233 / var(--un-text-opacity));}
 .text-success-800{--un-text-opacity:1;color:rgb(42 87 56 / var(--un-text-opacity));}

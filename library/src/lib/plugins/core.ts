@@ -54,6 +54,7 @@ const StoreAttributePlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
+    delete ctx.el.dataset.store
   },
 }
 

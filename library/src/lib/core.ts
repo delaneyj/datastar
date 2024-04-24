@@ -220,9 +220,6 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
             }
             this.removals.get(el)!.add(removal)
           }
-
-          // console.log(`Removing attribute '${dsKey}' from '${el.tagName}'`)
-          delete el.dataset[dsKey]
         }
       })
     })

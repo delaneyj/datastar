@@ -58,7 +58,7 @@ function indexPage() {
         <script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.11.1"></script></head>
       <body>
         <h2>Node/Express + Datastar Example</h2>
-        <main class="container" id="main"'></main>
+        <main class="container" id="main"></main>
       </body>
     </html>`;
   return indexPage;
@@ -100,7 +100,7 @@ Stick this inside of your `<main>` element:
 <input type="text" placeholder="Type here!" data-model="input" />
 ```
 
-This binds to a signal so our store can stay up to date with whatever is typed into this input. You can even nest your state like this `{"nested":{"label":"foo"}}`  and use `data-model="nested.label"` or access it from the backend as needed.
+This binds to a signal so our store can stay up to date with whatever is typed into this input. You can even nest your state like this `{"nested":{"label":"foo"}}` and use `data-model="nested.label"` or access it from the backend as needed.
 
 Good stuff so far. How can we see this? We can check the changes locally using the [data-text](/reference/plugins_attributes#text) attribute.
 

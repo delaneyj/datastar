@@ -89,6 +89,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Merge Options", Description: "how to merge options in a select"},
 				{Label: "View Transition API", Description: "using the view transition API"},
 				{Label: "Title Select", Description: "target singletons on the page"},
+				{Label: "Quick Primer Go", Description: "The getting started guide in Go"},
 			},
 		},
 	}, func(g ExampleGroup, i int) ExampleGroup {
@@ -209,6 +210,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleSelect(examplesRouter),
+			setupExamplesQuickPrimerGo(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}
