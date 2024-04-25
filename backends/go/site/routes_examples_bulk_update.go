@@ -13,6 +13,7 @@ import (
 )
 
 type ContactActive struct {
+	ID       int    `json:"id"`
 	IsActive bool   `json:"isActive"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
@@ -21,21 +22,25 @@ type ContactActive struct {
 func starterActiveContacts() []*ContactActive {
 	return []*ContactActive{
 		{
+			ID:       1,
 			Name:     "Joe Smith",
 			Email:    "joe@smith.org",
 			IsActive: true,
 		},
 		{
+			ID:       2,
 			Name:     "Angie MacDowell",
 			Email:    "angie@macdowell.org",
 			IsActive: true,
 		},
 		{
+			ID:       3,
 			Name:     "Fuqua Tarkenton",
 			Email:    "fuqua@tarkenton.org",
 			IsActive: true,
 		},
 		{
+			ID:       4,
 			Name:     "Kim Yee",
 			Email:    "kim@yee.org",
 			IsActive: false,
@@ -140,10 +145,13 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 		})
 
 		setActivation := func(w http.ResponseWriter, r *http.Request, isActive bool) {
-			sse := datastar.NewSSE(w, r)
 			store := &SelectionStore{}
-			datastar.BodyUnmarshal(r, store)
+			if err := datastar.BodyUnmarshal(r, store); err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
 
+			sse := datastar.NewSSE(w, r)
 			for key, wasSelected := range store.Selections {
 				const prefix = "contact_"
 				if strings.HasPrefix(key, prefix) {
