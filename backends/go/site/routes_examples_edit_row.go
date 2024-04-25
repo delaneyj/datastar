@@ -58,7 +58,8 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 					INPUT().
 						TYPE("text").
 						CLASS("bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5").
-						DATASTAR_MODEL("name"),
+						DATASTAR_MODEL("name").
+						CustomData("testId", contactKeyPrefix+"_name"),
 					DIV().Text(contact.Name),
 				)),
 				TD(Tern(
@@ -66,7 +67,8 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 					INPUT().
 						TYPE("text").
 						CLASS("bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5").
-						DATASTAR_MODEL("email"),
+						DATASTAR_MODEL("email").
+						CustomData("testId", contactKeyPrefix+"_email"),
 					DIV().Text(contact.Email),
 				)),
 				TD().
@@ -81,6 +83,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										BUTTON().
 											CLASS("flex items-center gap-1 px-2 py-1 rounded-sm text-xs bg-primary-600 hover:bg-primary-500").
 											DATASTAR_ON("click", datastar.GET("/examples/edit_row/data")).
+											CustomData("testId", contactKeyPrefix+"_cancel").
 											Children(
 												material_symbols.Cancel(),
 												Text("Cancel"),
@@ -88,6 +91,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										BUTTON().
 											CLASS("flex items-center gap-1 px-2 py-1 rounded-sm text-xs bg-success-600 hover:bg-success-500").
 											DATASTAR_ON("click", datastar.PATCH("/examples/edit_row/edit")).
+											CustomData("testId", contactKeyPrefix+"_save").
 											Children(
 												material_symbols.Save(),
 												Text("Save"),
@@ -101,6 +105,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										"$editRowIndex = %d; %s", i,
 										datastar.GET("/examples/edit_row/edit"),
 									)).
+									CustomData("testId", contactKeyPrefix+"_edit").
 									Children(
 										material_symbols.Edit(),
 										Text("Edit"),

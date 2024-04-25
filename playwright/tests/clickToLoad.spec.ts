@@ -3,9 +3,6 @@ import { test, expect } from "@playwright/test";
 test.describe("Click To Load", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/click_to_load");
-  });
-
-  test("test heading", async ({ page }) => {
     await expect(page.locator("#click-to-load")).toContainText("Click to Load");
   });
 
