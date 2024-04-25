@@ -9,6 +9,7 @@ import (
 	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/go-chi/chi/v5"
+	"github.com/samber/lo"
 )
 
 func setupExamplesDeleteRow(examplesRouter chi.Router) error {
@@ -17,7 +18,7 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 
 	contactNode := func(i int, cs *ContactActive) ElementRenderer {
 		return TR().
-			ID(fmt.Sprintf("contact_%d", i)).
+			ID(fmt.Sprintf("contact_%d", cs.ID)).
 			Children(
 				TD(Text(cs.Name)),
 				TD(Text(cs.Email)),
@@ -29,7 +30,7 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 							CLASS("flex gap-2 items-center px-4 py-2 bg-error-600 hover:bg-error-500 rounded-lg").
 							DATASTAR_ON("click", fmt.Sprintf(
 								`confirm('Are you sure?') && %s`,
-								datastar.DELETE("/examples/delete_row/data/%d", i),
+								datastar.DELETE("/examples/delete_row/data/%d", cs.ID),
 							)).
 							Children(
 								material_symbols.Delete(),
@@ -83,17 +84,19 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 			datastar.RenderFragment(sse, contactsToNode())
 		})
 
-		dataRouter.Delete("/{index}", func(w http.ResponseWriter, r *http.Request) {
+		dataRouter.Delete("/{id}", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
-			indexStr := chi.URLParam(r, "index")
-			index, err := strconv.Atoi(indexStr)
+			idStr := chi.URLParam(r, "id")
+			id, err := strconv.Atoi(idStr)
 			if err != nil {
 				http.Error(w, fmt.Sprintf("error parsing index: %s", err), http.StatusBadRequest)
 				return
 			}
 
-			contacts = append(contacts[:index], contacts[index+1:]...)
-			datastar.Delete(sse, "#contact_"+indexStr)
+			contacts = lo.Filter(contacts, func(cs *ContactActive, i int) bool {
+				return cs.ID != id
+			})
+			datastar.Delete(sse, "#contact_"+idStr)
 		})
 	})
 
