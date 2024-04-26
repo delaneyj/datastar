@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Click To Edit", () => {
+test.describe("Click To Edit UI Suite", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/click_to_edit");
     await expect(page.locator("#click-to-edit")).toContainText("Click to Edit");
@@ -44,7 +44,7 @@ test.describe("Click To Edit", () => {
     );
   });
 
-  test.skip("test editing and cancelling", async ({ page }) => {
+  test("test editing and cancelling", async ({ page }) => {
     await page.getByRole("button", { name: "Edit" }).click();
     await page.getByLabel("First Name").click();
     await page.getByLabel("First Name").fill("Foo");

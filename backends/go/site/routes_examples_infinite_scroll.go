@@ -50,6 +50,7 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 			Children(
 				DIV().
 					CLASS("flex justify-center text-4xl gap-2").
+					CustomData("testid", "loading_message").
 					Children(
 						svg_spinners.BlocksWave(),
 						Text("Loading..."),

@@ -59,7 +59,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 						TYPE("text").
 						CLASS("bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5").
 						DATASTAR_MODEL("name").
-						CustomData("testId", contactKeyPrefix+"_name"),
+						CustomData("testid", contactKeyPrefix+"_name"),
 					DIV().Text(contact.Name),
 				)),
 				TD(Tern(
@@ -68,7 +68,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 						TYPE("text").
 						CLASS("bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5").
 						DATASTAR_MODEL("email").
-						CustomData("testId", contactKeyPrefix+"_email"),
+						CustomData("testid", contactKeyPrefix+"_email"),
 					DIV().Text(contact.Email),
 				)),
 				TD().
@@ -83,7 +83,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										BUTTON().
 											CLASS("flex items-center gap-1 px-2 py-1 rounded-sm text-xs bg-primary-600 hover:bg-primary-500").
 											DATASTAR_ON("click", datastar.GET("/examples/edit_row/data")).
-											CustomData("testId", contactKeyPrefix+"_cancel").
+											CustomData("testid", contactKeyPrefix+"_cancel").
 											Children(
 												material_symbols.Cancel(),
 												Text("Cancel"),
@@ -91,7 +91,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										BUTTON().
 											CLASS("flex items-center gap-1 px-2 py-1 rounded-sm text-xs bg-success-600 hover:bg-success-500").
 											DATASTAR_ON("click", datastar.PATCH("/examples/edit_row/edit")).
-											CustomData("testId", contactKeyPrefix+"_save").
+											CustomData("testid", contactKeyPrefix+"_save").
 											Children(
 												material_symbols.Save(),
 												Text("Save"),
@@ -105,7 +105,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 										"$editRowIndex = %d; %s", i,
 										datastar.GET("/examples/edit_row/edit"),
 									)).
-									CustomData("testId", contactKeyPrefix+"_edit").
+									CustomData("testid", contactKeyPrefix+"_edit").
 									Children(
 										material_symbols.Edit(),
 										Text("Edit"),
@@ -147,6 +147,7 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 					BUTTON().
 						CLASS("flex items-center gap-2 px-4 py-2 rounded-lg bg-primary-600 hover:bg-primary-500").
 						DATASTAR_ON("click", datastar.GET("/examples/edit_row/reset")).
+						CustomData("testid", "reset").
 						Children(
 							material_symbols.Refresh(),
 							Text("Reset"),

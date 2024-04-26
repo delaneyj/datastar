@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Delete Row", () => {
+test.describe("Delete Row UI Suite", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/delete_row");
     await expect(page.locator("#delete-row")).toContainText("Delete Row");

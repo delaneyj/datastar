@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test.describe("Bulk Update", () => {
+test.describe("Bulk Update UI Suite", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/bulk_update");
     await expect(page.locator("#bulk-update")).toContainText("Bulk Update");
