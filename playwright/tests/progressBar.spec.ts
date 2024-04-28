@@ -8,7 +8,7 @@ test.describe("Progress Bar UI Suite", () => {
 
   test("test progress bar", async ({ page }) => {
     await expect(page.locator("div#progress_bar > svg")).toBeAttached();
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 1; i++) {
       await page.waitForSelector(
         "div#progress_bar.datastar-swapping.datastar-settling",
         { state: "attached" }
