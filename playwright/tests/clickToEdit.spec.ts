@@ -1,6 +1,10 @@
 import { test, expect } from "@playwright/test";
 
+// Annotate entire file as serial. Weird actions on click to edit cancel if not.
+
 test.describe("Click To Edit UI Suite", () => {
+  test.describe.configure({ mode: "serial" });
+
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/click_to_edit");
     await expect(page.locator("#click-to-edit")).toContainText("Click to Edit");

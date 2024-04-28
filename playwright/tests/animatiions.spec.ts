@@ -35,18 +35,21 @@ test.describe("Animations UI Suite", () => {
   });
 
   test("test click and fade in", async ({ page }) => {
-    const fadeButtonIn = page.getByRole("button", {
-      name: "Fade me in on click",
-    });
-
-    await expect(fadeButtonIn).toBeAttached();
-    fadeButtonIn.click();
-    await expect(fadeButtonIn).toHaveClass(
-      /.*datastar-swapping.*datastar-settling.*/
-    );
-    await expect(fadeButtonIn).not.toHaveClass(
-      /.*datastar-swapping.*datastar-settling.*/
-    );
+    await page
+      .getByRole("button", {
+        name: "Fade me in on click",
+      })
+      .click();
+    await expect(
+      page.getByRole("button", {
+        name: "Fade me in on click",
+      })
+    ).toHaveClass(/.*datastar-swapping.*datastar-settling.*/);
+    await expect(
+      page.getByRole("button", {
+        name: "Fade me in on click",
+      })
+    ).not.toHaveClass(/.*datastar-swapping.*datastar-settling.*/);
   });
 
   test("test in flght indicator", async ({ page }) => {

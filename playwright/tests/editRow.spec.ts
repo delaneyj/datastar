@@ -1,6 +1,8 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Edit Row UI Suite", () => {
+  test.describe.configure({ mode: "serial" });
+
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/edit_row");
     await expect(page.locator("#edit-row")).toContainText("Edit Row");

@@ -13,15 +13,9 @@ test.describe("Progress Bar UI Suite", () => {
         "div#progress_bar.datastar-swapping.datastar-settling",
         { state: "attached" }
       );
-      await expect(page.locator("div#progress_bar")).toHaveClass(
-        "datastar-swapping datastar-settling"
-      );
       await page.waitForSelector(
         "div#progress_bar:not(.datastar-swapping.datastar-settling)",
         { state: "attached" }
-      );
-      await expect(page.locator("div#progress_bar")).not.toHaveClass(
-        "datastar-swapping datastar-settling"
       );
     }
 
