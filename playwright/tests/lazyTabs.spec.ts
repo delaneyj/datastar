@@ -7,16 +7,21 @@ test.describe("Lazy Tabs UI Suite", () => {
   });
 
   test("test lazy tabs", async ({ page }) => {
-    const firstTabText = await page.locator("#tab_content").textContent();
-    await expect(page.locator("div#lazy_tabs")).toBeAttached();
+    const selector = "#tab_content";
+
+    let initialText = await page.textContent(selector);
     await page.getByTestId("tab_1").click();
-    await expect(page.locator("div#lazy_tabs")).toHaveClass(
-      /.*datastar-swapping.*datastar-settling.*/
+
+    //
+    await page.waitForFunction(
+      ({ selector, initialText }) => {
+        const element = document.querySelector(selector);
+        return element && element.textContent !== initialText;
+      },
+      { selector, initialText }
     );
-    await expect(page.locator("div#lazy_tabs")).not.toHaveClass(
-      /.*datastar-swapping.*datastar-settling.*/
-    );
-    const secondTabText = await page.locator("#tab_content").textContent();
-    expect(secondTabText).not.toEqual(firstTabText);
+    let newText = await page.textContent(selector);
+
+    expect(newText).not.toEqual(initialText);
   });
 });

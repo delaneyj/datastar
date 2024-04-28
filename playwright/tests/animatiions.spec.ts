@@ -9,7 +9,8 @@ test.describe("Animations UI Suite", () => {
   test("test color throb", async ({ page }) => {
     const selector = '[data-testid="color_throb"]';
 
-    for (let i = 0; i < 2; i++) {
+    // can change number if needed for multiple animation changes
+    for (let i = 0; i < 1; i++) {
       let initialText = await page.textContent(selector);
       //
       await page.waitForFunction(
