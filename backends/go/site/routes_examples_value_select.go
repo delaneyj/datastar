@@ -138,6 +138,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 							CLASS("bg-accent-800 border border-accent-600 text-accent-200 text-sm rounded-lg focus:ring-accent-400 focus:border-accent-400 block w-full p-2.5").
 							DATASTAR_MODEL("make").
 							DATASTAR_ON("change", datastar.GET("/examples/value_select/data")).
+							CustomData("testid", "make_select").
 							Children(
 								OPTION().
 									DISABLED().
@@ -147,7 +148,8 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 								Group(Range(cars, func(item *Make) ElementRenderer {
 									return OPTION().
 										VALUE(item.ID).
-										Text(item.Label)
+										Text(item.Label).
+										CustomData("testid", "make_option_"+item.Label)
 								})),
 							),
 						DynIf(
@@ -157,6 +159,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 									CLASS("bg-accent-800 border border-accent-600 text-accent-200 text-sm rounded-lg focus:ring-accent-400 focus:border-accent-400 block w-full p-2.5").
 									DATASTAR_MODEL("model").
 									DATASTAR_ON("change", datastar.GET("/examples/value_select/data")).
+									CustomData("testid", "model_select").
 									Children(
 										OPTION().
 											DISABLED().
@@ -166,7 +169,8 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 										Group(Range(make.Models, func(item *Model) ElementRenderer {
 											return OPTION().
 												VALUE(item.ID).
-												Text(item.Label)
+												Text(item.Label).
+												CustomData("testid", "model_option_"+item.Label)
 										})),
 									)
 							},
@@ -177,6 +181,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 								return BUTTON().
 									CLASS("flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600").
 									DATASTAR_ON("click", datastar.POST("/examples/value_select/data")).
+									CustomData("testid", "select_button").
 									Children(
 										material_symbols.CarRepair(),
 										TextF("Submit selected '%s / %s' choice", make.Label, model.Label),

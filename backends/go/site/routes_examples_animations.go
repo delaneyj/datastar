@@ -144,6 +144,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 						sse,
 						DIV().
 							ID("color_throb").
+							CustomData("testid", "color_throb").
 							CLASS("transition-all duration-1000 font-bold text-2xl text-center rounded-box p-4 uppercase").
 							STYLEF("color", "#%x", fg.Value).
 							STYLEF("background-color", "#%x", bg.Value).
