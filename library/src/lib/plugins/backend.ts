@@ -1,7 +1,15 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
-import { Actions, AttributeContext, AttributePlugin } from '../types'
+import { Action, Actions, AttributeContext, AttributePlugin } from '../types'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
+
+// Checks if selector is fetching
+const isFetching: Action = async (_ctx, selector) => {
+    const indicators = document.querySelectorAll(selector)
+    return Array.from(indicators).some((indicator) => {
+        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+    })
+}
 
 const GET = 'get',
   POST = 'post',
@@ -25,7 +33,7 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce((a
     })
   }
   return acc
-}, {} as Actions)
+}, {isFetching} as Actions)
 
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
