@@ -1,6 +1,6 @@
 import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
 
-const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]*`
+const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
   return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
 }

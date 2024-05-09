@@ -3,30 +3,6 @@ import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
-const GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete'
-
-export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce((acc, method) => {
-  acc[method] = async (ctx, urlExpression) => {
-    const da = Document as any
-    if (!da.startViewTransition) {
-      await fetcher(method, urlExpression, ctx)
-      return
-    }
-
-    new Promise((resolve) => {
-      da.startViewTransition(async () => {
-        await fetcher(method, urlExpression, ctx)
-        resolve(void 0)
-      })
-    })
-  }
-  return acc
-}, {} as Actions)
-
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
@@ -37,6 +13,40 @@ const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
 const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
 const SELECTOR_SELF_SELECTOR = 'self'
+
+const GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete'
+
+export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
+  (acc, method) => {
+    acc[method] = async (ctx, urlExpression) => {
+      const da = Document as any
+      if (!da.startViewTransition) {
+        await fetcher(method, urlExpression, ctx)
+        return
+      }
+
+      new Promise((resolve) => {
+        da.startViewTransition(async () => {
+          await fetcher(method, urlExpression, ctx)
+          resolve(void 0)
+        })
+      })
+    }
+    return acc
+  },
+  {
+    isFetching: async (_, selector: string) => {
+      const indicators = document.querySelectorAll(selector)
+      return Array.from(indicators).some((indicator) => {
+        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+      })
+    },
+  } as Actions,
+)
 
 const MergeOptions = {
   MorphElement: 'morph_element',

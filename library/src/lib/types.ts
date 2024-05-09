@@ -62,5 +62,5 @@ export type Preprocessor = {
   replacer: (groups: RegexpGroups) => string
 }
 
-export type Action = (ctx: AttributeContext, ...args: string[]) => Promise<void>
+export type Action = (ctx: AttributeContext, ...args: string[]) => Promise<any>
 export type Actions = Record<string, Action>

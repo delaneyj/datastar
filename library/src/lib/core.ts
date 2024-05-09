@@ -202,9 +202,8 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
   throw e
 }
             `
-            // const regexp = new RegExp(/\u201C|\u201D/g)
-            // fnContent = fnContent.replaceAll(regexp, '"')
 
+            // console.log(fnContent)
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
