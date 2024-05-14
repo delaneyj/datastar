@@ -1,0 +1,3 @@
+packages: ./.
+allow-newer: utf8-conversions:text-short,  utf8-conversions:bytestring
+             
