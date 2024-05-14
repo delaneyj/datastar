@@ -128,7 +128,7 @@ function $e(t) {
       return !0;
   return !1;
 }
-function Re(t) {
+function Ce(t) {
   for (let e = t._sources; e !== void 0; e = e._nextSource) {
     const n = e._source._node;
     if (n !== void 0 && (e._rollbackNode = n), e._source._node = e, e._version = -1, e._nextSource === void 0) {
@@ -137,7 +137,7 @@ function Re(t) {
     }
   }
 }
-function Ce(t) {
+function Re(t) {
   let e = t._sources, n;
   for (; e !== void 0; ) {
     const r = e._prevSource;
@@ -158,13 +158,13 @@ L.prototype._refresh = function() {
     return this._flags &= ~A, !0;
   const t = g;
   try {
-    Re(this), g = this;
+    Ce(this), g = this;
     const e = this._compute();
     (this._flags & H || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~H, this._version++);
   } catch (e) {
     this._value = e, this._flags |= H, this._version++;
   }
-  return g = t, Ce(this), this._flags &= ~A, !0;
+  return g = t, Re(this), this._flags &= ~A, !0;
 };
 L.prototype._subscribe = function(t) {
   if (this._targets === void 0) {
@@ -228,7 +228,7 @@ function ce(t) {
 function Xe(t) {
   if (g !== this)
     throw new Error("Out-of-order effect");
-  Ce(this), g = t, this._flags &= ~A, this._flags & O && ce(this), te();
+  Re(this), g = t, this._flags &= ~A, this._flags & O && ce(this), te();
 }
 function q(t) {
   this._compute = t, this._cleanup = void 0, this._sources = void 0, this._nextBatchedEffect = void 0, this._flags = $;
@@ -245,7 +245,7 @@ q.prototype._callback = function() {
   }
 };
 q.prototype._start = function() {
-  this._flags & A && Q(), this._flags |= A, this._flags &= ~O, Ie(this), Re(this), ee();
+  this._flags & A && Q(), this._flags |= A, this._flags &= ~O, Ie(this), Ce(this), ee();
   const t = g;
   return g = this, Xe.bind(this, t);
 };
@@ -581,9 +581,9 @@ const lt = "0.12.3", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
             throw new Error("Invalid data URI");
           const { mime: x, contents: M } = S.groups;
           r.value = M;
-          const C = `${n}Mime`;
-          if (C in N) {
-            const fe = N[`${C}`];
+          const R = `${n}Mime`;
+          if (R in N) {
+            const fe = N[`${R}`];
             fe.value = x;
           }
         }, v.readAsDataURL(w);
@@ -881,11 +881,11 @@ function Fe(t, e, n) {
   if (n.morphStyle === "innerHTML")
     return Ve(e, t, n), t.children;
   if (n.morphStyle === "outerHTML" || n.morphStyle == null) {
-    const r = Ct(e, t, n);
+    const r = Rt(e, t, n);
     if (!r)
       throw new Error("Could not find best match");
     const s = r?.previousSibling, o = r?.nextSibling, i = Z(t, r, n);
-    return r ? Rt(s, i, o) : [];
+    return r ? Ct(s, i, o) : [];
   } else
     throw "Do not understand how to morph style " + n.morphStyle;
 }
@@ -912,26 +912,26 @@ function Ve(t, e, n) {
     if (o = r, r = o.nextSibling, s == null) {
       if (n.callbacks.beforeNodeAdded(o) === !1)
         return;
-      e.appendChild(o), n.callbacks.afterNodeAdded(o), R(n, o);
+      e.appendChild(o), n.callbacks.afterNodeAdded(o), C(n, o);
       continue;
     }
     if (Be(o, s, n)) {
-      Z(s, o, n), s = s.nextSibling, R(n, o);
+      Z(s, o, n), s = s.nextSibling, C(n, o);
       continue;
     }
     let i = Nt(t, e, o, s, n);
     if (i) {
-      s = me(s, i, n), Z(i, o, n), R(n, o);
+      s = me(s, i, n), Z(i, o, n), C(n, o);
       continue;
     }
     let a = Mt(t, o, s, n);
     if (a) {
-      s = me(s, a, n), Z(a, o, n), R(n, o);
+      s = me(s, a, n), Z(a, o, n), C(n, o);
       continue;
     }
     if (n.callbacks.beforeNodeAdded(o) === !1)
       return;
-    e.insertBefore(o, s), n.callbacks.afterNodeAdded(o), R(n, o);
+    e.insertBefore(o, s), n.callbacks.afterNodeAdded(o), C(n, o);
   }
   for (; s !== null; ) {
     let i = s;
@@ -1041,7 +1041,7 @@ function me(t, e, n) {
       throw new Error("tempNode is null");
     Ue(r, n);
   }
-  return R(n, e), e.nextSibling;
+  return C(n, e), e.nextSibling;
 }
 function Nt(t, e, n, r, s) {
   const o = j(s, n, e);
@@ -1105,7 +1105,7 @@ function $t(t) {
     return e;
   }
 }
-function Rt(t, e, n) {
+function Ct(t, e, n) {
   const r = [], s = [];
   for (; t; )
     r.push(t), t = t.previousSibling;
@@ -1119,7 +1119,7 @@ function Rt(t, e, n) {
     e?.parentElement?.insertBefore(r.pop(), e.nextSibling);
   return s;
 }
-function Ct(t, e, n) {
+function Rt(t, e, n) {
   let r = t.firstChild, s = r, o = 0;
   for (; r; ) {
     let i = It(r, e, n);
@@ -1131,7 +1131,7 @@ function It(t, e, n) {
   return Y(t, e) ? 0.5 + j(n, t, e) : 0;
 }
 function Ue(t, e) {
-  R(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
+  C(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
 function Ot(t, e) {
   return !t.deadIds.has(e);
@@ -1139,7 +1139,7 @@ function Ot(t, e) {
 function xt(t, e, n) {
   return t.idMap.get(n)?.has(e) || !1;
 }
-function R(t, e) {
+function C(t, e) {
   const n = t.idMap.get(e);
   if (n)
     for (const r of n)
@@ -1373,10 +1373,10 @@ async function ke(t, e, n) {
             y = M;
             break;
           case "merge":
-            const C = M;
-            if (!Object.values(T).includes(C))
-              throw new Error(`Unknown merge option: ${C}`);
-            _ = C;
+            const R = M;
+            if (!Object.values(T).includes(R))
+              throw new Error(`Unknown merge option: ${R}`);
+            _ = R;
             break;
           case "settle":
             E = parseInt(M);
@@ -1498,6 +1498,11 @@ const an = {
   toggleAll: async (t, e) => {
     const n = new RegExp(e);
     t.walkSignals((r, s) => n.test(r) && (s.value = !s.value));
+  },
+  clipboard: async (t, e) => {
+    if (!navigator.clipboard)
+      throw new Error("Clipboard API not available");
+    await navigator.clipboard.writeText(e);
   }
 };
 function ln(t = {}, ...e) {
