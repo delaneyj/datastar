@@ -9,9 +9,9 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func setupExamplesFetchSignal(examplesRouter chi.Router) error {
+func setupExamplesIsLoadingId(examplesRouter chi.Router) error {
 
-	examplesRouter.Get("/fetch_signal/greet", func(w http.ResponseWriter, r *http.Request) {
+	examplesRouter.Get("/is_loading_identifier/greet", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(sse, DIV().ID("greeting").Text(""))
 		time.Sleep(2 * time.Second)

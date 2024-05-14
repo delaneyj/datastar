@@ -121,31 +121,26 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 }
 
 // Sets the fetch indicator selector
-export const FetchSignalPlugin: AttributePlugin = {
-  prefix: 'fetchSignal',
-  mustHaveEmptyKey: true,
+export const IsLoadingPlugin: AttributePlugin = {
+  prefix: 'isLoadingId',
   mustNotEmptyExpression: true,
   onLoad: (ctx) => {
-    return ctx.reactivity.effect(() => {
-      const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
-      const s = ctx.store()
-      if (!s.fetch) s.fetch = {}
-      if (!s.fetch.indicatorSignals) s.fetch.indicatorSignals = {}
-      s.fetch.indicatorSignals[ctx.el.id] = c
-      if (!s[c.value]) {
-        s[c.value] = ctx.reactivity.signal(false)
-        s.fetch.indicatorSignals[ctx.el.id] = c
-      } else throw new Error(`Signal $${c.value} is already in use`)
+    const c = ctx.expression
+    const s = ctx.store()
 
-      return () => {
-        delete s[c.value]
-        delete s.fetch.indicatorSignals[ctx.el.id]
-      }
-    })
+    if (!s.fetch) s.fetch = {}
+    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
+    s.fetch.loadingIdentifiers[ctx.el.id] = c
+
+    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Set<string>())
+
+    return () => {
+      delete s.fetch.loadingIdentifiers[ctx.el.id]
+    }
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, FetchSignalPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
@@ -172,11 +167,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     }
   }
 
-  const indicatorSignal = s.fetch?.indicatorSignals?.[loadingTarget.id] || null
-  if (indicatorSignal) {
-    console.log('indicator', s[indicatorSignal.value].value)
-    s[indicatorSignal.value].value = true
-    console.log('indicator', s[indicatorSignal.value].value)
+  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
+  if (loadingIdentifier) {
+    s.isLoading.value = new Set([...s.isLoading.value, loadingIdentifier])
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -274,14 +267,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }, 300)
       }
 
-      if (indicatorSignal) {
-        return ctx.reactivity.effect(() => {
-          setTimeout(() => {
-            console.log('indicator is ', ctx.store()[indicatorSignal.value].value)
-            ctx.store()[indicatorSignal.value].value = false
-            console.log('indicator is ', ctx.store()[indicatorSignal.value].value)
-          }, 300)
-        })
+      if (loadingIdentifier) {
+        setTimeout(() => {
+          const newSet = s.isLoading.value
+          newSet.delete(loadingIdentifier)
+
+          s.isLoading.value = new Set(newSet)
+        }, 300)
       }
     },
   }
