@@ -304,10 +304,13 @@ function ue(t, e, n) {
   return new RegExp(`(?<whole>\\${t}(?<${e}>${Qe})${n})`, "g");
 }
 const et = {
-  regexp: ue("$", "signal", ""),
+  regexp: ue("$", "signal", "(?<method>\\([^\\)]*\\))?"),
   replacer: (t) => {
-    const { signal: e } = t;
-    return `ctx.store().${e}.value`;
+    const { signal: e, method: n } = t, r = "ctx.store()";
+    if (!n?.length)
+      return `${r}.${e}.value`;
+    const s = e.split("."), o = s.pop(), i = s.join(".");
+    return `${r}.${i}.value.${o}${n}`;
   }
 }, tt = {
   regexp: ue("$\\$", "action", "(?<call>\\((?<args>.*)\\))?"),
@@ -524,7 +527,7 @@ ${p.map((d) => `  ${d}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const lt = "0.12.3", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.13.0", De = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,

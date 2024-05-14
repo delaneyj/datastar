@@ -7,10 +7,17 @@ function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
 
 // Replacing $signal with ctx.store.signal.value`
 const SignalProcessor: Preprocessor = {
-  regexp: wholePrefixSuffix('$', 'signal', ''),
+  regexp: wholePrefixSuffix('$', 'signal', '(?<method>\\([^\\)]*\\))?'),
   replacer: (groups: RegexpGroups) => {
-    const { signal } = groups
-    return `ctx.store().${signal}.value`
+    const { signal, method } = groups
+    const prefix = `ctx.store()`
+    if (!method?.length) {
+      return `${prefix}.${signal}.value`
+    }
+    const parts = signal.split('.')
+    const methodName = parts.pop()
+    const nestedSignal = parts.join('.')
+    return `${prefix}.${nestedSignal}.value.${methodName}${method}`
   },
 }
 
