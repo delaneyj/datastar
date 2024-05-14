@@ -17,3 +17,11 @@ Sets all the signals that start with the prefix to the value of the second argum
 ```
 
 Toggles all the signals that start with the prefix. This is useful for toggling all the values of a form at once.
+
+## `$$clipboard(text: string)`
+
+```html
+<div data-on-click="$$clipboard('Hello, world!')"></div>
+```
+
+Copies the text to the clipboard. This is useful for copying text to the clipboard.
