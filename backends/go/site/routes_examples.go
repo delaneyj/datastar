@@ -87,6 +87,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Model Binding", Description: "two-way data binding to signals"},
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Merge Options", Description: "how to merge options in a select"},
+				{Label: "Redirects", Description: "how to redirect to another page"},
 				{Label: "View Transition API", Description: "using the view transition API"},
 				{Label: "Title Select", Description: "target singletons on the page"},
 				{Label: "Quick Primer Go", Description: "The getting started guide in Go"},
@@ -204,6 +205,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesDialogsBrowser(examplesRouter),
 			setupExamplesLazyTabs(examplesRouter),
 			setupExamplesMergeOptions(examplesRouter),
+			setupExamplesRedirects(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
