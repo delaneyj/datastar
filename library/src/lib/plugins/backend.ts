@@ -120,7 +120,32 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
+// Sets the fetch indicator selector
+export const FetchSignalPlugin: AttributePlugin = {
+  prefix: 'fetchSignal',
+  mustHaveEmptyKey: true,
+  mustNotEmptyExpression: true,
+  onLoad: (ctx) => {
+    return ctx.reactivity.effect(() => {
+      const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
+      const s = ctx.store()
+      if (!s.fetch) s.fetch = {}
+      if (!s.fetch.indicatorSignals) s.fetch.indicatorSignals = {}
+      s.fetch.indicatorSignals[ctx.el.id] = c
+      if (!s[c.value]) {
+        s[c.value] = ctx.reactivity.signal(false)
+        s.fetch.indicatorSignals[ctx.el.id] = c
+      } else throw new Error(`Signal $${c.value} is already in use`)
+
+      return () => {
+        delete s[c.value]
+        delete s.fetch.indicatorSignals[ctx.el.id]
+      }
+    })
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, FetchSignalPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
@@ -145,6 +170,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
       hasIndicator = true
     }
+  }
+
+  const indicatorSignal = s.fetch?.indicatorSignals?.[loadingTarget.id] || null
+  if (indicatorSignal) {
+    console.log('indicator', s[indicatorSignal.value].value)
+    s[indicatorSignal.value].value = true
+    console.log('indicator', s[indicatorSignal.value].value)
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -240,6 +272,16 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
           loadingTarget.classList.add(INDICATOR_CLASS)
         }, 300)
+      }
+
+      if (indicatorSignal) {
+        return ctx.reactivity.effect(() => {
+          setTimeout(() => {
+            console.log('indicator is ', ctx.store()[indicatorSignal.value].value)
+            ctx.store()[indicatorSignal.value].value = false
+            console.log('indicator is ', ctx.store()[indicatorSignal.value].value)
+          }, 300)
+        })
       }
     },
   }
