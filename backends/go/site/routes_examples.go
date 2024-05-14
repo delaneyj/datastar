@@ -83,6 +83,7 @@ func setupExamples(router chi.Router) (err error) {
 		{
 			Label: "Reactive Examples",
 			Examples: []*Example{
+				{Label: "Scroll Into View", Description: "scrolling an element into view"},
 				{Label: "On Load", Description: "how to load data on page load"},
 				{Label: "Model Binding", Description: "two-way data binding to signals"},
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
@@ -212,6 +213,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleSelect(examplesRouter),
+			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
