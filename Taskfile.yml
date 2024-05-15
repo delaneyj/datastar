@@ -80,6 +80,14 @@ tasks:
       - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
       - ./{{.BIN_NAME}}
 
+  test:
+    dir: playwright
+    cmds:
+      - curl -o - -I http://localhost:8080
+      - pnpm i
+      - pnpm playwright install
+      - pnpm playwright test
+
   deploy:
     deps:
       - library
