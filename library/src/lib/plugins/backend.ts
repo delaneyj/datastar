@@ -120,7 +120,27 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
+// Sets the fetch indicator selector
+export const IsLoadingPlugin: AttributePlugin = {
+  prefix: 'isLoadingId',
+  mustNotEmptyExpression: true,
+  onLoad: (ctx) => {
+    const c = ctx.expression
+    const s = ctx.store()
+
+    if (!s.fetch) s.fetch = {}
+    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
+    s.fetch.loadingIdentifiers[ctx.el.id] = c
+
+    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Set<string>())
+
+    return () => {
+      delete s.fetch.loadingIdentifiers[ctx.el.id]
+    }
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
@@ -145,6 +165,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
       hasIndicator = true
     }
+  }
+
+  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
+  if (loadingIdentifier) {
+    s.isLoading.value = new Set([...s.isLoading.value, loadingIdentifier])
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -239,6 +264,15 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         setTimeout(() => {
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
           loadingTarget.classList.add(INDICATOR_CLASS)
+        }, 300)
+      }
+
+      if (loadingIdentifier) {
+        setTimeout(() => {
+          const newSet = s.isLoading.value
+          newSet.delete(loadingIdentifier)
+
+          s.isLoading.value = new Set(newSet)
         }, 300)
       }
     },
