@@ -1,10 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-// Annotate entire file as serial. Weird actions on click to edit cancel if not.
-
 test.describe("Dialogues Browser UI Suite", () => {
-  test.describe.configure({ mode: "serial" });
-
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/dialogs_browser");
     await expect(page.locator('#demo')).toContainText('Demo');
