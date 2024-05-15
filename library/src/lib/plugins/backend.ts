@@ -48,6 +48,7 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   } as Actions,
 )
 
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
 const MergeOptions = {
   MorphElement: 'morph_element',
   InnerElement: 'inner_element',
@@ -187,77 +188,58 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         merge: MergeOption = 'morph_element',
         selector = '',
         settleTime = 500,
-        isRedirect = false,
-        redirectURL = '',
-        error: Error | undefined = undefined,
-        isError = false,
         isFragment = false
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
         throw new Error(`Unknown event: ${evt.event}`)
       }
-      const eventType = evt.event.slice(DATASTAR_CLASS_PREFIX.length)
-      switch (eventType) {
-        case 'redirect':
-          isRedirect = true
-          break
-        case 'fragment':
-          isFragment = true
-          break
-        case 'error':
-          isError = true
-          break
-        default:
-          throw `Unknown event: ${evt}`
+
+      const lines = evt.data.trim().split('\n')
+      let currentDatatype = ''
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i]
+        if (!line?.length) continue
+
+        const firstWord = line.split(' ', 1)[0]
+        const isDatatype = KnowEventTypes.includes(firstWord)
+        const isNewDatatype = isDatatype && firstWord !== currentDatatype
+        if (isNewDatatype) {
+          currentDatatype = firstWord
+          line = line.slice(firstWord.length + 1)
+
+          switch (currentDatatype) {
+            case 'selector':
+              selector = line
+              break
+            case 'merge':
+              merge = line as MergeOption
+              const exists = Object.values(MergeOptions).includes(merge)
+              if (!exists) {
+                throw new Error(`Unknown merge option: ${merge}`)
+              }
+              break
+            case 'settle':
+              settleTime = parseInt(line)
+              break
+            case 'fragment':
+              isFragment = true
+              break
+            case 'redirect':
+              window.location.href = line
+              return
+            case 'error':
+              throw new Error(line)
+            default:
+              throw new Error(`Unknown data type`)
+          }
+        }
+
+        if (currentDatatype === 'fragment') fragment += line + '\n'
       }
 
-      evt.data.split('\n').forEach((dataLine) => {
-        const offset = dataLine.indexOf(' ')
-        if (offset === -1) {
-          throw new Error(`Missing space in data`)
-        }
-
-        const type = dataLine.slice(0, offset)
-        const contents = dataLine.slice(offset + 1)
-
-        switch (type) {
-          case 'selector':
-            selector = contents
-            break
-          case 'merge':
-            const vmo = contents as MergeOption
-            const exists = Object.values(MergeOptions).includes(vmo)
-            if (!exists) {
-              throw new Error(`Unknown merge option: ${vmo}`)
-            }
-            merge = vmo
-            break
-          case 'settle':
-            settleTime = parseInt(contents)
-            break
-          case 'fragment':
-          case 'html':
-            fragment = contents
-            break
-          case 'redirect':
-            redirectURL = contents
-            break
-          case 'error':
-            error = new Error(contents)
-            break
-          default:
-            throw new Error(`Unknown data type`)
-        }
-      })
-
-      if (isError && error) {
-        throw error
-      } else if (isRedirect && redirectURL) {
-        window.location.href = redirectURL
-      } else if (isFragment) {
+      if (isFragment) {
         if (!fragment?.length) fragment = '<div></div>'
         mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
-      } else {
-        throw new Error(`Unknown event: ${evt}`)
       }
     },
     onclose: () => {
@@ -307,7 +289,7 @@ export function mergeHTMLFragment(
 ) {
   const { el } = ctx
 
-  fragContainer.innerHTML = fragment
+  fragContainer.innerHTML = fragment.trim()
   const frag = fragContainer.content.firstChild
   if (!(frag instanceof Element)) {
     throw new Error(`No fragment found`)

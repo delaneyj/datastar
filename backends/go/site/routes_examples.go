@@ -84,6 +84,7 @@ func setupExamples(router chi.Router) (err error) {
 		{
 			Label: "Reactive Examples",
 			Examples: []*Example{
+				{Label: "Multiline Fragments", Description: "multiline fragments"},
 				{Label: "Scroll Into View", Description: "scrolling an element into view"},
 				{Label: "On Load", Description: "how to load data on page load"},
 				{Label: "Model Binding", Description: "two-way data binding to signals"},
@@ -209,6 +210,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesLazyTabs(examplesRouter),
 			setupExamplesMergeOptions(examplesRouter),
 			setupExamplesRedirects(examplesRouter),
+			setupExamplesMultilineFragments(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//

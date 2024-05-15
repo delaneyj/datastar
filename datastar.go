@@ -3,6 +3,7 @@ package datastar
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/delaneyj/gostar/elements"
@@ -220,7 +221,9 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
 	if fragment != "" {
-		dataRows = append(dataRows, fmt.Sprintf("fragment %s", fragment))
+		parts := strings.Split(fragment, "\n")
+		parts[0] = "fragment " + parts[0]
+		dataRows = append(dataRows, parts...)
 	}
 
 	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
