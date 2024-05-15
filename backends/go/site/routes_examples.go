@@ -63,6 +63,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Edit Row", Description: "how to edit rows in a table"},
 				{Label: "Lazy Load", Description: "how to lazy load content"},
 				{Label: "Fetch Indicator", Description: "show a loading indicator when fetching data"},
+				{Label: "Is Loading Identifier", Description: "use an isLoading set of identifiers in a signal to reflect when an element is fetching"},
 				{Label: "Inline Validation", Description: "how to do inline field validation"},
 				{Label: "Infinite Scroll", Description: "infinite scrolling of a page"},
 				{Label: "Active Search", Description: "the active search box pattern"},
@@ -83,10 +84,13 @@ func setupExamples(router chi.Router) (err error) {
 		{
 			Label: "Reactive Examples",
 			Examples: []*Example{
+				{Label: "Multiline Fragments", Description: "multiline fragments"},
+				{Label: "Scroll Into View", Description: "scrolling an element into view"},
 				{Label: "On Load", Description: "how to load data on page load"},
 				{Label: "Model Binding", Description: "two-way data binding to signals"},
 				{Label: "Disable Button", Description: "how to disable a button while processing"},
 				{Label: "Merge Options", Description: "how to merge options in a select"},
+				{Label: "Redirects", Description: "how to redirect to another page"},
 				{Label: "View Transition API", Description: "using the view transition API"},
 				{Label: "Title Select", Description: "target singletons on the page"},
 				{Label: "Quick Primer Go", Description: "The getting started guide in Go"},
@@ -192,6 +196,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesDeleteRow(examplesRouter),
 			setupExamplesLazyLoad(examplesRouter),
 			setupExamplesFetchIndicator(examplesRouter),
+			setupExamplesIsLoadingId(examplesRouter),
 			setupExamplesOnLoad(examplesRouter),
 			setupExamplesDisableButton(examplesRouter),
 			setupExampleInlineValidation(examplesRouter),
@@ -204,12 +209,15 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesDialogsBrowser(examplesRouter),
 			setupExamplesLazyTabs(examplesRouter),
 			setupExamplesMergeOptions(examplesRouter),
+			setupExamplesRedirects(examplesRouter),
+			setupExamplesMultilineFragments(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleSelect(examplesRouter),
+			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))

@@ -6,6 +6,13 @@
 <button type="button" class="p-2 bg-accent-200 text-accent-700 shadow rounded" data-on-click="$$get('/examples/fetch_indicator/greet')" data-fetch-indicator="'#ind'" data-testid="greeting_button">Click me for a greeting</button>
 <div id="greeting"></div>
 
+<div>Example from https://github.com/delaneyj/datastar/pull/24</div>
+<div data-store="{input: ''}">
+  <input type="text" data-bind-readonly="$$isFetching('#submit')" data-model="input" class="bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5" />
+  <div data-show="$$isFetching('#submit')">Loading...</div>
+  <button id="submit" data-bind-disabled="$$isFetching('#submit')" data-on-click="$$get('/examples/fetch_indicator/greet')">Submit</button>
+</div>
+
 ## Explanation
 
 ```html

@@ -3,30 +3,6 @@ import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
-const GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete'
-
-export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce((acc, method) => {
-  acc[method] = async (ctx, urlExpression) => {
-    const da = Document as any
-    if (!da.startViewTransition) {
-      await fetcher(method, urlExpression, ctx)
-      return
-    }
-
-    new Promise((resolve) => {
-      da.startViewTransition(async () => {
-        await fetcher(method, urlExpression, ctx)
-        resolve(void 0)
-      })
-    })
-  }
-  return acc
-}, {} as Actions)
-
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
@@ -38,6 +14,41 @@ const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
 const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
 const SELECTOR_SELF_SELECTOR = 'self'
 
+const GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete'
+
+export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
+  (acc, method) => {
+    acc[method] = async (ctx, urlExpression) => {
+      const da = Document as any
+      if (!da.startViewTransition) {
+        await fetcher(method, urlExpression, ctx)
+        return
+      }
+
+      new Promise((resolve) => {
+        da.startViewTransition(async () => {
+          await fetcher(method, urlExpression, ctx)
+          resolve(void 0)
+        })
+      })
+    }
+    return acc
+  },
+  {
+    isFetching: async (_, selector: string) => {
+      const indicators = document.querySelectorAll(selector)
+      return Array.from(indicators).some((indicator) => {
+        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+      })
+    },
+  } as Actions,
+)
+
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
 const MergeOptions = {
   MorphElement: 'morph_element',
   InnerElement: 'inner_element',
@@ -110,7 +121,27 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
+// Sets the fetch indicator selector
+export const IsLoadingPlugin: AttributePlugin = {
+  prefix: 'isLoadingId',
+  mustNotEmptyExpression: true,
+  onLoad: (ctx) => {
+    const c = ctx.expression
+    const s = ctx.store()
+
+    if (!s.fetch) s.fetch = {}
+    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
+    s.fetch.loadingIdentifiers[ctx.el.id] = c
+
+    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Set<string>())
+
+    return () => {
+      delete s.fetch.loadingIdentifiers[ctx.el.id]
+    }
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
@@ -137,6 +168,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     }
   }
 
+  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
+  if (loadingIdentifier) {
+    s.isLoading.value = new Set([...s.isLoading.value, loadingIdentifier])
+  }
+
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
   const url = new URL(urlExpression, window.location.origin)
   method = method.toUpperCase()
@@ -152,76 +188,58 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         merge: MergeOption = 'morph_element',
         selector = '',
         settleTime = 500,
-        isRedirect = false,
-        redirectURL = '',
-        error: Error | undefined = undefined,
-        isError = false,
         isFragment = false
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
         throw new Error(`Unknown event: ${evt.event}`)
       }
-      const eventType = evt.event.slice(DATASTAR_CLASS_PREFIX.length)
-      switch (eventType) {
-        case 'redirect':
-          isRedirect = true
-          break
-        case 'fragment':
-          isFragment = true
-          break
-        case 'error':
-          isError = true
-          break
-        default:
-          throw `Unknown event: ${evt}`
+
+      const lines = evt.data.trim().split('\n')
+      let currentDatatype = ''
+
+      for (let i = 0; i < lines.length; i++) {
+        let line = lines[i]
+        if (!line?.length) continue
+
+        const firstWord = line.split(' ', 1)[0]
+        const isDatatype = KnowEventTypes.includes(firstWord)
+        const isNewDatatype = isDatatype && firstWord !== currentDatatype
+        if (isNewDatatype) {
+          currentDatatype = firstWord
+          line = line.slice(firstWord.length + 1)
+
+          switch (currentDatatype) {
+            case 'selector':
+              selector = line
+              break
+            case 'merge':
+              merge = line as MergeOption
+              const exists = Object.values(MergeOptions).includes(merge)
+              if (!exists) {
+                throw new Error(`Unknown merge option: ${merge}`)
+              }
+              break
+            case 'settle':
+              settleTime = parseInt(line)
+              break
+            case 'fragment':
+              isFragment = true
+              break
+            case 'redirect':
+              window.location.href = line
+              return
+            case 'error':
+              throw new Error(line)
+            default:
+              throw new Error(`Unknown data type`)
+          }
+        }
+
+        if (currentDatatype === 'fragment') fragment += line + '\n'
       }
 
-      evt.data.split('\n').forEach((dataLine) => {
-        const offset = dataLine.indexOf(' ')
-        if (offset === -1) {
-          throw new Error(`Missing space in data`)
-        }
-
-        const type = dataLine.slice(0, offset)
-        const contents = dataLine.slice(offset + 1)
-
-        switch (type) {
-          case 'selector':
-            selector = contents
-            break
-          case 'merge':
-            const vmo = contents as MergeOption
-            const exists = Object.values(MergeOptions).includes(vmo)
-            if (!exists) {
-              throw new Error(`Unknown merge option: ${vmo}`)
-            }
-            merge = vmo
-            break
-          case 'settle':
-            settleTime = parseInt(contents)
-            break
-          case 'fragment':
-          case 'html':
-            fragment = contents
-            break
-          case 'redirect':
-            redirectURL = contents
-            break
-          case 'error':
-            error = new Error(contents)
-            break
-          default:
-            throw new Error(`Unknown data type`)
-        }
-      })
-
-      if (isError && error) {
-        throw error
-      } else if (isRedirect && redirectURL) {
-        window.location.href = redirectURL
-      } else if (isFragment && fragment) {
+      if (isFragment) {
+        if (!fragment?.length) fragment = '<div></div>'
         mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
-      } else {
-        throw new Error(`Unknown event: ${evt}`)
       }
     },
     onclose: () => {
@@ -229,6 +247,15 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         setTimeout(() => {
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
           loadingTarget.classList.add(INDICATOR_CLASS)
+        }, 300)
+      }
+
+      if (loadingIdentifier) {
+        setTimeout(() => {
+          const newSet = s.isLoading.value
+          newSet.delete(loadingIdentifier)
+
+          s.isLoading.value = new Set(newSet)
         }, 300)
       }
     },
@@ -262,7 +289,7 @@ export function mergeHTMLFragment(
 ) {
   const { el } = ctx
 
-  fragContainer.innerHTML = fragment
+  fragContainer.innerHTML = fragment.trim()
   const frag = fragContainer.content.firstChild
   if (!(frag instanceof Element)) {
     throw new Error(`No fragment found`)

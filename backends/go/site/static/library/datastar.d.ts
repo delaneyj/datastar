@@ -1,4 +1,4 @@
-export declare type Action = (ctx: AttributeContext, ...args: string[]) => Promise<void>;
+export declare type Action = (ctx: AttributeContext, ...args: string[]) => Promise<any>;
 
 export declare type Actions = Record<string, Action>;
 

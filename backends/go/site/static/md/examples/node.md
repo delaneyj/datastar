@@ -1,4 +1,3 @@
-
 ## Explanation
 
 An example backend in Node.
@@ -17,7 +16,7 @@ function indexPage() {
     <!doctype html><html>
       <head>
         <title>Node/Express + Datastar Example</title>
-        <script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.11.1"></script></head>
+        <script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script></head>
       <body>
         <h2>Node/Express + Datastar Example</h2>
         <main class="container" id="main" data-store='{ input: "", show: false }'>

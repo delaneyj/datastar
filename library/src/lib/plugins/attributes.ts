@@ -10,9 +10,9 @@ export const BindAttributePlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
 
   onLoad: (ctx: AttributeContext) => {
-    return ctx.reactivity.effect(() => {
+    return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
-      const value = ctx.expressionFn(ctx)
+      const value = await ctx.expressionFn(ctx)
       const v = `${value}`
       if (!v || v === 'false' || v === 'null' || v === 'undefined') {
         ctx.el.removeAttribute(key)
@@ -47,6 +47,10 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const { el, expression: signalName } = ctx
     const signal = ctx.expressionFn(ctx)
     const tnl = el.tagName.toLowerCase()
+
+    if (signalName.startsWith('ctx.store().ctx.store()')) {
+      throw new Error(`Model attribute on #${el.id} must have a signal name, you probably prefixed with $ by accident`)
+    }
 
     const isInput = tnl.includes('input')
     const isSelect = tnl.includes('select')
@@ -238,27 +242,10 @@ export const EventPlugin: AttributePlugin = {
   },
 }
 
-// Sets the focus of the element
-export const FocusPlugin: AttributePlugin = {
-  prefix: 'focus',
-  mustHaveEmptyKey: true,
-  mustHaveEmptyExpression: true,
-
-  onLoad: (ctx: AttributeContext) => {
-    if (!ctx.el.tabIndex) {
-      ctx.el.setAttribute('tabindex', '0')
-    }
-    ctx.el.focus()
-    ctx.el.scrollIntoView({ block: 'center', inline: 'center' })
-    return () => ctx.el.blur()
-  },
-}
-
 export const AttributePlugins: AttributePlugin[] = [
   BindAttributePlugin,
   TwoWayBindingModelPlugin,
   TextPlugin,
-  FocusPlugin,
   EventPlugin,
 ]
 
