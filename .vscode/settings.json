@@ -8,5 +8,28 @@
         "sudodevnull",
         "TLDR",
         "Websockets"
-    ]
+    ],
+    "playwright.workspaceSettings": {
+        "configs": [
+            {
+                "relativeConfigFile": "playwright/playwright.config.ts",
+                "selected": true,
+                "enabled": true,
+                "projects": [
+                    {
+                        "name": "chromium",
+                        "enabled": true
+                    },
+                    {
+                        "name": "firefox",
+                        "enabled": false
+                    },
+                    {
+                        "name": "webkit",
+                        "enabled": false
+                    }
+                ]
+            }
+        ]
+    }
 }

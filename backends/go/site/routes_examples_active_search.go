@@ -136,7 +136,7 @@ func setupExamplesActiveSearch(examplesRouter chi.Router) error {
 										TD(TextF("%0.2f", score)),
 									)
 								}),
-							),
+							).ID("active_search_rows"),
 						),
 				),
 		)

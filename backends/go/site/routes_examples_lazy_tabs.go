@@ -44,6 +44,7 @@ func setupExamplesLazyTabs(examplesRouter chi.Router) error {
 										IfCLASS(i == activeIdx, "bg-accent-500").
 										IfCLASS(i != activeIdx, "bg-accent-700").
 										TextF("Tab %d", i).
+										CustomData("testid", fmt.Sprintf("tab_%d", i)).
 										DATASTAR_ON(
 											"click",
 											fmt.Sprintf("$tabId=%d;$$get('/examples/lazy_tabs/data')", i),

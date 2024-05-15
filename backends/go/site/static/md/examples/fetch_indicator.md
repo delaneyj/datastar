@@ -3,7 +3,7 @@
 ## Demo
 
 <div id="ind">Loading Indicator</div>
-<button type="button" class="p-2 bg-accent-200 text-accent-700 shadow rounded" data-on-click="$$get('/examples/fetch_indicator/greet')" data-fetch-indicator="'#ind'">Click me for a greeting</button>
+<button type="button" class="p-2 bg-accent-200 text-accent-700 shadow rounded" data-on-click="$$get('/examples/fetch_indicator/greet')" data-fetch-indicator="'#ind'" data-testid="greeting_button">Click me for a greeting</button>
 <div id="greeting"></div>
 
 <div>Example from https://github.com/delaneyj/datastar/pull/24</div>

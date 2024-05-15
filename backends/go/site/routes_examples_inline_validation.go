@@ -43,8 +43,9 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 						CLASS("bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5").
 						IfCLASS(!isValid, "border-error").
 						DATASTAR_MODEL(field).
-						DATASTAR_ON("keydown", datastar.GET("/examples/inline_validation/data"), InputOnModDebounce(2*time.Second)),
-					If(!isValid, LABEL().CLASS("text-sm font-bold text-error-400").TextF(isNotValidErrorLabelFmt, labelArgs...)),
+						DATASTAR_ON("keydown", datastar.GET("/examples/inline_validation/data"), InputOnModDebounce(2*time.Second)).
+						CustomData("testid", "input_"+field),
+					If(!isValid, LABEL().CLASS("text-sm font-bold text-error-400").CustomData("testid", "validation_"+field).TextF(isNotValidErrorLabelFmt, labelArgs...)),
 				)
 		}
 
@@ -81,6 +82,7 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 						CLASS("flex items-center gap-2 bg-success-300 hover:bg-success-400 text-success-800 font-bold py-2 px-4").
 						IfCLASS(!isValid, "disabled").
 						DATASTAR_ON("click", datastar.POST("/examples/inline_validation/data")).
+						CustomData("testid", "submit_button").
 						Children(
 							material_symbols.PersonAdd(),
 							Text("Submit"),

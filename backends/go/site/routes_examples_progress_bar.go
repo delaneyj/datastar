@@ -32,6 +32,7 @@ func setupExamplesProgressBar(examplesRouter chi.Router) error {
 							A().
 								HREF("/examples/progress_bar").
 								CLASS("btn btn-success").
+								ID("completed_link").
 								Children(
 									DIV().
 										CLASS("flex gap-2 font-bold text-2xl").
