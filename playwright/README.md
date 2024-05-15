@@ -14,3 +14,5 @@ Main Command: `npx playwright test`
 2. `--debug`:
 
 ### Visual Studio Code Extension
+
+`npx playwright codegen <url>`

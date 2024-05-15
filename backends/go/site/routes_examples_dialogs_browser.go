@@ -54,7 +54,7 @@ func setupExamplesDialogsBrowser(examplesRouter chi.Router) error {
 							),
 							BUTTON().
 								CLASS("flex items-center gap-1 px-2 py-1 rounded-sm text-xs bg-accent-600 hover:bg-accent-500").
-								DATASTAR_ON("click", datastar.GET("/examples/dialogs___browser/data")).
+								DATASTAR_ON("click", datastar.GET("/examples/dialogs_browser/data")).
 								Children(
 									material_symbols.ArrowBack(),
 									Text("Reset"),
