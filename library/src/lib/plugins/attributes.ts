@@ -242,27 +242,10 @@ export const EventPlugin: AttributePlugin = {
   },
 }
 
-// Sets the focus of the element
-export const FocusPlugin: AttributePlugin = {
-  prefix: 'focus',
-  mustHaveEmptyKey: true,
-  mustHaveEmptyExpression: true,
-
-  onLoad: (ctx: AttributeContext) => {
-    if (!ctx.el.tabIndex) {
-      ctx.el.setAttribute('tabindex', '0')
-    }
-    ctx.el.focus()
-    ctx.el.scrollIntoView({ block: 'center', inline: 'center' })
-    return () => ctx.el.blur()
-  },
-}
-
 export const AttributePlugins: AttributePlugin[] = [
   BindAttributePlugin,
   TwoWayBindingModelPlugin,
   TextPlugin,
-  FocusPlugin,
   EventPlugin,
 ]
 
