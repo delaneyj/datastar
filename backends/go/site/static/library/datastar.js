@@ -527,7 +527,7 @@ ${p.map((h) => `  ${h}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const lt = "0.12.4", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
+const lt = "0.12.5", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ct = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
