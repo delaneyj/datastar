@@ -30,21 +30,42 @@ test.describe("Inline Validation UI Suite", () => {
     await expect(page.getByTestId("submit_button")).toBeAttached();
   });
 
-  test.fixme("test valid input", async ({ page }) => {
-    await page.getByTestId("input_email").fill("test@test.com");
+  test("test inline validation", async ({ page }) => {
+    await page.getByTestId("input_email").type("test@test.com");
+    //
     await expect(page.getByTestId("input_email")).toHaveValue("test@test.com");
     await expect(page.locator("div#inline_validation")).not.toContainText(
       "Email '' is already taken or is invalid. Please enter another email.",
-      { timeout: 10000 }
     );
-
-    // await page.getByTestId("input_firstName").fill("foofighter");
-    // await page.getByTestId("input_lastName").fill("metallica");
-    // await page.getByTestId("submit_button").click();
-    // await expect(page.getByTestId("input_email")).toHaveValue("test@test.com");
-    // await expect(page.getByTestId("input_firstName")).toHaveValue("foofighter");
-    // await expect(page.getByTestId("input_lastName")).toHaveValue("metallica");
-    // await expect(page.getByTestId("validation_email")).not.toBeAttached();
-    // //
+    await page.getByTestId("input_email").fill("");
+    await page.getByTestId("input_email").type("test");
+    await expect(page.getByTestId("input_email")).toHaveValue("test");
+    await expect(page.locator("div#inline_validation")).toContainText(
+      "Email 'test' is already taken or is invalid. Please enter another email.",
+    );
+    //
+    await page.getByTestId("input_firstName").type("Alexander");
+    await expect(page.getByTestId("input_firstName")).toHaveValue("Alexander");
+    await expect(page.locator("div#inline_validation")).not.toContainText(
+      "First name must be at least 8 characters.",
+    );
+    await page.getByTestId("input_firstName").fill("");
+    await page.getByTestId("input_firstName").type("test");
+    await expect(page.getByTestId("input_firstName")).toHaveValue("test");
+    await expect(page.locator("div#inline_validation")).toContainText(
+      "First name must be at least 8 characters.",
+    );
+    //
+    await page.getByTestId("input_lastName").type("Alexander");
+    await expect(page.getByTestId("input_lastName")).toHaveValue("Alexander");
+    await expect(page.locator("div#inline_validation")).not.toContainText(
+      "Last name must be at least 8 characters.",
+    );
+    await page.getByTestId("input_lastName").fill("");
+    await page.getByTestId("input_lastName").type("test");
+    await expect(page.getByTestId("input_lastName")).toHaveValue("test");
+    await expect(page.locator("div#inline_validation")).toContainText(
+      "Last name must be at least 8 characters.",
+    );
   });
 });
