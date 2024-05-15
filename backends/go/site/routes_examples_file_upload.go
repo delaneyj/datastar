@@ -31,22 +31,20 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 				DATASTAR_STORE(store).
 				Children(
 					DIV().
-						CLASS("form-control").
+						CLASS("flex flex-col gap-2").
 						Children(
 							LABEL().
-								CLASS("label").
-								Children(
-									SPAN().
-										CLASS("label-text").
-										Text("Pick anything reasonably sized"),
-								),
+								CLASS("block mb-2 text-sm font-medium text-primary-100").
+								FOR("file_input").
+								Text("Pick anything reasonably sized"),
 							INPUT().
+								ID("file_input").
 								TYPE("file").
-								CLASS("file-input file-input-bordered").
-								DATASTAR_MODEL("file"),
+								DATASTAR_MODEL("file").
+								CLASS("block w-full text-sm border rounded-lg cursor-pointer text-primary-400 focus:outline-none bg-primary-700 border-primary-600 placeholder-primary-500"),
 						),
 					BUTTON().
-						CLASS("btn btn-primary").
+						CLASS("bg-primary-300 hover:bg-primary-400 text-primary-800 font-bold py-2 px-4 rounded-l").
 						Text("Submit").
 						DATASTAR_ON("click", datastar.POST("/examples/file_upload/upload")),
 				),
@@ -55,10 +53,11 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 
 	examplesRouter.Post("/file_upload/upload", func(w http.ResponseWriter, r *http.Request) {
 		r.Body = http.MaxBytesReader(w, r.Body, 64*1024*1024)
-		sse := datastar.NewSSE(w, r)
-
 		store := &Store{}
-		if err := datastar.BodyUnmarshal(r, store); err != nil {
+		err := datastar.BodyUnmarshal(r, store)
+
+		sse := datastar.NewSSE(w, r)
+		if err != nil {
 			datastar.RenderFragment(
 				sse,
 				DIV().
