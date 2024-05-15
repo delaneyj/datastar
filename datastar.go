@@ -182,9 +182,9 @@ func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmen
 		WithMergeDeleteElement(),
 		WithQuerySelector(selector),
 	}, opts...)
-	RenderFragment(
+	RenderFragmentString(
 		sse,
-		elements.DIV(),
+		"",
 		opts...,
 	)
 }
@@ -219,7 +219,9 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 	if options.SettleDuration > 0 {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
-	dataRows = append(dataRows, fmt.Sprintf("fragment %s", fragment))
+	if fragment != "" {
+		dataRows = append(dataRows, fmt.Sprintf("fragment %s", fragment))
+	}
 
 	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
 

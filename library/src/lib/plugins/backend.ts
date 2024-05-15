@@ -253,7 +253,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         throw error
       } else if (isRedirect && redirectURL) {
         window.location.href = redirectURL
-      } else if (isFragment && fragment) {
+      } else if (isFragment) {
+        if (!fragment?.length) fragment = '<div></div>'
         mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
       } else {
         throw new Error(`Unknown event: ${evt}`)

@@ -1436,8 +1436,8 @@ async function ke(t, e, n) {
         throw w;
       if (m && d)
         window.location.href = d;
-      else if (T && y)
-        on(n, E, b, y, p);
+      else if (T)
+        y?.length || (y = "<div></div>"), on(n, E, b, y, p);
       else
         throw new Error(`Unknown event: ${c}`);
     },

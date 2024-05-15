@@ -80,18 +80,23 @@ func setupExamplesMergeOptions(examplesRouter chi.Router) error {
 			return
 		}
 
-		idx := lo.IndexOf(datastar.ValidFragmentMergeTypes, mergeMode)
-		now := time.Now().UTC().Format(time.RFC3339)
-		h := xxh3.HashString(now)
-		updatedTarget := DIV().
-			ID("target").
-			STYLE("background-color", brewerColorsBG[idx]).
-			STYLE("color", brewrColorsFG[idx]).
-			CLASS("p-4 rounded").
-			TextF("Update %x at %s", h, now)
-
 		sse := datastar.NewSSE(w, r)
-		datastar.RenderFragment(sse, updatedTarget, datastar.WithMergeType(mergeMode))
+
+		idx := lo.IndexOf(datastar.ValidFragmentMergeTypes, mergeMode)
+		if mergeMode == datastar.FragmentMergeDeleteElement {
+			datastar.Delete(sse, "#target")
+			return
+		} else {
+			now := time.Now().UTC().Format(time.RFC3339)
+			h := xxh3.HashString(now)
+			updatedTarget := DIV().
+				ID("target").
+				STYLE("background-color", brewerColorsBG[idx]).
+				STYLE("color", brewrColorsFG[idx]).
+				CLASS("p-4 rounded").
+				TextF("Update %x at %s", h, now)
+			datastar.RenderFragment(sse, updatedTarget, datastar.WithMergeType(mergeMode))
+		}
 	})
 
 	return nil
