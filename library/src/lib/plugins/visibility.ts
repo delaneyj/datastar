@@ -13,10 +13,9 @@ export const ShowPlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const { el, modifiers, expressionFn, reactivity } = ctx
 
-    return reactivity.effect(() => {
-      const expressionEvaluated = expressionFn(ctx)
+    return reactivity.effect(async () => {
+      const expressionEvaluated = await expressionFn(ctx)
       const shouldShow = !!expressionEvaluated
-
       const isImportant = modifiers.has(IMPORTANT)
       const priority = isImportant ? IMPORTANT : undefined
 

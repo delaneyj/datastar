@@ -3,30 +3,6 @@ import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
-const GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete'
-
-export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce((acc, method) => {
-  acc[method] = async (ctx, urlExpression) => {
-    const da = Document as any
-    if (!da.startViewTransition) {
-      await fetcher(method, urlExpression, ctx)
-      return
-    }
-
-    new Promise((resolve) => {
-      da.startViewTransition(async () => {
-        await fetcher(method, urlExpression, ctx)
-        resolve(void 0)
-      })
-    })
-  }
-  return acc
-}, {} as Actions)
-
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
@@ -37,6 +13,40 @@ const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
 const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
 const SELECTOR_SELF_SELECTOR = 'self'
+
+const GET = 'get',
+  POST = 'post',
+  PUT = 'put',
+  PATCH = 'patch',
+  DELETE = 'delete'
+
+export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
+  (acc, method) => {
+    acc[method] = async (ctx, urlExpression) => {
+      const da = Document as any
+      if (!da.startViewTransition) {
+        await fetcher(method, urlExpression, ctx)
+        return
+      }
+
+      new Promise((resolve) => {
+        da.startViewTransition(async () => {
+          await fetcher(method, urlExpression, ctx)
+          resolve(void 0)
+        })
+      })
+    }
+    return acc
+  },
+  {
+    isFetching: async (_, selector: string) => {
+      const indicators = document.querySelectorAll(selector)
+      return Array.from(indicators).some((indicator) => {
+        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+      })
+    },
+  } as Actions,
+)
 
 const MergeOptions = {
   MorphElement: 'morph_element',
@@ -110,7 +120,27 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
+// Sets the fetch indicator selector
+export const IsLoadingPlugin: AttributePlugin = {
+  prefix: 'isLoadingId',
+  mustNotEmptyExpression: true,
+  onLoad: (ctx) => {
+    const c = ctx.expression
+    const s = ctx.store()
+
+    if (!s.fetch) s.fetch = {}
+    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
+    s.fetch.loadingIdentifiers[ctx.el.id] = c
+
+    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Set<string>())
+
+    return () => {
+      delete s.fetch.loadingIdentifiers[ctx.el.id]
+    }
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const s = ctx.store()
@@ -135,6 +165,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
       hasIndicator = true
     }
+  }
+
+  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
+  if (loadingIdentifier) {
+    s.isLoading.value = new Set([...s.isLoading.value, loadingIdentifier])
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -229,6 +264,15 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         setTimeout(() => {
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
           loadingTarget.classList.add(INDICATOR_CLASS)
+        }, 300)
+      }
+
+      if (loadingIdentifier) {
+        setTimeout(() => {
+          const newSet = s.isLoading.value
+          newSet.delete(loadingIdentifier)
+
+          s.isLoading.value = new Set(newSet)
         }, 300)
       }
     },
