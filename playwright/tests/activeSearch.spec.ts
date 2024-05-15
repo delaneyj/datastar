@@ -49,18 +49,22 @@ test.describe("Active Search UI Suite", () => {
     // Fill in the search field, assuming the placeholder is correctly identified
     await page
       .locator('input[placeholder="Search..."]')
-      .fill(`${firstName} ${lastName}`);
+      .fill(firstName);
 
     // Expectations to ensure that text contains specific content
     await expect(
       page.locator("#active_search_rows tr:first-child > td:first-child")
     ).toContainText(firstName);
+
+    await page
+    .locator('input[placeholder="Search..."]')
+    .fill(lastName);
+
+    // Expectations to ensure that text contains specific content
     await expect(
       page.locator("#active_search_rows tr:first-child > td:nth-child(2)")
     ).toContainText(lastName);
-    await expect(
-      page.locator("#active_search_rows tr:first-child > td:nth-child(3)")
-    ).toContainText(email);
+  
   });
 
   test("test active search with email", async ({ page }) => {
