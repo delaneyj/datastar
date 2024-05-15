@@ -8,6 +8,9 @@ const DATASTAR_REQUEST = 'datastar-request'
 const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const DATASTAR_CLASS_PREFIX = 'datastar-'
+const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
+// const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
+// const EVENT_ERROR = `${DATASTAR_CLASS_PREFIX}error`
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
 const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
@@ -187,11 +190,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       let fragment = '',
         merge: MergeOption = 'morph_element',
         selector = '',
-        settleTime = 500,
-        isFragment = false
+        settleTime = 500
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
         throw new Error(`Unknown event: ${evt.event}`)
       }
+      const isFragment = evt.event === EVENT_FRAGMENT
 
       const lines = evt.data.trim().split('\n')
       let currentDatatype = ''
@@ -222,7 +225,6 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
               settleTime = parseInt(line)
               break
             case 'fragment':
-              isFragment = true
               break
             case 'redirect':
               window.location.href = line

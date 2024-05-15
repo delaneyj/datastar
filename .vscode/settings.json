@@ -22,7 +22,7 @@
                     },
                     {
                         "name": "firefox",
-                        "enabled": false
+                        "enabled": true
                     },
                     {
                         "name": "webkit",
