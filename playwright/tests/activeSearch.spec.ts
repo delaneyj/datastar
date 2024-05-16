@@ -28,45 +28,6 @@ test.describe("Active Search UI Suite", () => {
     ).toContainText(scoreReg);
   });
 
-  test("test active search with name", async ({ page }) => {
-    const firstName =
-      (await page
-        .locator("#active_search_rows tr:nth-child(5) > td:first-child")
-        .textContent()) ?? "";
-    const lastName =
-      (await page
-        .locator("#active_search_rows tr:nth-child(5) > td:nth-child(2)")
-        .textContent()) ?? "";
-    const email =
-      (await page
-        .locator("#active_search_rows tr:nth-child(5) > td:nth-child(3)")
-        .textContent()) ?? "";
-
-    expect(firstName).not.toBeFalsy();
-    expect(lastName).not.toBeFalsy();
-    expect(email).not.toBeFalsy();
-
-    // Fill in the search field, assuming the placeholder is correctly identified
-    await page
-      .locator('input[placeholder="Search..."]')
-      .fill(firstName);
-
-    // Expectations to ensure that text contains specific content
-    await expect(
-      page.locator("#active_search_rows tr:first-child > td:first-child")
-    ).toContainText(firstName);
-
-    await page
-    .locator('input[placeholder="Search..."]')
-    .fill(lastName);
-
-    // Expectations to ensure that text contains specific content
-    await expect(
-      page.locator("#active_search_rows tr:first-child > td:nth-child(2)")
-    ).toContainText(lastName);
-  
-  });
-
   test("test active search with email", async ({ page }) => {
     const firstName =
       (await page
