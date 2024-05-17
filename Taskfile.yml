@@ -86,7 +86,7 @@ tasks:
       - curl -o - -I http://localhost:8080
       - pnpm i
       - pnpm playwright install
-      - pnpm playwright test
+      - pnpm playwright test --ui
 
   deploy:
     deps:

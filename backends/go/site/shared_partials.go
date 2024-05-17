@@ -43,6 +43,15 @@ func page(children ...ElementRenderer) ElementRenderer {
 					  }
 					`),
 				),
+				SCRIPT().
+					ASYNC().
+					SRC("https://www.googletagmanager.com/gtag/js?id=G-QZ4RYHJW6X"),
+				SCRIPT().Text(`
+						window.dataLayer = window.dataLayer || [];
+						function gtag(){dataLayer.push(arguments);}
+						gtag('js', new Date());
+						gtag('config', 'G-QZ4RYHJW6X');
+				`),
 				BODY().
 					CLASS("font-sans min-h-screen un-cloak").
 					Children(

@@ -1,12 +1,12 @@
 # Datastar
 
-[Website](https://data-star.dev)
+[https://data-star.dev](https://data-star.dev)
+
+[![Star History Chart](https://api.star-history.com/svg?repos=delaneyj/datastar&type=Date)](https://star-history.com/#delaneyj/datastar&Date)
 
 Typescript library for making [hypermedia](https://hypermedia.systems/) systems using little to no Javascript code. The Typescript may be important to the datastar dev but its just a normal JS file to the browser. The goal is to make it easy to create realtime web apps with as little Javascript as possible. This is done by using HTML attributes to define the behavior of the page. This is similar to [Alpine.js](https://alpinejs.dev/) + [HTMX](https://htmx.org/) but with a few key differences.
 
 It's just normal [HTML data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) that get watched by plugins and build up a context object. The current plugins work off of signals to make everything reactive and allow _very_ fast interactions in very little code.
-
-# Not complete, there be 🐉
 
 ![Size](https://img.shields.io/bundlephobia/minzip/%40sudodevnull%2Fdatastar)
 
