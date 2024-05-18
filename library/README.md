@@ -19,6 +19,7 @@ Lives as a channel in the EventGraph Discord server. Feel free to join and ask q
 
 ### Pros
 
+- Built with reactive applications in mind, not just pages.
 - 💯 strict Typescript with full tree shaking support
 - 📦 0 dependencies
 - The best parts of [Alpine.js](https://alpinejs.dev/) and [HTMX](https://htmx.org/) but created in a unique way to allow for a more declarative approach
@@ -33,14 +34,10 @@ Lives as a channel in the EventGraph Discord server. Feel free to join and ask q
 
 ### Cons
 
-- Syntax is still very much in flux, but will stabilize with usage
 - **No progressive enhancement**, you need Javascript enabled. Datastar is for making realtime web apps like dashboards, admin panels, etc. If you need progressive enhancement use [Alpine-Ajax](https://alpine-ajax.js.org/) or [HTMX](https://htmx.org/) and stick to just `<a/>` and `<form/>` tags. Scripting is a first class citizen in hypermedia systems.
 - Modern browsers only (no IE11 support)
 - Have to use custom attributes (data-\*) so slightly more verbose but spec compliant always
 - Have to use SSE if you use the defaults. I little more upfront but allows for faster updates and less code.
-- Less memes and tweets
-- No tests yet (but actively being used on an internal project). Plan to use [Vitest](https://vitest.dev/)+[Playwright](https://playwright.dev/) soon
-- Documentation is on its way
 - [No book](https://hypermedia.systems/), but most of hypermedia concepts will port directly over.
 
 ### Why not just use Vue/React/Svelte?
