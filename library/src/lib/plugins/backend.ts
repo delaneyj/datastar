@@ -136,10 +136,15 @@ export const IsLoadingPlugin: AttributePlugin = {
     if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
     s.fetch.loadingIdentifiers[ctx.el.id] = c
 
-    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Set<string>())
+    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Array<string>())
 
     return () => {
+      // always refresh the store in callbacks
+      const s = ctx.store()
       delete s.fetch.loadingIdentifiers[ctx.el.id]
+      if (Object.keys(s.isLoading.value).length === 0) {
+        delete s.isLoading
+      }
     }
   },
 }
@@ -172,8 +177,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   }
 
   const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
-  if (loadingIdentifier) {
-    s.isLoading.value = new Set([...s.isLoading.value, loadingIdentifier])
+  if (loadingIdentifier && !s.isLoading.value.includes(loadingIdentifier)) {
+    s.isLoading.value = [...(s.isLoading.value || []), loadingIdentifier]
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -245,6 +250,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       }
     },
     onclose: () => {
+      // Always get a fresh store in callbacks since the reference might be stale
+      const s = ctx.store()
       if (hasIndicator) {
         setTimeout(() => {
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
@@ -252,14 +259,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }, 300)
       }
 
-      if (loadingIdentifier) {
-        setTimeout(() => {
-          const newSet = s.isLoading.value
-          newSet.delete(loadingIdentifier)
-
-          s.isLoading.value = new Set(newSet)
-        }, 300)
-      }
+      s.isLoading.value = s.isLoading.value.filter((id: string) => {
+        return id !== loadingIdentifier
+      })
     },
   }
 
