@@ -46,4 +46,4 @@ Lives as a channel in the EventGraph Discord server. Feel free to join and ask q
 
 ### Why not just use HTMX+Alpine?
 
-There was a bit of a rant here before. TL;DR tried to show HTMX v2 could do all these things and it wasn't accepted by the community. I think HTMX is great and I will continue to recommend it. In general I think the some of the choices are throwing the baby out with the bathwater when it comes to things like Vite/TS/etc.
+I think HTMX is great and I will continue to recommend it for splashes of contents. In general Datastar is geared towards more complex reactive applications, especially in a realtime context.
