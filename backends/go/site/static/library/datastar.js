@@ -7,7 +7,7 @@ function Q() {
 function ze() {
   throw new Error("Computed cannot have side-effects");
 }
-const Ze = Symbol.for("preact-signals"), L = 1, I = 2, F = 4, C = 8, O = 16, P = 32;
+const Ze = Symbol.for("preact-signals"), L = 1, I = 2, F = 4, C = 8, x = 16, P = 32;
 function ee() {
   D++;
 }
@@ -160,9 +160,9 @@ k.prototype._refresh = function() {
   try {
     $e(this), v = this;
     const e = this._compute();
-    (this._flags & O || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~O, this._version++);
+    (this._flags & x || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~x, this._version++);
   } catch (e) {
-    this._value = e, this._flags |= O, this._version++;
+    this._value = e, this._flags |= x, this._version++;
   }
   return v = t, Ie(this), this._flags &= ~L, !0;
 };
@@ -189,7 +189,7 @@ k.prototype._notify = function() {
   }
 };
 k.prototype.peek = function() {
-  if (this._refresh() || Q(), this._flags & O)
+  if (this._refresh() || Q(), this._flags & x)
     throw this._value;
   return this._value;
 };
@@ -197,7 +197,7 @@ Object.defineProperty(k.prototype, "value", {
   get() {
     this._flags & L && Q();
     const t = Ne(this);
-    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & O)
+    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & x)
       throw this._value;
     return this._value;
   }
@@ -264,7 +264,7 @@ function Re(t) {
   }
   return e._dispose.bind(e);
 }
-class xe {
+class Oe {
   get value() {
     return ie(this);
   }
@@ -276,7 +276,7 @@ class xe {
   }
 }
 const oe = (t) => Object.assign(
-  new xe(),
+  new Oe(),
   Object.entries(t).reduce(
     (e, [n, r]) => {
       if (["value", "peek"].some((s) => s === n))
@@ -286,17 +286,17 @@ const oe = (t) => Object.assign(
     {}
   )
 ), et = (t, e) => Object.keys(e).forEach((n) => t[n].value = e[n]), ie = (t, { peek: e = !1 } = {}) => Object.entries(t).reduce(
-  (n, [r, s]) => (s instanceof _ ? n[r] = e ? s.peek() : s.value : s instanceof xe && (n[r] = ie(s, { peek: e })), n),
+  (n, [r, s]) => (s instanceof _ ? n[r] = e ? s.peek() : s.value : s instanceof Oe && (n[r] = ie(s, { peek: e })), n),
   {}
 );
-function Oe(t, e) {
+function xe(t, e) {
   if (typeof e != "object" || Array.isArray(e) || !e)
     return e;
   if (typeof e == "object" && e.toJSON !== void 0 && typeof e.toJSON == "function")
     return e.toJSON();
   let n = t;
   return typeof t != "object" && (n = { ...e }), Object.keys(e).forEach((r) => {
-    n.hasOwnProperty(r) || (n[r] = e[r]), e[r] === null ? delete n[r] : n[r] = Oe(n[r], e[r]);
+    n.hasOwnProperty(r) || (n[r] = e[r]), e[r] === null ? delete n[r] : n[r] = xe(n[r], e[r]);
   }), n;
 }
 const tt = "[a-zA-Z_$][0-9a-zA-Z_$.]+";
@@ -398,7 +398,7 @@ class ct {
     }
   }
   mergeStore(e) {
-    const n = Oe(this.store.value, e);
+    const n = xe(this.store.value, e);
     this.store = oe(n);
   }
   signalByName(e) {
@@ -452,9 +452,9 @@ class ct {
             const E = a.split(";"), f = [];
             E.forEach((m) => {
               let g = m;
-              const b = [...g.matchAll(p.regexp)];
-              if (b.length)
-                for (const T of b) {
+              const w = [...g.matchAll(p.regexp)];
+              if (w.length)
+                for (const T of w) {
                   if (!T.groups)
                     continue;
                   const { groups: N } = T, { whole: R } = N;
@@ -463,7 +463,7 @@ class ct {
               f.push(g);
             }), a = f.join("; ");
           }
-          const w = {
+          const b = {
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
@@ -480,7 +480,7 @@ class ct {
             },
             modifiers: l
           };
-          if (!r.bypassExpressionFunctionCreation?.(w) && !r.mustHaveEmptyExpression && a.length) {
+          if (!r.bypassExpressionFunctionCreation?.(b) && !r.mustHaveEmptyExpression && a.length) {
             const p = a.split(";").map((f) => f.trim());
             p[p.length - 1] = `return ${p[p.length - 1]}`;
             let E = `
@@ -493,12 +493,12 @@ ${p.map((f) => `  ${f}`).join(`;
             `;
             try {
               const f = new Function("ctx", E);
-              w.expressionFn = f;
+              b.expressionFn = f;
             } catch (f) {
               throw new Error(`Error creating expression function for '${E}', error: ${f}`);
             }
           }
-          const S = r.onLoad(w);
+          const S = r.onLoad(b);
           S && (this.removals.has(o) || this.removals.set(o, /* @__PURE__ */ new Set()), this.removals.get(o).add(S));
         }
       });
@@ -527,7 +527,7 @@ ${p.map((f) => `  ${f}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const ut = "0.13.0", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ft = {
+const ut = "0.13.1", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ft = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -569,11 +569,11 @@ const ut = "0.13.0", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
         d ? g.checked = m : c && (g.checked = `${m}` === g.value);
       } else
         h || (f ? e.value = `${m}` : e.setAttribute("value", `${m}`));
-    }, w = t.reactivity.effect(y), S = async () => {
+    }, b = t.reactivity.effect(y), S = async () => {
       if (h)
         return await new Promise((g) => {
-          const [b] = e?.files || [];
-          if (!b) {
+          const [w] = e?.files || [];
+          if (!w) {
             r.value = "";
             return;
           }
@@ -581,21 +581,21 @@ const ut = "0.13.0", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
           T.onload = () => {
             if (typeof T.result != "string")
               throw new Error("Unsupported type");
-            const x = T.result.match(dt);
-            if (!x?.groups)
+            const O = T.result.match(dt);
+            if (!O?.groups)
               throw new Error("Invalid data URI");
-            const { mime: Ge, contents: Ke } = x.groups;
+            const { mime: Ge, contents: Ke } = O.groups;
             r.value = Ke;
             const ue = `${l}Mime`;
             if (ue in N) {
               const Je = N[`${ue}`];
               Je.value = Ge;
             }
-          }, T.onloadend = () => g(void 0), T.readAsDataURL(b);
+          }, T.onloadend = () => g(void 0), T.readAsDataURL(w);
           const R = `${l}Name`;
           if (R in N) {
-            const x = N[`${R}`];
-            x.value = b.name;
+            const O = N[`${R}`];
+            O.value = w.name;
           }
         });
       const f = r.value, m = e;
@@ -618,7 +618,7 @@ const ut = "0.13.0", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
       });
     }
     return W.forEach((f) => e.addEventListener(f, S)), () => {
-      w(), W.forEach((f) => e.removeEventListener(f, S));
+      b(), W.forEach((f) => e.removeEventListener(f, S));
     };
   }
 }, pt = {
@@ -706,7 +706,7 @@ function yt(t, e, n = !0, r = !1) {
     }, e));
   };
 }
-function wt(t, {
+function bt(t, {
   signal: e,
   headers: n,
   onopen: r,
@@ -724,7 +724,7 @@ function wt(t, {
       l.abort(), document.hidden || f();
     }
     a || document.addEventListener("visibilitychange", y);
-    let w = bt, S = 0;
+    let b = wt, S = 0;
     function p() {
       document.removeEventListener("visibilitychange", y), window.clearTimeout(S), l.abort();
     }
@@ -748,7 +748,7 @@ function wt(t, {
                 g ? h[de] = g : delete h[de];
               },
               (g) => {
-                w = g;
+                b = g;
               },
               s
             )
@@ -757,7 +757,7 @@ function wt(t, {
       } catch (m) {
         if (!l.signal.aborted)
           try {
-            const g = i?.(m) ?? w;
+            const g = i?.(m) ?? b;
             window.clearTimeout(S), S = window.setTimeout(f, g);
           } catch (g) {
             p(), c(g);
@@ -767,7 +767,7 @@ function wt(t, {
     f();
   });
 }
-const ae = "text/event-stream", bt = 1e3, de = "last-event-id";
+const ae = "text/event-stream", wt = 1e3, de = "last-event-id";
 function _t(t) {
   const e = t.headers.get("content-type");
   if (!e?.startsWith(ae))
@@ -974,8 +974,8 @@ function Ve(t, e, n) {
     if (n.callbacks.beforeNodeAdded(h)) {
       if (h.hasAttribute("href") || h.hasAttribute("src")) {
         let l;
-        const y = new Promise((w) => {
-          l = w;
+        const y = new Promise((b) => {
+          l = b;
         });
         h.addEventListener("load", function() {
           l(void 0);
@@ -1120,18 +1120,18 @@ function Ct(t, e, n) {
 function Rt(t, e, n) {
   let r = t.firstChild, s = r, o = 0;
   for (; r; ) {
-    let i = xt(r, e, n);
+    let i = Ot(r, e, n);
     i > o && (s = r, o = i), r = r.nextSibling;
   }
   return s;
 }
-function xt(t, e, n) {
+function Ot(t, e, n) {
   return X(t, e) ? 0.5 + V(n, t, e) : 0;
 }
 function Be(t, e) {
   $(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
-function Ot(t, e) {
+function xt(t, e) {
   return !t.deadIds.has(e);
 }
 function Ht(t, e, n) {
@@ -1149,7 +1149,7 @@ function V(t, e, n) {
     return 0;
   let s = 0;
   for (const o of r)
-    Ot(t, o) && Ht(t, o, n) && ++s;
+    xt(t, o) && Ht(t, o, n) && ++s;
   return s;
 }
 function ge(t, e) {
@@ -1176,13 +1176,13 @@ const ne = "display", ve = "none", re = "important", Ft = {
       i ? e.style.length === 1 && e.style.display === ve ? e.style.removeProperty(ne) : e.style.setProperty(ne, "", u) : e.style.setProperty(ne, ve, u);
     });
   }
-}, Vt = "intersects", ye = "once", we = "half", be = "full", jt = {
+}, Vt = "intersects", ye = "once", be = "half", we = "full", jt = {
   prefix: Vt,
-  allowedModifiers: /* @__PURE__ */ new Set([ye, we, be]),
+  allowedModifiers: /* @__PURE__ */ new Set([ye, be, we]),
   mustHaveEmptyKey: !0,
   onLoad: (t) => {
     const { modifiers: e } = t, n = { threshold: 0 };
-    e.has(be) ? n.threshold = 1 : e.has(we) && (n.threshold = 0.5);
+    e.has(we) ? n.threshold = 1 : e.has(be) && (n.threshold = 0.5);
     const r = new IntersectionObserver((s) => {
       s.forEach((o) => {
         o.isIntersecting && (t.expressionFn(t), e.has(ye) && r.disconnect());
@@ -1351,8 +1351,9 @@ const ne = "display", ve = "none", re = "important", Ft = {
   mustNotEmptyExpression: !0,
   onLoad: (t) => {
     const e = t.expression, n = t.store();
-    return n.fetch || (n.fetch = {}), n.fetch.loadingIdentifiers || (n.fetch.loadingIdentifiers = {}), n.fetch.loadingIdentifiers[t.el.id] = e, n.isLoading || (n.isLoading = t.reactivity.signal(/* @__PURE__ */ new Set())), () => {
-      delete n.fetch.loadingIdentifiers[t.el.id];
+    return n.fetch || (n.fetch = {}), n.fetch.loadingIdentifiers || (n.fetch.loadingIdentifiers = {}), n.fetch.loadingIdentifiers[t.el.id] = e, n.isLoading || (n.isLoading = t.reactivity.signal(new Array())), () => {
+      const r = t.store();
+      delete r.fetch.loadingIdentifiers[t.el.id], Object.keys(r.isLoading.value).length === 0 && delete r.isLoading;
     };
   }
 }, cn = [on, an, ln];
@@ -1370,7 +1371,7 @@ async function Ae(t, e, n) {
     l && (a = l, a.classList.remove(j), a.classList.add(Y), i = !0);
   }
   const d = r.fetch?.loadingIdentifiers?.[a.id] || null;
-  d && (r.isLoading.value = /* @__PURE__ */ new Set([...r.isLoading.value, d]));
+  d && !r.isLoading.value.includes(d) && (r.isLoading.value = [...r.isLoading.value || [], d]);
   const c = new URL(e, window.location.origin);
   t = t.toUpperCase();
   const h = {
@@ -1382,51 +1383,49 @@ async function Ae(t, e, n) {
     onmessage: (l) => {
       if (!l.event)
         return;
-      let y = "", w = "morph_element", S = "", p = 500;
+      let y = "", b = "morph_element", S = "", p = 500;
       if (!l.event.startsWith(U))
         throw new Error(`Unknown event: ${l.event}`);
       const E = l.event === Zt, f = l.data.trim().split(`
 `);
       let m = "";
       for (let g = 0; g < f.length; g++) {
-        let b = f[g];
-        if (!b?.length)
+        let w = f[g];
+        if (!w?.length)
           continue;
-        const T = b.split(" ", 1)[0];
+        const T = w.split(" ", 1)[0];
         if (sn.includes(T) && T !== m)
-          switch (m = T, b = b.slice(T.length + 1), m) {
+          switch (m = T, w = w.slice(T.length + 1), m) {
             case "selector":
-              S = b;
+              S = w;
               break;
             case "merge":
-              if (w = b, !Object.values(A).includes(w))
-                throw new Error(`Unknown merge option: ${w}`);
+              if (b = w, !Object.values(A).includes(b))
+                throw new Error(`Unknown merge option: ${b}`);
               break;
             case "settle":
-              p = parseInt(b);
+              p = parseInt(w);
               break;
             case "fragment":
               break;
             case "redirect":
-              window.location.href = b;
+              window.location.href = w;
               return;
             case "error":
-              throw new Error(b);
+              throw new Error(w);
             default:
               throw new Error("Unknown data type");
           }
-        m === "fragment" && (y += b + `
+        m === "fragment" && (y += w + `
 `);
       }
-      E && (y?.length || (y = "<div></div>"), un(n, S, w, y, p));
+      E && (y?.length || (y = "<div></div>"), un(n, S, b, y, p));
     },
     onclose: () => {
+      const l = n.store();
       i && setTimeout(() => {
         a.classList.remove(Y), a.classList.add(j);
-      }, 300), d && setTimeout(() => {
-        const l = r.isLoading.value;
-        l.delete(d), r.isLoading.value = new Set(l);
-      }, 300);
+      }, 300), l.isLoading.value = l.isLoading.value.filter((y) => y !== d);
     }
   };
   if (r.fetch?.headers?.value && h.headers)
@@ -1439,7 +1438,7 @@ async function Ae(t, e, n) {
     l.append("datastar", o), c.search = l.toString();
   } else
     h.body = o;
-  await wt(c, h);
+  await bt(c, h);
 }
 const Le = document.createElement("template");
 function un(t, e, n, r, s) {
@@ -1464,10 +1463,10 @@ function un(t, e, n, r, s) {
       let l = c;
       switch (n) {
         case A.MorphElement:
-          const w = Lt(l, i);
-          if (!w?.length)
+          const b = Lt(l, i);
+          if (!b?.length)
             throw new Error("No morph result");
-          l = w[0];
+          l = b[0];
           break;
         case A.InnerElement:
           l.innerHTML = i.innerHTML;
