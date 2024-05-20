@@ -139,6 +139,7 @@ export const IsLoadingPlugin: AttributePlugin = {
     if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Array<string>())
 
     return () => {
+      /* Cant get this to clean up properly, it seems to run every time the store is changed
       // always refresh the store in callbacks
       const s = ctx.store()
       if (s.fetch.loadingIdentifiers) delete s.fetch.loadingIdentifiers[ctx.el.id]
@@ -151,6 +152,7 @@ export const IsLoadingPlugin: AttributePlugin = {
       if (s.isLoading.value.length === 0) {
         delete s.isLoading
       }
+    */
     }
   },
 }
