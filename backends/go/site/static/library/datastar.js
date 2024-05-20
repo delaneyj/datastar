@@ -7,7 +7,7 @@ function Q() {
 function ze() {
   throw new Error("Computed cannot have side-effects");
 }
-const Ze = Symbol.for("preact-signals"), L = 1, I = 2, F = 4, C = 8, x = 16, P = 32;
+const Ze = Symbol.for("preact-signals"), L = 1, I = 2, F = 4, C = 8, O = 16, P = 32;
 function ee() {
   D++;
 }
@@ -160,9 +160,9 @@ k.prototype._refresh = function() {
   try {
     $e(this), v = this;
     const e = this._compute();
-    (this._flags & x || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~x, this._version++);
+    (this._flags & O || this._value !== e || this._version === 0) && (this._value = e, this._flags &= ~O, this._version++);
   } catch (e) {
-    this._value = e, this._flags |= x, this._version++;
+    this._value = e, this._flags |= O, this._version++;
   }
   return v = t, Ie(this), this._flags &= ~L, !0;
 };
@@ -189,7 +189,7 @@ k.prototype._notify = function() {
   }
 };
 k.prototype.peek = function() {
-  if (this._refresh() || Q(), this._flags & x)
+  if (this._refresh() || Q(), this._flags & O)
     throw this._value;
   return this._value;
 };
@@ -197,7 +197,7 @@ Object.defineProperty(k.prototype, "value", {
   get() {
     this._flags & L && Q();
     const t = Ne(this);
-    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & x)
+    if (this._refresh(), t !== void 0 && (t._version = this._version), this._flags & O)
       throw this._value;
     return this._value;
   }
@@ -264,7 +264,7 @@ function Re(t) {
   }
   return e._dispose.bind(e);
 }
-class Oe {
+class xe {
   get value() {
     return ie(this);
   }
@@ -276,7 +276,7 @@ class Oe {
   }
 }
 const oe = (t) => Object.assign(
-  new Oe(),
+  new xe(),
   Object.entries(t).reduce(
     (e, [n, r]) => {
       if (["value", "peek"].some((s) => s === n))
@@ -286,17 +286,17 @@ const oe = (t) => Object.assign(
     {}
   )
 ), et = (t, e) => Object.keys(e).forEach((n) => t[n].value = e[n]), ie = (t, { peek: e = !1 } = {}) => Object.entries(t).reduce(
-  (n, [r, s]) => (s instanceof _ ? n[r] = e ? s.peek() : s.value : s instanceof Oe && (n[r] = ie(s, { peek: e })), n),
+  (n, [r, s]) => (s instanceof _ ? n[r] = e ? s.peek() : s.value : s instanceof xe && (n[r] = ie(s, { peek: e })), n),
   {}
 );
-function xe(t, e) {
+function Oe(t, e) {
   if (typeof e != "object" || Array.isArray(e) || !e)
     return e;
   if (typeof e == "object" && e.toJSON !== void 0 && typeof e.toJSON == "function")
     return e.toJSON();
   let n = t;
   return typeof t != "object" && (n = { ...e }), Object.keys(e).forEach((r) => {
-    n.hasOwnProperty(r) || (n[r] = e[r]), e[r] === null ? delete n[r] : n[r] = xe(n[r], e[r]);
+    n.hasOwnProperty(r) || (n[r] = e[r]), e[r] === null ? delete n[r] : n[r] = Oe(n[r], e[r]);
   }), n;
 }
 const tt = "[a-zA-Z_$][0-9a-zA-Z_$.]+";
@@ -398,7 +398,7 @@ class ct {
     }
   }
   mergeStore(e) {
-    const n = xe(this.store.value, e);
+    const n = Oe(this.store.value, e);
     this.store = oe(n);
   }
   signalByName(e) {
@@ -527,7 +527,7 @@ ${p.map((f) => `  ${f}`).join(`;
         this.walkDownDOM(e, n, r++), e = e.nextElementSibling;
   }
 }
-const ut = "0.13.1", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ft = {
+const ut = "0.13.2", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (n ? "-" : "") + e.toLowerCase()), ft = {
   prefix: "bind",
   mustNotEmptyKey: !0,
   mustNotEmptyExpression: !0,
@@ -581,10 +581,10 @@ const ut = "0.13.1", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
           T.onload = () => {
             if (typeof T.result != "string")
               throw new Error("Unsupported type");
-            const O = T.result.match(dt);
-            if (!O?.groups)
+            const x = T.result.match(dt);
+            if (!x?.groups)
               throw new Error("Invalid data URI");
-            const { mime: Ge, contents: Ke } = O.groups;
+            const { mime: Ge, contents: Ke } = x.groups;
             r.value = Ke;
             const ue = `${l}Mime`;
             if (ue in N) {
@@ -594,8 +594,8 @@ const ut = "0.13.1", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
           }, T.onloadend = () => g(void 0), T.readAsDataURL(w);
           const R = `${l}Name`;
           if (R in N) {
-            const O = N[`${R}`];
-            O.value = w.name;
+            const x = N[`${R}`];
+            x.value = w.name;
           }
         });
       const f = r.value, m = e;
@@ -1120,18 +1120,18 @@ function Ct(t, e, n) {
 function Rt(t, e, n) {
   let r = t.firstChild, s = r, o = 0;
   for (; r; ) {
-    let i = Ot(r, e, n);
+    let i = xt(r, e, n);
     i > o && (s = r, o = i), r = r.nextSibling;
   }
   return s;
 }
-function Ot(t, e, n) {
+function xt(t, e, n) {
   return X(t, e) ? 0.5 + V(n, t, e) : 0;
 }
 function Be(t, e) {
   $(e, t), e.callbacks.beforeNodeRemoved(t) !== !1 && (t.remove(), e.callbacks.afterNodeRemoved(t));
 }
-function xt(t, e) {
+function Ot(t, e) {
   return !t.deadIds.has(e);
 }
 function Ht(t, e, n) {
@@ -1149,7 +1149,7 @@ function V(t, e, n) {
     return 0;
   let s = 0;
   for (const o of r)
-    xt(t, o) && Ht(t, o, n) && ++s;
+    Ot(t, o) && Ht(t, o, n) && ++s;
   return s;
 }
 function ge(t, e) {
@@ -1352,8 +1352,6 @@ const ne = "display", ve = "none", re = "important", Ft = {
   onLoad: (t) => {
     const e = t.expression, n = t.store();
     return n.fetch || (n.fetch = {}), n.fetch.loadingIdentifiers || (n.fetch.loadingIdentifiers = {}), n.fetch.loadingIdentifiers[t.el.id] = e, n.isLoading || (n.isLoading = t.reactivity.signal(new Array())), () => {
-      const r = t.store();
-      delete r.fetch.loadingIdentifiers[t.el.id], Object.keys(r.isLoading.value).length === 0 && delete r.isLoading;
     };
   }
 }, cn = [on, an, ln];
@@ -1425,7 +1423,7 @@ async function Ae(t, e, n) {
       const l = n.store();
       i && setTimeout(() => {
         a.classList.remove(Y), a.classList.add(j);
-      }, 300), l.isLoading.value = l.isLoading.value.filter((y) => y !== d);
+      }, 300), l.isLoading && d && (l.isLoading.value = l.isLoading.value.filter((y) => y !== d));
     }
   };
   if (r.fetch?.headers?.value && h.headers)
