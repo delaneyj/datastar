@@ -141,8 +141,14 @@ export const IsLoadingPlugin: AttributePlugin = {
     return () => {
       // always refresh the store in callbacks
       const s = ctx.store()
-      delete s.fetch.loadingIdentifiers[ctx.el.id]
-      if (Object.keys(s.isLoading.value).length === 0) {
+      if (s.fetch.loadingIdentifiers) delete s.fetch.loadingIdentifiers[ctx.el.id]
+
+      if (s.isLoading) {
+        s.isLoading.value = s.isLoading.value.filter((id: string) => {
+          return id !== c
+        })
+      }
+      if (s.isLoading.value.length === 0) {
         delete s.isLoading
       }
     }
@@ -259,9 +265,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }, 300)
       }
 
-      s.isLoading.value = s.isLoading.value.filter((id: string) => {
-        return id !== loadingIdentifier
-      })
+      if (s.isLoading && loadingIdentifier) {
+        s.isLoading.value = s.isLoading.value.filter((id: string) => {
+          return id !== loadingIdentifier
+        })
+      }
     },
   }
 
