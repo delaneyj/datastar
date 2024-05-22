@@ -9,8 +9,8 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func setupExamplesTitleSelect(examplesRouter chi.Router) error {
-	examplesRouter.Get("/title_select/updates", func(w http.ResponseWriter, r *http.Request) {
+func setupExamplesTitleUpdateBackend(examplesRouter chi.Router) error {
+	examplesRouter.Get("/title_update_backend/updates", func(w http.ResponseWriter, r *http.Request) {
 		// You can comment out the below block and still persist the session
 		sse := datastar.NewSSE(w, r)
 		t := time.NewTicker(1 * time.Second)

@@ -42,7 +42,10 @@ Sets up an event listener on an element. The event listener will trigger the act
 
 If any signal in the expression changes, the event listener will be updated to reflect the new value of the signal automatically.
 
-**Note:** the `data-on-*` matches DOM events, however there is a special case for `data-on-load` which is triggered when the element is loaded into the DOM.
+**Note:** the `data-on-*` matches DOM events, however there are currently a few special cases.
+
+1.  `data-on-load` which is triggered when the element is loaded into the DOM.
+2.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
 

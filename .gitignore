@@ -2,3 +2,4 @@ debug_bin*
 node_modules
 
 site_bin
+.task

@@ -232,15 +232,31 @@ export const EventPlugin: AttributePlugin = {
     if (ctx.modifiers.has('once')) evtListOpts.once = true
 
     const eventName = kebabize(key).toLowerCase()
-    if (eventName === 'load') {
-      callback()
-      delete el.dataset.onLoad
-      return () => {}
-    }
-    el.addEventListener(eventName, callback, evtListOpts)
-    return () => {
-      // console.log(`Removing event listener for ${eventName} on ${el}`)
-      el.removeEventListener(eventName, callback)
+    switch (eventName) {
+      case 'load':
+        callback()
+        delete el.dataset.onLoad
+        return () => {}
+
+      case 'raf':
+        let rafId: number | undefined
+        const raf = () => {
+          callback()
+          rafId = requestAnimationFrame(raf)
+        }
+        requestAnimationFrame(raf)
+        delete el.dataset.onRaf
+
+        return () => {
+          if (rafId) cancelAnimationFrame(rafId)
+        }
+
+      default:
+        el.addEventListener(eventName, callback, evtListOpts)
+        return () => {
+          // console.log(`Removing event listener for ${eventName} on ${el}`)
+          el.removeEventListener(eventName, callback)
+        }
     }
   },
 }

@@ -47,13 +47,6 @@ func setupExamples(router chi.Router) (err error) {
 	)
 	examples := lo.Map([]ExampleGroup{
 		{
-			Label: "Backend Examples",
-			Examples: []*Example{
-				{Label: "Node", Description: "example backend in node"},
-				{Label: "Python", Description: "example backend in python"},
-			},
-		},
-		{
 			Label: "Ported HTMX Examples",
 			Examples: []*Example{
 				{Label: "Click to Edit", Description: "inline editing of a data object"},
@@ -92,7 +85,15 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Merge Options", Description: "how to merge options in a select"},
 				{Label: "Redirects", Description: "how to redirect to another page"},
 				{Label: "View Transition API", Description: "using the view transition API"},
-				{Label: "Title Select", Description: "target singletons on the page"},
+				{Label: "Title Update Backend", Description: "target a specific element for updates"},
+				{Label: "RAF Update", Description: "update a signal on requestAnimationFrame"},
+			},
+		},
+		{
+			Label: "Backend Examples",
+			Examples: []*Example{
+				{Label: "Node", Description: "example backend in node"},
+				{Label: "Python", Description: "example backend in python"},
 				{Label: "Quick Primer Go", Description: "The getting started guide in Go"},
 			},
 		},
@@ -216,7 +217,7 @@ func setupExamples(router chi.Router) (err error) {
 			//
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
-			setupExamplesTitleSelect(examplesRouter),
+			setupExamplesTitleUpdateBackend(examplesRouter),
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 		); err != nil {
