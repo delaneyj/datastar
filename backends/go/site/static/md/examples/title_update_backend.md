@@ -1,12 +1,10 @@
-## Edit Row
-
-[Original HTMX Version](https://htmx.org/examples/edit-row/)
+## Title Update Backend
 
 ## Demo
 
 Look at the title change in the browser tab!
 
-<div data-on-load="$$get('/examples/title_select/updates')"></div>
+<div data-on-load="$$get('/examples/title_update_backend/updates')"></div>
 
 ## Explanation
 

@@ -410,46 +410,46 @@ class ct {
       this.walkDownDOM(e, (o) => {
         s || this.cleanupElementRemovals(o);
         for (const i in o.dataset) {
-          let a = o.dataset[i] || "";
+          let l = o.dataset[i] || "";
           if (!i.startsWith(r.prefix))
             continue;
           if (o.id.length === 0 && (o.id = `ds-${this.parentID}-${this.missingIDNext++}`), n.clear(), r.allowedTagRegexps) {
             const p = o.tagName.toLowerCase();
-            if (![...r.allowedTagRegexps].some((f) => p.match(f)))
+            if (![...r.allowedTagRegexps].some((d) => p.match(d)))
               throw new Error(
                 `'${o.tagName}' not allowed for '${i}', allowed ${[
-                  [...r.allowedTagRegexps].map((f) => `'${f}'`)
+                  [...r.allowedTagRegexps].map((d) => `'${d}'`)
                 ].join(", ")}`
               );
           }
-          let u = i.slice(r.prefix.length), [d, ...c] = u.split(".");
-          if (r.mustHaveEmptyKey && d.length > 0)
+          let f = i.slice(r.prefix.length), [u, ...a] = f.split(".");
+          if (r.mustHaveEmptyKey && u.length > 0)
             throw new Error(`'${i}' must have empty key`);
-          if (r.mustNotEmptyKey && d.length === 0)
+          if (r.mustNotEmptyKey && u.length === 0)
             throw new Error(`'${i}' must have non-empty key`);
-          d.length && (d = d[0].toLowerCase() + d.slice(1));
-          const h = c.map((p) => {
-            const [E, ...f] = p.split("_");
-            return { label: E, args: f };
+          u.length && (u = u[0].toLowerCase() + u.slice(1));
+          const h = a.map((p) => {
+            const [E, ...d] = p.split("_");
+            return { label: E, args: d };
           });
           if (r.allowedModifiers) {
             for (const p of h)
               if (!r.allowedModifiers.has(p.label))
                 throw new Error(`'${p.label}' is not allowed`);
           }
-          const l = /* @__PURE__ */ new Map();
+          const c = /* @__PURE__ */ new Map();
           for (const p of h)
-            l.set(p.label, p.args);
-          if (r.mustHaveEmptyExpression && a.length)
+            c.set(p.label, p.args);
+          if (r.mustHaveEmptyExpression && l.length)
             throw new Error(`'${i}' must have empty expression`);
-          if (r.mustNotEmptyExpression && !a.length)
+          if (r.mustNotEmptyExpression && !l.length)
             throw new Error(`'${i}' must have non-empty expression`);
           const y = [...r.preprocessors?.pre || [], ...ot, ...r.preprocessors?.post || []];
           for (const p of y) {
             if (n.has(p))
               continue;
             n.add(p);
-            const E = a.split(";"), f = [];
+            const E = l.split(";"), d = [];
             E.forEach((m) => {
               let g = m;
               const w = [...g.matchAll(p.regexp)];
@@ -460,8 +460,8 @@ class ct {
                   const { groups: N } = T, { whole: R } = N;
                   g = g.replace(R, p.replacer(N));
                 }
-              f.push(g);
-            }), a = f.join("; ");
+              d.push(g);
+            }), l = d.join("; ");
           }
           const b = {
             store: () => this.store,
@@ -473,29 +473,29 @@ class ct {
             refs: this.refs,
             reactivity: this.reactivity,
             el: o,
-            key: d,
-            expression: a,
+            key: u,
+            expression: l,
             expressionFn: () => {
               throw new Error("Expression function not created");
             },
-            modifiers: l
+            modifiers: c
           };
-          if (!r.bypassExpressionFunctionCreation?.(b) && !r.mustHaveEmptyExpression && a.length) {
-            const p = a.split(";").map((f) => f.trim());
+          if (!r.bypassExpressionFunctionCreation?.(b) && !r.mustHaveEmptyExpression && l.length) {
+            const p = l.split(";").map((d) => d.trim());
             p[p.length - 1] = `return ${p[p.length - 1]}`;
             let E = `
 try {
-${p.map((f) => `  ${f}`).join(`;
+${p.map((d) => `  ${d}`).join(`;
 `)}
 } catch (e) {
   throw e
 }
             `;
             try {
-              const f = new Function("ctx", E);
-              b.expressionFn = f;
-            } catch (f) {
-              throw new Error(`Error creating expression function for '${E}', error: ${f}`);
+              const d = new Function("ctx", E);
+              b.expressionFn = d;
+            } catch (d) {
+              throw new Error(`Error creating expression function for '${E}', error: ${d}`);
             }
           }
           const S = r.onLoad(b);
@@ -507,12 +507,12 @@ ${p.map((f) => `  ${f}`).join(`;
   walkSignalsStore(e, n) {
     const r = Object.keys(e);
     for (let s = 0; s < r.length; s++) {
-      const o = r[s], i = e[o], a = i instanceof _, u = typeof i == "object" && Object.keys(i).length > 0;
-      if (a) {
+      const o = r[s], i = e[o], l = i instanceof _, f = typeof i == "object" && Object.keys(i).length > 0;
+      if (l) {
         n(o, i);
         continue;
       }
-      u && this.walkSignalsStore(i, n);
+      f && this.walkSignalsStore(i, n);
     }
   }
   walkSignals(e) {
@@ -535,7 +535,7 @@ const ut = "0.13.2", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
     const e = He(t.key), r = `${await t.expressionFn(t)}`;
     !r || r === "false" || r === "null" || r === "undefined" ? t.el.removeAttribute(e) : t.el.setAttribute(e, r);
   })
-}, dt = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, W = ["change", "input", "keydown"], ht = {
+}, dt = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/, q = ["change", "input", "keydown"], ht = {
   prefix: "model",
   mustHaveEmptyKey: !0,
   preprocessors: {
@@ -555,20 +555,20 @@ const ut = "0.13.2", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
     const { el: e, expression: n } = t, r = t.expressionFn(t), s = e.tagName.toLowerCase();
     if (n.startsWith("ctx.store().ctx.store()"))
       throw new Error(`Model attribute on #${e.id} must have a signal name, you probably prefixed with $ by accident`);
-    const o = s.includes("input"), i = s.includes("select"), a = s.includes("textarea"), u = e.getAttribute("type"), d = s.includes("checkbox") || o && u === "checkbox", c = s.includes("radio") || o && u === "radio", h = o && u === "file";
-    if (!o && !i && !a && !d && !c)
+    const o = s.includes("input"), i = s.includes("select"), l = s.includes("textarea"), f = e.getAttribute("type"), u = s.includes("checkbox") || o && f === "checkbox", a = s.includes("radio") || o && f === "radio", h = o && f === "file";
+    if (!o && !i && !l && !u && !a)
       throw new Error("Element must be input, select, textarea, checkbox or radio");
-    const l = n.replaceAll("ctx.store().", "");
-    c && (e.getAttribute("name")?.length || e.setAttribute("name", l));
+    const c = n.replaceAll("ctx.store().", "");
+    a && (e.getAttribute("name")?.length || e.setAttribute("name", c));
     const y = () => {
       if (!r)
-        throw new Error(`Signal ${l} not found`);
-      const f = "value" in e, m = r.value;
-      if (d || c) {
+        throw new Error(`Signal ${c} not found`);
+      const d = "value" in e, m = r.value;
+      if (u || a) {
         const g = e;
-        d ? g.checked = m : c && (g.checked = `${m}` === g.value);
+        u ? g.checked = m : a && (g.checked = `${m}` === g.value);
       } else
-        h || (f ? e.value = `${m}` : e.setAttribute("value", `${m}`));
+        h || (d ? e.value = `${m}` : e.setAttribute("value", `${m}`));
     }, b = t.reactivity.effect(y), S = async () => {
       if (h)
         return await new Promise((g) => {
@@ -586,39 +586,39 @@ const ut = "0.13.2", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
               throw new Error("Invalid data URI");
             const { mime: Ge, contents: Ke } = x.groups;
             r.value = Ke;
-            const ue = `${l}Mime`;
+            const ue = `${c}Mime`;
             if (ue in N) {
               const Je = N[`${ue}`];
               Je.value = Ge;
             }
           }, T.onloadend = () => g(void 0), T.readAsDataURL(w);
-          const R = `${l}Name`;
+          const R = `${c}Name`;
           if (R in N) {
             const x = N[`${R}`];
             x.value = w.name;
           }
         });
-      const f = r.value, m = e;
-      if (typeof f == "number")
+      const d = r.value, m = e;
+      if (typeof d == "number")
         r.value = Number(m.value);
-      else if (typeof f == "string")
+      else if (typeof d == "string")
         r.value = m.value;
-      else if (typeof f == "boolean")
-        d ? r.value = m.checked : r.value = !!m.value;
-      else if (!(typeof f > "u"))
-        if (typeof f == "bigint")
+      else if (typeof d == "boolean")
+        u ? r.value = m.checked : r.value = !!m.value;
+      else if (!(typeof d > "u"))
+        if (typeof d == "bigint")
           r.value = BigInt(m.value);
         else
-          throw console.log(typeof f), new Error("Unsupported type");
+          throw console.log(typeof d), new Error("Unsupported type");
     }, p = e.tagName.split("-");
     if (p.length > 1) {
-      const f = p[0].toLowerCase();
-      W.forEach((m) => {
-        W.push(`${f}-${m}`);
+      const d = p[0].toLowerCase();
+      q.forEach((m) => {
+        q.push(`${d}-${m}`);
       });
     }
-    return W.forEach((f) => e.addEventListener(f, S)), () => {
-      b(), W.forEach((f) => e.removeEventListener(f, S));
+    return q.forEach((d) => e.addEventListener(d, S)), () => {
+      b(), q.forEach((d) => e.removeEventListener(d, S));
     };
   }
 }, pt = {
@@ -645,25 +645,38 @@ const ut = "0.13.2", He = (t) => t.replace(/[A-Z]+(?![a-z])|[A-Z]/g, (e, n) => (
     };
     const o = t.modifiers.get("debounce");
     if (o) {
-      const d = fe(o), c = q(o, "leading", !1), h = q(o, "noTrail", !0);
-      s = vt(s, d, c, h);
+      const u = fe(o), a = W(o, "leading", !1), h = W(o, "noTrail", !0);
+      s = vt(s, u, a, h);
     }
     const i = t.modifiers.get("throttle");
     if (i) {
-      const d = fe(i), c = q(i, "noLead", !0), h = q(i, "noTrail", !0);
-      s = yt(s, d, c, h);
+      const u = fe(i), a = W(i, "noLead", !0), h = W(i, "noTrail", !0);
+      s = yt(s, u, a, h);
     }
-    const a = {
+    const l = {
       capture: !0,
       passive: !1,
       once: !1
     };
-    t.modifiers.has("capture") || (a.capture = !1), t.modifiers.has("passive") && (a.passive = !0), t.modifiers.has("once") && (a.once = !0);
-    const u = He(n).toLowerCase();
-    return u === "load" ? (s(), delete e.dataset.onLoad, () => {
-    }) : (e.addEventListener(u, s, a), () => {
-      e.removeEventListener(u, s);
-    });
+    t.modifiers.has("capture") || (l.capture = !1), t.modifiers.has("passive") && (l.passive = !0), t.modifiers.has("once") && (l.once = !0);
+    const f = He(n).toLowerCase();
+    switch (f) {
+      case "load":
+        return s(), delete e.dataset.onLoad, () => {
+        };
+      case "raf":
+        let u;
+        const a = () => {
+          s(), u = requestAnimationFrame(a);
+        };
+        return requestAnimationFrame(a), delete e.dataset.onRaf, () => {
+          u && cancelAnimationFrame(u);
+        };
+      default:
+        return e.addEventListener(f, s, l), () => {
+          e.removeEventListener(f, s);
+        };
+    }
   }
 }, gt = [
   ft,
@@ -686,22 +699,22 @@ function fe(t) {
   }
   return 0;
 }
-function q(t, e, n = !1) {
+function W(t, e, n = !1) {
   return t ? t.includes(e) || n : !1;
 }
 function vt(t, e, n = !1, r = !0) {
   let s;
   const o = () => s && clearTimeout(s);
-  return function(...a) {
-    o(), n && !s && t(...a), s = setTimeout(() => {
-      r && t(...a), o();
+  return function(...l) {
+    o(), n && !s && t(...l), s = setTimeout(() => {
+      r && t(...l), o();
     }, e);
   };
 }
 function yt(t, e, n = !0, r = !1) {
   let s = !1, o = null;
-  return function(...a) {
-    s ? o = a : (s = !0, n ? t(...a) : o = a, setTimeout(() => {
+  return function(...l) {
+    s ? o = l : (s = !0, n ? t(...l) : o = l, setTimeout(() => {
       r && o && (t(...o), o = null), s = !1;
     }, e));
   };
@@ -713,32 +726,32 @@ function bt(t, {
   onmessage: s,
   onclose: o,
   onerror: i,
-  openWhenHidden: a,
-  ...u
+  openWhenHidden: l,
+  ...f
 }) {
-  return new Promise((d, c) => {
+  return new Promise((u, a) => {
     const h = { ...n };
     h.accept || (h.accept = ae);
-    let l;
+    let c;
     function y() {
-      l.abort(), document.hidden || f();
+      c.abort(), document.hidden || d();
     }
-    a || document.addEventListener("visibilitychange", y);
+    l || document.addEventListener("visibilitychange", y);
     let b = wt, S = 0;
     function p() {
-      document.removeEventListener("visibilitychange", y), window.clearTimeout(S), l.abort();
+      document.removeEventListener("visibilitychange", y), window.clearTimeout(S), c.abort();
     }
     e?.addEventListener("abort", () => {
-      p(), d();
+      p(), u();
     });
     const E = r ?? _t;
-    async function f() {
-      l = new AbortController();
+    async function d() {
+      c = new AbortController();
       try {
         const m = await fetch(t, {
-          ...u,
+          ...f,
           headers: h,
-          signal: l.signal
+          signal: c.signal
         });
         await E(m), await Et(
           m.body,
@@ -753,18 +766,18 @@ function bt(t, {
               s
             )
           )
-        ), o?.(), p(), d();
+        ), o?.(), p(), u();
       } catch (m) {
-        if (!l.signal.aborted)
+        if (!c.signal.aborted)
           try {
             const g = i?.(m) ?? b;
-            window.clearTimeout(S), S = window.setTimeout(f, g);
+            window.clearTimeout(S), S = window.setTimeout(d, g);
           } catch (g) {
-            p(), c(g);
+            p(), a(g);
           }
       }
     }
-    f();
+    d();
   });
 }
 const ae = "text/event-stream", wt = 1e3, de = "last-event-id";
@@ -786,50 +799,50 @@ function St(t) {
   let e, n, r, s = !1;
   return function(i) {
     e === void 0 ? (e = i, n = 0, r = -1) : e = At(e, i);
-    const a = e.length;
-    let u = 0;
-    for (; n < a; ) {
-      s && (e[n] === 10 && (u = ++n), s = !1);
-      let d = -1;
-      for (; n < a && d === -1; ++n)
+    const l = e.length;
+    let f = 0;
+    for (; n < l; ) {
+      s && (e[n] === 10 && (f = ++n), s = !1);
+      let u = -1;
+      for (; n < l && u === -1; ++n)
         switch (e[n]) {
           case 58:
-            r === -1 && (r = n - u);
+            r === -1 && (r = n - f);
             break;
           case 13:
             s = !0;
           case 10:
-            d = n;
+            u = n;
             break;
         }
-      if (d === -1)
+      if (u === -1)
         break;
-      t(e.subarray(u, d), r), u = n, r = -1;
+      t(e.subarray(f, u), r), f = n, r = -1;
     }
-    u === a ? e = void 0 : u !== 0 && (e = e.subarray(u), n -= u);
+    f === l ? e = void 0 : f !== 0 && (e = e.subarray(f), n -= f);
   };
 }
 function Tt(t, e, n) {
   let r = he();
   const s = new TextDecoder();
-  return function(i, a) {
+  return function(i, l) {
     if (i.length === 0)
       n?.(r), r = he();
-    else if (a > 0) {
-      const u = s.decode(i.subarray(0, a)), d = a + (i[a + 1] === 32 ? 2 : 1), c = s.decode(i.subarray(d));
-      switch (u) {
+    else if (l > 0) {
+      const f = s.decode(i.subarray(0, l)), u = l + (i[l + 1] === 32 ? 2 : 1), a = s.decode(i.subarray(u));
+      switch (f) {
         case "data":
           r.data = r.data ? r.data + `
-` + c : c;
+` + a : a;
           break;
         case "event":
-          r.event = c;
+          r.event = a;
           break;
         case "id":
-          t(r.id = c);
+          t(r.id = a);
           break;
         case "retry":
-          const h = parseInt(c, 10);
+          const h = parseInt(a, 10);
           isNaN(h) || e(r.retry = h);
           break;
       }
@@ -922,9 +935,9 @@ function Fe(t, e, n) {
       s = pe(s, i, n), z(i, o, n), $(n, o);
       continue;
     }
-    let a = Pt(t, o, s, n);
-    if (a) {
-      s = pe(s, a, n), z(a, o, n), $(n, o);
+    let l = Pt(t, o, s, n);
+    if (l) {
+      s = pe(s, l, n), z(l, o, n), $(n, o);
       continue;
     }
     if (n.callbacks.beforeNodeAdded(o) === !1)
@@ -958,39 +971,39 @@ function G(t, e, n) {
   r !== s && (r ? e.setAttribute(n, r) : e.removeAttribute(n));
 }
 function Ve(t, e, n) {
-  const r = [], s = [], o = [], i = [], a = n.head.style, u = /* @__PURE__ */ new Map();
-  for (const c of t.children)
-    u.set(c.outerHTML, c);
-  for (const c of e.children) {
-    let h = u.has(c.outerHTML), l = n.head.shouldReAppend(c), y = n.head.shouldPreserve(c);
-    h || y ? l ? s.push(c) : (u.delete(c.outerHTML), o.push(c)) : a === "append" ? l && (s.push(c), i.push(c)) : n.head.shouldRemove(c) !== !1 && s.push(c);
+  const r = [], s = [], o = [], i = [], l = n.head.style, f = /* @__PURE__ */ new Map();
+  for (const a of t.children)
+    f.set(a.outerHTML, a);
+  for (const a of e.children) {
+    let h = f.has(a.outerHTML), c = n.head.shouldReAppend(a), y = n.head.shouldPreserve(a);
+    h || y ? c ? s.push(a) : (f.delete(a.outerHTML), o.push(a)) : l === "append" ? c && (s.push(a), i.push(a)) : n.head.shouldRemove(a) !== !1 && s.push(a);
   }
-  i.push(...u.values());
-  const d = [];
-  for (const c of i) {
-    const h = document.createRange().createContextualFragment(c.outerHTML).firstChild;
+  i.push(...f.values());
+  const u = [];
+  for (const a of i) {
+    const h = document.createRange().createContextualFragment(a.outerHTML).firstChild;
     if (!h)
-      throw new Error("could not create new element from: " + c.outerHTML);
+      throw new Error("could not create new element from: " + a.outerHTML);
     if (n.callbacks.beforeNodeAdded(h)) {
       if (h.hasAttribute("href") || h.hasAttribute("src")) {
-        let l;
+        let c;
         const y = new Promise((b) => {
-          l = b;
+          c = b;
         });
         h.addEventListener("load", function() {
-          l(void 0);
-        }), d.push(y);
+          c(void 0);
+        }), u.push(y);
       }
       e.appendChild(h), n.callbacks.afterNodeAdded(h), r.push(h);
     }
   }
-  for (const c of s)
-    n.callbacks.beforeNodeRemoved(c) !== !1 && (e.removeChild(c), n.callbacks.afterNodeRemoved(c));
+  for (const a of s)
+    n.callbacks.beforeNodeRemoved(a) !== !1 && (e.removeChild(a), n.callbacks.afterNodeRemoved(a));
   return n.head.afterHeadMorphed(e, {
     added: r,
     kept: o,
     removed: s
-  }), d;
+  }), u;
 }
 function M() {
 }
@@ -1046,11 +1059,11 @@ function Mt(t, e, n, r, s) {
   let i = null;
   if (o > 0) {
     i = r;
-    let a = 0;
+    let l = 0;
     for (; i != null; ) {
       if (je(n, i, s))
         return i;
-      if (a += V(s, i, t), a > o)
+      if (l += V(s, i, t), l > o)
         return null;
       i = i.nextSibling;
     }
@@ -1172,8 +1185,8 @@ const ne = "display", ve = "none", re = "important", Ft = {
   onLoad: (t) => {
     const { el: e, modifiers: n, expressionFn: r, reactivity: s } = t;
     return s.effect(async () => {
-      const i = !!await r(t), u = n.has(re) ? re : void 0;
-      i ? e.style.length === 1 && e.style.display === ve ? e.style.removeProperty(ne) : e.style.setProperty(ne, "", u) : e.style.setProperty(ne, ve, u);
+      const i = !!await r(t), f = n.has(re) ? re : void 0;
+      i ? e.style.length === 1 && e.style.display === ve ? e.style.removeProperty(ne) : e.style.setProperty(ne, "", f) : e.style.setProperty(ne, ve, f);
     });
   }
 }, Vt = "intersects", ye = "once", be = "half", we = "full", jt = {
@@ -1245,7 +1258,7 @@ const ne = "display", ve = "none", re = "important", Ft = {
     };
     return e.has("smooth") && (n.behavior = "smooth"), e.has("instant") && (n.behavior = "instant"), e.has("auto") && (n.behavior = "auto"), e.has("hstart") && (n.inline = "start"), e.has("hcenter") && (n.inline = "center"), e.has("hend") && (n.inline = "end"), e.has("hnearest") && (n.inline = "nearest"), e.has("vstart") && (n.block = "start"), e.has("vcenter") && (n.block = "center"), e.has("vend") && (n.block = "end"), e.has("vnearest") && (n.block = "nearest"), t.scrollIntoView(n), e.has("focus") && t.focus(), delete t.dataset.focus, () => t.blur();
   }
-}, Ue = document, We = !!Ue.startViewTransition, Wt = {
+}, Ue = document, qe = !!Ue.startViewTransition, qt = {
   prefix: "viewTransition",
   onGlobalInit() {
     let t = !1;
@@ -1257,7 +1270,7 @@ const ne = "display", ve = "none", re = "important", Ft = {
     }
   },
   onLoad: (t) => {
-    if (!We) {
+    if (!qe) {
       console.error("Browser does not support view transitions");
       return;
     }
@@ -1270,12 +1283,12 @@ const ne = "display", ve = "none", re = "important", Ft = {
       s.viewTransitionName = r;
     });
   }
-}, qt = [
+}, Wt = [
   Ft,
   jt,
   Bt,
   Ut,
-  Wt
+  qt
 ], Gt = "Content-Type", Kt = "datastar-request", Jt = "application/json", zt = "true", U = "datastar-", Zt = `${U}fragment`, j = `${U}indicator`, Y = `${j}-loading`, Te = `${U}settling`, K = `${U}swapping`, Xt = "self", Yt = "get", Qt = "post", en = "put", tn = "patch", nn = "delete", rn = [Yt, Qt, en, tn, nn].reduce(
   (t, e) => (t[e] = async (n, r) => {
     const s = Document;
@@ -1362,15 +1375,15 @@ async function Ae(t, e, n) {
   const s = { ...r.value };
   delete s.fetch;
   const o = JSON.stringify(s);
-  let i = !1, a = n.el;
-  const u = r.fetch?.indicatorSelectors?.[a.id] || null;
-  if (u) {
-    const l = document.querySelector(u.value);
-    l && (a = l, a.classList.remove(j), a.classList.add(Y), i = !0);
+  let i = !1, l = n.el;
+  const f = r.fetch?.indicatorSelectors?.[l.id] || null;
+  if (f) {
+    const c = document.querySelector(f.value);
+    c && (l = c, l.classList.remove(j), l.classList.add(Y), i = !0);
   }
-  const d = r.fetch?.loadingIdentifiers?.[a.id] || null;
-  d && !r.isLoading.value.includes(d) && (r.isLoading.value = [...r.isLoading.value || [], d]);
-  const c = new URL(e, window.location.origin);
+  const u = r.fetch?.loadingIdentifiers?.[l.id] || null;
+  u && !r.isLoading.value.includes(u) && (r.isLoading.value = [...r.isLoading.value || [], u]);
+  const a = new URL(e, window.location.origin);
   t = t.toUpperCase();
   const h = {
     method: t,
@@ -1378,17 +1391,17 @@ async function Ae(t, e, n) {
       [Gt]: Jt,
       [Kt]: zt
     },
-    onmessage: (l) => {
-      if (!l.event)
+    onmessage: (c) => {
+      if (!c.event)
         return;
       let y = "", b = "morph_element", S = "", p = 500;
-      if (!l.event.startsWith(U))
-        throw new Error(`Unknown event: ${l.event}`);
-      const E = l.event === Zt, f = l.data.trim().split(`
+      if (!c.event.startsWith(U))
+        throw new Error(`Unknown event: ${c.event}`);
+      const E = c.event === Zt, d = c.data.trim().split(`
 `);
       let m = "";
-      for (let g = 0; g < f.length; g++) {
-        let w = f[g];
+      for (let g = 0; g < d.length; g++) {
+        let w = d[g];
         if (!w?.length)
           continue;
         const T = w.split(" ", 1)[0];
@@ -1420,23 +1433,23 @@ async function Ae(t, e, n) {
       E && (y?.length || (y = "<div></div>"), un(n, S, b, y, p));
     },
     onclose: () => {
-      const l = n.store();
+      const c = n.store();
       i && setTimeout(() => {
-        a.classList.remove(Y), a.classList.add(j);
-      }, 300), l.isLoading && d && (l.isLoading.value = l.isLoading.value.filter((y) => y !== d));
+        l.classList.remove(Y), l.classList.add(j);
+      }, 300), c.isLoading && u && (c.isLoading.value = c.isLoading.value.filter((y) => y !== u));
     }
   };
   if (r.fetch?.headers?.value && h.headers)
-    for (const l in r.fetch.headers.value) {
-      const y = r.fetch.headers.value[l];
-      h.headers[l] = y;
+    for (const c in r.fetch.headers.value) {
+      const y = r.fetch.headers.value[c];
+      h.headers[c] = y;
     }
   if (t === "GET") {
-    const l = new URLSearchParams(c.search);
-    l.append("datastar", o), c.search = l.toString();
+    const c = new URLSearchParams(a.search);
+    c.append("datastar", o), a.search = c.toString();
   } else
     h.body = o;
-  await bt(c, h);
+  await bt(a, h);
 }
 const Le = document.createElement("template");
 function un(t, e, n, r, s) {
@@ -1445,67 +1458,67 @@ function un(t, e, n, r, s) {
   const i = Le.content.firstChild;
   if (!(i instanceof Element))
     throw new Error("No fragment found");
-  const a = e === Xt;
-  let u;
-  if (a)
-    u = [o];
+  const l = e === Xt;
+  let f;
+  if (l)
+    f = [o];
   else {
-    const c = e || `#${i.getAttribute("id")}`;
-    if (u = document.querySelectorAll(c) || [], !u)
-      throw new Error(`No targets found for ${c}`);
+    const a = e || `#${i.getAttribute("id")}`;
+    if (f = document.querySelectorAll(a) || [], !f)
+      throw new Error(`No targets found for ${a}`);
   }
-  const d = () => {
-    for (const c of u) {
-      c.classList.add(K);
-      const h = c.outerHTML;
-      let l = c;
+  const u = () => {
+    for (const a of f) {
+      a.classList.add(K);
+      const h = a.outerHTML;
+      let c = a;
       switch (n) {
         case A.MorphElement:
-          const b = Lt(l, i);
+          const b = Lt(c, i);
           if (!b?.length)
             throw new Error("No morph result");
-          l = b[0];
+          c = b[0];
           break;
         case A.InnerElement:
-          l.innerHTML = i.innerHTML;
+          c.innerHTML = i.innerHTML;
           break;
         case A.OuterElement:
-          l.replaceWith(i);
+          c.replaceWith(i);
           break;
         case A.PrependElement:
-          l.prepend(i);
+          c.prepend(i);
           break;
         case A.AppendElement:
-          l.append(i);
+          c.append(i);
           break;
         case A.BeforeElement:
-          l.before(i);
+          c.before(i);
           break;
         case A.AfterElement:
-          l.after(i);
+          c.after(i);
           break;
         case A.DeleteElement:
-          setTimeout(() => l.remove(), s);
+          setTimeout(() => c.remove(), s);
           break;
         case A.UpsertAttributes:
           i.getAttributeNames().forEach((p) => {
             const E = i.getAttribute(p);
-            l.setAttribute(p, E);
+            c.setAttribute(p, E);
           });
           break;
         default:
           throw new Error(`Unknown merge type: ${n}`);
       }
-      l.classList.add(K), t.cleanupElementRemovals(c), t.applyPlugins(document.body), setTimeout(() => {
-        c.classList.remove(K), l.classList.remove(K);
+      c.classList.add(K), t.cleanupElementRemovals(a), t.applyPlugins(document.body), setTimeout(() => {
+        a.classList.remove(K), c.classList.remove(K);
       }, s);
-      const y = l.outerHTML;
-      h !== y && (l.classList.add(Te), setTimeout(() => {
-        l.classList.remove(Te);
+      const y = c.outerHTML;
+      h !== y && (c.classList.add(Te), setTimeout(() => {
+        c.classList.remove(Te);
       }, s));
     }
   };
-  We ? Ue.startViewTransition(() => d()) : d();
+  qe ? Ue.startViewTransition(() => u()) : u();
 }
 const fn = {
   setAll: async (t, e, n) => {
@@ -1529,12 +1542,12 @@ function dn(t = {}, ...e) {
   return console.log(`Datastar v${ut} loaded and attached to all DOM elements in ${s - n}ms`), r;
 }
 function hn(t = {}, ...e) {
-  const n = Object.assign({}, fn, rn, t), r = [...cn, ...qt, ...gt, ...e];
+  const n = Object.assign({}, fn, rn, t), r = [...cn, ...Wt, ...gt, ...e];
   return dn(n, ...r);
 }
-const qe = window;
-qe.ds = hn();
-qe.dispatchEvent(new CustomEvent("datastar-ready"));
+const We = window;
+We.ds = hn();
+We.dispatchEvent(new CustomEvent("datastar-ready"));
 export {
   ct as Datastar,
   dn as runDatastarWith,
