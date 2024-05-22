@@ -2,8 +2,6 @@
 
 ## Demo
 
-Look at the title change in the browser tab!
-
 <div data-store="{currentTime:new Date()}" data-on-raf="$currentTime = new Date()">
     <div id="time">Current Time: <span data-text="$currentTime"></span></div>
 </div>
