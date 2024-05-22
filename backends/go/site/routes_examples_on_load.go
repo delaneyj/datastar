@@ -10,8 +10,8 @@ import (
 	"github.com/gorilla/sessions"
 )
 
-func setupExamplesOnLoad(examplesRouter chi.Router) error {
-	store := sessions.NewCookieStore([]byte("ExampleSession"))
+func setupExamplesOnLoad(examplesRouter chi.Router, store sessions.Store) error {
+
 	sessionKey := "datastar-on-load-example"
 	examplesRouter.Post("/on_load/data", func(w http.ResponseWriter, r *http.Request) {
 		session, err := store.Get(r, sessionKey)

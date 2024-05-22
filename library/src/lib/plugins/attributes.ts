@@ -251,6 +251,18 @@ export const EventPlugin: AttributePlugin = {
           if (rafId) cancelAnimationFrame(rafId)
         }
 
+      case 'store-change':
+        if (!ctx.temp.lastStoreMarshalled) {
+          ctx.temp.lastStoreMarshalled = JSON.stringify(ctx.store().value)
+        }
+        return ctx.reactivity.effect(() => {
+          const current = JSON.stringify(ctx.store().value)
+          if (ctx.temp.lastStoreMarshalled !== current) {
+            ctx.temp.lastStoreMarshalled = current
+            callback()
+          }
+        })
+
       default:
         el.addEventListener(eventName, callback, evtListOpts)
         return () => {

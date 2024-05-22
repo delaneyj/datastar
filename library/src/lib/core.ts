@@ -175,6 +175,7 @@ export class Datastar {
           }
 
           const ctx: AttributeContext = {
+            temp: {},
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),

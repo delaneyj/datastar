@@ -26,6 +26,7 @@ export type AttributeContext = {
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
+  temp: Record<string, any>
 }
 
 export type InitContext = {

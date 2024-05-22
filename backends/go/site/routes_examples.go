@@ -9,6 +9,7 @@ import (
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
+	"github.com/gorilla/sessions"
 	"github.com/samber/lo"
 )
 
@@ -86,6 +87,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Redirects", Description: "how to redirect to another page"},
 				{Label: "View Transition API", Description: "using the view transition API"},
 				{Label: "Title Update Backend", Description: "target a specific element for updates"},
+				{Label: "Store Changed", Description: "detect when a store has changed"},
 				{Label: "RAF Update", Description: "update a signal on requestAnimationFrame"},
 			},
 		},
@@ -189,6 +191,8 @@ func setupExamples(router chi.Router) (err error) {
 			pp.Render(w)
 		})
 
+		examplesSessionStore := sessions.NewCookieStore([]byte("ExampleSession"))
+
 		if err := errors.Join(
 			setupExamplesClickToEdit(examplesRouter),
 			setupExamplesBulkUpdate(examplesRouter),
@@ -198,7 +202,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesLazyLoad(examplesRouter),
 			setupExamplesFetchIndicator(examplesRouter),
 			setupExamplesIsLoadingId(examplesRouter),
-			setupExamplesOnLoad(examplesRouter),
+			setupExamplesOnLoad(examplesRouter, examplesSessionStore),
 			setupExamplesDisableButton(examplesRouter),
 			setupExampleInlineValidation(examplesRouter),
 			setupExamplesInfiniteScroll(examplesRouter),
@@ -218,6 +222,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleUpdateBackend(examplesRouter),
+			setupExamplesStoreChanged(examplesRouter, examplesSessionStore),
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 		); err != nil {

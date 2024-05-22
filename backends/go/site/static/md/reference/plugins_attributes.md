@@ -42,16 +42,17 @@ Sets up an event listener on an element. The event listener will trigger the act
 
 If any signal in the expression changes, the event listener will be updated to reflect the new value of the signal automatically.
 
-**Note:** the `data-on-*` matches DOM events, however there are currently a few special cases.
+**Note:** the `data-on-*` matches DOM events, however there are currently a few special cases for custom events.
 
 1.  `data-on-load` which is triggered when the element is loaded into the DOM.
-2.  `data-on-raf` which is triggered on every requestAnimationFrame event.
+2.  `data-on-store-change` which is triggered when the store changes.
+3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
 
-- `.once` - Only trigger the event once
-- `.passive` - Do not call `preventDefault` on the event
-- `.capture` - Use a capture event listener
+- `.once`\* - Only trigger the event once
+- `.passive`\* - Do not call `preventDefault` on the event
+- `.capture`\* - Use a capture event listener
 - `.debounce` - Debounce the event listener
   - `_1000ms` - Debounce for 1000ms
   - `_1s` - Debounce for 1s
@@ -62,3 +63,5 @@ If any signal in the expression changes, the event listener will be updated to r
   - `_1s` - Throttle for 1s
   - `_noLead` - Throttle without leading edge
   - `_noTrail` - Throttle without trailing edge
+
+\*only works currently on native events
