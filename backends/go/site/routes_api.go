@@ -50,7 +50,8 @@ func setupAPI(router chi.Router) error {
 									CLASS("shadow appearance-none border border-accent-500 rounded w-full py-2 px-3 bg-accent-700 text-accent-200 leading-tight focus:outline-none focus:shadow-outline").
 									TYPE("number").
 									NAME("count").
-									CustomData("model", "count"),
+									CustomData("model", "count").
+									CustomData("testid", "globalcount_input"),
 							),
 					),
 				DIV().
