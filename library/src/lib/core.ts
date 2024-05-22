@@ -78,6 +78,10 @@ export class Datastar {
     this.store = deepSignal(revisedStore)
   }
 
+  private replaceStore<T extends object>(store: T) {
+    this.store = deepSignal(store as DeepState)
+  }
+
   public signalByName<T>(name: string) {
     return (this.store as any)[name] as Signal<T>
   }
@@ -178,6 +182,7 @@ export class Datastar {
             temp: {},
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
+            replaceStore: this.replaceStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),

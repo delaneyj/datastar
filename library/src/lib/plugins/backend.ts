@@ -51,8 +51,9 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   } as Actions,
 )
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
-const MergeOptions = {
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'store']
+
+const FragmentMergeOptions = {
   MorphElement: 'morph_element',
   InnerElement: 'inner_element',
   OuterElement: 'outer_element',
@@ -63,7 +64,13 @@ const MergeOptions = {
   DeleteElement: 'delete_element',
   UpsertAttributes: 'upsert_attributes',
 } as const
-type MergeOption = (typeof MergeOptions)[keyof typeof MergeOptions]
+type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
+
+const StoreMergeOptions = {
+  Merge: 'merge',
+  Replace: 'replace',
+} as const
+type StoreMergeOption = (typeof StoreMergeOptions)[keyof typeof StoreMergeOptions]
 
 // Sets the header of the fetch request
 export const HeadersPlugin: AttributePlugin = {
@@ -201,7 +208,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     onmessage: (evt) => {
       if (!evt.event) return
       let fragment = '',
-        merge: MergeOption = 'morph_element',
+        merge: FragmentMergeOption = 'morph_element',
+        exists = false,
         selector = '',
         settleTime = 500
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
@@ -228,8 +236,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
               selector = line
               break
             case 'merge':
-              merge = line as MergeOption
-              const exists = Object.values(MergeOptions).includes(merge)
+              merge = line as FragmentMergeOption
+              exists = Object.values(FragmentMergeOptions).includes(merge)
               if (!exists) {
                 throw new Error(`Unknown merge option: ${merge}`)
               }
@@ -242,6 +250,26 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             case 'redirect':
               window.location.href = line
               return
+            case 'store':
+              const [mode, json] = line.split(' ', 1)
+              exists = Object.values(StoreMergeOptions).includes(mode as StoreMergeOption)
+              if (!exists) {
+                throw new Error(`Unknown store option: ${merge}`)
+              }
+
+              const data = JSON.parse(json)
+              switch (mode) {
+                case 'merge':
+                  ctx.mergeStore(data)
+                  break
+                case 'replace':
+                  ctx.replaceStore(data)
+                  break
+                default:
+                  throw new Error(`Unknown store mode`)
+              }
+
+              break
             case 'error':
               throw new Error(line)
             default:
@@ -297,7 +325,7 @@ const fragContainer = document.createElement('template')
 export function mergeHTMLFragment(
   ctx: AttributeContext,
   selector: string,
-  merge: MergeOption,
+  merge: FragmentMergeOption,
   fragment: string,
   settleTime: number,
 ) {
@@ -328,7 +356,7 @@ export function mergeHTMLFragment(
       const originalHTML = initialTarget.outerHTML
       let modifiedTarget = initialTarget
       switch (merge) {
-        case MergeOptions.MorphElement:
+        case FragmentMergeOptions.MorphElement:
           const result = idiomorph(modifiedTarget, frag)
           if (!result?.length) {
             throw new Error(`No morph result`)
@@ -336,31 +364,31 @@ export function mergeHTMLFragment(
           const first = result[0] as Element
           modifiedTarget = first
           break
-        case MergeOptions.InnerElement:
+        case FragmentMergeOptions.InnerElement:
           // Replace the contents of the target element with the response
           modifiedTarget.innerHTML = frag.innerHTML
           break
-        case MergeOptions.OuterElement:
+        case FragmentMergeOptions.OuterElement:
           // Replace the entire target element with the response
           modifiedTarget.replaceWith(frag)
           break
-        case MergeOptions.PrependElement:
+        case FragmentMergeOptions.PrependElement:
           modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
           break
-        case MergeOptions.AppendElement:
+        case FragmentMergeOptions.AppendElement:
           modifiedTarget.append(frag) //  Insert the response after the last child of the target element
           break
-        case MergeOptions.BeforeElement:
+        case FragmentMergeOptions.BeforeElement:
           modifiedTarget.before(frag) //  Insert the response before the target element
           break
-        case MergeOptions.AfterElement:
+        case FragmentMergeOptions.AfterElement:
           modifiedTarget.after(frag) //  Insert the response after the target element
           break
-        case MergeOptions.DeleteElement:
+        case FragmentMergeOptions.DeleteElement:
           //  Deletes the target element regardless of the response
           setTimeout(() => modifiedTarget.remove(), settleTime)
           break
-        case MergeOptions.UpsertAttributes:
+        case FragmentMergeOptions.UpsertAttributes:
           //  Upsert the attributes of the target element
           frag.getAttributeNames().forEach((attrName) => {
             const value = frag.getAttribute(attrName)!
