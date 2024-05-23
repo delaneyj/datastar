@@ -69,3 +69,16 @@ Add a header to the request. This can be used to send additional information to 
 ```
 
 Show a spinner when the request is in flight. The `data-fetch-indicator` attribute should be a CSS selector to the element(s). When the attribute is present, the element will be hidden when requests are not in flight and shown when they are.
+
+### Is Loading Identifier
+
+```html
+<svg data-show="$isLoading.includes('edit-contact')">Spinner</svg>
+<div
+  data-on-click="$$get('/examples/click_to_edit/contact/1')"
+  data-is-loading-id="edit-contact"
+></div>
+```
+
+The `data-is-loading-id` attribute is used to specify the name of the identifier that will be present in the store's isLoading array when an element is fetching.
+
