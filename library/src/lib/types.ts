@@ -16,6 +16,7 @@ export type AttributeContext = {
   store: () => any
   replaceStore: (store: DeepState) => void
   mergeStore: (store: DeepState) => void
+  upsertIfMissingFromStore: (path: string, value: any) => void
   applyPlugins: (target: Element) => void
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void
@@ -27,7 +28,6 @@ export type AttributeContext = {
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
-  temp: Record<string, any>
 }
 
 export type InitContext = {

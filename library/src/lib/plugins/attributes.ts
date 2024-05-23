@@ -198,13 +198,17 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle']),
+  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'public']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
     let callback = () => {
       expressionFn(ctx)
     }
+
+    ctx.upsertIfMissingFromStore('_dsPlugins.on', {
+      lastStoreMarshalled: '',
+    })
 
     const debounceArgs = ctx.modifiers.get('debounce')
     if (debounceArgs) {
@@ -252,13 +256,11 @@ export const EventPlugin: AttributePlugin = {
         }
 
       case 'store-change':
-        if (!ctx.temp.lastStoreMarshalled) {
-          ctx.temp.lastStoreMarshalled = JSON.stringify(ctx.store().value)
-        }
         return ctx.reactivity.effect(() => {
-          const current = JSON.stringify(ctx.store().value)
-          if (ctx.temp.lastStoreMarshalled !== current) {
-            ctx.temp.lastStoreMarshalled = current
+          const current = storeMarshalled(ctx)
+          const store = ctx.store()
+          if (store._dsPlugins.on.lastStoreMarshalled !== current) {
+            store._dsPlugins.on.lastStoreMarshalled = current
             callback()
           }
         })
@@ -271,6 +273,30 @@ export const EventPlugin: AttributePlugin = {
         }
     }
   },
+}
+
+function storeMarshalled(ctx: AttributeContext) {
+  let s = ctx.store().value
+  if (ctx.modifiers.has('public')) {
+    s = publicSignals(s)
+  }
+  return JSON.stringify(s)
+}
+
+export function publicSignals(obj: any): Object {
+  const res: Record<string, any> = {}
+
+  if (typeof obj === 'object') {
+    for (const [k, v] of Object.entries(obj)) {
+      if (k.startsWith('_')) {
+        continue
+      } else if (typeof v === 'object') {
+        res[k] = publicSignals(v)
+      }
+      res[k] = v
+    }
+  }
+  return res
 }
 
 export const AttributePlugins: AttributePlugin[] = [

@@ -16,7 +16,7 @@ import {
 
 export class Datastar {
   plugins: AttributePlugin[] = []
-  store: DeepSignal<any> = deepSignal({})
+  store: DeepSignal<any> = deepSignal({ _dsPlugins: {} })
   actions: Actions = {}
   refs: Record<string, HTMLElement> = {}
   reactivity: Reactivity = {
@@ -76,6 +76,21 @@ export class Datastar {
   private mergeStore<T extends object>(patchStore: T) {
     const revisedStore = apply(this.store.value, patchStore) as DeepState
     this.store = deepSignal(revisedStore)
+  }
+
+  private upsertIfMissingFromStore(path: string, value: any) {
+    const parts = path.split('.')
+    let subStore = this.store as any
+    for (let i = 0; i < parts.length - 1; i++) {
+      const part = parts[i]
+      if (!subStore[part]) {
+        subStore[part] = {}
+      }
+      subStore = subStore[part]
+    }
+    const last = parts[parts.length - 1]
+    if (!!subStore[last]) return
+    subStore[last] = this.reactivity.signal(value)
   }
 
   private replaceStore<T extends object>(store: T) {
@@ -179,10 +194,10 @@ export class Datastar {
           }
 
           const ctx: AttributeContext = {
-            temp: {},
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
             replaceStore: this.replaceStore.bind(this),
+            upsertIfMissingFromStore: this.upsertIfMissingFromStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),

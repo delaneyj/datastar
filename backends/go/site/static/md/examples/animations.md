@@ -8,9 +8,7 @@ Datastar is designed to allow you to use CSS transitions to add smooth animation
 
 Datastar also allows you to use the new View Transitions API for creating animations.
 
-<div id="animations" data-on-load="$$get('/examples/animations/data')">
-Replace me
-</div>
+<div id="animations" data-on-load="$$get('/examples/animations/data')"></div>
 
 ## Basic CSS Animations
 

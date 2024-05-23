@@ -200,8 +200,7 @@ func header(r *http.Request) ElementRenderer {
 			),
 			HEADER().CLASS("md:hidden bg-accent-800 text-accent-200 px-4 py-2 flex flex-wrap gap-2 justify-between items-center").Children(
 				BUTTON().
-					// CustomData("show", "!$sidebarOpen;debugger;!x").
-					DATASTAR_ON("click", "$sidebarOpen = true").
+					DATASTAR_ON("click", "$_sidebarOpen = true").
 					CLASS("bg-accent-600 hover:bg-accent-700 text-primary-50 p-2 rounded-md").
 					Children(mdi.Menu()),
 				DIV().CLASS("flex gap-1 text-2xl").Children(linkChildren...),
@@ -215,7 +214,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 		highlightCSS,
 		DIV().
 			DATASTAR_STORE(map[string]any{
-				"sidebarOpen": false,
+				"_sidebarOpen": false,
 			}).
 			CLASS("grid grid-rows-[auto_1fr] h-screen").
 			Children(
@@ -227,7 +226,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 							return Group(
 								DIV().
 									CLASS("fixed inset-0 z-40 md:hidden").
-									CustomData("show", "$sidebarOpen").
+									CustomData("show", "$_sidebarOpen").
 									Children(
 										ASIDE().
 											CLASS("px-4 py-8 w-64 bg-accent-800 text-accent-200 relative z-30 h-full flex flex-col gap-4").
@@ -237,7 +236,7 @@ func prosePage(r *http.Request, sidebarContents ElementRenderer, contents Elemen
 												DIV(sidebarContents).CLASS("overflow-y-auto h-full flex flex-col"),
 											),
 										DIV().
-											DATASTAR_ON("click", "$sidebarOpen = false").
+											DATASTAR_ON("click", "$_sidebarOpen = false").
 											CLASS("fixed inset-0 bg-primary-900 bg-opacity-70 z-10"),
 									),
 								ASIDE(sidebarContents).

@@ -1,6 +1,7 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin } from '../types'
+import { publicSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -26,6 +27,7 @@ const GET = 'get',
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression) => {
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
       const da = Document as any
       if (!da.startViewTransition) {
         await fetcher(method, urlExpression, ctx)
@@ -79,10 +81,10 @@ export const HeadersPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
 
   onLoad: (ctx) => {
+    debugger
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch', { headers: new Map<string, string>() })
     const s = ctx.store()
-    if (!s.fetch) s.fetch = {}
-    if (!s.fetch.headers) s.fetch.headers = {}
-    const headers = s.fetch.headers
+    const { headers } = s._dsPlugins.fetch
     const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
     headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
     return () => {
@@ -112,11 +114,10 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
   onLoad: (ctx) => {
     return ctx.reactivity.effect(() => {
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
       const s = ctx.store()
-      if (!s.fetch) s.fetch = {}
-      if (!s.fetch.indicatorSelectors) s.fetch.indicatorSelectors = {}
-      s.fetch.indicatorSelectors[ctx.el.id] = c
+      s._dsPlugins.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
       if (!indicator) {
@@ -125,7 +126,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
       indicator.classList.add(INDICATOR_CLASS)
 
       return () => {
-        delete s.fetch.indicatorSelectors[ctx.el.id]
+        delete s._dsPlugins.fetch.indicatorSelectors[ctx.el.id]
       }
     })
   },
@@ -136,30 +137,19 @@ export const IsLoadingPlugin: AttributePlugin = {
   prefix: 'isLoadingId',
   mustNotEmptyExpression: true,
   onLoad: (ctx) => {
-    const c = ctx.expression
-    const s = ctx.store()
-
-    if (!s.fetch) s.fetch = {}
-    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
-    s.fetch.loadingIdentifiers[ctx.el.id] = c
-
-    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Array<string>())
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.loadingIdentifiers', {})
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.isLoading', [])
+    ctx.store()._dsPlugins.fetch.loadingIdentifiers[ctx.el.id] = ctx.expression
 
     return () => {
-      /* Cant get this to clean up properly, it seems to run every time the store is changed
-      // always refresh the store in callbacks
+      /*
+      // Can't get this to clean up properly, it seems to run every time the store is changed always refresh the store in callbacks
       const s = ctx.store()
-      if (s.fetch.loadingIdentifiers) delete s.fetch.loadingIdentifiers[ctx.el.id]
-
-      if (s.isLoading) {
-        s.isLoading.value = s.isLoading.value.filter((id: string) => {
-          return id !== c
-        })
-      }
-      if (s.isLoading.value.length === 0) {
-        delete s.isLoading
-      }
-    */
+      delete s._dsPlugins.fetch.loadingIdentifiers[ctx.el.id]
+      const isLoadingArr = s._dsPlugins.fetch.isLoading.value as string[]
+      const filtered = isLoadingArr.filter((id) => id !== ctx.expression)
+      s._dsPlugins.fetch.isLoading.value = filtered
+      */
     }
   },
 }
@@ -173,14 +163,12 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
-  const storeWithoutFetch = { ...s.value }
-  delete storeWithoutFetch.fetch
-  const storeJSON = JSON.stringify(storeWithoutFetch)
+  const storeJSON = JSON.stringify(publicSignals({ ...s.value }))
 
   let hasIndicator = false,
     loadingTarget = ctx.el
 
-  const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
+  const indicatorSelector = s._dsPlugins.fetch?.indicatorSelectors?.[loadingTarget.id] || null
   if (indicatorSelector) {
     const indicator = document.querySelector(indicatorSelector.value)
     if (indicator) {
@@ -191,8 +179,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     }
   }
 
-  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
-  if (loadingIdentifier && !s.isLoading.value.includes(loadingIdentifier)) {
+  const loadingIdentifier = s._dsPlugins.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
+  if (loadingIdentifier && !s._dsPlugins.fetch?.isLoading.value.includes(loadingIdentifier)) {
     s.isLoading.value = [...(s.isLoading.value || []), loadingIdentifier]
   }
 
@@ -295,17 +283,18 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }, 300)
       }
 
-      if (s.isLoading && loadingIdentifier) {
-        s.isLoading.value = s.isLoading.value.filter((id: string) => {
+      if (s._dsPlugins.fetch.isLoading && loadingIdentifier) {
+        s._dsPlugins.fetch.isLoading.value = s.isLoading.value.filter((id: string) => {
           return id !== loadingIdentifier
         })
       }
     },
   }
 
-  if (s.fetch?.headers?.value && req.headers) {
-    for (const key in s.fetch.headers.value) {
-      const value = s.fetch.headers.value[key]
+  if (req.headers && s._dsPlugins.fetch?.headers?.size()) {
+    debugger
+    for (const key in s._dsPlugins.fetch.headers) {
+      const value = s._dsPlugins.fetch.headers.value[key]
       req.headers[key] = value
     }
   }
