@@ -55,7 +55,7 @@ func setupExamplesRedirects(examplesRouter chi.Router) error {
 			for i := 5; i > 0; i-- {
 				datastar.RenderFragment(
 					sse,
-					DIV().ID("demo").TextF("Redirecting in %d...", i),
+					DIV().ID("update").TextF("Redirecting in %d...", i),
 				)
 				time.Sleep(time.Second)
 			}

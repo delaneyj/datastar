@@ -92,6 +92,7 @@ const (
 	FragmentSelectorSelf  = "self"
 	FragmentSelectorUseID = ""
 	SSEEventTypeFragment  = "datastar-fragment"
+	SSEEventTypeSignal    = "datastar-signal"
 	SSEEventTypeRedirect  = "datastar-redirect"
 	SSEEventTypeError     = "datastar-error"
 )
@@ -247,6 +248,32 @@ func Redirect(sse *ServerSentEventsHandler, url string) {
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
 	)
+}
+
+type SignalMergeType string
+
+const (
+	SignalMergePatch   SignalMergeType = "patch"
+	SignalMergeReplace SignalMergeType = "replace"
+)
+
+func MergeWithStore(sse *ServerSentEventsHandler, store any, mergeType SignalMergeType) {
+	b, err := json.Marshal(store)
+	if err != nil {
+		panic(err)
+	}
+	sse.Send(
+		fmt.Sprintf("%s %s", mergeType, b),
+		WithSSEEvent(SSEEventTypeSignal),
+	)
+}
+
+func PatchStore(sse *ServerSentEventsHandler, store any) {
+	MergeWithStore(sse, store, SignalMergePatch)
+}
+
+func ReplaceStore(sse *ServerSentEventsHandler, store any) {
+	MergeWithStore(sse, store, SignalMergeReplace)
 }
 
 func RedirectF(sse *ServerSentEventsHandler, urlFormat string, args ...interface{}) {

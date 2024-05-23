@@ -89,6 +89,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Title Update Backend", Description: "target a specific element for updates"},
 				{Label: "Store Changed", Description: "detect when a store has changed"},
 				{Label: "RAF Update", Description: "update a signal on requestAnimationFrame"},
+				{Label: "Update Store", Description: "update a store from an SSE event"},
 			},
 		},
 		{
@@ -216,6 +217,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesMergeOptions(examplesRouter),
 			setupExamplesRedirects(examplesRouter),
 			setupExamplesMultilineFragments(examplesRouter),
+			setupExamplesUpdateStore(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
