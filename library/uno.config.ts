@@ -4,7 +4,7 @@ import { defineConfig, presetTypography, presetUno, presetWebFonts } from 'unocs
 export default defineConfig({
   cli: {
     entry: {
-      patterns: ['../backends/go/site/*.go'],
+      patterns: ['../backends/go/site/**/*.go', '../backends/go/site/**/*.md'],
       outFile: '../backends/go/site/static/css/site.css',
     },
   },
@@ -21,7 +21,7 @@ export default defineConfig({
       },
     }),
     presetWebFonts({
-      customFetch: (url) => fetch(url).then((it) => it.data),
+      customFetch: (url) => fetch(url).then((it: any) => it.data),
       provider: 'google',
       fonts: {
         sans: 'Inter',
@@ -68,6 +68,18 @@ export default defineConfig({
         700: '#3f7b51',
         800: '#2a5738',
         900: '#153b1f',
+      },
+      warning: {
+        50: '#f9f8f0',
+        100: '#f3f1e1',
+        200: '#e7e3c3',
+        300: '#dbd5a5',
+        400: '#cfc787',
+        500: '#c3b969',
+        600: '#9f9f54',
+        700: '#7b7b3f',
+        800: '#575730',
+        900: '#3b3b1f',
       },
       error: {
         50: '#f9f0f0',

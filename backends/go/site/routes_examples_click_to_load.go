@@ -24,7 +24,7 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 	}
 
 	type Input struct {
-		SidebarOpen bool `json:"sidebarOpen"`
+		SidebarOpen bool `json:"_sidebarOpen"`
 		Limit       int  `json:"limit"`
 		Offset      int  `json:"offset"`
 	}

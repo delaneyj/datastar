@@ -1,6 +1,7 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
-import { Actions, AttributeContext, AttributePlugin } from '../types'
+import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
+import { publicSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -9,6 +10,7 @@ const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const DATASTAR_CLASS_PREFIX = 'datastar-'
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
+const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
 // const EVENT_ERROR = `${DATASTAR_CLASS_PREFIX}error`
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
@@ -23,36 +25,9 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
-  (acc, method) => {
-    acc[method] = async (ctx, urlExpression) => {
-      const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
-        return
-      }
-
-      new Promise((resolve) => {
-        da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
-          resolve(void 0)
-        })
-      })
-    }
-    return acc
-  },
-  {
-    isFetching: async (_, selector: string) => {
-      const indicators = document.querySelectorAll(selector)
-      return Array.from(indicators).some((indicator) => {
-        indicator.classList.contains(INDICATOR_LOADING_CLASS)
-      })
-    },
-  } as Actions,
-)
-
 const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
-const MergeOptions = {
+
+const FragmentMergeOptions = {
   MorphElement: 'morph_element',
   InnerElement: 'inner_element',
   OuterElement: 'outer_element',
@@ -63,7 +38,7 @@ const MergeOptions = {
   DeleteElement: 'delete_element',
   UpsertAttributes: 'upsert_attributes',
 } as const
-type MergeOption = (typeof MergeOptions)[keyof typeof MergeOptions]
+type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
 
 // Sets the header of the fetch request
 export const HeadersPlugin: AttributePlugin = {
@@ -72,10 +47,9 @@ export const HeadersPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
 
   onLoad: (ctx) => {
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch', { headers: new Map<string, string>() })
     const s = ctx.store()
-    if (!s.fetch) s.fetch = {}
-    if (!s.fetch.headers) s.fetch.headers = {}
-    const headers = s.fetch.headers
+    const { headers } = s._dsPlugins.fetch
     const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
     headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
     return () => {
@@ -105,11 +79,10 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
   onLoad: (ctx) => {
     return ctx.reactivity.effect(() => {
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
       const s = ctx.store()
-      if (!s.fetch) s.fetch = {}
-      if (!s.fetch.indicatorSelectors) s.fetch.indicatorSelectors = {}
-      s.fetch.indicatorSelectors[ctx.el.id] = c
+      s._dsPlugins.fetch.indicatorSelectors[ctx.el.id] = c
 
       const indicator = document.querySelector(c.value)
       if (!indicator) {
@@ -118,62 +91,42 @@ export const FetchIndicatorPlugin: AttributePlugin = {
       indicator.classList.add(INDICATOR_CLASS)
 
       return () => {
-        delete s.fetch.indicatorSelectors[ctx.el.id]
+        delete s._dsPlugins.fetch.indicatorSelectors[ctx.el.id]
       }
     })
   },
 }
 
 // Sets the fetch indicator selector
-export const IsLoadingPlugin: AttributePlugin = {
+export const IsLoadingIdPlugin: AttributePlugin = {
   prefix: 'isLoadingId',
   mustNotEmptyExpression: true,
   onLoad: (ctx) => {
-    const c = ctx.expression
-    const s = ctx.store()
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.loadingIdentifiers', {})
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.isLoading', [])
 
-    if (!s.fetch) s.fetch = {}
-    if (!s.fetch.loadingIdentifiers) s.fetch.loadingIdentifiers = {}
-    s.fetch.loadingIdentifiers[ctx.el.id] = c
-
-    if (!s.isLoading) s.isLoading = ctx.reactivity.signal(new Array<string>())
-
-    return () => {
-      /* Cant get this to clean up properly, it seems to run every time the store is changed
-      // always refresh the store in callbacks
-      const s = ctx.store()
-      if (s.fetch.loadingIdentifiers) delete s.fetch.loadingIdentifiers[ctx.el.id]
-
-      if (s.isLoading) {
-        s.isLoading.value = s.isLoading.value.filter((id: string) => {
-          return id !== c
-        })
-      }
-      if (s.isLoading.value.length === 0) {
-        delete s.isLoading
-      }
-    */
-    }
+    return ctx.reactivity.effect(() => {
+      const loadingIdentifiers = ctx.store()._dsPlugins.fetch.loadingIdentifiers.value
+      loadingIdentifiers[ctx.el.id] = ctx.expression
+    })
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingIdPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
-  const s = ctx.store()
+  const store = ctx.store()
 
   if (!urlExpression) {
     throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
-  const storeWithoutFetch = { ...s.value }
-  delete storeWithoutFetch.fetch
-  const storeJSON = JSON.stringify(storeWithoutFetch)
+  const storeJSON = JSON.stringify(publicSignals({ ...store.value }))
 
   let hasIndicator = false,
     loadingTarget = ctx.el
 
-  const indicatorSelector = s.fetch?.indicatorSelectors?.[loadingTarget.id] || null
+  const indicatorSelector = store._dsPlugins.fetch?.indicatorSelectors?.[loadingTarget.id] || null
   if (indicatorSelector) {
     const indicator = document.querySelector(indicatorSelector.value)
     if (indicator) {
@@ -184,9 +137,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     }
   }
 
-  const loadingIdentifier = s.fetch?.loadingIdentifiers?.[loadingTarget.id] || null
-  if (loadingIdentifier && !s.isLoading.value.includes(loadingIdentifier)) {
-    s.isLoading.value = [...(s.isLoading.value || []), loadingIdentifier]
+  // the is loading plugin might not be loaded on this element
+  const loadingIdentifier = store._dsPlugins.fetch?.loadingIdentifiers?.value?.[loadingTarget.id]
+  if (!!loadingIdentifier) {
+    const isLoadingValues = store._dsPlugins.fetch.isLoading.value as string[]
+    if (!isLoadingValues.includes(loadingIdentifier)) {
+      store._dsPlugins.fetch.isLoading.value = [...isLoadingValues, loadingIdentifier]
+    }
   }
 
   // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
@@ -200,66 +157,75 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
     onmessage: (evt) => {
       if (!evt.event) return
-      let fragment = '',
-        merge: MergeOption = 'morph_element',
-        selector = '',
-        settleTime = 500
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
-        throw new Error(`Unknown event: ${evt.event}`)
+        console.log(`Unknown event: ${evt.event}`)
+        debugger
       }
-      const isFragment = evt.event === EVENT_FRAGMENT
 
-      const lines = evt.data.trim().split('\n')
-      let currentDatatype = ''
+      if (evt.event === EVENT_SIGNAL) {
+        const fn = new Function('ctx', ` return Object.assign({...ctx.store()}, ${evt.data})`) as ExpressionFunction
+        const data = fn(ctx)
+        ctx.mergeStore(data)
+        ctx.applyPlugins(document.body)
+      } else {
+        let fragment = '',
+          merge: FragmentMergeOption = 'morph_element',
+          exists = false,
+          selector = '',
+          settleTime = 500
 
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i]
-        if (!line?.length) continue
+        const isFragment = evt.event === EVENT_FRAGMENT
 
-        const firstWord = line.split(' ', 1)[0]
-        const isDatatype = KnowEventTypes.includes(firstWord)
-        const isNewDatatype = isDatatype && firstWord !== currentDatatype
-        if (isNewDatatype) {
-          currentDatatype = firstWord
-          line = line.slice(firstWord.length + 1)
+        const lines = evt.data.trim().split('\n')
+        let currentDatatype = ''
 
-          switch (currentDatatype) {
-            case 'selector':
-              selector = line
-              break
-            case 'merge':
-              merge = line as MergeOption
-              const exists = Object.values(MergeOptions).includes(merge)
-              if (!exists) {
-                throw new Error(`Unknown merge option: ${merge}`)
-              }
-              break
-            case 'settle':
-              settleTime = parseInt(line)
-              break
-            case 'fragment':
-              break
-            case 'redirect':
-              window.location.href = line
-              return
-            case 'error':
-              throw new Error(line)
-            default:
-              throw new Error(`Unknown data type`)
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i]
+          if (!line?.length) continue
+
+          const firstWord = line.split(' ', 1)[0]
+          const isDatatype = KnowEventTypes.includes(firstWord)
+          const isNewDatatype = isDatatype && firstWord !== currentDatatype
+          if (isNewDatatype) {
+            currentDatatype = firstWord
+            line = line.slice(firstWord.length + 1)
+
+            switch (currentDatatype) {
+              case 'selector':
+                selector = line
+                break
+              case 'merge':
+                merge = line as FragmentMergeOption
+                exists = Object.values(FragmentMergeOptions).includes(merge)
+                if (!exists) {
+                  throw new Error(`Unknown merge option: ${merge}`)
+                }
+                break
+              case 'settle':
+                settleTime = parseInt(line)
+                break
+              case 'fragment':
+                break
+              case 'redirect':
+                window.location.href = line
+                return
+              case 'error':
+                throw new Error(line)
+              default:
+                throw new Error(`Unknown data type`)
+            }
           }
+
+          if (currentDatatype === 'fragment') fragment += line + '\n'
         }
 
-        if (currentDatatype === 'fragment') fragment += line + '\n'
-      }
-
-      if (isFragment) {
-        if (!fragment?.length) fragment = '<div></div>'
-        mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+        if (isFragment) {
+          if (!fragment?.length) fragment = '<div></div>'
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+        }
       }
     },
     onclose: () => {
-      // Always get a fresh store in callbacks since the reference might be stale
-      const s = ctx.store()
       if (hasIndicator) {
         setTimeout(() => {
           loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
@@ -267,17 +233,18 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }, 300)
       }
 
-      if (s.isLoading && loadingIdentifier) {
-        s.isLoading.value = s.isLoading.value.filter((id: string) => {
-          return id !== loadingIdentifier
-        })
+      const store = ctx.store()
+      if (loadingIdentifier) {
+        const current = store._dsPlugins.fetch.isLoading.value
+        const revised = current.filter((id: string) => id !== loadingIdentifier)
+        store._dsPlugins.fetch.isLoading.value = revised
       }
     },
   }
 
-  if (s.fetch?.headers?.value && req.headers) {
-    for (const key in s.fetch.headers.value) {
-      const value = s.fetch.headers.value[key]
+  if (req.headers && store._dsPlugins.fetch?.headers?.size()) {
+    for (const key in store._dsPlugins.fetch.headers) {
+      const value = store._dsPlugins.fetch.headers.value[key]
       req.headers[key] = value
     }
   }
@@ -297,7 +264,7 @@ const fragContainer = document.createElement('template')
 export function mergeHTMLFragment(
   ctx: AttributeContext,
   selector: string,
-  merge: MergeOption,
+  merge: FragmentMergeOption,
   fragment: string,
   settleTime: number,
 ) {
@@ -328,7 +295,7 @@ export function mergeHTMLFragment(
       const originalHTML = initialTarget.outerHTML
       let modifiedTarget = initialTarget
       switch (merge) {
-        case MergeOptions.MorphElement:
+        case FragmentMergeOptions.MorphElement:
           const result = idiomorph(modifiedTarget, frag)
           if (!result?.length) {
             throw new Error(`No morph result`)
@@ -336,31 +303,31 @@ export function mergeHTMLFragment(
           const first = result[0] as Element
           modifiedTarget = first
           break
-        case MergeOptions.InnerElement:
+        case FragmentMergeOptions.InnerElement:
           // Replace the contents of the target element with the response
           modifiedTarget.innerHTML = frag.innerHTML
           break
-        case MergeOptions.OuterElement:
+        case FragmentMergeOptions.OuterElement:
           // Replace the entire target element with the response
           modifiedTarget.replaceWith(frag)
           break
-        case MergeOptions.PrependElement:
+        case FragmentMergeOptions.PrependElement:
           modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
           break
-        case MergeOptions.AppendElement:
+        case FragmentMergeOptions.AppendElement:
           modifiedTarget.append(frag) //  Insert the response after the last child of the target element
           break
-        case MergeOptions.BeforeElement:
+        case FragmentMergeOptions.BeforeElement:
           modifiedTarget.before(frag) //  Insert the response before the target element
           break
-        case MergeOptions.AfterElement:
+        case FragmentMergeOptions.AfterElement:
           modifiedTarget.after(frag) //  Insert the response after the target element
           break
-        case MergeOptions.DeleteElement:
+        case FragmentMergeOptions.DeleteElement:
           //  Deletes the target element regardless of the response
           setTimeout(() => modifiedTarget.remove(), settleTime)
           break
-        case MergeOptions.UpsertAttributes:
+        case FragmentMergeOptions.UpsertAttributes:
           //  Upsert the attributes of the target element
           frag.getAttributeNames().forEach((attrName) => {
             const value = frag.getAttribute(attrName)!
@@ -397,3 +364,38 @@ export function mergeHTMLFragment(
     applyToTargets()
   }
 }
+
+export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
+  (acc, method) => {
+    acc[method] = async (ctx, urlExpression) => {
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
+      const da = Document as any
+      if (!da.startViewTransition) {
+        await fetcher(method, urlExpression, ctx)
+        return
+      }
+
+      new Promise((resolve) => {
+        da.startViewTransition(async () => {
+          await fetcher(method, urlExpression, ctx)
+          resolve(void 0)
+        })
+      })
+    }
+    return acc
+  },
+  {
+    isLoading: async (ctx: AttributeContext, loadingId: string) => {
+      const isLoadingArr = ctx.store()._dsPlugins.fetch.isLoading.value as string[]
+      const isIdLoading = isLoadingArr.includes(loadingId)
+      console.log(`isLoading action, ${ctx.el.id} loading? ${isIdLoading}`)
+      return isIdLoading
+    },
+    isFetching: async (_: AttributeContext, selector: string) => {
+      const indicators = document.querySelectorAll(selector)
+      return Array.from(indicators).some((indicator) => {
+        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+      })
+    },
+  } as Actions,
+)

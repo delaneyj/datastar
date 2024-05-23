@@ -92,6 +92,7 @@ const (
 	FragmentSelectorSelf  = "self"
 	FragmentSelectorUseID = ""
 	SSEEventTypeFragment  = "datastar-fragment"
+	SSEEventTypeSignal    = "datastar-signal"
 	SSEEventTypeRedirect  = "datastar-redirect"
 	SSEEventTypeError     = "datastar-error"
 )
@@ -246,6 +247,17 @@ func Redirect(sse *ServerSentEventsHandler, url string) {
 		fmt.Sprintf("redirect %s", url),
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
+	)
+}
+
+func PatchStore(sse *ServerSentEventsHandler, store any) {
+	b, err := json.Marshal(store)
+	if err != nil {
+		panic(err)
+	}
+	sse.Send(
+		string(b),
+		WithSSEEvent(SSEEventTypeSignal),
 	)
 }
 

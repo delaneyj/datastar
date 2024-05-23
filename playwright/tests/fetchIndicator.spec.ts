@@ -1,6 +1,6 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
-test.describe("Edit Row UI Suite", () => {
+test.describe("Fetch Indicator Suite", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/fetch_indicator");
     await expect(page.locator("#fetch-indicator")).toContainText(

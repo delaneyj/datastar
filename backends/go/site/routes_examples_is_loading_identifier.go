@@ -13,8 +13,11 @@ func setupExamplesIsLoadingId(examplesRouter chi.Router) error {
 
 	examplesRouter.Get("/is_loading_identifier/greet", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
-		datastar.RenderFragment(sse, DIV().ID("greeting").Text(""))
-		time.Sleep(2 * time.Second)
+
+		d := 2 * time.Second
+
+		datastar.RenderFragment(sse, DIV().ID("greeting").TextF("Calculating... waiting for %s", d))
+		time.Sleep(d)
 		datastar.RenderFragment(
 			sse,
 			DIV().

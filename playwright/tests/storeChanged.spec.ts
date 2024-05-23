@@ -19,10 +19,13 @@ test.describe("Store Changed", () => {
   });
 
   test("test local is updating", async ({ page }) => {
+    await clear.click();
+    await expect(local_clicks).toContainText("0");
+
     for (let i = 0; i < 3; i++) {
       await expect(local_clicks).toContainText(`${i}`);
       await increment.click();
-      page.waitForTimeout(100);
+      await page.waitForTimeout(100);
       const next = `${i + 1}`;
       await expect(local_clicks).toContainText(next);
       await expect(serverChanged).toContainText(next);
