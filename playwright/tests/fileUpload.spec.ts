@@ -38,4 +38,36 @@ test.describe("File Upload UI Suite", () => {
       "a29dce2b64301dfe"
     );
   });
+
+  test("multiple file upload test", async ({ page }) => {
+    const basePath = process.cwd().includes("/playwright")
+      ? process.cwd()
+      : path.join(process.cwd(), "playwright");
+    const testDataFolder = path.join(basePath, "tests/testdata");
+
+    const filepaths = ["testfile.txt", "testfile2.txt"].map((filename) => {
+      return path.resolve(testDataFolder, filename);
+    });
+
+    const fileInput = await page.locator('input[type="file"]');
+    await fileInput.waitFor({ state: "visible" });
+    await fileInput.setInputFiles(filepaths);
+
+    await page.getByRole("button", { name: "Submit" }).click();
+    await expect(page.getByRole("caption")).toContainText(
+      "File Upload Results"
+    );
+    await expect(page.locator("#file_upload")).toContainText("File Name");
+    await expect(page.locator("#file_upload")).toContainText(
+      "testfile.txt, testfile2.txt"
+    );
+    await expect(page.locator("#file_upload")).toContainText("File Size");
+    await expect(page.locator("#file_upload")).toContainText("4 B, 5 B");
+    await expect(page.locator("#file_upload")).toContainText("File Mime");
+    await expect(page.locator("#file_upload")).toContainText("text/plain");
+    await expect(page.locator("#file_upload")).toContainText("XXH3 Hash");
+    await expect(page.locator("#file_upload")).toContainText(
+      "a29dce2b64301dfe, cccc15fddee24c90"
+    );
+  });
 });
