@@ -100,39 +100,44 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const setSignalFromInput = async () => {
       if (isFile) {
         return await new Promise((resolve) => {
-          const [f] = (el as any)?.files || []
-          if (!f) {
-            signal.value = ''
-            return
-          }
-          const reader = new FileReader()
-          const s = ctx.store()
-          reader.onload = () => {
-            if (typeof reader.result !== 'string') {
-              throw new Error('Unsupported type')
-            }
+          const files = [...((el as HTMLInputElement)?.files || [])]
+          signal.value = []
+          files.forEach((f) => {
+            const reader = new FileReader()
+            const s = ctx.store()
+            reader.onload = () => {
+              if (typeof reader.result !== 'string') {
+                throw new Error('Unsupported type')
+              }
 
-            const match = reader.result.match(dataURIRegex)
-            if (!match?.groups) {
-              throw new Error('Invalid data URI')
-            }
-            const { mime, contents } = match.groups
-            signal.value = contents
+              const match = reader.result.match(dataURIRegex)
+              if (!match?.groups) {
+                throw new Error('Invalid data URI')
+              }
+              const { mime, contents } = match.groups
+              signal.value = [...signal.value, contents]
 
-            const mimeName = `${signalName}Mime`
-            if (mimeName in s) {
-              const mimeSignal = s[`${mimeName}`] as Signal<string>
-              mimeSignal.value = mime
-            }
-          }
-          reader.onloadend = () => resolve(void 0)
-          reader.readAsDataURL(f)
+              const mimeName = `${signalName}Mimes`
+              if (mimeName in s) {
+                const mimeSignal = s[`${mimeName}`] as Signal<string[]>
+                if (!(mimeSignal.value instanceof Array)) {
+                  mimeSignal.value = []
+                }
+                mimeSignal.value = [...mimeSignal.value, mime]
+              }
 
-          const nameName = `${signalName}Name`
-          if (nameName in s) {
-            const nameSignal = s[`${nameName}`] as Signal<string>
-            nameSignal.value = f.name
-          }
+              const nameName = `${signalName}Names`
+              if (nameName in s) {
+                const nameSignal = s[`${nameName}`] as Signal<string[]>
+                if (!(nameSignal.value instanceof Array)) {
+                  nameSignal.value = []
+                }
+                nameSignal.value = [...nameSignal.value, f.name]
+              }
+            }
+            reader.onloadend = () => resolve(void 0)
+            reader.readAsDataURL(f)
+          })
         })
       }
 
