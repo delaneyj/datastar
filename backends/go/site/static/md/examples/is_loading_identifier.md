@@ -2,8 +2,8 @@
 
 ## Demo
 
-<div data-show="$isLoading.includes('get_greet')">Loading Signal</div>
-<button type="button" class="p-2 bg-accent-200 text-accent-700 shadow rounded" data-on-click="$$get('/examples/is_loading_identifier/greet')" data-is-loading-id="get_greet">Click me for a greeting</button>
+<div data-show="$isLoading.includes('get_greet')" id="loadingIndicator">Loading Signal</div>
+<button type="button" class="p-2 bg-accent-200 text-accent-700 shadow rounded" data-on-click="$$get('/examples/is_loading_identifier/greet')" data-is-loading-id="get_greet" data-testid="greeting_button">Click me for a greeting</button>
 <div id="greeting"></div>
 
 ## Explanation
