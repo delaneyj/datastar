@@ -1,4 +1,3 @@
-import { Signal } from '../external/preact-core'
 import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
@@ -99,41 +98,40 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
 
     const setSignalFromInput = async () => {
       if (isFile) {
-        return await new Promise((resolve) => {
-          const [f] = (el as any)?.files || []
-          if (!f) {
-            signal.value = ''
-            return
-          }
-          const reader = new FileReader()
-          const s = ctx.store()
-          reader.onload = () => {
-            if (typeof reader.result !== 'string') {
-              throw new Error('Unsupported type')
-            }
+        const files = [...((el as HTMLInputElement)?.files || [])],
+          allContents: string[] = [],
+          allMimes: string[] = [],
+          allNames: string[] = []
 
-            const match = reader.result.match(dataURIRegex)
-            if (!match?.groups) {
-              throw new Error('Invalid data URI')
-            }
-            const { mime, contents } = match.groups
-            signal.value = contents
+        await Promise.all(
+          files.map((f) => {
+            return new Promise<void>((resolve) => {
+              const reader = new FileReader()
+              reader.onload = () => {
+                if (typeof reader.result !== 'string') throw new Error(`Invalid result type: ${typeof reader.result}`)
+                const match = reader.result.match(dataURIRegex)
+                if (!match?.groups) throw new Error(`Invalid data URI: ${reader.result}`)
+                allContents.push(match.groups.contents)
+                allMimes.push(match.groups.mime)
+                allNames.push(f.name)
+              }
+              reader.onloadend = () => resolve(void 0)
+              reader.readAsDataURL(f)
+            })
+          }),
+        )
 
-            const mimeName = `${signalName}Mime`
-            if (mimeName in s) {
-              const mimeSignal = s[`${mimeName}`] as Signal<string>
-              mimeSignal.value = mime
-            }
-          }
-          reader.onloadend = () => resolve(void 0)
-          reader.readAsDataURL(f)
-
-          const nameName = `${signalName}Name`
-          if (nameName in s) {
-            const nameSignal = s[`${nameName}`] as Signal<string>
-            nameSignal.value = f.name
-          }
-        })
+        signal.value = allContents
+        const s = ctx.store()
+        const mimeName = `${signalName}Mimes`,
+          nameName = `${signalName}Names`
+        if (mimeName in s) {
+          s[`${mimeName}`].value = allMimes
+        }
+        if (nameName in s) {
+          s[`${nameName}`].value = allNames
+        }
+        return
       }
 
       const current = signal.value

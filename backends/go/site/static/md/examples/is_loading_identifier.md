@@ -21,4 +21,4 @@
 <div id="greeting"></div>
 ```
 
-The `data-is-loading-id` attribute is used to specify the name of the identifier that will be present in the global isLoading array when an element is fetching.
+The `data-is-loading-id` attribute is used to specify the name of the identifier that will be present in the store's isLoading array when an element is fetching.
