@@ -93,10 +93,6 @@ export class Datastar {
     subStore[last] = this.reactivity.signal(value)
   }
 
-  private replaceStore<T extends object>(store: T) {
-    this.store = deepSignal(store as DeepState)
-  }
-
   public signalByName<T>(name: string) {
     return (this.store as any)[name] as Signal<T>
   }
@@ -196,7 +192,6 @@ export class Datastar {
           const ctx: AttributeContext = {
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
-            replaceStore: this.replaceStore.bind(this),
             upsertIfMissingFromStore: this.upsertIfMissingFromStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),

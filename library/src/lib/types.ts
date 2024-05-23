@@ -14,7 +14,6 @@ export type Reactivity = {
 
 export type AttributeContext = {
   store: () => any
-  replaceStore: (store: DeepState) => void
   mergeStore: (store: DeepState) => void
   upsertIfMissingFromStore: (path: string, value: any) => void
   applyPlugins: (target: Element) => void

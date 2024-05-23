@@ -1,6 +1,6 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
-import { Actions, AttributeContext, AttributePlugin } from '../types'
+import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { publicSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
@@ -10,6 +10,7 @@ const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const DATASTAR_CLASS_PREFIX = 'datastar-'
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
+const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
 // const EVENT_ERROR = `${DATASTAR_CLASS_PREFIX}error`
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
@@ -24,7 +25,7 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'store']
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
 
 const FragmentMergeOptions = {
   MorphElement: 'morph_element',
@@ -38,12 +39,6 @@ const FragmentMergeOptions = {
   UpsertAttributes: 'upsert_attributes',
 } as const
 type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
-
-const StoreMergeOptions = {
-  Merge: 'merge',
-  Replace: 'replace',
-} as const
-type StoreMergeOption = (typeof StoreMergeOptions)[keyof typeof StoreMergeOptions]
 
 // Sets the header of the fetch request
 export const HeadersPlugin: AttributePlugin = {
@@ -162,82 +157,72 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
     onmessage: (evt) => {
       if (!evt.event) return
-      let fragment = '',
-        merge: FragmentMergeOption = 'morph_element',
-        exists = false,
-        selector = '',
-        settleTime = 500
       if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
-        throw new Error(`Unknown event: ${evt.event}`)
+        console.log(`Unknown event: ${evt.event}`)
+        debugger
       }
-      const isFragment = evt.event === EVENT_FRAGMENT
 
-      const lines = evt.data.trim().split('\n')
-      let currentDatatype = ''
+      if (evt.event === EVENT_SIGNAL) {
+        const fn = new Function('ctx', ` return Object.assign({...ctx.store()}, ${evt.data})`) as ExpressionFunction
+        const data = fn(ctx)
+        ctx.mergeStore(data)
+        ctx.applyPlugins(document.body)
+      } else {
+        let fragment = '',
+          merge: FragmentMergeOption = 'morph_element',
+          exists = false,
+          selector = '',
+          settleTime = 500
 
-      for (let i = 0; i < lines.length; i++) {
-        let line = lines[i]
-        if (!line?.length) continue
+        const isFragment = evt.event === EVENT_FRAGMENT
 
-        const firstWord = line.split(' ', 1)[0]
-        const isDatatype = KnowEventTypes.includes(firstWord)
-        const isNewDatatype = isDatatype && firstWord !== currentDatatype
-        if (isNewDatatype) {
-          currentDatatype = firstWord
-          line = line.slice(firstWord.length + 1)
+        const lines = evt.data.trim().split('\n')
+        let currentDatatype = ''
 
-          switch (currentDatatype) {
-            case 'selector':
-              selector = line
-              break
-            case 'merge':
-              merge = line as FragmentMergeOption
-              exists = Object.values(FragmentMergeOptions).includes(merge)
-              if (!exists) {
-                throw new Error(`Unknown merge option: ${merge}`)
-              }
-              break
-            case 'settle':
-              settleTime = parseInt(line)
-              break
-            case 'fragment':
-              break
-            case 'redirect':
-              window.location.href = line
-              return
-            case 'store':
-              const [mode, json] = line.split(' ', 1)
-              exists = Object.values(StoreMergeOptions).includes(mode as StoreMergeOption)
-              if (!exists) {
-                throw new Error(`Unknown store option: ${merge}`)
-              }
+        for (let i = 0; i < lines.length; i++) {
+          let line = lines[i]
+          if (!line?.length) continue
 
-              const data = JSON.parse(json)
-              switch (mode) {
-                case 'merge':
-                  ctx.mergeStore(data)
-                  break
-                case 'replace':
-                  ctx.replaceStore(data)
-                  break
-                default:
-                  throw new Error(`Unknown store mode`)
-              }
+          const firstWord = line.split(' ', 1)[0]
+          const isDatatype = KnowEventTypes.includes(firstWord)
+          const isNewDatatype = isDatatype && firstWord !== currentDatatype
+          if (isNewDatatype) {
+            currentDatatype = firstWord
+            line = line.slice(firstWord.length + 1)
 
-              break
-            case 'error':
-              throw new Error(line)
-            default:
-              throw new Error(`Unknown data type`)
+            switch (currentDatatype) {
+              case 'selector':
+                selector = line
+                break
+              case 'merge':
+                merge = line as FragmentMergeOption
+                exists = Object.values(FragmentMergeOptions).includes(merge)
+                if (!exists) {
+                  throw new Error(`Unknown merge option: ${merge}`)
+                }
+                break
+              case 'settle':
+                settleTime = parseInt(line)
+                break
+              case 'fragment':
+                break
+              case 'redirect':
+                window.location.href = line
+                return
+              case 'error':
+                throw new Error(line)
+              default:
+                throw new Error(`Unknown data type`)
+            }
           }
+
+          if (currentDatatype === 'fragment') fragment += line + '\n'
         }
 
-        if (currentDatatype === 'fragment') fragment += line + '\n'
-      }
-
-      if (isFragment) {
-        if (!fragment?.length) fragment = '<div></div>'
-        mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+        if (isFragment) {
+          if (!fragment?.length) fragment = '<div></div>'
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+        }
       }
     },
     onclose: () => {

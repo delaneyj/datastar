@@ -250,30 +250,15 @@ func Redirect(sse *ServerSentEventsHandler, url string) {
 	)
 }
 
-type SignalMergeType string
-
-const (
-	SignalMergePatch   SignalMergeType = "patch"
-	SignalMergeReplace SignalMergeType = "replace"
-)
-
-func MergeWithStore(sse *ServerSentEventsHandler, store any, mergeType SignalMergeType) {
+func PatchStore(sse *ServerSentEventsHandler, store any) {
 	b, err := json.Marshal(store)
 	if err != nil {
 		panic(err)
 	}
 	sse.Send(
-		fmt.Sprintf("%s %s", mergeType, b),
+		string(b),
 		WithSSEEvent(SSEEventTypeSignal),
 	)
-}
-
-func PatchStore(sse *ServerSentEventsHandler, store any) {
-	MergeWithStore(sse, store, SignalMergePatch)
-}
-
-func ReplaceStore(sse *ServerSentEventsHandler, store any) {
-	MergeWithStore(sse, store, SignalMergeReplace)
 }
 
 func RedirectF(sse *ServerSentEventsHandler, urlFormat string, args ...interface{}) {
