@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Delete Row UI Suite", () => {
   test.beforeEach(async ({ page }) => {
@@ -8,61 +8,43 @@ test.describe("Delete Row UI Suite", () => {
   });
 
   test("test initial state", async ({ page }) => {
+    let l = await page.locator("#contact_0");
+    await expect(l.getByRole("cell", { name: "Joe Smith" })).toBeAttached();
+    await expect(l.getByRole("cell", { name: "joe@smith.org" })).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Active" })).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Delete" })).toBeAttached();
     // 1
+    l = await page.locator("#contact_1");
     await expect(
-      page.locator("#contact_1").getByRole("cell", { name: "Joe Smith" })
+      l.getByRole("cell", { name: "Angie MacDowell" })
     ).toBeAttached();
     await expect(
-      page.locator("#contact_1").getByRole("cell", { name: "joe@smith.org" })
+      l.getByRole("cell", { name: "angie@macdowell.org" })
+    ).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Active" })).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Delete" })).toBeAttached();
+
+    l = await page.locator("#contact_2");
+    await expect(
+      l.getByRole("cell", { name: "Fuqua Tarkenton" })
     ).toBeAttached();
     await expect(
-      page.locator("#contact_1").getByRole("cell", { name: "Active" })
+      l.getByRole("cell", { name: "fuqua@tarkenton.org" })
     ).toBeAttached();
-    await expect(
-      page.locator("#contact_1").getByRole("cell", { name: "Delete" })
-    ).toBeAttached();
-    // 2
-    await expect(
-      page.locator("#contact_2").getByRole("cell", { name: "Angie MacDowell" })
-    ).toBeAttached();
-    await expect(
-      page
-        .locator("#contact_2")
-        .getByRole("cell", { name: "angie@macdowell.org" })
-    ).toBeAttached();
-    await expect(
-      page.locator("#contact_2").getByRole("cell", { name: "Active" })
-    ).toBeAttached();
-    await expect(
-      page.locator("#contact_2").getByRole("cell", { name: "Delete" })
-    ).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Active" })).toBeAttached();
+    await expect(l.getByRole("cell", { name: "Delete" })).toBeAttached();
     // 3
     await expect(
-      page.locator("#contact_3").getByRole("cell", { name: "Fuqua Tarkenton" })
+      page.locator("#contact_3").getByRole("cell", { name: "Kim Yee" })
     ).toBeAttached();
     await expect(
-      page
-        .locator("#contact_3")
-        .getByRole("cell", { name: "fuqua@tarkenton.org" })
+      page.locator("#contact_3").getByRole("cell", { name: "kim@yee.org" })
     ).toBeAttached();
     await expect(
       page.locator("#contact_3").getByRole("cell", { name: "Active" })
     ).toBeAttached();
     await expect(
       page.locator("#contact_3").getByRole("cell", { name: "Delete" })
-    ).toBeAttached();
-    // 4
-    await expect(
-      page.locator("#contact_4").getByRole("cell", { name: "Kim Yee" })
-    ).toBeAttached();
-    await expect(
-      page.locator("#contact_4").getByRole("cell", { name: "kim@yee.org" })
-    ).toBeAttached();
-    await expect(
-      page.locator("#contact_4").getByRole("cell", { name: "Active" })
-    ).toBeAttached();
-    await expect(
-      page.locator("#contact_4").getByRole("cell", { name: "Delete" })
     ).toBeAttached();
   });
 
@@ -72,40 +54,36 @@ test.describe("Delete Row UI Suite", () => {
       console.log(`Dialog message: ${dialog.message()}`);
       dialog.accept().catch(() => {});
     });
-    await page
-      .locator("#contact_1")
-      .getByRole("cell", { name: "Delete" })
-      .click();
-    await expect(page.locator("#contact_1")).not.toBeAttached();
+    let l = await page.locator("#contact_0");
+    await page;
+    l.getByRole("cell", { name: "Delete" }).click();
+    await expect(l).not.toBeAttached();
+
     // 2nd Row.
     page.once("dialog", (dialog) => {
       console.log(`Dialog message: ${dialog.message()}`);
       dialog.accept().catch(() => {});
     });
-    await page
-      .locator("#contact_2")
-      .getByRole("cell", { name: "Delete" })
-      .click();
-    await expect(page.locator("#contact_2")).not.toBeAttached();
+    l = await page.locator("#contact_1");
+    await l.getByRole("cell", { name: "Delete" }).click();
+    await expect(l).not.toBeAttached();
+
     // 3rd Row.
     page.once("dialog", (dialog) => {
       console.log(`Dialog message: ${dialog.message()}`);
       dialog.accept().catch(() => {});
     });
-    await page
-      .locator("#contact_3")
-      .getByRole("cell", { name: "Delete" })
-      .click();
-    await expect(page.locator("#contact_3")).not.toBeAttached();
+    l = await page.locator("#contact_2");
+    await l.getByRole("cell", { name: "Delete" }).click();
+    await expect(l).not.toBeAttached();
+
     // 4th Row.
     page.once("dialog", (dialog) => {
       console.log(`Dialog message: ${dialog.message()}`);
       dialog.accept().catch(() => {});
     });
-    await page
-      .locator("#contact_4")
-      .getByRole("cell", { name: "Delete" })
-      .click();
-    await expect(page.locator("#contact_4")).not.toBeAttached();
+    l = await page.locator("#contact_3");
+    await l.getByRole("cell", { name: "Delete" }).click();
+    await expect(l).not.toBeAttached();
   });
 });

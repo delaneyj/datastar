@@ -22,25 +22,25 @@ type ContactActive struct {
 func starterActiveContacts() []*ContactActive {
 	return []*ContactActive{
 		{
-			ID:       1,
+			ID:       0,
 			Name:     "Joe Smith",
 			Email:    "joe@smith.org",
 			IsActive: true,
 		},
 		{
-			ID:       2,
+			ID:       1,
 			Name:     "Angie MacDowell",
 			Email:    "angie@macdowell.org",
 			IsActive: true,
 		},
 		{
-			ID:       3,
+			ID:       2,
 			Name:     "Fuqua Tarkenton",
 			Email:    "fuqua@tarkenton.org",
 			IsActive: true,
 		},
 		{
-			ID:       4,
+			ID:       3,
 			Name:     "Kim Yee",
 			Email:    "kim@yee.org",
 			IsActive: false,
