@@ -255,8 +255,12 @@ export const EventPlugin: AttributePlugin = {
 
       case 'store-change':
         return ctx.reactivity.effect(() => {
-          const current = storeMarshalled(ctx)
           const store = ctx.store()
+          let storeValue = store.value
+          if (ctx.modifiers.has('remote')) {
+            storeValue = remoteSignals(storeValue)
+          }
+          const current = JSON.stringify(storeValue)
           if (store._dsPlugins.on.lastStoreMarshalled !== current) {
             store._dsPlugins.on.lastStoreMarshalled = current
             callback()
@@ -273,27 +277,19 @@ export const EventPlugin: AttributePlugin = {
   },
 }
 
-function storeMarshalled(ctx: AttributeContext) {
-  let s = ctx.store().value
-  if (ctx.modifiers.has('remote')) {
-    s = remoteSignals(s)
-  }
-  return JSON.stringify(s)
-}
-
-export function remoteSignals(obj: any): Object {
+export function remoteSignals(obj: Object): Object {
   const res: Record<string, any> = {}
 
-  if (typeof obj === 'object') {
-    for (const [k, v] of Object.entries(obj)) {
-      if (k.startsWith('_')) {
-        continue
-      } else if (typeof v === 'object') {
-        res[k] = remoteSignals(v)
-      }
+  for (const [k, v] of Object.entries(obj)) {
+    if (k.startsWith('_')) {
+      continue
+    } else if (typeof v === 'object' && !Array.isArray(v)) {
+      res[k] = remoteSignals(v) // recurse
+    } else {
       res[k] = v
     }
   }
+
   return res
 }
 

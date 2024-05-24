@@ -1,7 +1,8 @@
 package site
 
 import (
-	"encoding/json"
+	"encoding/base64"
+
 	"fmt"
 	"io"
 	"net/http"
@@ -12,21 +13,22 @@ import (
 	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
+	"github.com/goccy/go-json"
 	"github.com/zeebo/xxh3"
 )
 
 func setupExamplesFileUpload(examplesRouter chi.Router) error {
 	type Store struct {
-		Files     [][]byte `json:"files"`
-		FileMimes []string `json:"filesMimes"`
-		FileNames []string `json:"filesNames"`
+		FilesBase64 []string `json:"files"`
+		FileMimes   []string `json:"filesMimes"`
+		FileNames   []string `json:"filesNames"`
 	}
 
 	examplesRouter.Get("/file_upload/data", func(w http.ResponseWriter, r *http.Request) {
 		store := &Store{
-			Files:     [][]byte{},
-			FileMimes: []string{},
-			FileNames: []string{},
+			FilesBase64: []string{},
+			FileMimes:   []string{},
+			FileNames:   []string{},
 		}
 		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragment(
@@ -99,9 +101,19 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 			return
 		}
 
-		humanizedHashes := make([]string, len(store.Files))
-		humainzeByteCount := make([]string, len(store.Files))
-		for i, file := range store.Files {
+		files := make([][]byte, len(store.FilesBase64))
+		for i, file := range store.FilesBase64 {
+			data, err := base64.StdEncoding.DecodeString(file)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+				return
+			}
+			files[i] = data
+		}
+
+		humanizedHashes := make([]string, len(files))
+		humainzeByteCount := make([]string, len(files))
+		for i, file := range files {
 			h := xxh3.Hash(file)
 			humanizedHashes[i] = fmt.Sprintf("%x", h)
 			humainzeByteCount[i] = humanize.Bytes(uint64(len(file)))
