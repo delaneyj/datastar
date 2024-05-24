@@ -1,7 +1,7 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
-import { publicSignals } from './attributes'
+import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -121,7 +121,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
-  const storeJSON = JSON.stringify(publicSignals({ ...store.value }))
+  const storeJSON = JSON.stringify(remoteSignals({ ...store.value }))
 
   let hasIndicator = false,
     loadingTarget = ctx.el

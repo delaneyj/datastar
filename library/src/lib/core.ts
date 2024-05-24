@@ -93,7 +93,7 @@ export class Datastar {
     subStore[last] = this.reactivity.signal(value)
   }
 
-  public signalByName<T>(name: string) {
+  signalByName<T>(name: string) {
     return (this.store as any)[name] as Signal<T>
   }
 

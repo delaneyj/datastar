@@ -1,4 +1,4 @@
-import { AttributeContext, AttributePlugin, RegexpGroups } from '../types'
+import { Actions, AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
 
@@ -196,7 +196,7 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'public']),
+  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
@@ -275,13 +275,13 @@ export const EventPlugin: AttributePlugin = {
 
 function storeMarshalled(ctx: AttributeContext) {
   let s = ctx.store().value
-  if (ctx.modifiers.has('public')) {
-    s = publicSignals(s)
+  if (ctx.modifiers.has('remote')) {
+    s = remoteSignals(s)
   }
   return JSON.stringify(s)
 }
 
-export function publicSignals(obj: any): Object {
+export function remoteSignals(obj: any): Object {
   const res: Record<string, any> = {}
 
   if (typeof obj === 'object') {
@@ -289,7 +289,7 @@ export function publicSignals(obj: any): Object {
       if (k.startsWith('_')) {
         continue
       } else if (typeof v === 'object') {
-        res[k] = publicSignals(v)
+        res[k] = remoteSignals(v)
       }
       res[k] = v
     }
@@ -303,6 +303,12 @@ export const AttributePlugins: AttributePlugin[] = [
   TextPlugin,
   EventPlugin,
 ]
+
+export const AttributeActions: Actions = {
+  remote: async (ctx: AttributeContext) => {
+    return remoteSignals(ctx.store().value)
+  },
+}
 
 function argsToMs(args: string[] | undefined) {
   if (!args || args?.length === 0) return 0
