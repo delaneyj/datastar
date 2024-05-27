@@ -3,7 +3,6 @@ package site
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/delaneyj/datastar"
 	. "github.com/delaneyj/gostar/elements"
@@ -109,7 +108,6 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 		if store.Offset == 0 {
 			datastar.RenderFragment(sse, renderAgentsTable(store))
 		} else {
-			time.Sleep(2 * time.Second)
 			datastar.RenderFragment(
 				sse, moreDiv(store),
 				datastar.WithQuerySelectorID("more_btn"),

@@ -1,6 +1,6 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
-import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
+import { Actions, AsyncFunction, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
@@ -46,13 +46,13 @@ export const HeadersPlugin: AttributePlugin = {
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
 
-  onLoad: (ctx) => {
+  onLoad: async (ctx) => {
     ctx.upsertIfMissingFromStore('_dsPlugins.fetch', { headers: new Map<string, string>() })
     const s = ctx.store()
     const { headers } = s._dsPlugins.fetch
     const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
     headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
-    return () => {
+    return async () => {
       delete headers[key]
     }
   },
@@ -63,7 +63,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   prefix: 'fetchIndicator',
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
-  onGlobalInit: () => {
+  onGlobalInit: async () => {
     const style = document.createElement('style')
     style.innerHTML = `
 .${INDICATOR_CLASS}{
@@ -77,21 +77,34 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 `
     document.head.appendChild(style)
   },
-  onLoad: (ctx) => {
-    return ctx.reactivity.effect(() => {
+  onLoad: async (ctx) => {
+    return ctx.reactivity.effect(async () => {
       ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
-      const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
-      const s = ctx.store()
-      s._dsPlugins.fetch.indicatorSelectors[ctx.el.id] = c
+      const selector = await ctx.expressionFn(ctx)
+      const indicators = [...document.querySelectorAll(selector)]
+      if (!indicators?.length) throw new Error(`No indicator found`)
 
-      const indicator = document.querySelector(c.value)
-      if (!indicator) {
-        throw new Error(`No indicator found`)
-      }
-      indicator.classList.add(INDICATOR_CLASS)
+      ctx.mergeStore({
+        _dsPlugins: {
+          fetch: {
+            indicatorSelectors: {
+              [ctx.el.id]: indicators,
+            },
+          },
+        },
+      })
+      indicators.forEach((el) => el.classList.add(INDICATOR_CLASS))
 
       return () => {
-        delete s._dsPlugins.fetch.indicatorSelectors[ctx.el.id]
+        ctx.mergeStore({
+          _dsPlugins: {
+            fetch: {
+              indicatorSelectors: {
+                [ctx.el.id]: [],
+              },
+            },
+          },
+        })
       }
     })
   },
@@ -101,7 +114,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 export const IsLoadingIdPlugin: AttributePlugin = {
   prefix: 'isLoadingId',
   mustNotEmptyExpression: true,
-  onLoad: (ctx) => {
+  onLoad: async (ctx) => {
     ctx.upsertIfMissingFromStore('_dsPlugins.fetch.loadingIdentifiers', {})
     ctx.upsertIfMissingFromStore('_dsPlugins.fetch.isLoading', [])
 
@@ -123,21 +136,15 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
   const storeJSON = JSON.stringify(remoteSignals({ ...store.value }))
 
-  let hasIndicator = false,
-    loadingTarget = ctx.el
+  let loadingTarget = ctx.el
 
-  const indicatorSelector = store._dsPlugins.fetch?.indicatorSelectors?.[loadingTarget.id] || null
-  if (indicatorSelector) {
-    const indicator = document.querySelector(indicatorSelector.value)
-    if (indicator) {
-      loadingTarget = indicator
-      loadingTarget.classList.remove(INDICATOR_CLASS)
-      loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
-      hasIndicator = true
-    }
-  }
+  const indicatorSelectors: HTMLElement[] = store._dsPlugins.fetch.indicatorSelectors.value?.[loadingTarget.id] || []
+  indicatorSelectors.forEach((indicator) => {
+    if (!indicator) return
+    indicator.classList.remove(INDICATOR_CLASS)
+    indicator.classList.add(INDICATOR_LOADING_CLASS)
+  })
 
-  // the is loading plugin might not be loaded on this element
   const loadingIdentifier = store._dsPlugins.fetch?.loadingIdentifiers?.value?.[loadingTarget.id]
   if (!!loadingIdentifier) {
     const isLoadingValues = store._dsPlugins.fetch.isLoading.value as string[]
@@ -155,18 +162,20 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       [CONTENT_TYPE]: APPLICATION_JSON,
       [DATASTAR_REQUEST]: TRUE_STRING,
     },
-    onmessage: (evt) => {
+    onmessage: async (evt) => {
       if (!evt.event) return
-      if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
-        console.log(`Unknown event: ${evt.event}`)
-        debugger
+      else if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
+        console.error(`Unknown event: ${evt.event}`)
       }
 
       if (evt.event === EVENT_SIGNAL) {
-        const fn = new Function('ctx', ` return Object.assign({...ctx.store()}, ${evt.data})`) as ExpressionFunction
-        const data = fn(ctx)
+        const fn = new AsyncFunction(
+          'ctx',
+          ` return Object.assign({...ctx.store()}, ${evt.data})`,
+        ) as ExpressionFunction
+        const data = await fn(ctx)
         ctx.mergeStore(data)
-        ctx.applyPlugins(document.body)
+        await ctx.applyPlugins(document.body)
       } else {
         let fragment = '',
           merge: FragmentMergeOption = 'morph_element',
@@ -221,15 +230,18 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         if (isFragment) {
           if (!fragment?.length) fragment = '<div></div>'
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+          await mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
         }
       }
     },
     onclose: () => {
-      if (hasIndicator) {
+      if (indicatorSelectors?.length) {
         setTimeout(() => {
-          loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
-          loadingTarget.classList.add(INDICATOR_CLASS)
+          for (let i = 0; i < indicatorSelectors.length; i++) {
+            const indicator = indicatorSelectors[i]
+            indicator.classList.remove(INDICATOR_LOADING_CLASS)
+            indicator.classList.add(INDICATOR_CLASS)
+          }
         }, 300)
       }
 
@@ -261,7 +273,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 }
 
 const fragContainer = document.createElement('template')
-export function mergeHTMLFragment(
+async function mergeHTMLFragment(
   ctx: AttributeContext,
   selector: string,
   merge: FragmentMergeOption,
@@ -289,7 +301,7 @@ export function mergeHTMLFragment(
     }
   }
 
-  const applyToTargets = () => {
+  const applyToTargets = async () => {
     for (const initialTarget of targets) {
       initialTarget.classList.add(SWAPPING_CLASS)
       const originalHTML = initialTarget.outerHTML
@@ -340,7 +352,7 @@ export function mergeHTMLFragment(
       modifiedTarget.classList.add(SWAPPING_CLASS)
 
       ctx.cleanupElementRemovals(initialTarget)
-      ctx.applyPlugins(document.body)
+      await ctx.applyPlugins(document.body)
 
       setTimeout(() => {
         initialTarget.classList.remove(SWAPPING_CLASS)
@@ -359,16 +371,16 @@ export function mergeHTMLFragment(
   }
 
   if (supportsViewTransitions) {
-    docWithViewTransitionAPI.startViewTransition(() => applyToTargets())
+    await docWithViewTransitionAPI.startViewTransition(async () => await applyToTargets())
   } else {
-    applyToTargets()
+    await applyToTargets()
   }
 }
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression) => {
-      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
       const da = Document as any
       if (!da.startViewTransition) {
         await fetcher(method, urlExpression, ctx)
@@ -396,6 +408,13 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
       return Array.from(indicators).some((indicator) => {
         indicator.classList.contains(INDICATOR_LOADING_CLASS)
       })
+    },
+    withFetching: async (_: AttributeContext, selector: string, fn: (el: Element) => Promise<void>) => {
+      const indicators = document.querySelectorAll(selector)
+      for (let i = 0; i < indicators.length; i++) {
+        const indicator = indicators[i]
+        await fn(indicator)
+      }
     },
   } as Actions,
 )

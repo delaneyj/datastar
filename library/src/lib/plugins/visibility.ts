@@ -10,7 +10,7 @@ export const ShowPlugin: AttributePlugin = {
   prefix: 'show',
   allowedModifiers: new Set([IMPORTANT]),
 
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, modifiers, expressionFn, reactivity } = ctx
 
     return reactivity.effect(async () => {
@@ -42,7 +42,7 @@ export const IntersectionPlugin: AttributePlugin = {
   prefix: INTERSECTS,
   allowedModifiers: new Set([ONCE, HALF, FULL]),
   mustHaveEmptyKey: true,
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { modifiers } = ctx
     const options = { threshold: 0 }
     if (modifiers.has(FULL)) options.threshold = 1
@@ -60,7 +60,7 @@ export const IntersectionPlugin: AttributePlugin = {
     }, options)
 
     observer.observe(ctx.el)
-    return () => observer.disconnect()
+    return async () => observer.disconnect()
   },
 }
 
@@ -73,7 +73,7 @@ export const TeleportPlugin: AttributePlugin = {
   allowedModifiers: new Set([PREPEND, APPEND]),
   allowedTagRegexps: new Set(['template']),
   bypassExpressionFunctionCreation: () => true,
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, modifiers, expression } = ctx
     if (!(el instanceof HTMLTemplateElement)) {
       throw new Error(`el must be a template element`)
@@ -126,7 +126,7 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     'focus',
   ]),
 
-  onLoad: ({ el, modifiers }: AttributeContext) => {
+  onLoad: async ({ el, modifiers }: AttributeContext) => {
     if (!el.tabIndex) el.setAttribute('tabindex', '0')
     const opts: ScrollIntoViewOptions = {
       behavior: 'smooth',
@@ -148,7 +148,7 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     el.scrollIntoView(opts)
     if (modifiers.has('focus')) el.focus()
     delete el.dataset.focus
-    return () => el.blur()
+    return async () => {}
   },
 }
 
@@ -173,7 +173,7 @@ export const supportsViewTransitions = !!docWithViewTransitionAPI.startViewTrans
 // Setup view transition api
 export const ViewTransitionPlugin: AttributePlugin = {
   prefix: 'viewTransition',
-  onGlobalInit() {
+  async onGlobalInit() {
     let hasViewTransitionMeta = false
     document.head.childNodes.forEach((node) => {
       if (node instanceof HTMLMetaElement && node.name === 'view-transition') {
@@ -188,15 +188,15 @@ export const ViewTransitionPlugin: AttributePlugin = {
       document.head.appendChild(meta)
     }
   },
-  onLoad: (ctx) => {
+  onLoad: async (ctx) => {
     if (!supportsViewTransitions) {
       console.error('Browser does not support view transitions')
       return
     }
 
-    return ctx.reactivity.effect(() => {
+    return ctx.reactivity.effect(async () => {
       const { el, expressionFn } = ctx
-      let name = expressionFn(ctx)
+      let name = await expressionFn(ctx)
       if (!name) return
 
       const elVTASTyle = el.style as unknown as CSSStyleDeclaration

@@ -47,7 +47,7 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 		)
 		return BUTTON().
 			ID("more_btn").
-			CLASS("btn btn-primary").
+			CLASS("bg-success-300 hover:bg-success-400 text-success-800 font-bold py-2 px-4 rounded-l").
 			DATASTAR_ON("click", expression).
 			Text("Load More")
 	}

@@ -5,6 +5,7 @@ import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
   Actions,
+  AsyncFunction,
   AttributeContext,
   AttributePlugin,
   ExpressionFunction,
@@ -48,10 +49,10 @@ export class Datastar {
     }
   }
 
-  run() {
-    this.plugins.forEach((p) => {
+  async run() {
+    for (const p of this.plugins) {
       if (p.onGlobalInit) {
-        p.onGlobalInit({
+        await p.onGlobalInit({
           actions: this.actions,
           refs: this.refs,
           reactivity: this.reactivity,
@@ -59,8 +60,8 @@ export class Datastar {
           store: this.store,
         })
       }
-    })
-    this.applyPlugins(document.body)
+    }
+    await this.applyPlugins(document.body)
   }
 
   private cleanupElementRemovals(element: Element) {
@@ -97,11 +98,13 @@ export class Datastar {
     return (this.store as any)[name] as Signal<T>
   }
 
-  private applyPlugins(rootElement: Element) {
+  private async applyPlugins(rootElement: Element) {
     const appliedProcessors = new Set<Preprocessor>()
 
-    this.plugins.forEach((p, pi) => {
-      this.walkDownDOM(rootElement, (el) => {
+    for (let pi = 0; pi < this.plugins.length; pi++) {
+      const p = this.plugins[pi]
+
+      await this.walkDownDOM(rootElement, async (el) => {
         if (!pi) this.cleanupElementRemovals(el)
 
         for (const dsKey in el.dataset) {
@@ -202,7 +205,7 @@ export class Datastar {
             el,
             key,
             expression,
-            expressionFn: () => {
+            expressionFn: async () => {
               throw new Error('Expression function not created')
             },
             modifiers,
@@ -221,14 +224,14 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
 
             // console.log(fnContent)
             try {
-              const fn = new Function('ctx', fnContent) as ExpressionFunction
+              const fn = new AsyncFunction('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
               throw new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
             }
           }
 
-          const removal = p.onLoad(ctx)
+          const removal = await p.onLoad(ctx)
           if (removal) {
             if (!this.removals.has(el)) {
               this.removals.set(el, new Set())
@@ -237,7 +240,7 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
           }
         }
       })
-    })
+    }
   }
 
   private walkSignalsStore(store: any, callback: (name: string, signal: Signal<any>) => void) {
@@ -263,17 +266,21 @@ ${statements.map((s) => `  ${s}`).join(';\n')}
     this.walkSignalsStore(this.store, callback)
   }
 
-  private walkDownDOM(element: Element | null, callback: (el: HTMLorSVGElement) => void, siblingOffset = 0) {
+  private async walkDownDOM(
+    element: Element | null,
+    callback: (el: HTMLorSVGElement) => Promise<void>,
+    siblingOffset = 0,
+  ) {
     if (!element) return
     const el = toHTMLorSVGElement(element)
     if (!el) return
 
-    callback(el)
+    await callback(el)
 
     siblingOffset = 0
     element = element.firstElementChild
     while (element) {
-      this.walkDownDOM(element, callback, siblingOffset++)
+      await this.walkDownDOM(element, callback, siblingOffset++)
       element = element.nextElementSibling
     }
   }

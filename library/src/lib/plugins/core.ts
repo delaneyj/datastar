@@ -30,7 +30,7 @@ const ActionProcessor: Preprocessor = {
       withCtx.push(...args.split(',').map((x) => x.trim()))
     }
     const argsJoined = withCtx.join(',')
-    return `ctx.actions.${action}(${argsJoined})`
+    return `await (ctx.actions.${action}(${argsJoined}))`
   },
 }
 
@@ -58,8 +58,8 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
-  onLoad: (ctx: AttributeContext) => {
-    const bodyStore = ctx.expressionFn(ctx)
+  onLoad: async (ctx: AttributeContext) => {
+    const bodyStore = await ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
   },
@@ -71,10 +71,12 @@ const RefPlugin: AttributePlugin = {
   mustHaveEmptyKey: true,
   mustNotEmptyExpression: true,
   bypassExpressionFunctionCreation: () => true,
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, expression } = ctx
     ctx.refs[expression] = el
-    return () => delete ctx.refs[expression]
+    return async () => {
+      delete ctx.refs[expression]
+    }
   },
 }
 

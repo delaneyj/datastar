@@ -5,7 +5,7 @@ export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
 
 export type DatastarPlugin = {}
 
-export type ExpressionFunction = (ctx: AttributeContext) => any
+export type ExpressionFunction = (ctx: AttributeContext) => Promise<any>
 export type Reactivity = {
   signal: <T>(value: T) => Signal<T>
   computed: <T>(fn: () => T) => ReadonlySignal<T>
@@ -16,7 +16,7 @@ export type AttributeContext = {
   store: () => any
   mergeStore: (store: DeepState) => void
   upsertIfMissingFromStore: (path: string, value: any) => void
-  applyPlugins: (target: Element) => void
+  applyPlugins: (target: Element) => Promise<void>
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void
   actions: Readonly<Actions>
@@ -41,8 +41,8 @@ export type OnRemovalFn = () => void
 export type AttributePlugin = {
   prefix: string // The prefix of the `data-${prefix}` attribute
   requiredPluginPrefixes?: Iterable<string> // If not provided, no plugins are required
-  onGlobalInit?: (ctx: InitContext) => void // Called once on registration of the plugin
-  onLoad: (ctx: AttributeContext) => OnRemovalFn | void // Return a function to be called on removal
+  onGlobalInit?: (ctx: InitContext) => Promise<void> // Called once on registration of the plugin
+  onLoad: (ctx: AttributeContext) => Promise<OnRemovalFn | void> // Return a function to be called on removal
   allowedModifiers?: Set<string> // If not provided, all modifiers are allowed
   mustHaveEmptyExpression?: boolean // The contents of the data-* attribute must be empty
   mustNotEmptyExpression?: boolean // The contents of the data-* attribute must not be empty
@@ -63,5 +63,7 @@ export type Preprocessor = {
   replacer: (groups: RegexpGroups) => string
 }
 
-export type Action = (ctx: AttributeContext, ...args: string[]) => Promise<any>
+export type Action = (ctx: AttributeContext, ...args: any[]) => Promise<any>
 export type Actions = Record<string, Action>
+
+export const AsyncFunction = Object.getPrototypeOf(async function () {}).constructor

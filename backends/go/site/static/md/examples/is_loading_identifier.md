@@ -6,7 +6,7 @@
   <div data-show="$$isLoading('get_greet')" id="loadingIndicator">Loading Signal</div>
   <button
     type="button"
-    class="flex items-center select-none justify-center gap-1 px-4 py-2 rounded-lg bg-success-700"
+    class="bg-success-300 hover:bg-success-400 text-success-800 font-bold py-2 px-4 rounded-l"
     data-on-click="$$get('/examples/is_loading_identifier/greet')"
     data-is-loading-id="get_greet"
     id="greetingButton"

@@ -8,7 +8,7 @@ export const BindAttributePlugin: AttributePlugin = {
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
 
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
       const value = await ctx.expressionFn(ctx)
@@ -42,9 +42,9 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
   },
   allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   // bypassExpressionFunctionCreation: () => true,
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, expression } = ctx
-    const signal = ctx.expressionFn(ctx)
+    const signal = await ctx.expressionFn(ctx)
     const tnl = el.tagName.toLowerCase()
 
     if (expression.startsWith('ctx.store().ctx.store()')) {
@@ -167,8 +167,8 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
 
     updateModelEvents.forEach((eventType) => el.addEventListener(eventType, setSignalFromInput))
 
-    return () => {
-      cleanupSetInputFromSignal()
+    return async () => {
+      await cleanupSetInputFromSignal()
       updateModelEvents.forEach((event) => el.removeEventListener(event, setSignalFromInput))
     }
   },
@@ -179,13 +179,13 @@ export const TextPlugin: AttributePlugin = {
   prefix: 'text',
   mustHaveEmptyKey: true,
 
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, expressionFn } = ctx
     if (!(el instanceof HTMLElement)) {
       throw new Error('Element is not HTMLElement')
     }
-    return ctx.reactivity.effect(() => {
-      const res = expressionFn(ctx)
+    return ctx.reactivity.effect(async () => {
+      const res = await expressionFn(ctx)
       el.textContent = `${res}`
     })
   },
@@ -198,10 +198,10 @@ export const EventPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
   allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
 
-  onLoad: (ctx: AttributeContext) => {
+  onLoad: async (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    let callback = () => {
-      expressionFn(ctx)
+    let callback = async () => {
+      await expressionFn(ctx)
     }
 
     ctx.upsertIfMissingFromStore('_dsPlugins.on', {
@@ -238,7 +238,7 @@ export const EventPlugin: AttributePlugin = {
       case 'load':
         callback()
         delete el.dataset.onLoad
-        return () => {}
+        return async () => {}
 
       case 'raf':
         let rafId: number | undefined
@@ -249,7 +249,7 @@ export const EventPlugin: AttributePlugin = {
         requestAnimationFrame(raf)
         delete el.dataset.onRaf
 
-        return () => {
+        return async () => {
           if (rafId) cancelAnimationFrame(rafId)
         }
 
@@ -269,7 +269,7 @@ export const EventPlugin: AttributePlugin = {
 
       default:
         el.addEventListener(eventName, callback, evtListOpts)
-        return () => {
+        return async () => {
           // console.log(`Removing event listener for ${eventName} on ${el}`)
           el.removeEventListener(eventName, callback)
         }
@@ -329,23 +329,23 @@ function argsHas(args: string[] | undefined, arg: string, defaultValue = false) 
   return args.includes(arg) || defaultValue
 }
 
-type TimerHandler = (...args: any[]) => void
+type TimerHandler = (...args: any[]) => Promise<void>
 
 function debounce(callback: TimerHandler, wait: number, leading = false, trailing = true): TimerHandler {
   let timer: NodeJS.Timeout | undefined
 
   const resetTimer = () => timer && clearTimeout(timer)
 
-  return function wrapper(...args: any[]) {
+  return async function wrapper(...args: any[]): Promise<void> {
     resetTimer()
 
     if (leading && !timer) {
-      callback(...args)
+      await callback(...args)
     }
 
-    timer = setTimeout(() => {
+    timer = setTimeout(async () => {
       if (trailing) {
-        callback(...args)
+        await callback(...args)
       }
       resetTimer()
     }, wait)
@@ -356,19 +356,19 @@ function throttle(callback: TimerHandler, wait: number, leading = true, trailing
   let waiting = false
   let lastArgs: any[] | null = null
 
-  return function wrapper(...args: any[]) {
+  return async function wrapper(...args: any[]): Promise<void> {
     if (!waiting) {
       waiting = true
 
       if (leading) {
-        callback(...args)
+        await callback(...args)
       } else {
         lastArgs = args
       }
 
-      setTimeout(() => {
+      setTimeout(async () => {
         if (trailing && lastArgs) {
-          callback(...lastArgs)
+          await callback(...lastArgs)
           lastArgs = null
         }
         waiting = false

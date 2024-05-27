@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Animations UI Suite", () => {
   test.beforeEach(async ({ page }) => {
@@ -56,15 +56,15 @@ test.describe("Animations UI Suite", () => {
     await expect(page.getByRole("textbox")).toBeEmpty();
     await page.getByRole("textbox").fill("test");
     //
-    await expect(
-      page.locator("div#request_in_flight_indicator")
-    ).not.toHaveClass(/.*datastar-indicator-loading.*/);
+    await expect(page.locator("#request_in_flight_indicator")).not.toHaveClass(
+      /.*datastar-indicator-loading.*/
+    );
     await expect(page.locator("div#request_in_flight")).not.toContainText(
       "Submitted!"
     );
     //
     await page.getByRole("button", { name: "Submit" }).click();
-    await expect(page.locator("div#request_in_flight_indicator")).toHaveClass(
+    await expect(page.locator("#request_in_flight_indicator")).toHaveClass(
       /.*datastar-indicator-loading.*/
     );
     //
