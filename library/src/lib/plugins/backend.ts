@@ -110,22 +110,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-// Sets the fetch indicator selector
-export const IsLoadingIdPlugin: AttributePlugin = {
-  prefix: 'isLoadingId',
-  mustNotEmptyExpression: true,
-  onLoad: async (ctx) => {
-    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.loadingIdentifiers', {})
-    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.isLoading', [])
-
-    return ctx.reactivity.effect(() => {
-      const loadingIdentifiers = ctx.store()._dsPlugins.fetch.loadingIdentifiers.value
-      loadingIdentifiers[ctx.el.id] = ctx.expression
-    })
-  },
-}
-
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingIdPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const store = ctx.store()
@@ -397,12 +382,6 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
     return acc
   },
   {
-    isLoading: async (ctx: AttributeContext, loadingId: string) => {
-      const isLoadingArr = ctx.store()._dsPlugins.fetch.isLoading.value as string[]
-      const isIdLoading = isLoadingArr.includes(loadingId)
-      console.log(`isLoading action, ${ctx.el.id} loading? ${isIdLoading}`)
-      return isIdLoading
-    },
     isFetching: async (_: AttributeContext, selector: string) => {
       const indicators = document.querySelectorAll(selector)
       return Array.from(indicators).some((indicator) => {

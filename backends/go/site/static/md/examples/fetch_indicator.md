@@ -5,7 +5,7 @@
 <div>
   <div id="ind">Loading Indicator</div>
   <button
-    class="bg-success-300 hover:bg-success-500 text-success-800 font-bold py-2 px-4 rounded-l"
+    class="bg-success-300 hover:bg-success-500 text-success-800 font-bold py-2 px-4 rounded"
     data-on-click="$$get('/examples/fetch_indicator/greet')"
     data-fetch-indicator="'#ind'"
     data-testid="greeting_button">

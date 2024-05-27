@@ -144,10 +144,8 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     if (modifiers.has('vcenter')) opts.block = 'center'
     if (modifiers.has('vend')) opts.block = 'end'
     if (modifiers.has('vnearest')) opts.block = 'nearest'
-
-    el.scrollIntoView(opts)
-    if (modifiers.has('focus')) el.focus()
-    delete el.dataset.focus
+    scrollIntoView(el, opts, modifiers.has('focus'))
+    delete el.dataset.scrollIntoView
     return async () => {}
   },
 }
@@ -212,3 +210,34 @@ export const VisibilityPlugins: AttributePlugin[] = [
   ScrollIntoViewPlugin,
   ViewTransitionPlugin,
 ]
+
+export const VisibilityActions = {
+  scroll: async (
+    _: AttributeContext,
+    selector: string,
+    opts: {
+      behavior: 'smooth' | 'instant' | 'auto'
+      vertical: 'start' | 'center' | 'end' | 'nearest'
+      horizontal: 'start' | 'center' | 'end' | 'nearest'
+      shouldFocus: boolean
+    } = {
+      behavior: 'smooth',
+      vertical: 'center',
+      horizontal: 'center',
+      shouldFocus: true,
+    },
+  ) => {
+    const el = document.querySelector(selector)
+    scrollIntoView(el as HTMLElement, opts)
+  },
+}
+
+function scrollIntoView(el: HTMLElement | SVGElement, opts: ScrollIntoViewOptions, shouldFocus = true) {
+  if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
+    throw new Error('Element not found')
+  }
+  if (!el.tabIndex) el.setAttribute('tabindex', '0')
+
+  el.scrollIntoView(opts)
+  if (shouldFocus) el.focus()
+}

@@ -9,12 +9,12 @@ import (
 	"github.com/go-chi/chi/v5"
 )
 
-func setupExamplesIsLoadingId(examplesRouter chi.Router) error {
+func setupExamplesIsFetching(examplesRouter chi.Router) error {
 
-	examplesRouter.Get("/is_loading_identifier/greet", func(w http.ResponseWriter, r *http.Request) {
+	examplesRouter.Get("/is_fetching/greet", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 
-		d := 2 * time.Second
+		d := 1 * time.Second
 
 		datastar.RenderFragment(sse, DIV().ID("greeting").TextF("Calculating... waiting for %s", d))
 		time.Sleep(d)
