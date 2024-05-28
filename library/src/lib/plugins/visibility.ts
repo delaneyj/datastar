@@ -145,7 +145,12 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     if (modifiers.has('vend')) opts.block = 'end'
     if (modifiers.has('vnearest')) opts.block = 'nearest'
     scrollIntoView(el, opts, modifiers.has('focus'))
-    delete el.dataset.scrollIntoView
+
+    Object.entries({ ...el.dataset }).forEach(([key]) => {
+      if (key.startsWith('scrollIntoView')) {
+        delete el.dataset[key]
+      }
+    })
     return async () => {}
   },
 }
