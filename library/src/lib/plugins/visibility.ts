@@ -216,19 +216,18 @@ export const VisibilityActions = {
     _: AttributeContext,
     selector: string,
     opts: {
-      behavior: 'smooth' | 'instant' | 'auto'
-      vertical: 'start' | 'center' | 'end' | 'nearest'
-      horizontal: 'start' | 'center' | 'end' | 'nearest'
+      behavior: 'smooth' | 'instant' | 'auto' // smooth is default
+      vertical: 'start' | 'center' | 'end' | 'nearest' // center is default
+      horizontal: 'start' | 'center' | 'end' | 'nearest' // center is default
       shouldFocus: boolean
-    } = {
-      behavior: 'smooth',
-      vertical: 'center',
-      horizontal: 'center',
-      shouldFocus: true,
     },
   ) => {
+    const allOpts = Object.assign(
+      { behavior: 'smooth', vertical: 'center', horizontal: 'center', shouldFocus: true },
+      opts,
+    )
     const el = document.querySelector(selector)
-    scrollIntoView(el as HTMLElement, opts)
+    scrollIntoView(el as HTMLElement, allOpts)
   },
 }
 
