@@ -54,6 +54,7 @@ export const IntersectionPlugin: AttributePlugin = {
           ctx.expressionFn(ctx)
           if (modifiers.has(ONCE)) {
             observer.disconnect()
+            delete ctx.el.dataset[ctx.rawKey]
           }
         }
       })
