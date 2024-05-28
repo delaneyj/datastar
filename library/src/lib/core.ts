@@ -107,10 +107,10 @@ export class Datastar {
       await this.walkDownDOM(rootElement, async (el) => {
         if (!pi) this.cleanupElementRemovals(el)
 
-        for (const dsKey in el.dataset) {
-          let expression = el.dataset[dsKey] || ''
+        for (const rawKey in el.dataset) {
+          let expression = el.dataset[rawKey] || ''
 
-          if (!dsKey.startsWith(p.prefix)) continue
+          if (!rawKey.startsWith(p.prefix)) continue
 
           if (el.id.length === 0) {
             el.id = `ds-${this.parentID}-${this.missingIDNext++}`
@@ -123,7 +123,7 @@ export class Datastar {
             const allowed = [...p.allowedTagRegexps].some((r) => lowerCaseTag.match(r))
             if (!allowed) {
               throw new Error(
-                `'${el.tagName}' not allowed for '${dsKey}', allowed ${[
+                `'${el.tagName}' not allowed for '${rawKey}', allowed ${[
                   [...p.allowedTagRegexps].map((t) => `'${t}'`),
                 ].join(', ')}`,
               )
@@ -131,13 +131,13 @@ export class Datastar {
             // console.log(`Tag '${el.tagName}' is allowed for plugin '${dsKey}'`)
           }
 
-          let keyRaw = dsKey.slice(p.prefix.length)
+          let keyRaw = rawKey.slice(p.prefix.length)
           let [key, ...modifiersWithArgsArr] = keyRaw.split('.')
           if (p.mustHaveEmptyKey && key.length > 0) {
-            throw new Error(`'${dsKey}' must have empty key`)
+            throw new Error(`'${rawKey}' must have empty key`)
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            throw new Error(`'${dsKey}' must have non-empty key`)
+            throw new Error(`'${rawKey}' must have non-empty key`)
           }
           if (key.length) {
             key = key[0].toLowerCase() + key.slice(1)
@@ -160,10 +160,10 @@ export class Datastar {
           }
 
           if (p.mustHaveEmptyExpression && expression.length) {
-            throw new Error(`'${dsKey}' must have empty expression`)
+            throw new Error(`'${rawKey}' must have empty expression`)
           }
           if (p.mustNotEmptyExpression && !expression.length) {
-            throw new Error(`'${dsKey}' must have non-empty expression`)
+            throw new Error(`'${rawKey}' must have non-empty expression`)
           }
 
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
@@ -204,6 +204,7 @@ export class Datastar {
             reactivity: this.reactivity,
             el,
             key,
+            rawKey,
             expression,
             expressionFn: async () => {
               throw new Error('Expression function not created')

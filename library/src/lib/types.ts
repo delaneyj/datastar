@@ -24,6 +24,7 @@ export type AttributeContext = {
   reactivity: Reactivity
   el: Readonly<HTMLorSVGElement>
   key: Readonly<string>
+  rawKey: Readonly<string>
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>

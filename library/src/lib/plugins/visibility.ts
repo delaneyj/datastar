@@ -126,7 +126,7 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     'focus',
   ]),
 
-  onLoad: async ({ el, modifiers }: AttributeContext) => {
+  onLoad: async ({ el, modifiers, rawKey }: AttributeContext) => {
     if (!el.tabIndex) el.setAttribute('tabindex', '0')
     const opts: ScrollIntoViewOptions = {
       behavior: 'smooth',
@@ -145,12 +145,7 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     if (modifiers.has('vend')) opts.block = 'end'
     if (modifiers.has('vnearest')) opts.block = 'nearest'
     scrollIntoView(el, opts, modifiers.has('focus'))
-
-    Object.entries({ ...el.dataset }).forEach(([key]) => {
-      if (key.startsWith('scrollIntoView')) {
-        delete el.dataset[key]
-      }
-    })
+    delete el.dataset[rawKey]
     return async () => {}
   },
 }
