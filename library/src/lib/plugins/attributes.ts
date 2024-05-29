@@ -11,12 +11,16 @@ export const BindAttributePlugin: AttributePlugin = {
   onLoad: async (ctx: AttributeContext) => {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
-      const value = await ctx.expressionFn(ctx)
-      const v = `${value}`
-      if (!v || v === 'false' || v === 'null' || v === 'undefined') {
-        ctx.el.removeAttribute(key)
-      } else {
-        ctx.el.setAttribute(key, v)
+      try {
+        const value = await ctx.expressionFn(ctx)
+        const v = `${value}`
+        if (!v || v === 'false' || v === 'null' || v === 'undefined') {
+          ctx.el.removeAttribute(key)
+        } else {
+          ctx.el.setAttribute(key, v)
+        }
+      } catch (e) {
+        throw new Error(`Error in BindAttributePlugin: ${e} from expression ${ctx.expression}`)
       }
     })
   },
@@ -220,7 +224,7 @@ export const EventPlugin: AttributePlugin = {
     if (throttleArgs) {
       const wait = argsToMs(throttleArgs)
       const leading = argsHas(throttleArgs, 'noLead', true)
-      const trailing = argsHas(throttleArgs, 'noTrail', true)
+      const trailing = argsHas(throttleArgs, 'noTrail', false)
       callback = throttle(callback, wait, leading, trailing)
     }
 
