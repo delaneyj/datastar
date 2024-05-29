@@ -36,15 +36,14 @@ const INTERSECTS = 'intersects'
 const ONCE = 'once'
 const HALF = 'half'
 const FULL = 'full'
-const END = 'end'
 
 // Run expression when element intersects with viewport
 export const IntersectionPlugin: AttributePlugin = {
   prefix: INTERSECTS,
-  allowedModifiers: new Set([ONCE, HALF, FULL, END]),
+  allowedModifiers: new Set([ONCE, HALF, FULL]),
   mustHaveEmptyKey: true,
   onLoad: async (ctx: AttributeContext) => {
-    const { el, modifiers } = ctx
+    const { modifiers } = ctx
     const options = { threshold: 0 }
     if (modifiers.has(FULL)) options.threshold = 1
     else if (modifiers.has(HALF)) options.threshold = 0.5
@@ -52,10 +51,6 @@ export const IntersectionPlugin: AttributePlugin = {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          if (modifiers.has(END)) {
-            const scrollY = el.scrollTop + el.clientHeight
-            if (scrollY < el.scrollHeight) return
-          }
           ctx.expressionFn(ctx)
           if (modifiers.has(ONCE)) {
             observer.disconnect()
