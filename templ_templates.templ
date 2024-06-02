@@ -1,0 +1,13 @@
+package datastar
+
+import (
+	"fmt"
+)
+
+templ ScriptCDNVersion(version string) {
+	<script src={ fmt.Sprintf("https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@%s/dist/datastar.min.js", version) }></script>
+}
+
+templ ScriptCDNLatest() {
+	<script src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar/dist/datastar.min.js"></script>
+}

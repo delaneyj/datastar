@@ -98,6 +98,7 @@ func setupExamples(router chi.Router) (err error) {
 				{Label: "Node", Description: "example backend in node"},
 				{Label: "Python", Description: "example backend in python"},
 				{Label: "Quick Primer Go", Description: "The getting started guide in Go"},
+				{Label: "Templ Counter", Description: "a simple counter example for Templ"},
 			},
 		},
 	}, func(g ExampleGroup, i int) ExampleGroup {
@@ -227,6 +228,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesStoreChanged(examplesRouter, examplesSessionStore),
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
+			setupExamplesTemplCounter(examplesRouter, examplesSessionStore),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}

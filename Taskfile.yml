@@ -47,15 +47,24 @@ tasks:
 
   css:
     vars:
-      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/css"
+      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static"
     dir: library
     generates:
-      - "{{.BACKEND_STATIC_DIR}}"
+      - "{{.BACKEND_STATIC_DIR}}/css/site.css"
     sources:
       - "**/*.md"
+      - "../backends/go/site/**/*.templ"
       - "../backends/go/site/**/*.go"
     cmds:
       - pnpm unocss
+
+  templ:
+    generates:
+      - "**/*_templ.go"
+    sources:
+      - "**/*.templ"
+    cmds:
+      - templ generate .
 
   kill:
     cmds:
@@ -73,6 +82,7 @@ tasks:
     deps:
       - library
       - kill
+      - templ
       # - css
 
     cmds:

@@ -20,6 +20,7 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
+	"github.com/gorilla/sessions"
 
 	. "github.com/delaneyj/gostar/elements"
 )
@@ -152,6 +153,23 @@ func setupRoutes(router chi.Router) error {
 	}
 
 	return nil
+}
+
+func upsertSessionID(store sessions.Store, name string, w http.ResponseWriter, r *http.Request) (string, error) {
+
+	sess, err := store.Get(r, name)
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
+	id, ok := sess.Values["id"].(string)
+	if !ok {
+		id = toolbelt.NextEncodedID()
+		sess.Values["id"] = id
+		if err := sess.Save(r, w); err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
+	}
+	return id, nil
 }
 
 func buttonLink(isAccent ...bool) *AElement {

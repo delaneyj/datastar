@@ -112,7 +112,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
+async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, useViewTransitions: boolean) {
   const store = ctx.store()
 
   if (!urlExpression) {
@@ -215,7 +215,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         if (isFragment) {
           if (!fragment?.length) fragment = '<div></div>'
-          await mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+          await mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransitions)
         }
       }
     },
@@ -264,6 +264,7 @@ async function mergeHTMLFragment(
   merge: FragmentMergeOption,
   fragment: string,
   settleTime: number,
+  useViewTransitions: boolean,
 ) {
   const { el } = ctx
 
@@ -355,7 +356,7 @@ async function mergeHTMLFragment(
     }
   }
 
-  if (supportsViewTransitions) {
+  if (supportsViewTransitions && useViewTransitions) {
     await docWithViewTransitionAPI.startViewTransition(async () => await applyToTargets())
   } else {
     await applyToTargets()
@@ -364,17 +365,19 @@ async function mergeHTMLFragment(
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
-    acc[method] = async (ctx, urlExpression) => {
+    acc[method] = async (ctx, urlExpression, args: { useViewTransitions?: boolean } = {}) => {
+      const { useViewTransitions } = Object.assign({ useViewTransitions: true }, args)
+
       ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
       const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
+      if (!da.startViewTransition || !useViewTransitions) {
+        fetcher(method, urlExpression, ctx, useViewTransitions)
         return
       }
 
       new Promise((resolve) => {
         da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
+          await fetcher(method, urlExpression, ctx, useViewTransitions)
           resolve(void 0)
         })
       })
