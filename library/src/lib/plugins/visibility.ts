@@ -187,18 +187,6 @@ export const ViewTransitionPlugin: AttributePlugin = {
       meta.content = 'same-origin'
       document.head.appendChild(meta)
     }
-
-    if (supportsViewTransitions) {
-      // add css to make default duration 0.3s
-      const style = document.createElement('style')
-      style.textContent = `
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: 0.1s;
-}
-      `
-      document.head.appendChild(style)
-    }
   },
   onLoad: (ctx) => {
     if (!supportsViewTransitions) {
