@@ -99,9 +99,10 @@ const (
 )
 
 type RenderFragmentOptions struct {
-	QuerySelector  string
-	Merge          FragmentMergeType
-	SettleDuration time.Duration
+	QuerySelector      string
+	Merge              FragmentMergeType
+	SettleDuration     time.Duration
+	UseViewTransitions *bool
 }
 type RenderFragmentOption func(*RenderFragmentOptions)
 
@@ -171,6 +172,20 @@ func WithQuerySelectorUseID() RenderFragmentOption {
 	return WithQuerySelector(FragmentSelectorUseID)
 }
 
+func WithViewTransitions() RenderFragmentOption {
+	return func(o *RenderFragmentOptions) {
+		var b = true
+		o.UseViewTransitions = &b
+	}
+}
+
+func WithoutViewTransitions() RenderFragmentOption {
+	return func(o *RenderFragmentOptions) {
+		var b = false
+		o.UseViewTransitions = &b
+	}
+}
+
 func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
 	opts = append([]RenderFragmentOption{
 		WithMergeDeleteElement(),
@@ -224,6 +239,10 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 	if options.SettleDuration > 0 {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
+	if options.UseViewTransitions != nil {
+		dataRows = append(dataRows, fmt.Sprintf("vt %t", *options.UseViewTransitions))
+	}
+
 	if fragment != "" {
 		parts := strings.Split(fragment, "\n")
 		parts[0] = "fragment " + parts[0]

@@ -54,6 +54,7 @@ export const IntersectionPlugin: AttributePlugin = {
           ctx.expressionFn(ctx)
           if (modifiers.has(ONCE)) {
             observer.disconnect()
+            delete ctx.el.dataset[ctx.rawKey]
           }
         }
       })
@@ -126,7 +127,7 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     'focus',
   ]),
 
-  onLoad: ({ el, modifiers }: AttributeContext) => {
+  onLoad: ({ el, modifiers, rawKey }: AttributeContext) => {
     if (!el.tabIndex) el.setAttribute('tabindex', '0')
     const opts: ScrollIntoViewOptions = {
       behavior: 'smooth',
@@ -145,10 +146,9 @@ export const ScrollIntoViewPlugin: AttributePlugin = {
     if (modifiers.has('vend')) opts.block = 'end'
     if (modifiers.has('vnearest')) opts.block = 'nearest'
 
-    el.scrollIntoView(opts)
-    if (modifiers.has('focus')) el.focus()
-    delete el.dataset.focus
-    return () => el.blur()
+    scrollIntoView(el, opts, modifiers.has('focus'))
+    delete el.dataset[rawKey]
+    return () => {}
   },
 }
 
@@ -212,3 +212,33 @@ export const VisibilityPlugins: AttributePlugin[] = [
   ScrollIntoViewPlugin,
   ViewTransitionPlugin,
 ]
+
+export const VisibilityActions = {
+  scroll: async (
+    _: AttributeContext,
+    selector: string,
+    opts: {
+      behavior: 'smooth' | 'instant' | 'auto' // smooth is default
+      vertical: 'start' | 'center' | 'end' | 'nearest' // center is default
+      horizontal: 'start' | 'center' | 'end' | 'nearest' // center is default
+      shouldFocus: boolean
+    },
+  ) => {
+    const allOpts = Object.assign(
+      { behavior: 'smooth', vertical: 'center', horizontal: 'center', shouldFocus: true },
+      opts,
+    )
+    const el = document.querySelector(selector)
+    scrollIntoView(el as HTMLElement, allOpts)
+  },
+}
+
+function scrollIntoView(el: HTMLElement | SVGElement, opts: ScrollIntoViewOptions, shouldFocus = true) {
+  if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
+    throw new Error('Element not found')
+  }
+  if (!el.tabIndex) el.setAttribute('tabindex', '0')
+
+  el.scrollIntoView(opts)
+  if (shouldFocus) el.focus()
+}

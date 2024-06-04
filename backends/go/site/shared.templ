@@ -101,7 +101,7 @@ templ header(r *http.Request) {
 				</a>
 				<div class="font-mono text-xs text-accent">v{ packageJSON.Version }</div>
 			</div>
-			<div class="hidden text-lg md:flex md:gap-4 md:visible ">
+			<div class="hidden md:text-md lg:text-lg md:flex md:gap-4 md:visible ">
 				@headerTopLevelLinks(r)
 			</div>
 			<div class="hidden text-xl md:flex md:gap-4 md:visible">

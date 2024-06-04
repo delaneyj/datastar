@@ -25,7 +25,7 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error']
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
 
 const FragmentMergeOptions = {
   MorphElement: 'morph_element',
@@ -157,7 +157,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
     onmessage: (evt) => {
       if (!evt.event) return
-      if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
+      else if (!evt.event.startsWith(DATASTAR_CLASS_PREFIX)) {
         console.log(`Unknown event: ${evt.event}`)
         debugger
       }
@@ -172,7 +172,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           merge: FragmentMergeOption = 'morph_element',
           exists = false,
           selector = '',
-          settleTime = 500
+          settleTime = 500,
+          useViewTransition = true
 
         const isFragment = evt.event === EVENT_FRAGMENT
 
@@ -211,6 +212,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
                 return
               case 'error':
                 throw new Error(line)
+              case 'vt':
+                useViewTransition = line === 'true'
+                break
               default:
                 throw new Error(`Unknown data type`)
             }
@@ -221,7 +225,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         if (isFragment) {
           if (!fragment?.length) fragment = '<div></div>'
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime)
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
         }
       }
     },
@@ -267,6 +271,7 @@ export function mergeHTMLFragment(
   merge: FragmentMergeOption,
   fragment: string,
   settleTime: number,
+  useViewTransition: boolean,
 ) {
   const { el } = ctx
 
@@ -358,7 +363,7 @@ export function mergeHTMLFragment(
     }
   }
 
-  if (supportsViewTransitions) {
+  if (supportsViewTransitions && useViewTransition) {
     docWithViewTransitionAPI.startViewTransition(() => applyToTargets())
   } else {
     applyToTargets()

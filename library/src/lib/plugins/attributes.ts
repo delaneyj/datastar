@@ -220,7 +220,7 @@ export const EventPlugin: AttributePlugin = {
     if (throttleArgs) {
       const wait = argsToMs(throttleArgs)
       const leading = argsHas(throttleArgs, 'noLead', true)
-      const trailing = argsHas(throttleArgs, 'noTrail', true)
+      const trailing = argsHas(throttleArgs, 'noTrail', false)
       callback = throttle(callback, wait, leading, trailing)
     }
 

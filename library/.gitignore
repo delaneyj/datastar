@@ -24,5 +24,6 @@ dist-ssr
 *.sw?
 
 
+*_templ.go
 stats.html
 vite.config.ts.timestamp*
