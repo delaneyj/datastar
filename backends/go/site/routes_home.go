@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"sync/atomic"
 
-	// . "github.com/delaneyj/gostar/elements"
-
 	"github.com/a-h/templ"
 	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"

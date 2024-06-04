@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
@@ -46,7 +45,7 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 
 			log.Printf("res: %v", res)
 			sse := datastar.NewSSE(w, r)
-			datastar.RenderFragment(sse, DIV())
+			datastar.RenderFragmentString(sse, "<div></div>")
 		})
 	})
 

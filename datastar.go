@@ -171,15 +171,6 @@ func WithQuerySelectorUseID() RenderFragmentOption {
 	return WithQuerySelector(FragmentSelectorUseID)
 }
 
-func UpsertStore(sse *ServerSentEventsHandler, store any, opts ...RenderFragmentOption) {
-	opts = append([]RenderFragmentOption{WithMergeUpsertAttributes()}, opts...)
-	RenderFragment(
-		sse,
-		elements.DIV().DATASTAR_STORE(store),
-		opts...,
-	)
-}
-
 func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
 	opts = append([]RenderFragmentOption{
 		WithMergeDeleteElement(),
@@ -203,7 +194,7 @@ func RenderFragmentTempl(sse *ServerSentEventsHandler, c templ.Component, opts .
 	return nil
 }
 
-func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragmentGostar(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
 	if err := child.Render(buf); err != nil {
@@ -247,11 +238,6 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 		WithSSERetry(0),
 	)
 	return nil
-}
-
-func RenderFragmentSelf(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
-	opts = append([]RenderFragmentOption{WithQuerySelectorSelf()}, opts...)
-	return RenderFragment(sse, child, opts...)
 }
 
 func Redirect(sse *ServerSentEventsHandler, url string) {

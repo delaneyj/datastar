@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	. "github.com/delaneyj/gostar/elements"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
 	"github.com/gorilla/sessions"
@@ -15,11 +14,7 @@ import (
 )
 
 var (
-	sanitizer            *sanitize.Sanitizer
-	TemplSignalStoreView = Group(
-		H4(Text("Signal Store")),
-		PRE().DATASTAR_TEXT("JSON.stringify(ctx.store())"),
-	)
+	sanitizer *sanitize.Sanitizer
 )
 
 func setupExamples(router chi.Router) (err error) {
