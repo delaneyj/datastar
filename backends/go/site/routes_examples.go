@@ -65,7 +65,7 @@ func setupExamples(router chi.Router) (err error) {
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
 				{ID: "multiline_fragments"},
-				{ID: "scroll_into_view", IsDisabled: true},
+				{ID: "scroll_into_view"},
 				{ID: "on_load", IsDisabled: true},
 				{ID: "model_binding", IsDisabled: true},
 				{ID: "disable_button", IsDisabled: true},
