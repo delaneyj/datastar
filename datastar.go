@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/delaneyj/gostar/elements"
 	"github.com/go-sanitize/sanitize"
 	"github.com/goccy/go-json"
@@ -191,6 +192,17 @@ func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmen
 	)
 }
 
+func RenderFragmentTempl(sse *ServerSentEventsHandler, c templ.Component, opts ...RenderFragmentOption) error {
+	sb := &strings.Builder{}
+	if err := c.Render(sse.Context(), sb); err != nil {
+		return fmt.Errorf("failed to render fragment: %w", err)
+	}
+	if err := RenderFragmentString(sse, sb.String(), opts...); err != nil {
+		return fmt.Errorf("failed to render fragment: %w", err)
+	}
+	return nil
+}
+
 func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
@@ -275,4 +287,12 @@ func Error(sse *ServerSentEventsHandler, err error) {
 
 func ErrorF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
 	Error(sse, fmt.Errorf(format, args...))
+}
+
+func MustJSON(v any) string {
+	b, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
 }

@@ -1,5 +1,3 @@
-_October 1, 2023_
-
 # Grugs around the fire
 
 ## You probably don't need to care

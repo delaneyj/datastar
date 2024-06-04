@@ -1,0 +1,13 @@
+package site
+
+import (
+	"time"
+)
+
+templ fetchIndicatorEmpty() {
+	<div id="greeting">No data</div>
+}
+
+templ fetchIndicatorGreeting() {
+	<div id="greeting">Hello, the time is { time.Now().Format(time.RFC3339) }</div>
+}

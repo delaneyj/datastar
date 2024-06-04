@@ -11,6 +11,11 @@ vars:
     sh: cat library/package.json| jq -r .version
 
 tasks:
+  tools:
+    cmds:
+      - go install github.com/a-h/templ/cmd/templ@latest
+      - go install github.com/go-task/task/v3/cmd/task@latest
+
   version:
     cmds:
       - echo {{.VERSION}}
@@ -46,16 +51,25 @@ tasks:
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}
 
   css:
-    vars:
-      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/css"
-    dir: library
+    dir: backends/go/site/css
     generates:
-      - "{{.BACKEND_STATIC_DIR}}"
+      - "../static/css/site.css"
     sources:
-      - "**/*.md"
-      - "../backends/go/site/**/*.go"
+      - "../**/*.md"
+      # - "../**/*.go"
+      - "../**/*.templ"
     cmds:
-      - pnpm unocss
+      - pnpm tailwindcss build -o ../static/css/site.css
+
+  templ:
+    env:
+      TEMPL_EXPERIMENT: rawgo
+    generates:
+      - "**/*_templ.go"
+    sources:
+      - "**/*.templ"
+    cmds:
+      - templ generate .
 
   kill:
     cmds:
@@ -73,6 +87,7 @@ tasks:
     deps:
       - library
       - kill
+      - templ
       # - css
 
     cmds:

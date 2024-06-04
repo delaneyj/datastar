@@ -10,7 +10,6 @@ The only email that will be accepted is test@test.com.
     id="inline_validation"
     data-on-load="$$get('/examples/inline_validation/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

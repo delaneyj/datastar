@@ -3,7 +3,6 @@
 ## Demo
 
 <div id="update" data-on-load="$$get('/examples/redirects/data')">
-     Replace me
 </div>
 
 ## Explanation

@@ -20,7 +20,6 @@ transition: all 1.2s;
     id="bulk_update"
     data-on-load="$$get('/examples/bulk_update/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

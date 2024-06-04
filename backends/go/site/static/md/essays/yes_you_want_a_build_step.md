@@ -1,5 +1,3 @@
-_September 7, 2023_
-
 # Yes, you want a build step
 
 ## In response to the HTMX essay [No Build Step](https://htmx.org/essays/no-build-step/)

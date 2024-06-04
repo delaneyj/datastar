@@ -1,4 +1,4 @@
-# Von Deepa
+# Go Deeper
 
 ## Javascript Fatigue
 

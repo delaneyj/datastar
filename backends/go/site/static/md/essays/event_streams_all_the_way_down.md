@@ -1,6 +1,4 @@
-_November 16 2023_
-
-# `text/event-stream` All the Way Down
+# Streams All the Way Down
 
 [SSE](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events) is a really great idea. With a single request you can create a server driven stream of events. Using this for driving Datastar's [HTMX](https://htmx.org/) like fragments plugin is a natural fit. The only problem is that SSE doesn't support anything but the `GET` method. This means that you can't use SSE to send data to the server. This is a problem for HTMX, because HTMX uses the `POST` method to send data to the server. So, what to do?
 

@@ -11,7 +11,6 @@
 </style>
 
 <div id="lazy_load" data-on-load="$$get('/examples/lazy_load/data')">
-     Replace me
 </div>
 
 ## Explanation

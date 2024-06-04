@@ -8,7 +8,6 @@
     id="value_select"
     data-on-load="$$get('/examples/value_select/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

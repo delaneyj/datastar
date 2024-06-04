@@ -2,125 +2,82 @@ package site
 
 import (
 	"net/http"
+	"strings"
 
-	. "github.com/delaneyj/gostar/elements"
+	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 )
 
 func setupReferenceRoutes(router chi.Router) error {
-	mdElementRenderers, mdAnchors, err := markdownRenders("reference")
+	mdElementRenderers, _, err := markdownRenders("reference")
 	if err != nil {
 		return err
 	}
 
-	type Reference struct {
-		ID          string
-		Label       string
-		URL         string
-		Description string
-		Prev, Next  *Reference
-	}
-	type ReferenceGroup struct {
-		Label      string
-		References []*Reference
-	}
-
-	var (
-		prevRef        *Reference
-		referenceByURL = map[string]*Reference{}
-	)
-	references := lo.Map([]ReferenceGroup{
+	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Included Plugins",
-			References: []*Reference{
-				{ID: "plugins_core", Label: "Core"},
-				{ID: "plugins_attributes", Label: "Attributes"},
-				{ID: "plugins_backend", Label: "Backend"},
-				{ID: "plugins_helpers", Label: "Helpers"},
-				{ID: "plugins_visibility", Label: "Visibility"},
+			Label: "Included",
+			Links: []*SidebarLink{
+				{ID: "core"},
+				{ID: "attributes"},
+				{ID: "backend"},
+				{ID: "helpers"},
+				{ID: "visibility"},
 			},
 		},
 		{
 			Label: "How it Works",
-			References: []*Reference{
-				{ID: "expressions", Label: "Expressions"},
+			Links: []*SidebarLink{
+				{ID: "expressions"},
 			},
 		},
-		// {
-		// 	Label:      "Writing Plugins",
-		// 	References: []*Reference{},
-		// },
-	}, func(g ReferenceGroup, i int) ReferenceGroup {
-		for _, example := range g.References {
-			example.URL = "/reference/" + example.ID
-			if prevRef != nil {
-				example.Prev = prevRef
-				prevRef.Next = example
+	}
+	lo.ForEach(sidebarGroups, func(group *SidebarGroup, grpIdx int) {
+		lo.ForEach(group.Links, func(link *SidebarLink, linkIdx int) {
+			link.URL = templ.SafeURL("/reference/" + link.ID)
+			link.Label = strings.ToUpper(strings.ReplaceAll(link.ID, "_", " "))
+
+			if linkIdx > 0 {
+				link.Prev = group.Links[linkIdx-1]
+			} else if grpIdx > 0 {
+				prvGrp := sidebarGroups[grpIdx-1]
+				link.Prev = prvGrp.Links[len(prvGrp.Links)-1]
 			}
-			prevRef = example
-			referenceByURL[example.URL] = example
-		}
-		return g
+
+			if linkIdx < len(group.Links)-1 {
+				link.Next = group.Links[linkIdx+1]
+			} else if grpIdx < len(sidebarGroups)-1 {
+				nxtGrp := sidebarGroups[grpIdx+1]
+				link.Next = nxtGrp.Links[0]
+			}
+		})
 	})
 
-	router.Route("/reference", func(referenceRouter chi.Router) {
-		referenceRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			http.Redirect(w, r, references[0].References[0].URL, http.StatusFound)
+	router.Route("/reference", func(essaysRouter chi.Router) {
+		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		sidebarContents := func(r *http.Request) ElementRenderer {
-			return Range(references, func(g ReferenceGroup) ElementRenderer {
-				return DIV(
-					DIV(
-						DIV().CLASS("text-2xl font-bold text-primary").Text(g.Label),
-						HR().CLASS("divider border-primary"),
-					),
-					UL().
-						CLASS("list-disc pl-4").
-						Children(Range(g.References, func(e *Reference) ElementRenderer {
-							return LI(
-								link(e.URL, e.Label, e.URL == r.URL.Path),
-							)
-						})),
-				)
-			})
-		}
-
-		referenceRouter.Get("/{refName}", func(w http.ResponseWriter, r *http.Request) {
-
-			ref, ok := referenceByURL[r.URL.Path]
-			if !ok {
-				ref = references[0].References[0]
-			}
-
-			contents, ok := mdElementRenderers[ref.ID]
+		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+			name := chi.URLParam(r, "name")
+			contents, ok := mdElementRenderers[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
+				return
 			}
 
-			contentGroup := []ElementRenderer{}
-			if ref.Prev != nil {
-				contentGroup = append(contentGroup,
-					buttonLink().
-						CLASS("w-full no-underline").
-						HREF(ref.Prev.URL).
-						Text("Back to "+ref.Prev.Label),
-				)
-			}
-			contentGroup = append(contentGroup, contents)
-			if ref.Next != nil {
-				contentGroup = append(contentGroup,
-					buttonLink().
-						CLASS("w-full no-underline").
-						HREF(ref.Next.URL).
-						Text("Next "+ref.Next.Label),
-				)
+			var currentLink *SidebarLink
+			for _, group := range sidebarGroups {
+				for _, link := range group.Links {
+					if link.ID == name {
+						currentLink = link
+						break
+					}
+				}
 			}
 
-			anchors := mdAnchors[ref.ID]
-
-			prosePage(r, sidebarContents(r), Group(contentGroup...), anchors).Render(w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
 		})
 	})
 

@@ -8,7 +8,6 @@
     id="file_upload"
     data-on-load="$$get('/examples/file_upload/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

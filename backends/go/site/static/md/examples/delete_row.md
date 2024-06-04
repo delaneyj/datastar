@@ -15,7 +15,6 @@ tr.datastar-swapping td {
     id="delete_row"
     data-on-load="$$get('/examples/delete_row/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

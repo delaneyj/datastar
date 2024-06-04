@@ -1,6 +1,6 @@
-_September 13 2023_
-
 # Haikus
+
+## HTMX
 
 [HTMX](https://htmx.org/) has a wonderful haiku in its footer
 
@@ -10,6 +10,8 @@ _September 13 2023_
 
 > already in hand
 
+## Datastar
+
 I think this also applies to Datastar, but thought of a few that might match more to this project's goals.
 
 > Hypermedia
@@ -18,7 +20,7 @@ I think this also applies to Datastar, but thought of a few that might match mor
 
 > attributes enhance
 
---
+---
 
 > Code compiles with ease,
 
@@ -26,7 +28,7 @@ I think this also applies to Datastar, but thought of a few that might match mor
 
 > Dev's joy, future peace.
 
---
+---
 
 > Standard tags convey,
 

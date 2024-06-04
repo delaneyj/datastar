@@ -8,7 +8,6 @@
     id="edit_row"
     data-on-load="$$get('/examples/edit_row/data')"
 >
-     Replace me!
 </div>
 
 ## Explanation
