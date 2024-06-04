@@ -20,7 +20,6 @@ require (
 	github.com/gorilla/sessions v1.2.2
 	github.com/joho/godotenv v1.5.1
 	github.com/lithammer/fuzzysearch v1.1.8
-	github.com/martinusso/inflect v0.0.0-20161215184957-e234d1ee70de
 	github.com/samber/lo v1.39.0
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/wcharczuk/go-chart/v2 v2.1.1

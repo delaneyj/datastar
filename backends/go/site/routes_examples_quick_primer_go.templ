@@ -29,7 +29,7 @@ templ QuickPrimerGoView(store *QuickPrimerGoStore) {
 				<span id="feed" data-on-load="$$get('/examples/quick_primer_go/data/feed')"></span>
 			</div>
 		</main>
-		@datastar.SignalStore()
+		@datastar.TemplSignalStoreView()
 	</div>
 }
 

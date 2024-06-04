@@ -50,7 +50,7 @@ func QuickPrimerGoView(store *QuickPrimerGoStore) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = datastar.SignalStore().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = datastar.TemplSignalStoreView().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

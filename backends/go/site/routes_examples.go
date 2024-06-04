@@ -15,8 +15,8 @@ import (
 )
 
 var (
-	sanitizer   *sanitize.Sanitizer
-	SignalStore = Group(
+	sanitizer            *sanitize.Sanitizer
+	TemplSignalStoreView = Group(
 		H4(Text("Signal Store")),
 		PRE().DATASTAR_TEXT("JSON.stringify(ctx.store())"),
 	)
@@ -67,7 +67,7 @@ func setupExamples(router chi.Router) (err error) {
 				{ID: "multiline_fragments"},
 				{ID: "scroll_into_view"},
 				{ID: "on_load"},
-				{ID: "model_binding", IsDisabled: true},
+				{ID: "model_binding"},
 				{ID: "disable_button", IsDisabled: true},
 				{ID: "merge_options", IsDisabled: true},
 				{ID: "redirects", IsDisabled: true},
