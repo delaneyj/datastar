@@ -1,0 +1,42 @@
+package site
+
+import (
+	"fmt"
+	"time"
+
+	"github.com/delaneyj/datastar"
+)
+
+templ mergeOptionsView() {
+	<div id="contents" class="flex flex-col gap-8">
+		<div id="target">Target DIV</div>
+		<div class="flex gap-2 flex-wrap justify-center">
+			for _, mergeMode := range datastar.ValidFragmentMergeTypes {
+				<button
+					class="btn btn-accent"
+					data-on-click={ fmt.Sprintf("$$get('/examples/merge_options/%s')", mergeMode) }
+				>
+					{ string(mergeMode) }
+				</button>
+			}
+		</div>
+		<button
+			class="btn btn-warning"
+			data-on-click="$$get('/examples/merge_options/reset')"
+		>
+			Reset
+		</button>
+	</div>
+}
+
+templ mergeOptionsViewUpdate(bg, fg, hash string) {
+	<div
+		id="target"
+		class="p-4 rounded"
+		{ templ.Attributes{
+			"style": fmt.Sprintf("background-color:%s;color:%s;", bg, fg),
+		}... }
+	>
+		Update { hash } at {  time.Now().UTC().Format(time.RFC3339) }
+	</div>
+}
