@@ -31,7 +31,7 @@
 ```
 
 
-The `data-fetch-indicator` attribute is used to specify the element that should be shown as a loading indicator while the fetch request is in progress. The value of the attribute is a CSS selector that selects the element to be shown as the loading indicator.
+The `data-fetch-indicator` attribute is used to specify the elements that should be made visible when the fetch request is in progress. The value of the attribute is a CSS selector that can represent multiple elements. The same `data-fetch-indicator` selector can be used by different elements at the same time.
 
 The `$$isFetching("#ind")` action returns a computed value that allows you to easily react to the state of the indicator. 
 
