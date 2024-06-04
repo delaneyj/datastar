@@ -34,7 +34,7 @@ templ QuickPrimerGoView(store *QuickPrimerGoStore) {
 }
 
 templ QuickPrimerGoPut(store *QuickPrimerGoStore) {
-	<div id="output">Your input: { store.Input }, is { fmt.Sprint(len(store.Input)) } long.</div>
+	<div id="output">Your input: { store.Input }, is { fmt.Sprint(len(store.Input)) } characters long.</div>
 }
 
 templ QuickPrimerGoGet(stateStr string) {

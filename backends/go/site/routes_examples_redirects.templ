@@ -1,0 +1,19 @@
+package site
+
+import (
+	"github.com/delaneyj/datastar"
+)
+
+type RedirectsStore struct {
+	RedirectTo string `json:"redirectTo"`
+}
+
+templ redirectsView(store *RedirectsStore) {
+	<div id="demo" class="flex w-full gap-4" data-store={ datastar.MustJSON(store) }>
+		<label class="flex items-center flex-1 gap-2">
+			<span>Redirect to: </span>
+			<input data-model="redirectTo" class="flex-1 input input-bordered"/>
+		</label>
+		<button class="btn btn-success" data-on-click="$$post('/examples/redirects/data')">Redirect</button>
+	</div>
+}

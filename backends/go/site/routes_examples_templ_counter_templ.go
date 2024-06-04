@@ -32,7 +32,7 @@ func templCounterExampleButtons() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex gap-4 justify-around\"><button class=\"flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600\" data-on-click=\"$$post(&#39;/examples/templ_counter/increment/global&#39;)\">Increment Global</button> <button class=\"flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600\" data-on-click=\"$$post(&#39;/examples/templ_counter/increment/user&#39;)\">Increment User</button></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-around gap-4\"><button class=\"btn btn-info\" data-on-click=\"$$post(&#39;/examples/templ_counter/increment/global&#39;)\">Increment Global</button> <button class=\"btn btn-success\" data-on-click=\"$$post(&#39;/examples/templ_counter/increment/user&#39;)\">Increment User</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -56,7 +56,7 @@ func templCounterExampleCounts() templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex gap-4 justify-around\"><div class=\"flex flex-col items-center gap-1\"><div class=\"text-lg font-bold\">Global</div><div class=\"text-2xl\" data-text=\"$global\"></div></div><div class=\"flex flex-col items-center gap-1\"><div class=\"text-lg font-bold\">User</div><div class=\"text-2xl\" data-text=\"$user\"></div></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-around gap-4\"><div class=\"flex flex-col items-center gap-1\"><div class=\"text-lg font-bold\">Global</div><div class=\"text-2xl\" data-text=\"$global\"></div></div><div class=\"flex flex-col items-center gap-1\"><div class=\"text-lg font-bold\">User</div><div class=\"text-2xl\" data-text=\"$user\"></div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

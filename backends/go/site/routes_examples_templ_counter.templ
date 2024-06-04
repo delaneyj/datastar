@@ -10,15 +10,15 @@ type TemplCounterStore struct {
 }
 
 templ templCounterExampleButtons() {
-	<div class="flex gap-4 justify-around">
+	<div class="flex justify-around gap-4">
 		<button
-			class="flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600"
+			class="btn btn-info"
 			data-on-click="$$post('/examples/templ_counter/increment/global')"
 		>
 			Increment Global
 		</button>
 		<button
-			class="flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600"
+			class="btn btn-success"
 			data-on-click="$$post('/examples/templ_counter/increment/user')"
 		>
 			Increment User
@@ -27,7 +27,7 @@ templ templCounterExampleButtons() {
 }
 
 templ templCounterExampleCounts() {
-	<div class="flex gap-4 justify-around">
+	<div class="flex justify-around gap-4">
 		<div class="flex flex-col items-center gap-1">
 			<div class="text-lg font-bold">Global</div>
 			<div class="text-2xl" data-text="$global"></div>
