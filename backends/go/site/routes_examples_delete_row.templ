@@ -19,6 +19,7 @@ templ deleteRowContact(cs *ContactActive) {
 				data-on-click={ fmt.Sprintf(`confirm('Are you sure?') && $$delete("/examples/delete_row/data/%d")`, cs.ID) }
 			>
 				@icon("material-symbols:delete")
+				Delete
 			</button>
 		</td>
 	</tr>

@@ -76,7 +76,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		dataRouter.Post("/request_in_flight", func(w http.ResponseWriter, r *http.Request) {
 			time.Sleep(2 * time.Second)
 			sse := datastar.NewSSE(w, r)
-			datastar.RenderFragmentTempl(sse, animationsRequestInFlight())
+			datastar.RenderFragmentString(sse, `<div id="request_in_flight">Submitted!</div>`)
 		})
 
 		dataRouter.Get("/view_transition", func(w http.ResponseWriter, r *http.Request) {

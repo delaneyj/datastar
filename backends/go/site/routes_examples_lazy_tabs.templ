@@ -26,6 +26,7 @@ templ setupExamplesLazyTabsComponent(tabCount int, contents templ.Component, sto
 					role="tab"
 					class={ "tab", templ.KV("tab-active", i == store.TabID) }
 					data-on-click={ fmt.Sprintf("$tabId=%d;$$get('/examples/lazy_tabs/data')", i) }
+					data-testid={ fmt.Sprintf("tab_%d", i) }
 				>
 					Tab { fmt.Sprint(i) }
 				</button>

@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test.describe("Edit Row UI Suite", () => {
+test.describe("Is Loading UI Suite", () => {
   let loadingIndicator, greeting, greetingButton;
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/is_loading_identifier");

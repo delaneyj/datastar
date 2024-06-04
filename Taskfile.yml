@@ -75,6 +75,12 @@ tasks:
     cmds:
       - killall -q {{.BIN_NAME}}  || echo "Process was not running."
 
+  tests:
+    dir: playwright
+    cmds:
+      - pnpm i
+      - pnpm playwright
+
   hot:
     desc: Server hot reload
     dir: backends/go

@@ -194,7 +194,7 @@ func HomeGlobalCountExample(store GlobalCountStore) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"flex gap-4\"><a class=\"flex-1 btn btn-success\" data-on-click=\"$count++\">Increment Local +</a> <a class=\"flex-1 btn btn-error\" data-on-click=\"$count--\">Decrement Local -</a></div><div class=\"flex flex-col gap-2\"><div data-text=\"`Count is ${$count % 2 === 0 ? &#39;even&#39; : &#39;odd&#39;}`\"></div><input class=\"flex-1 input input-bordered\" type=\"number\" name=\"count\" data-model=\"count\" data-testid=\"globalcount_input\"></div><div class=\"flex gap-4\"><a class=\"flex-1 btn btn-info\" data-on-click=\"$$get(&#39;/api/globalCount&#39;)\">Load global</a> <a class=\"flex-1 btn btn-warning\" data-on-click=\"$$post(&#39;/api/globalCount&#39;)\">Store global</a></div></div>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><div class=\"flex gap-4\"><a class=\"flex-1 btn btn-success\" data-on-click=\"$count++\">Increment Local +</a> <a class=\"flex-1 btn btn-error\" data-on-click=\"$count--\">Decrement Local -</a></div><div class=\"flex flex-col gap-2\"><div data-text=\"`Count is ${$count % 2 === 0 ? &#39;even&#39; : &#39;odd&#39;}`\"></div><input class=\"flex-1 input input-bordered\" type=\"number\" name=\"count\" data-model=\"count\" data-testid=\"localcount_input\"></div><div class=\"flex gap-4\"><a class=\"flex-1 btn btn-info\" data-on-click=\"$$get(&#39;/api/globalCount&#39;)\">Load global</a> <a class=\"flex-1 btn btn-warning\" data-on-click=\"$$post(&#39;/api/globalCount&#39;)\">Store global</a></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
