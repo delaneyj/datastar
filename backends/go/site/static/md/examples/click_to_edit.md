@@ -8,7 +8,7 @@
     id="contact_1"
     data-on-load="$$get('/examples/click_to_edit/contact/1')"
 >
-     Replace me
+
 </div>
 
 ## Explanation

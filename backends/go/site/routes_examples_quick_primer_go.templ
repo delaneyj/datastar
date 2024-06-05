@@ -1,0 +1,50 @@
+package site
+
+import (
+	"fmt"
+	"github.com/delaneyj/datastar"
+)
+
+type QuickPrimerGoStore struct {
+	Input string `json:"input"`
+	Show  bool   `json:"show"`
+}
+
+templ QuickPrimerGoView(store *QuickPrimerGoStore) {
+	<div id="replaceMe" data-store={ templ.JSONString(store) }>
+		<h2>Go Datastar Example</h2>
+		<main id="main" class="container flex flex-col gap-4">
+			<input type="text" class="input input-bordered" placeholder="Type here!" data-model="input"/>
+			<div data-text="$input"></div>
+			<button class="btn btn-accent" data-on-click="$show = !$show">Toggle</button>
+			<div data-show="$show">
+				<span>Hello from Datastar!</span>
+			</div>
+			<div id="output">#output</div>
+			<button class="btn btn-accent" data-on-click="$$put('/examples/quick_primer_go/data')">Send State</button>
+			<div id="output2">#output2</div>
+			<button class="btn btn-accent" data-on-click="$$get('/examples/quick_primer_go/data')">Get State</button>
+			<div>
+				<span>Feed from server: </span>
+				<span id="feed" data-on-load="$$get('/examples/quick_primer_go/data/feed')"></span>
+			</div>
+		</main>
+		@datastar.TemplSignalStoreView()
+	</div>
+}
+
+templ QuickPrimerGoPut(store *QuickPrimerGoStore) {
+	<div id="output">Your input: { store.Input }, is { fmt.Sprint(len(store.Input)) } characters long.</div>
+}
+
+templ QuickPrimerGoGet(stateStr string) {
+	<div id="output2">Backend state: { stateStr }</div>
+}
+
+templ QuickPrimerCheckThisOut() {
+	<div>Check this out!</div>
+}
+
+templ QuickPrimerGoFeed(feed string) {
+	<span id="feed">{ feed }</span>
+}

@@ -1,10 +1,10 @@
 package site
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	. "github.com/delaneyj/gostar/elements"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
 )
@@ -31,10 +31,8 @@ func setupExamplesStoreChanged(examplesRouter chi.Router, store sessions.Store) 
 		}
 
 		sse := datastar.NewSSE(w, r)
-		datastar.RenderFragment(sse,
-			DIV().
-				ID("from_server").
-				TextF("Lifetime server updates %d", totalUpdates),
+		datastar.RenderFragmentString(sse,
+			fmt.Sprintf(`<div id="from_server">Lifetime server updates %d</div>`, totalUpdates),
 		)
 	}
 

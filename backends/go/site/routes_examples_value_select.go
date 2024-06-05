@@ -4,35 +4,17 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	. "github.com/delaneyj/gostar/elements"
-	"github.com/delaneyj/gostar/elements/iconify/material_symbols"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 )
 
 func setupExamplesValueSelect(examplesRouter chi.Router) error {
-
-	// lazyLoadRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-	// 	examplePage(w, r)
-	// })
-
-	type Model struct {
-		ID    string `json:"id"`
-		Label string `json:"label"`
-	}
-
-	type Make struct {
-		ID     string   `json:"id"`
-		Label  string   `json:"label"`
-		Models []*Model `json:"models"`
-	}
-
-	cars := []*Make{
+	cars := []*ValueSelectMake{
 		{
 			ID:    toolbelt.NextEncodedID(),
 			Label: "Audi",
-			Models: []*Model{
+			Models: []*ValueSelectModel{
 				{
 					ID:    toolbelt.NextEncodedID(),
 					Label: "A1",
@@ -50,7 +32,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 		{
 			ID:    toolbelt.NextEncodedID(),
 			Label: "Toyota",
-			Models: []*Model{
+			Models: []*ValueSelectModel{
 				{
 					ID:    toolbelt.NextEncodedID(),
 					Label: "Land Cruiser",
@@ -68,7 +50,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 		{
 			ID:    toolbelt.NextEncodedID(),
 			Label: "Ford",
-			Models: []*Model{
+			Models: []*ValueSelectModel{
 				{
 					ID:    toolbelt.NextEncodedID(),
 					Label: "F-150",
@@ -85,12 +67,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 		},
 	}
 
-	type Store struct {
-		Make  string `json:"make"`
-		Model string `json:"model"`
-	}
-
-	storeValidation := func(store *Store) (make *Make, model *Model, isValid bool) {
+	storeValidation := func(store *ValueSelectStore) (make *ValueSelectMake, model *ValueSelectModel, isValid bool) {
 		if store.Make != "" {
 			for _, possibleMake := range cars {
 				if possibleMake.ID == store.Make {
@@ -115,7 +92,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 	examplesRouter.Route("/value_select/data", func(dataRouter chi.Router) {
 
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &Store{}
+			store := &ValueSelectStore{}
 			if err := datastar.QueryStringUnmarshal(r, store); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
@@ -124,76 +101,14 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 			make, model, isValid := storeValidation(store)
 
 			sse := datastar.NewSSE(w, r)
-			datastar.RenderFragment(
+			datastar.RenderFragmentTempl(
 				sse,
-				DIV().
-					ID("value_select").
-					DATASTAR_STORE(store).
-					CLASS("flex flex-col gap-2").
-					Children(
-						DIV().
-							CLASS("text-2xl font-bold").
-							Text("Pick a Make / Model"),
-						SELECT().
-							CLASS("bg-accent-800 border border-accent-600 text-accent-200 text-sm rounded-lg focus:ring-accent-400 focus:border-accent-400 block w-full p-2.5").
-							DATASTAR_MODEL("make").
-							DATASTAR_ON("change", datastar.GET("/examples/value_select/data")).
-							CustomData("testid", "make_select").
-							Children(
-								OPTION().
-									DISABLED().
-									SELECTED().
-									Text("Select a Make").
-									VALUE(""),
-								Group(Range(cars, func(item *Make) ElementRenderer {
-									return OPTION().
-										VALUE(item.ID).
-										Text(item.Label).
-										CustomData("testid", "make_option_"+item.Label)
-								})),
-							),
-						DynIf(
-							make != nil,
-							func() ElementRenderer {
-								return SELECT().
-									CLASS("bg-accent-800 border border-accent-600 text-accent-200 text-sm rounded-lg focus:ring-accent-400 focus:border-accent-400 block w-full p-2.5").
-									DATASTAR_MODEL("model").
-									DATASTAR_ON("change", datastar.GET("/examples/value_select/data")).
-									CustomData("testid", "model_select").
-									Children(
-										OPTION().
-											DISABLED().
-											SELECTED().
-											Text("Select a Model").
-											VALUE(""),
-										Group(Range(make.Models, func(item *Model) ElementRenderer {
-											return OPTION().
-												VALUE(item.ID).
-												Text(item.Label).
-												CustomData("testid", "model_option_"+item.Label)
-										})),
-									)
-							},
-						),
-						DynIf(
-							isValid,
-							func() ElementRenderer {
-								return BUTTON().
-									CLASS("flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600").
-									DATASTAR_ON("click", datastar.POST("/examples/value_select/data")).
-									CustomData("testid", "select_button").
-									Children(
-										material_symbols.CarRepair(),
-										TextF("Submit selected '%s / %s' choice", make.Label, model.Label),
-									)
-							},
-						),
-					),
+				valueSelectView(cars, store, make, model, isValid),
 			)
 		})
 
 		dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &Store{}
+			store := &ValueSelectStore{}
 			if err := datastar.BodyUnmarshal(r, store); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
@@ -208,7 +123,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 
 			sse := datastar.NewSSE(w, r)
 
-			make, ok := lo.Find(cars, func(item *Make) bool {
+			make, ok := lo.Find(cars, func(item *ValueSelectMake) bool {
 				return item.ID == store.Make
 			})
 			if !ok {
@@ -216,7 +131,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 				return
 			}
 
-			model, ok := lo.Find(make.Models, func(item *Model) bool {
+			model, ok := lo.Find(make.Models, func(item *ValueSelectModel) bool {
 				return item.ID == store.Model
 			})
 
@@ -225,23 +140,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 				return
 			}
 
-			datastar.RenderFragment(sse,
-				DIV().
-					ID("value_select").
-					Children(
-						Text("You selected"),
-						BR(),
-						TextF("Make '%s' db id:%s", make.Label, make.ID),
-						BR(),
-						TextF("Model '%s' db id:%s", model.Label, model.ID),
-						BUTTON().CLASS("flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600").
-							DATASTAR_ON("click", datastar.GET("/examples/value_select/data")).
-							Children(
-								material_symbols.ResetWrench(),
-								TextF("Resest form"),
-							),
-					),
-			)
+			datastar.RenderFragmentTempl(sse, valueSelectResults(make, model))
 		})
 	})
 

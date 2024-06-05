@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Animations UI Suite", () => {
   test.beforeEach(async ({ page }) => {
@@ -7,7 +7,7 @@ test.describe("Animations UI Suite", () => {
   });
 
   test("test color throb", async ({ page }) => {
-    const selector = '[data-testid="color_throb"]';
+    const selector = "#color_throb";
 
     // can change number if needed for multiple animation changes
     for (let i = 0; i < 1; i++) {
@@ -68,7 +68,7 @@ test.describe("Animations UI Suite", () => {
       /.*datastar-indicator-loading.*/
     );
     //
-    await expect(page.locator("div#request_in_flight")).toContainText(
+    await expect(page.locator("#request_in_flight")).toContainText(
       "Submitted!"
     );
   });

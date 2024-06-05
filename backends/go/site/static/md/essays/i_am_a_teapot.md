@@ -1,5 +1,3 @@
-_October 13 2023_
-
 # 418 I'm a teapot
 
 A discussion on the [HTMX Discord](https://discord.com/channels/725789699527933952/1156332851093065788) started talking about HTTP status codes. Apparently I hold the minority opinion that if

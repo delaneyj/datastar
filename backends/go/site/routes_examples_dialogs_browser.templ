@@ -1,0 +1,37 @@
+package site
+
+type DialogBrowserStore struct {
+	Prompt  string `json:"prompt"`
+	Confirm bool   `json:"confirm"`
+}
+
+templ DialogBrowserView(store *DialogBrowserStore) {
+	<button
+		id="dialogs"
+		class="flex items-center btn btn-primary"
+		data-store={ templ.JSONString(store) }
+		data-on-click="$prompt = prompt('Enter a string',$prompt);$confirm = confirm('Are you sure?');$confirm && $$get('/examples/dialogs_browser/sure')"
+	>
+		Click Me
+		@icon("material-symbols:question-mark")
+	</button>
+}
+
+templ DialogBrowserSure(store *DialogBrowserStore) {
+	<div id="dialogs" class="flex flex-col gap-4">
+		if store.Confirm {
+			<div>
+				You clicked the button and confirmed with prompt of <span class="font-bold text-accent">{ store.Prompt }</span>!
+			</div>
+			<button class="flex items-center gap-2 btn btn-accent" data-on-click="$$get('/examples/dialogs_browser/data')">
+				@icon("material-symbols:arrow-back")
+				Reset
+			</button>
+		} else {
+			<div class="alert alert-error">
+				@icon("material-symbols:error-icon")
+				You clicked the button and did not confirm! Should not see this
+			</div>
+		}
+	</div>
+}

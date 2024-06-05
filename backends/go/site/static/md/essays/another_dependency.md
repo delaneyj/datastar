@@ -1,14 +1,10 @@
-_March 29 2024_
-
 # Another Dependency
 
-Datastar is small, like really small. Even with all the plugins included it hovers between 10-11Kb minified+gzipped. One of the things that might not be know is how much of that is actually "external" dependencies.
+Datastar is small, like really small. Even with all the plugins included it hovers between 10-12Kb minified+gzipped. One of the things that you might not know is how much of that is actually "external" dependencies.
 
 ![Datastar Dependencies](/static/images/essays/datastar_dependencies.png)
 
-As you can see over half of the size is actually the dependencies.
-
-Let's break it down:
+It accounts for over half of the size is actually the dependencies; let's break it down:
 
 | Dependency                                                            | Usage                                                                                                 |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |

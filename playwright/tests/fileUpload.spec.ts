@@ -8,10 +8,9 @@ test.describe("File Upload UI Suite", () => {
   });
 
   test("test initial state", async ({ page }) => {
-    await expect(page.locator("label")).toContainText(
-      "Pick anything reasonably sized"
-    );
-    await expect(page.getByRole("button", { name: "Submit" })).toBeAttached();
+    await expect(
+      page.getByRole("button", { name: "Submit" })
+    ).not.toBeAttached();
   });
 
   test("file upload test", async ({ page }) => {
@@ -27,11 +26,11 @@ test.describe("File Upload UI Suite", () => {
     await expect(page.getByRole("caption")).toContainText(
       "File Upload Results"
     );
-    await expect(page.locator("#file_upload")).toContainText("File Name");
+    await expect(page.locator("#file_upload")).toContainText("Name");
     await expect(page.locator("#file_upload")).toContainText("testfile.txt");
-    await expect(page.locator("#file_upload")).toContainText("File Size");
+    await expect(page.locator("#file_upload")).toContainText("Size");
     await expect(page.locator("#file_upload")).toContainText("4 B");
-    await expect(page.locator("#file_upload")).toContainText("File Mime");
+    await expect(page.locator("#file_upload")).toContainText("Mime");
     await expect(page.locator("#file_upload")).toContainText("text/plain");
     await expect(page.locator("#file_upload")).toContainText("XXH3 Hash");
     await expect(page.locator("#file_upload")).toContainText(
@@ -57,17 +56,24 @@ test.describe("File Upload UI Suite", () => {
     await expect(page.getByRole("caption")).toContainText(
       "File Upload Results"
     );
-    await expect(page.locator("#file_upload")).toContainText("File Name");
-    await expect(page.locator("#file_upload")).toContainText(
-      "testfile.txt, testfile2.txt"
-    );
-    await expect(page.locator("#file_upload")).toContainText("File Size");
-    await expect(page.locator("#file_upload")).toContainText("4 B, 5 B");
-    await expect(page.locator("#file_upload")).toContainText("File Mime");
-    await expect(page.locator("#file_upload")).toContainText("text/plain");
-    await expect(page.locator("#file_upload")).toContainText("XXH3 Hash");
-    await expect(page.locator("#file_upload")).toContainText(
-      "a29dce2b64301dfe, cccc15fddee24c90"
+
+    const fileUploadLocator = await page.locator("#file_upload");
+    await Promise.all(
+      [
+        "Name",
+        "testfile.txt",
+        "testfile2.txt",
+        "Size",
+        "4 B",
+        "5 B",
+        "Mime",
+        "text/plain",
+        "XXH3 Hash",
+        "a29dce2b64301dfe",
+        "cccc15fddee24c90",
+      ].map((text) => {
+        return expect(fileUploadLocator).toContainText(text);
+      })
     );
   });
 });

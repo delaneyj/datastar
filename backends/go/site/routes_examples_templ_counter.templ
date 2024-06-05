@@ -1,0 +1,47 @@
+package site
+
+type TemplCounterStore struct {
+	Global uint32 `json:"global"`
+	User   uint32 `json:"user"`
+}
+
+templ templCounterExampleButtons() {
+	<div class="flex justify-around gap-4">
+		<button
+			class="btn btn-info"
+			data-on-click="$$post('/examples/templ_counter/increment/global')"
+		>
+			Increment Global
+		</button>
+		<button
+			class="btn btn-success"
+			data-on-click="$$post('/examples/templ_counter/increment/user')"
+		>
+			Increment User
+		</button>
+	</div>
+}
+
+templ templCounterExampleCounts() {
+	<div class="flex justify-around gap-4">
+		<div class="flex flex-col items-center gap-1">
+			<div class="text-lg font-bold">Global</div>
+			<div class="text-2xl" data-text="$global"></div>
+		</div>
+		<div class="flex flex-col items-center gap-1">
+			<div class="text-lg font-bold">User</div>
+			<div class="text-2xl" data-text="$user"></div>
+		</div>
+	</div>
+}
+
+templ templCounterExampleInitialContents(store TemplCounterStore) {
+	<div
+		id="container"
+		data-store={ templ.JSONString(store) }
+		class="flex flex-col gap-4"
+	>
+		@templCounterExampleButtons()
+		@templCounterExampleCounts()
+	</div>
+}

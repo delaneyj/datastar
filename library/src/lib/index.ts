@@ -4,7 +4,14 @@ export * from './types'
 
 import { version } from '../../package.json'
 import { Datastar } from './core'
-import { AttributeActions, AttributePlugins, BackendActions, BackendPlugins, VisibilityPlugins } from './plugins'
+import {
+  AttributeActions,
+  AttributePlugins,
+  BackendActions,
+  BackendPlugins,
+  VisibilityActions,
+  VisibilityPlugins,
+} from './plugins'
 import { HelperActions } from './plugins/helpers'
 import { Actions, AttributePlugin } from './types'
 
@@ -18,7 +25,14 @@ export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlug
 }
 
 export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPlugins: AttributePlugin[]) {
-  const actions: Actions = Object.assign({}, HelperActions, AttributeActions, BackendActions, addedActions)
+  const actions: Actions = Object.assign(
+    {},
+    HelperActions,
+    AttributeActions,
+    BackendActions,
+    VisibilityActions,
+    addedActions,
+  )
   const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins]
   return runDatastarWith(actions, ...allPlugins)
 }

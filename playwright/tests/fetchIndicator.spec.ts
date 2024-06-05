@@ -16,4 +16,30 @@ test.describe("Fetch Indicator Suite", () => {
       "Hello, the time is"
     );
   });
+
+  // Had multiple bugs that could only be detected when run twice
+  test("test second run of fetch indicator ", async ({ page }) => {
+    await page.getByTestId("greeting_button").click();
+    await expect(page.locator("div#ind")).toBeVisible();
+    await expect(page.locator("div#greeting")).toBeVisible();
+    await expect(page.locator("div#greeting")).toContainText(
+      "Hello, the time is"
+    );
+    await page.getByTestId("greeting_button").click();
+    await expect(page.locator("div#ind")).toBeVisible();
+    await expect(page.locator("div#greeting")).toBeVisible();
+    await expect(page.locator("div#greeting")).toContainText(
+      "Hello, the time is"
+    );
+  });
+
+  test("test isFetching", async ({ page }) => {
+    await page.getByTestId("greeting_button").click();
+    await expect(page.getByTestId("greeting_button")).toBeDisabled();
+    await expect(page.locator("div#greeting")).toBeVisible();
+    await expect(page.locator("div#greeting")).toContainText(
+      "Hello, the time is"
+    );
+    await expect(page.getByTestId("greeting_button")).toBeEnabled();
+  });
 });

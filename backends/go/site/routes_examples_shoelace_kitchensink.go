@@ -8,7 +8,6 @@ import (
 	"net/http"
 
 	"github.com/delaneyj/datastar"
-	. "github.com/delaneyj/gostar/elements"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
@@ -16,24 +15,10 @@ import (
 
 func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 	examplesRouter.Route("/shoelace_kitchensink/data", func(dataRouter chi.Router) {
-		type Nested struct {
-			Label     string `json:"label"`
-			Selection uint32 `json:"selection"`
-			IsChecked bool   `json:"isChecked"`
-		}
-		type Input struct {
-			Nested *Nested `json:"nested"`
-		}
 
-		type Option struct {
-			Label string `json:"label"`
-			Value uint32 `json:"value"`
-		}
-
-		options := lo.Map(lo.Range(7), func(i, index int) Option {
-			// offset := 100199071137923140 + int64(index)
+		options := lo.Map(lo.Range(7), func(i, index int) ShoelaceKitchensinkOption {
 			offset := toolbelt.NextID()
-			return Option{
+			return ShoelaceKitchensinkOption{
 				Label: fmt.Sprintf("Option %d", i),
 				Value: uint32(offset % math.MaxUint32),
 			}
@@ -41,66 +26,26 @@ func setupExamplesShoelaceKitchensink(examplesRouter chi.Router) error {
 
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
-
-			input := &Input{
-				Nested: &Nested{
+			store := &ShoelaceKitchensinkStore{
+				Nested: &ShoelaceKitchensinkNested{
 					Label:     fmt.Sprintf("Hello World %d", rand.Intn(100)),
 					Selection: options[rand.Intn(len(options))].Value,
 					IsChecked: true,
 				},
 			}
-
-			datastar.RenderFragment(sse,
-				DIV().
-					ID("shoelace_kitchensink").
-					CLASS("sl-theme-dark flex flex-col gap-4").
-					DATASTAR_STORE(input).
-					Children(
-						SL_INPUT().
-							LABEL("Label").
-							DATASTAR_MODEL("nested.label"),
-						SL_SELECT().
-							LABEL("Select").
-							DATASTAR_MODEL("nested.selection").
-							DATASTAR_ON("sl-change", "console.log('change')").
-							Children(
-								Range(options, func(o Option) ElementRenderer {
-									return SL_OPTION().
-										VALUE(fmt.Sprint(o.Value)).
-										TextF("%s (%d)", o.Label, o.Value)
-								}),
-							),
-						SL_RADIOGROUP().
-							LABEL("Radio Group").
-							DATASTAR_MODEL("nested.selection").
-							Children(
-								Range(options, func(o Option) ElementRenderer {
-									return SL_RADIOBUTTON().
-										VALUE(fmt.Sprint(o.Value)).
-										Text(o.Label)
-								}),
-							),
-						SL_CHECKBOX().
-							DATASTAR_MODEL("nested.isChecked").
-							Text("Checkbox"),
-						SL_BUTTON().
-							VARIANT(SLButtonVariant_primary).
-							Text("Submit").
-							DATASTAR_ON("click", datastar.POST(r.URL.Path)),
-						SignalStore,
-					),
-			)
+			datastar.RenderFragmentTempl(sse, ShoelaceKitchensinkView(r, options, store))
 		})
 
 		dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-			sse := datastar.NewSSE(w, r)
 			var res any
 			if err := datastar.BodyUnmarshal(r, &res); err != nil {
-				datastar.Error(sse, err)
+				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 
-			log.Printf("res: %#v", res)
+			log.Printf("res: %v", res)
+			sse := datastar.NewSSE(w, r)
+			datastar.RenderFragmentString(sse, "<div></div>")
 		})
 	})
 

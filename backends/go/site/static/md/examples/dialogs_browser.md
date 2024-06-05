@@ -8,7 +8,6 @@
     id="dialogs"
     data-on-load="$$get('/examples/dialogs_browser/data')"
 >
-     Replace me!
 </div>
 
 ## Explanation

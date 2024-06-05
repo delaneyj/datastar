@@ -23,9 +23,6 @@
     data-on-click="$shouldDisable = true;$$get('/examples/disable_button/data')"
     data-bind-disabled="$shouldDisable"
   >Click Me</button>
-  <div id="results">
-    <h1>Results from server</h1>
-  </div>
 </div>
 
 ## Explanation

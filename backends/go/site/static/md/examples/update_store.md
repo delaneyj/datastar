@@ -6,13 +6,13 @@
      data-store='{"stuffAlreadyInStore":"this is already in the store"}'
 >
      <button
-          class="flex items-center justify-center gap-1 px-4 py-2 rounded-lg bg-success-700 hover:bg-success-600"
+          class="btn btn-success"
           data-on-click="$$post('/examples/update_store/data/patch')"
      >
           Apply random signal patch
      </button>
      <pre
-          class="bg-accent-900 border-2 border-accent-600 text-accent-100 text-sm rounded-lg focus:ring-primary-400 focus:border-primary-400 block w-full p-2.5"
+          class="bg-accent border-2 border-accent text-accent text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5"
           data-text="JSON.stringify(ctx.store(),null,2)"
      >
           Stuff in store

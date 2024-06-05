@@ -1,0 +1,56 @@
+package site
+
+import (
+	"fmt"
+)
+
+type ActiveSearchStore struct {
+	Search string `json:"search"`
+}
+
+type ActiveSearchUser struct {
+	ID        string `json:"id"`
+	FirstName string `json:"firstName"`
+	LastName  string `json:"lastName"`
+	Email     string `json:"email"`
+}
+
+templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string]float64, store *ActiveSearchStore) {
+	<div
+		id="active_search"
+		class="flex flex-col gap-4"
+		data-store={ templ.JSONString(store) }
+	>
+		<div class="flex gap-4">
+			<input
+				class="flex-1 input input-bordered"
+				type="text"
+				placeholder="Search..."
+				data-model="search"
+				data-on-input.debounce_500ms="$$get('/examples/active_search/data')"
+			/>
+			@icon("svg-spinners:blocks-wave", "class", "text-5xl datastar-indicator")
+		</div>
+		<table class="table w-full">
+			<caption>Contacts</caption>
+			<thead>
+				<tr>
+					<th>First Name</th>
+					<th>Last Name</th>
+					<th>Email</th>
+					<th>Score</th>
+				</tr>
+			</thead>
+			<tbody id="active_search_rows">
+				for _,user := range filteredUsers[0:10] {
+					<tr>
+						<td>{ user.FirstName }</td>
+						<td>{ user.LastName }</td>
+						<td>{ user.Email }</td>
+						<td>{ fmt.Sprintf("%0.2f", scores[user.ID]) }</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}

@@ -8,7 +8,6 @@
     id="click_to_load"
     data-on-load="$$get('/examples/click_to_load/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

@@ -1,5 +1,3 @@
-_September 1 2023_
-
 # Why another framework?
 
 ## What's different?

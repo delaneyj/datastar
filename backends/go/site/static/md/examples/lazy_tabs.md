@@ -8,7 +8,6 @@
     id="lazy_tabs"
     data-on-load="$$get('/examples/lazy_tabs/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

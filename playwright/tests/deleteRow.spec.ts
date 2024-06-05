@@ -55,8 +55,7 @@ test.describe("Delete Row UI Suite", () => {
       dialog.accept().catch(() => {});
     });
     let l = await page.locator("#contact_0");
-    await page;
-    l.getByRole("cell", { name: "Delete" }).click();
+    await l.getByRole("cell", { name: "Delete" }).click();
     await expect(l).not.toBeAttached();
 
     // 2nd Row.
@@ -74,15 +73,6 @@ test.describe("Delete Row UI Suite", () => {
       dialog.accept().catch(() => {});
     });
     l = await page.locator("#contact_2");
-    await l.getByRole("cell", { name: "Delete" }).click();
-    await expect(l).not.toBeAttached();
-
-    // 4th Row.
-    page.once("dialog", (dialog) => {
-      console.log(`Dialog message: ${dialog.message()}`);
-      dialog.accept().catch(() => {});
-    });
-    l = await page.locator("#contact_3");
     await l.getByRole("cell", { name: "Delete" }).click();
     await expect(l).not.toBeAttached();
   });

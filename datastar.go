@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/delaneyj/gostar/elements"
 	"github.com/go-sanitize/sanitize"
 	"github.com/goccy/go-json"
@@ -98,9 +99,10 @@ const (
 )
 
 type RenderFragmentOptions struct {
-	QuerySelector  string
-	Merge          FragmentMergeType
-	SettleDuration time.Duration
+	QuerySelector      string
+	Merge              FragmentMergeType
+	SettleDuration     time.Duration
+	UseViewTransitions *bool
 }
 type RenderFragmentOption func(*RenderFragmentOptions)
 
@@ -170,13 +172,18 @@ func WithQuerySelectorUseID() RenderFragmentOption {
 	return WithQuerySelector(FragmentSelectorUseID)
 }
 
-func UpsertStore(sse *ServerSentEventsHandler, store any, opts ...RenderFragmentOption) {
-	opts = append([]RenderFragmentOption{WithMergeUpsertAttributes()}, opts...)
-	RenderFragment(
-		sse,
-		elements.DIV().DATASTAR_STORE(store),
-		opts...,
-	)
+func WithViewTransitions() RenderFragmentOption {
+	return func(o *RenderFragmentOptions) {
+		var b = true
+		o.UseViewTransitions = &b
+	}
+}
+
+func WithoutViewTransitions() RenderFragmentOption {
+	return func(o *RenderFragmentOptions) {
+		var b = false
+		o.UseViewTransitions = &b
+	}
 }
 
 func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
@@ -191,7 +198,18 @@ func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmen
 	)
 }
 
-func RenderFragment(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
+func RenderFragmentTempl(sse *ServerSentEventsHandler, c templ.Component, opts ...RenderFragmentOption) error {
+	sb := &strings.Builder{}
+	if err := c.Render(sse.Context(), sb); err != nil {
+		return fmt.Errorf("failed to render fragment: %w", err)
+	}
+	if err := RenderFragmentString(sse, sb.String(), opts...); err != nil {
+		return fmt.Errorf("failed to render fragment: %w", err)
+	}
+	return nil
+}
+
+func RenderFragmentGostar(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
 	if err := child.Render(buf); err != nil {
@@ -221,6 +239,10 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 	if options.SettleDuration > 0 {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
+	if options.UseViewTransitions != nil {
+		dataRows = append(dataRows, fmt.Sprintf("vt %t", *options.UseViewTransitions))
+	}
+
 	if fragment != "" {
 		parts := strings.Split(fragment, "\n")
 		parts[0] = "fragment " + parts[0]
@@ -237,11 +259,6 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 	return nil
 }
 
-func RenderFragmentSelf(sse *ServerSentEventsHandler, child elements.ElementRenderer, opts ...RenderFragmentOption) error {
-	opts = append([]RenderFragmentOption{WithQuerySelectorSelf()}, opts...)
-	return RenderFragment(sse, child, opts...)
-}
-
 func Redirect(sse *ServerSentEventsHandler, url string) {
 	sse.Send(
 		fmt.Sprintf("redirect %s", url),
@@ -255,8 +272,13 @@ func PatchStore(sse *ServerSentEventsHandler, store any) {
 	if err != nil {
 		panic(err)
 	}
-	sse.Send(
-		string(b),
+	PatchStoreRaw(sse, string(b))
+}
+
+func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string) {
+	lines := strings.Split(storeJSON, "\n")
+	sse.SendMultiData(
+		lines,
 		WithSSEEvent(SSEEventTypeSignal),
 	)
 }

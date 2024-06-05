@@ -37,9 +37,11 @@ data: fragment <<tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</
 
 ## Demo
 
+<div>
 <div
     id="infinite_scroll"
     data-on-load="$$get('/examples/infinite_scroll/data')"
 >
-     Replace me
+</div>
+<div id="more_btn"></div>
 </div>

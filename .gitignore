@@ -3,3 +3,4 @@ node_modules
 
 site_bin
 .task
+*_templ.go

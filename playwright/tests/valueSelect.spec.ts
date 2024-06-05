@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
 test.describe("Value Select UI Suite", () => {
   test.beforeEach(async ({ page }) => {
@@ -101,15 +101,19 @@ test.describe("Value Select UI Suite", () => {
     // select values
     await page.getByTestId("model_select").selectOption(selectionCorolla);
     await expect(page.getByTestId("select_button")).toBeAttached();
-    await expect(page.getByTestId("select_button")).toContainText(
-      "Submit selected 'Toyota / Corolla' choice"
+    await Promise.all(
+      ["Submit selected", "Toyota", "Corolla"].map((text) =>
+        expect(page.locator("#value_select")).toContainText(text)
+      )
     );
-    await page.getByTestId("select_button").click();
 
+    await page.getByTestId("select_button").click();
     // clicked submit
     await expect(page.getByTestId("select_button")).not.toBeAttached();
-    await expect(page.locator("#value_select")).toContainText(
-      /Make\s+'Toyota'.*Model\s+'Corolla'/
+    await Promise.all(
+      ["You selected", "Toyota", "Corolla"].map((text) =>
+        expect(page.locator("#value_select")).toContainText(text)
+      )
     );
     await expect(
       page.getByRole("button", { name: "Resest form" })

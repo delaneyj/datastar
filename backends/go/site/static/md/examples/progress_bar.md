@@ -8,7 +8,6 @@
     id="progress_bar"
     data-on-load="$$get('/examples/progress_bar/data')"
 >
-     Replace me
 </div>
 
 ## Explanation

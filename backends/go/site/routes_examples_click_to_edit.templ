@@ -1,0 +1,64 @@
+package site
+
+import (
+	goaway "github.com/TwiN/go-away"
+)
+
+type ClickToEditContactStore struct {
+	FirstName string `json:"firstName,omitempty" san:"trim,xss,max=128"`
+	LastName  string `json:"lastName,omitempty" san:"trim,xss,max=128"`
+	Email     string `json:"email,omitempty" san:"trim,xss,max=128"`
+}
+
+templ setupExamplesClickToEditUserComponent(store *ClickToEditContactStore) {
+	<div id="contact_1" class="flex flex-col max-w-sm gap-2">
+		<label>First Name: { goaway.Censor(store.FirstName) }</label>
+		<label>Last Name: { goaway.Censor(store.LastName) }</label>
+		<label>Email: { goaway.Censor(store.Email) }</label>
+		<div class="flex gap-4">
+			<button
+				class="btn btn-primary"
+				data-on-click="$$get('/examples/click_to_edit/contact/1/edit')"
+			>
+				Edit
+			</button>
+			<button
+				class="btn btn-secondary"
+				data-on-click="$$patch('/examples/click_to_edit/contact/1/reset')"
+			>
+				Reset
+			</button>
+		</div>
+	</div>
+}
+
+templ setupExamplesClickToEditUserEdit(store *ClickToEditContactStore) {
+	<div id="contact_1" class="flex flex-col gap-2" data-store={ templ.JSONString(store) }>
+		<label class="flex items-center gap-2 input input-bordered">
+			First Name
+			<input type="text" class="grow" data-model="firstName"/>
+		</label>
+		<label class="flex items-center gap-2 input input-bordered">
+			Last Name
+			<input type="text" class="grow" data-model="lastName"/>
+		</label>
+		<label class="flex items-center gap-2 input input-bordered">
+			Email
+			<input type="text" class="grow" data-model="email"/>
+		</label>
+		<div class="flex gap-4">
+			<button
+				class="btn btn-primary"
+				data-on-click="$$put('/examples/click_to_edit/contact/1')"
+			>
+				Save
+			</button>
+			<button
+				class="btn btn-secondary"
+				data-on-click="$$get('/examples/click_to_edit/contact/1')"
+			>
+				Cancel
+			</button>
+		</div>
+	</div>
+}

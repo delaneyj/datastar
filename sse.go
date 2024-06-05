@@ -1,6 +1,7 @@
 package datastar
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 )
 
 type ServerSentEventsHandler struct {
+	ctx             context.Context
 	w               http.ResponseWriter
 	flusher         http.Flusher
 	shouldLogPanics bool
@@ -26,11 +28,16 @@ func NewSSE(w http.ResponseWriter, r *http.Request) *ServerSentEventsHandler {
 	flusher.Flush()
 
 	return &ServerSentEventsHandler{
+		ctx:             r.Context(),
 		w:               w,
 		flusher:         flusher,
 		shouldLogPanics: true,
 		nextID:          0,
 	}
+}
+
+func (sse *ServerSentEventsHandler) Context() context.Context {
+	return sse.ctx
 }
 
 type SSEEvent struct {
