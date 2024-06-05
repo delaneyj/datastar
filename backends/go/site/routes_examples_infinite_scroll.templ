@@ -12,18 +12,16 @@ type infiniteScrollStore struct {
 
 templ infiniteScrollMore(store *infiniteScrollStore) {
 	<div
-		id="more_btn"
-		class="btn btn-primary"
+		id="loading_message"
+		class="alert alert-info"
 		data-intersects={ fmt.Sprintf(
 			"$offset=%d;$limit=%d;$$get('/examples/infinite_scroll/data')",
 			store.Offset+store.Limit,
 			store.Limit,
 		) }
 	>
-		<div class="flex justify-center gap-2 text-4xl" data-testid="loading_message">
-			@icon("svg-spinners:blocks-wave")
-			Loading...
-		</div>
+		@icon("svg-spinners:blocks-wave")
+		Loading...
 	</div>
 }
 
@@ -38,7 +36,7 @@ templ infiniteScrollAgent(i int) {
 templ infiniteScrollAgents(store *infiniteScrollStore) {
 	<div
 		id="infinite_scroll"
-		data-star-store={ templ.JSONString(store) }
+		data-store={ templ.JSONString(store) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table w-full table-zebra">
@@ -56,5 +54,6 @@ templ infiniteScrollAgents(store *infiniteScrollStore) {
 				}
 			</tbody>
 		</table>
+		@infiniteScrollMore(store)
 	</div>
 }

@@ -24,10 +24,7 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 		if store.Offset == 0 {
 			datastar.RenderFragmentTempl(sse, infiniteScrollAgents(store))
 		} else {
-			datastar.RenderFragmentTempl(
-				sse, infiniteScrollMore(store),
-				datastar.WithQuerySelectorID("more_btn"),
-			)
+			datastar.RenderFragmentTempl(sse, infiniteScrollMore(store))
 			for i := 0; i < store.Limit; i++ {
 
 				datastar.RenderFragmentTempl(
