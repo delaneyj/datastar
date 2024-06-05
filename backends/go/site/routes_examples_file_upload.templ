@@ -14,7 +14,7 @@ templ FileUploadView(store *FileUploadStore) {
 	<div
 		id="file_upload"
 		class="flex flex-col gap-4"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 	>
 		<div class="flex flex-col gap-2">
 			<label

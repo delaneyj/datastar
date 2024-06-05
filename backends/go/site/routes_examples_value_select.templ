@@ -1,9 +1,5 @@
 package site
 
-import (
-	"github.com/delaneyj/datastar"
-)
-
 type ValueSelectStore struct {
 	Make  string `json:"make"`
 	Model string `json:"model"`
@@ -24,7 +20,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 	<div
 		id="value_select"
 		class="flex flex-col gap-2"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 	>
 		<div class="text-2xl font-bold">Pick a Make / Model</div>
 		<select

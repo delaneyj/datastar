@@ -2,7 +2,6 @@ package site
 
 import (
 	"fmt"
-	"github.com/delaneyj/datastar"
 )
 
 type AnimationsRestoreStore struct {
@@ -12,7 +11,7 @@ type AnimationsRestoreStore struct {
 templ animationsViewTransition(store *AnimationsRestoreStore) {
 	<div
 		id="view_transition"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 		class="slide-it"
 	>
 		<button

@@ -2,7 +2,6 @@ package site
 
 import (
 	goaway "github.com/TwiN/go-away"
-	"github.com/delaneyj/datastar"
 )
 
 type ClickToEditContactStore struct {
@@ -34,7 +33,7 @@ templ setupExamplesClickToEditUserComponent(store *ClickToEditContactStore) {
 }
 
 templ setupExamplesClickToEditUserEdit(store *ClickToEditContactStore) {
-	<div id="contact_1" class="flex flex-col gap-2" data-store={ datastar.MustJSON(store) }>
+	<div id="contact_1" class="flex flex-col gap-2" data-store={ templ.JSONString(store) }>
 		<label class="flex items-center gap-2 input input-bordered">
 			First Name
 			<input type="text" class="grow" data-model="firstName"/>

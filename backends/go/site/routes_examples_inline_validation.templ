@@ -29,7 +29,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 }
 
 templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFirstNameValid, isLastNameValid, isValid bool) {
-	<div id="inline_validation" class="flex flex-col gap-4" data-store={ datastar.MustJSON(u) }>
+	<div id="inline_validation" class="flex flex-col gap-4" data-store={ templ.JSONString(u) }>
 		<div class="text-2xl font-bold">Sign Up</div>
 		<div>
 			@inlineValidationFieldComponent("Email Address", "email", isEmailValid, "Email '%s' is already taken or is invalid.  Please enter another email.", u.Email)

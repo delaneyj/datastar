@@ -2,13 +2,12 @@ package site
 
 import (
 	"fmt"
-	"github.com/delaneyj/datastar"
 )
 
 templ Home() {
 	{{ cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>` }}
 	@Page() {
-		<div class="flex flex-col items-center h-full gap-4 p-16 bg-gradient-to-br from-base-300 to-base-100">
+		<div class="flex flex-col items-center min-h-screen gap-4 p-16 bg-gradient-to-br from-base-300 to-base-100">
 			<div class="flex flex-col items-center max-w-lg gap-8">
 				<img
 					class="w-24 border-4 rounded-full shadow-xl md:w-96 border-primary"
@@ -91,7 +90,7 @@ templ HomeGlobalCountExample(store GlobalCountStore) {
 	<div
 		id="global-count-example"
 		class="flex flex-col gap-4"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 	>
 		<div class="flex gap-4">
 			<a class="flex-1 btn btn-success" data-on-click="$count++">Increment Local +</a>

@@ -2,7 +2,6 @@ package site
 
 import (
 	"fmt"
-	"github.com/delaneyj/datastar"
 )
 
 type ActiveSearchStore struct {
@@ -20,7 +19,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 	<div
 		id="active_search"
 		class="flex flex-col gap-4"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 	>
 		<div class="flex gap-4">
 			<input

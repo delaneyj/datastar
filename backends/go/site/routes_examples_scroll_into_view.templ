@@ -2,8 +2,6 @@ package site
 
 import (
 	"fmt"
-
-	"github.com/delaneyj/datastar"
 )
 
 type ScrollIntoViewStore struct {
@@ -18,7 +16,7 @@ type ScrollIntoViewOption struct {
 }
 
 templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, store *ScrollIntoViewStore) {
-	<div id="replaceMe" data-store={ datastar.MustJSON(store) }>
+	<div id="replaceMe" data-store={ templ.JSONString(store) }>
 		<div class="flex flex-col gap-4">
 			<div class="flex flex-wrap gap-8 justify-center">
 				for _, o := range opts {

@@ -2,8 +2,6 @@ package site
 
 import (
 	"fmt"
-
-	"github.com/delaneyj/datastar"
 )
 
 templ bulkUpdateContact(i int, cs *ContactActive, wasChanged bool) {
@@ -37,7 +35,7 @@ templ bulkUpdateContact(i int, cs *ContactActive, wasChanged bool) {
 templ bulkUpdateContacts(store *BulkUpdateSelectionStore, contacts []*ContactActive) {
 	<div
 		id="bulk_update"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table table-zebra">

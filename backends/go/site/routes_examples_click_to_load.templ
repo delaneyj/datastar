@@ -3,7 +3,6 @@ package site
 import (
 	"fmt"
 
-	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 )
 
@@ -39,7 +38,7 @@ templ ClickToEditAgentsTable(input *ClickToLoadStore) {
 	<div
 		id="click_to_load"
 		class="flex flex-col gap-2"
-		data-store={ datastar.MustJSON(input) }
+		data-store={ templ.JSONString(input) }
 	>
 		<table class="table table-zebra">
 			<caption>Agents</caption>
@@ -52,7 +51,7 @@ templ ClickToEditAgentsTable(input *ClickToLoadStore) {
 			</thead>
 			<tbody
 				id="click_to_load_rows"
-				data-star-store={ datastar.MustJSON(input) }
+				data-star-store={ templ.JSONString(input) }
 			>
 				for i := 0; i < input.Limit; i++ {
 					@ClickToLoadAgentRow(i + input.Offset)

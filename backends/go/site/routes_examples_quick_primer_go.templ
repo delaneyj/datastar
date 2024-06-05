@@ -11,7 +11,7 @@ type QuickPrimerGoStore struct {
 }
 
 templ QuickPrimerGoView(store *QuickPrimerGoStore) {
-	<div id="replaceMe" data-store={ datastar.MustJSON(store) }>
+	<div id="replaceMe" data-store={ templ.JSONString(store) }>
 		<h2>Go Datastar Example</h2>
 		<main id="main" class="container flex flex-col gap-4">
 			<input type="text" class="input input-bordered" placeholder="Type here!" data-model="input"/>

@@ -16,7 +16,7 @@ templ ModelBindingView(optionCount int, store *ModelBindingStore) {
 	<div
 		id="container"
 		class="flex flex-col gap-4"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 	>
 		<input class="input input-bordered" data-model="bindText"/>
 		<input class="input input-bordered" type="number" data-model="bindNumber"/>

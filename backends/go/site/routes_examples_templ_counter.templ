@@ -1,9 +1,5 @@
 package site
 
-import (
-	"github.com/delaneyj/datastar"
-)
-
 type TemplCounterStore struct {
 	Global uint32 `json:"global"`
 	User   uint32 `json:"user"`
@@ -42,7 +38,7 @@ templ templCounterExampleCounts() {
 templ templCounterExampleInitialContents(store TemplCounterStore) {
 	<div
 		id="container"
-		data-store={ datastar.MustJSON(store) }
+		data-store={ templ.JSONString(store) }
 		class="flex flex-col gap-4"
 	>
 		@templCounterExampleButtons()

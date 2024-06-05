@@ -298,11 +298,3 @@ func Error(sse *ServerSentEventsHandler, err error) {
 func ErrorF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
 	Error(sse, fmt.Errorf(format, args...))
 }
-
-func MustJSON(v any) string {
-	b, err := json.Marshal(v)
-	if err != nil {
-		panic(err)
-	}
-	return string(b)
-}
