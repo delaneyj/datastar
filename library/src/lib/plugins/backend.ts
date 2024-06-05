@@ -3,6 +3,7 @@ import { idiomorph } from '../external/idiomorph'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
+import { Signal } from '../external/preact-core'
 
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
@@ -57,6 +58,7 @@ export const HeadersPlugin: AttributePlugin = {
     }
   },
 }
+type IndicatorReference = { el: HTMLElement; count: number }
 
 // Sets the fetch indicator selector
 export const FetchIndicatorPlugin: AttributePlugin = {
@@ -79,40 +81,29 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
   onLoad: (ctx) => {
     return ctx.reactivity.effect(() => {
-      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorSelectors', {})
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorElements', {})
+      ctx.upsertIfMissingFromStore('_dsPlugins.fetch.indicatorsVisible', [])
       const c = ctx.reactivity.computed(() => `${ctx.expressionFn(ctx)}`)
       const s = ctx.store()
-      s._dsPlugins.fetch.indicatorSelectors[ctx.el.id] = c
 
-      const indicator = document.querySelector(c.value)
-      if (!indicator) {
+      const indicators = document.querySelectorAll(c.value)
+      if (indicators.length === 0) {
         throw new Error(`No indicator found`)
       }
-      indicator.classList.add(INDICATOR_CLASS)
+      indicators.forEach((indicator) => {
+        indicator.classList.add(INDICATOR_CLASS)
+      })
+
+      s._dsPlugins.fetch.indicatorElements[ctx.el.id] = ctx.reactivity.signal(indicators)
 
       return () => {
-        delete s._dsPlugins.fetch.indicatorSelectors[ctx.el.id]
+        delete s._dsPlugins.fetch.indicatorElements[ctx.el.id]
       }
     })
   },
 }
 
-// Sets the fetch indicator selector
-export const IsLoadingIdPlugin: AttributePlugin = {
-  prefix: 'isLoadingId',
-  mustNotEmptyExpression: true,
-  onLoad: (ctx) => {
-    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.loadingIdentifiers', {})
-    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.isLoading', [])
-
-    return ctx.reactivity.effect(() => {
-      const loadingIdentifiers = ctx.store()._dsPlugins.fetch.loadingIdentifiers.value
-      loadingIdentifiers[ctx.el.id] = ctx.expression
-    })
-  },
-}
-
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin, IsLoadingIdPlugin]
+export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const store = ctx.store()
@@ -123,30 +114,35 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
   const storeJSON = JSON.stringify(remoteSignals({ ...store.value }))
 
-  let hasIndicator = false,
-    loadingTarget = ctx.el
+  const loadingTarget = ctx.el as HTMLElement
 
-  const indicatorSelector = store._dsPlugins.fetch?.indicatorSelectors?.[loadingTarget.id] || null
-  if (indicatorSelector) {
-    const indicator = document.querySelector(indicatorSelector.value)
-    if (indicator) {
-      loadingTarget = indicator
-      loadingTarget.classList.remove(INDICATOR_CLASS)
-      loadingTarget.classList.add(INDICATOR_LOADING_CLASS)
-      hasIndicator = true
+  const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
+    ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+    : []
+  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store._dsPlugins.fetch?.indicatorsVisible
+  indicatorElements.forEach((indicator) => {
+    if (!indicator || !indicatorsVisible) return
+    const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
+      if (!indicatorVisible) return false
+      return indicator.isSameNode(indicatorVisible.el)
+    })
+    if (indicatorVisibleIndex > -1) {
+      const indicatorVisible = indicatorsVisible.value[indicatorVisibleIndex]
+      const indicatorsVisibleNew = [...indicatorsVisible.value]
+      delete indicatorsVisibleNew[indicatorVisibleIndex]
+      indicatorsVisible.value = [
+        ...indicatorsVisibleNew.filter((ind) => {
+          return !!ind
+        }),
+        { el: indicator, count: indicatorVisible.count + 1 },
+      ]
+    } else {
+      indicator.classList.remove(INDICATOR_CLASS)
+      indicator.classList.add(INDICATOR_LOADING_CLASS)
+      indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
     }
-  }
+  })
 
-  // the is loading plugin might not be loaded on this element
-  const loadingIdentifier = store._dsPlugins.fetch?.loadingIdentifiers?.value?.[loadingTarget.id]
-  if (!!loadingIdentifier) {
-    const isLoadingValues = store._dsPlugins.fetch.isLoading.value as string[]
-    if (!isLoadingValues.includes(loadingIdentifier)) {
-      store._dsPlugins.fetch.isLoading.value = [...isLoadingValues, loadingIdentifier]
-    }
-  }
-
-  // console.log(`Adding ${LOADING_CLASS} to ${el.id}`)
   const url = new URL(urlExpression, window.location.origin)
   method = method.toUpperCase()
   const req: FetchEventSourceInit = {
@@ -237,19 +233,42 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       }
     },
     onclose: () => {
-      if (hasIndicator) {
-        setTimeout(() => {
-          loadingTarget.classList.remove(INDICATOR_LOADING_CLASS)
-          loadingTarget.classList.add(INDICATOR_CLASS)
-        }, 300)
-      }
-
       const store = ctx.store()
-      if (loadingIdentifier) {
-        const current = store._dsPlugins.fetch.isLoading.value
-        const revised = current.filter((id: string) => id !== loadingIdentifier)
-        store._dsPlugins.fetch.isLoading.value = revised
-      }
+      const indicatorsVisible: Signal<IndicatorReference[]> = store._dsPlugins.fetch?.indicatorsVisible
+      const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
+        ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+        : []
+
+      const indicatorCleanupPromises: Promise<() => void>[] = []
+
+      indicatorElements.forEach((indicator) => {
+        if (!indicator || !indicatorsVisible) return
+        const indicatorsVisibleNew = indicatorsVisible.value
+        const indicatorVisibleIndex = indicatorsVisibleNew.findIndex((indicatorVisible) => {
+          if (!indicatorVisible) return false
+          return indicator.isSameNode(indicatorVisible.el)
+        })
+        const indicatorVisible = indicatorsVisibleNew[indicatorVisibleIndex]
+        if (!indicatorVisible) return
+        if (indicatorVisible.count < 2) {
+          indicatorCleanupPromises.push(
+            new Promise(() =>
+              setTimeout(() => {
+                indicator.classList.remove(INDICATOR_LOADING_CLASS)
+                indicator.classList.add(INDICATOR_CLASS)
+              }, 300),
+            ),
+          )
+          delete indicatorsVisibleNew[indicatorVisibleIndex]
+        } else if (indicatorVisibleIndex > -1) {
+          indicatorsVisibleNew[indicatorVisibleIndex].count = indicatorsVisibleNew[indicatorVisibleIndex].count - 1
+        }
+        indicatorsVisible.value = indicatorsVisibleNew.filter((ind) => {
+          return !!ind
+        })
+      })
+
+      Promise.all(indicatorCleanupPromises)
     },
   }
 
@@ -397,16 +416,17 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
     return acc
   },
   {
-    isLoading: async (ctx: AttributeContext, loadingId: string) => {
-      const isLoadingArr = ctx.store()._dsPlugins.fetch.isLoading.value as string[]
-      const isIdLoading = isLoadingArr.includes(loadingId)
-      console.log(`isLoading action, ${ctx.el.id} loading? ${isIdLoading}`)
-      return isIdLoading
-    },
-    isFetching: async (_: AttributeContext, selector: string) => {
+    isFetching: async (ctx: AttributeContext, selector: string) => {
       const indicators = document.querySelectorAll(selector)
+      const store = ctx.store()
+      const indicatorsVisible: IndicatorReference[] | undefined = store._dsPlugins?.fetch.indicatorsVisible?.value
+      if (!indicatorsVisible) return false
       return Array.from(indicators).some((indicator) => {
-        indicator.classList.contains(INDICATOR_LOADING_CLASS)
+        return indicatorsVisible.some((indicatorVisible) => {
+          if (!indicatorVisible) return false
+
+          return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
+        })
       })
     },
   } as Actions,
