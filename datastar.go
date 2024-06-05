@@ -272,8 +272,13 @@ func PatchStore(sse *ServerSentEventsHandler, store any) {
 	if err != nil {
 		panic(err)
 	}
-	sse.Send(
-		string(b),
+	PatchStoreRaw(sse, string(b))
+}
+
+func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string) {
+	lines := strings.Split(storeJSON, "\n")
+	sse.SendMultiData(
+		lines,
 		WithSSEEvent(SSEEventTypeSignal),
 	)
 }
