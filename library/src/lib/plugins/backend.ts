@@ -163,10 +163,17 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       }
 
       if (evt.event === EVENT_SIGNAL) {
-        const fn = new Function('ctx', ` return Object.assign({...ctx.store()}, ${evt.data})`) as ExpressionFunction
-        const data = fn(ctx)
-        ctx.mergeStore(data)
-        ctx.applyPlugins(document.body)
+        const fnContents = ` return Object.assign({...ctx.store()}, ${evt.data})`
+        try {
+          const fn = new Function('ctx', fnContents) as ExpressionFunction
+          const data = fn(ctx)
+          ctx.mergeStore(data)
+          ctx.applyPlugins(document.body)
+        } catch (e) {
+          console.log(fnContents)
+          console.error(e)
+          debugger
+        }
       } else {
         let fragment = '',
           merge: FragmentMergeOption = 'morph_element',
