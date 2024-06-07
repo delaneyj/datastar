@@ -13,16 +13,34 @@ export class DatastarInspectorElement extends LitElement {
         <details class="bg-base-200 collapse" open>
           <summary class="collapse-title text-xl font-medium">Store</summary>
           <div class="collapse-content flex gap-4">
-            <ul class="menu bg-base-200 w-56 rounded-box">
+            <ul class="menu bg-base-200 rounded-box">
               <div>Versions</div>
-              <li><a>Item 1</a></li>
-              <li><a>Item 2</a></li>
-              <li><a>Item 3</a></li>
+              <li>
+                <div class="text-secondary">
+                  1 /
+                  <span class="font-bold">7:42</span>
+                </div>
+              </li>
+              <li>
+                <div class="text-secondary">
+                  2 / <span class="font-bold">7:45</span>
+                </div>
+              </li>
+              <li>
+                <div class="text-secondary">
+                  3 / <span class="font-bold">8:42</span>
+                </div>
+              </li>
             </ul>
-            <div class="card flex-1 bg-base-100">
-              <div class="card-body">
+            <div class="card flex-1 bg-base-100 h-full">
+              <div class="card-body flex-1">
                 <div class="card-title">Contents</div>
-                <pre class="font-mono">Contents</pre>
+                <code class="font-mono text-xs overflow-auto">
+                  Consequat sint duis pariatur tempor voluptate irure eu culpa
+                  ullamco adipisicing. Eu excepteur ullamco consequat commodo.
+                  Voluptate laboris laborum tempor duis velit proident dolore
+                  esse duis.</code
+                >
               </div>
             </div>
           </div>
@@ -30,7 +48,7 @@ export class DatastarInspectorElement extends LitElement {
         <details class="bg-base-200 collapse" open>
           <summary class="collapse-title text-xl font-medium">Events</summary>
           <div class="collapse-content">
-            <p>content</p>
+            <div class="skeleton w-full h-96"></div>
           </div>
         </details>
       </div>
