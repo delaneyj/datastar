@@ -1,5 +1,5 @@
 {
-  "name": "inspector",
+  "name": "@sudodevnull/datastar-inspector",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@sudodevnull/datastar": "workspace:*",
     "daisyui": "latest",
     "lit": "^3.1.2"
   },

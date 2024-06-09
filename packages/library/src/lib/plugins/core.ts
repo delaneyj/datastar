@@ -1,3 +1,4 @@
+import { sendDatastarEvent } from '..'
 import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
 
 const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
@@ -60,6 +61,8 @@ const StoreAttributePlugin: AttributePlugin = {
   },
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
+    const marshalled = JSON.stringify(bodyStore)
+    sendDatastarEvent('plugin', 'store', 'merged', ctx.el, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
   },
