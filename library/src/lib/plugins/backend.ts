@@ -1,15 +1,16 @@
+import { DATASTAR_STR } from '../core'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
+import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
-import { Signal } from '../external/preact-core'
 
 const CONTENT_TYPE = 'Content-Type'
-const DATASTAR_REQUEST = 'datastar-request'
+const DATASTAR_REQUEST = `${DATASTAR_STR}-request`
 const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
-const DATASTAR_CLASS_PREFIX = 'datastar-'
+const DATASTAR_CLASS_PREFIX = `${DATASTAR_STR}-`
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`

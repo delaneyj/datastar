@@ -1,3 +1,4 @@
+import { DATASTAR_STR } from '../core'
 import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
 
 const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
@@ -58,7 +59,16 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
+  allowedModifiers: new Set(['offline']),
   onLoad: (ctx: AttributeContext) => {
+    if (ctx.modifiers.has('offline')) {
+      // load from local storage
+      const marshalledStore = window.localStorage.getItem(DATASTAR_STR) || '{}'
+      const store = JSON.parse(marshalledStore)
+      ctx.mergeStore(store)
+
+      // save on every change
+    }
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store

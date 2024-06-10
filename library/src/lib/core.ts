@@ -14,6 +14,8 @@ import {
   Reactivity,
 } from './types'
 
+export const DATASTAR_STR = 'datastar'
+
 export class Datastar {
   plugins: AttributePlugin[] = []
   store: DeepSignal<any> = deepSignal({ _dsPlugins: {} })
