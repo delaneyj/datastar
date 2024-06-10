@@ -18,6 +18,7 @@ require (
 	github.com/goccy/go-json v0.10.2
 	github.com/gomarkdown/markdown v0.0.0-20231222211730-1d6d20845b47
 	github.com/gorilla/sessions v1.2.2
+	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/joho/godotenv v1.5.1
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/samber/lo v1.39.0

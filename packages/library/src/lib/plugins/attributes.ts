@@ -197,13 +197,18 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
+  allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
 
   onLoad: (ctx: AttributeContext) => {
-    const { el, key, expressionFn } = ctx
+    const { key, expressionFn } = ctx
+    let target: Element | Window = ctx.el
+
+    if (ctx.modifiers.get('window')) {
+      target = window
+    }
     let callback = () => {
       expressionFn(ctx)
-      sendDatastarEvent('plugin', 'event', key, el, 'triggered')
+      sendDatastarEvent('plugin', 'event', key, target, 'triggered')
     }
 
     ctx.upsertIfMissingFromStore('_dsPlugins.on', {
@@ -236,45 +241,40 @@ export const EventPlugin: AttributePlugin = {
     if (ctx.modifiers.has('once')) evtListOpts.once = true
 
     const eventName = kebabize(key).toLowerCase()
-    switch (eventName) {
-      case 'load':
+
+    if (eventName === 'raf') {
+      let rafId: number | undefined
+      const raf = () => {
         callback()
-        delete el.dataset.onLoad
-        return () => {}
+        rafId = requestAnimationFrame(raf)
+      }
+      requestAnimationFrame(raf)
+      delete ctx.el.dataset.onRaf
 
-      case 'raf':
-        let rafId: number | undefined
-        const raf = () => {
+      return () => {
+        if (rafId) cancelAnimationFrame(rafId)
+      }
+    }
+
+    if (eventName === 'store-change') {
+      return ctx.reactivity.effect(() => {
+        const store = ctx.store()
+        let storeValue = store.value
+        if (ctx.modifiers.has('remote')) {
+          storeValue = remoteSignals(storeValue)
+        }
+        const current = JSON.stringify(storeValue)
+        if (store._dsPlugins.on.lastStoreMarshalled !== current) {
+          store._dsPlugins.on.lastStoreMarshalled = current
           callback()
-          rafId = requestAnimationFrame(raf)
         }
-        requestAnimationFrame(raf)
-        delete el.dataset.onRaf
+      })
+    }
 
-        return () => {
-          if (rafId) cancelAnimationFrame(rafId)
-        }
-
-      case 'store-change':
-        return ctx.reactivity.effect(() => {
-          const store = ctx.store()
-          let storeValue = store.value
-          if (ctx.modifiers.has('remote')) {
-            storeValue = remoteSignals(storeValue)
-          }
-          const current = JSON.stringify(storeValue)
-          if (store._dsPlugins.on.lastStoreMarshalled !== current) {
-            store._dsPlugins.on.lastStoreMarshalled = current
-            callback()
-          }
-        })
-
-      default:
-        el.addEventListener(eventName, callback, evtListOpts)
-        return () => {
-          // console.log(`Removing event listener for ${eventName} on ${el}`)
-          el.removeEventListener(eventName, callback)
-        }
+    target.addEventListener(eventName, callback, evtListOpts)
+    return () => {
+      // console.log(`Removing event listener for ${eventName} on ${el}`)
+      target.removeEventListener(eventName, callback)
     }
   },
 }

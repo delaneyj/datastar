@@ -45,7 +45,7 @@ tasks:
       # - echo "{{.BACKEND_STATIC_DIR}}"
       - pnpm i
       # - pnpm vitest --watch=false
-      - pnpm prettier -w .
+      - pnpm prettier --log-level silent -w .
       - pnpm build
       - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}

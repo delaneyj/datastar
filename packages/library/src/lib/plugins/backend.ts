@@ -106,14 +106,16 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
+async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote: boolean) {
   const store = ctx.store()
 
   if (!urlExpression) {
     throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
-  const storeJSON = JSON.stringify(remoteSignals({ ...store.value }))
+  let storeValue = { ...store.value }
+  if (onlyRemote) storeValue = remoteSignals(storeValue)
+  const storeJSON = JSON.stringify(storeValue)
 
   const loadingTarget = ctx.el as HTMLElement
 
@@ -399,20 +401,9 @@ export function mergeHTMLFragment(
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
-    acc[method] = async (ctx, urlExpression) => {
+    acc[method] = async (ctx, urlExpression, onlyRemoteRaw) => {
       ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
-      const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
-        return
-      }
-
-      new Promise((resolve) => {
-        da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
-          resolve(void 0)
-        })
-      })
+      fetcher(method, urlExpression, ctx, onlyRemoteRaw)
     }
     return acc
   },
