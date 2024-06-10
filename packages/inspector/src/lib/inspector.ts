@@ -88,7 +88,7 @@ export class DatastarInspectorElement extends LitElement {
           <div class="flex items-center gap-4">
             <div class="form-control">
               <label class="label cursor-pointer gap-2">
-                <span class="label-text">Show plugin signals?</span>
+                <span class="label-text">Show plugin signals</span>
                 <input
                   type="checkbox"
                   class="toggle"
@@ -103,7 +103,7 @@ export class DatastarInspectorElement extends LitElement {
             </div>
             <div class="form-control">
               <label class="label cursor-pointer gap-2">
-                <span class="label-text">Remote only?</span>
+                <span class="label-text">Remote only</span>
                 <input
                   type="checkbox"
                   class="toggle"
