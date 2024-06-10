@@ -1,3 +1,4 @@
+import { sendDatastarEvent } from '..'
 import { DATASTAR_STR } from '../core'
 import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
 
@@ -70,6 +71,8 @@ const StoreAttributePlugin: AttributePlugin = {
       // save on every change
     }
     const bodyStore = ctx.expressionFn(ctx)
+    const marshalled = JSON.stringify(bodyStore)
+    sendDatastarEvent('plugin', 'store', 'merged', ctx.el, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
   },

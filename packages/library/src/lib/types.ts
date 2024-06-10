@@ -66,3 +66,13 @@ export type Preprocessor = {
 
 export type Action = (ctx: AttributeContext, ...args: string[]) => Promise<any>
 export type Actions = Record<string, Action>
+
+export const datastarEventName = 'datastar-event'
+export interface DatastarEvent {
+  time: Date
+  category: 'core' | 'plugin'
+  subcategory: string
+  type: string
+  el: Element | null
+  message: string
+}

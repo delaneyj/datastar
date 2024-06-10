@@ -1,6 +1,6 @@
 {
   "name": "@sudodevnull/datastar",
-  "version": "0.15.0",
+  "version": "0.16.0",
   "type": "module",
   "homepage": "https://data-star.dev",
   "repository": "https://github.com/delaneyj/datastar",
@@ -23,6 +23,7 @@
     "prepublishOnly": "npm run build"
   },
   "devDependencies": {
+    "@sudodevnull/datastar-prettier": "workspace:*",
     "@types/node": "^20.11.30",
     "@unocss/cli": "^0.59.0",
     "prettier": "^3.2.5",

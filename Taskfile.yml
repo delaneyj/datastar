@@ -34,8 +34,27 @@ tasks:
 
   library:
     vars:
-      BACKEND_STATIC_DIR: "../backends/go/{{.NAME}}/static/library"
-    dir: library
+      BACKEND_STATIC_DIR: "../../backends/go/{{.NAME}}/static/library"
+    dir: packages/library
+    generates:
+      - "dist/**/*"
+    sources:
+      - "src/**/*.ts"
+      - "package.json"
+    cmds:
+      # - echo "{{.BACKEND_STATIC_DIR}}"
+      - pnpm i
+      # - pnpm vitest --watch=false
+      - pnpm prettier -w .
+      - pnpm build
+      - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
+      - rsync -av package.json {{.BACKEND_STATIC_DIR}}
+
+  inspector:
+    library:
+    vars:
+      BACKEND_STATIC_DIR: "../../backends/go/{{.NAME}}/static/inspector"
+    dir: packages/inspector
     generates:
       - "dist/**/*"
     sources:

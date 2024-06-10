@@ -1,3 +1,4 @@
+import { sendDatastarEvent } from '..'
 import { Actions, AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
@@ -202,6 +203,7 @@ export const EventPlugin: AttributePlugin = {
     const { el, key, expressionFn } = ctx
     let callback = () => {
       expressionFn(ctx)
+      sendDatastarEvent('plugin', 'event', key, el, 'triggered')
     }
 
     ctx.upsertIfMissingFromStore('_dsPlugins.on', {
