@@ -203,7 +203,8 @@ export const EventPlugin: AttributePlugin = {
     const { el, key, expressionFn } = ctx
     let callback = () => {
       expressionFn(ctx)
-      sendDatastarEvent('plugin', 'event', key, el, 'triggered')
+      console.log(ctx)
+      sendDatastarEvent('plugin', 'event', key, { el, store: ctx.store() }, 'triggered')
     }
 
     ctx.upsertIfMissingFromStore('_dsPlugins.on', {

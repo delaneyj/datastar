@@ -1,9 +1,9 @@
+/*global browser*/
 import { LitElement, PropertyValueMap, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 
 import {
   DatastarEvent,
-  datastarEventName,
   remoteSignals,
 } from "@sudodevnull/datastar";
 import styles from "./tailwind.css";
@@ -12,6 +12,7 @@ interface VersionedStore {
   time: Date;
   contents: Object;
 }
+
 
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
@@ -39,15 +40,25 @@ export class DatastarInspectorElement extends LitElement {
   @state()
   prevStoreMarshalled = "";
 
+  @state()
+  port: Record<string, any> = {};
+
   protected firstUpdated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-    window.addEventListener(datastarEventName, ((
-      evt: CustomEvent<DatastarEvent>
-    ) => {
-      this.events = [...this.events, evt.detail].slice(-this.maxEvents);
 
-      const currentStore = (window as any).ds?.store?.value;
+    /* @ts-ignore */
+    this.port = browser.runtime.connect({name:"datastarDevTools"})
+    this.port.postMessage({
+        /* @ts-ignore */
+        tabId: browser.devtools.inspectedWindow.tabId,
+    });
+    this.port.onMessage.addListener((detail: CustomEvent<DatastarEvent>['detail']) => {
+        console.log('inspector got the event')
+      this.events = [...this.events, detail].slice(-this.maxEvents);
+
+      const currentStore = detail.ctx.store;
+      console.log(detail)
       if (!currentStore) return;
       const currentStoreMarshalled = JSON.stringify(currentStore);
 
@@ -62,7 +73,7 @@ export class DatastarInspectorElement extends LitElement {
           },
         ];
       }
-    }) as EventListener);
+    });
   }
 
   public render() {
@@ -125,16 +136,7 @@ export class DatastarInspectorElement extends LitElement {
     }
 
     return html`
-      <div>
-        <details
-          data-theme="dark"
-          class="collapse collapse-arrow bg-base-200"
-          open
-        >
-          <summary class="collapse-title text-xl font-medium">
-            Datastar Inspector
-          </summary>
-          <div class="collapse-content">
+      <div data-theme="dark">
             <details
               class="bg-base-100 collapse  collapse-arrow  select-none"
               open
@@ -212,7 +214,7 @@ export class DatastarInspectorElement extends LitElement {
                           </td>
                           <td>${evt.category}/${evt.subcategory}</td>
                           <td>${evt.type}</td>
-                          <td>${elemToSelector(evt.el)}</td>
+                          <td>${evt.ctx.el}</td>
                           <td class="w-full">${evt.message}</td>
                         </tr>
                       `
@@ -221,29 +223,8 @@ export class DatastarInspectorElement extends LitElement {
                 </table>
               </div>
             </details>
-          </div>
-        </details>
       </div>
     `;
   }
 }
 
-function elemToSelector(elm: Element | null) {
-  if (!elm) return "null";
-
-  if (elm.tagName === "BODY") return "BODY";
-  const names = [];
-  while (elm.parentElement && elm.tagName !== "BODY") {
-    if (elm.id) {
-      names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
-      break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
-    } else {
-      let c = 1,
-        e = elm;
-      for (; e.previousElementSibling; e = e.previousElementSibling, c++);
-      names.unshift(elm.tagName + ":nth-child(" + c + ")");
-    }
-    elm = elm.parentElement;
-  }
-  return names.join(">");
-}

@@ -62,7 +62,8 @@ const StoreAttributePlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     const bodyStore = ctx.expressionFn(ctx)
     const marshalled = JSON.stringify(bodyStore)
-    sendDatastarEvent('plugin', 'store', 'merged', ctx.el, marshalled)
+    console.log(ctx)
+    sendDatastarEvent('plugin', 'store', 'merged', { el: ctx.el, store: ctx.store() }, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
   },

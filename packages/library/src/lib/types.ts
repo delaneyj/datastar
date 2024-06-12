@@ -73,6 +73,6 @@ export interface DatastarEvent {
   category: 'core' | 'plugin'
   subcategory: string
   type: string
-  el: Element | null
+  ctx: { el: Element; store: any }
   message: string
 }

@@ -47,10 +47,12 @@ export function sendDatastarEvent(
   category: 'core' | 'plugin',
   subcategory: string,
   type: string,
-  el: Element | null,
+  ctx: { el: Element | null; store: any },
   message: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) {
+  console.log(message)
+  console.log(ctx)
   winAny.dispatchEvent(
     new CustomEvent<DatastarEvent>(
       datastarEventName,
@@ -61,7 +63,7 @@ export function sendDatastarEvent(
             category,
             subcategory,
             type,
-            el,
+            ctx,
             message,
           },
         },
@@ -74,7 +76,16 @@ export function sendDatastarEvent(
 // Timeeout allows inspector to attach to all elements before sending the event
 if (!winAny.ds) {
   setTimeout(() => {
-    sendDatastarEvent('core', 'init', 'start', document.body, `Datastar v${version} loading`)
+    sendDatastarEvent(
+      'core',
+      'init',
+      'start',
+      {
+        el: document.body,
+        store: {},
+      },
+      `Datastar v${version} loading`,
+    )
 
     const start = performance.now()
     winAny.ds = runDatastarWithAllPlugins()
@@ -84,7 +95,10 @@ if (!winAny.ds) {
       'core',
       'init',
       'end',
-      document.body,
+      {
+        el: document.body,
+        store: winAny.ds.store.value,
+      },
       `Datastar v${version} loaded and attached to all DOM elements in ${(end - start).toFixed(2)}ms`,
     )
   }, 0)
