@@ -1,9 +1,9 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
+import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
-import { Signal } from '../external/preact-core'
 
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
@@ -105,7 +105,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
+function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const store = ctx.store()
 
   if (!urlExpression) {
@@ -287,7 +287,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     req.body = storeJSON
   }
 
-  await fetchEventSource(url, req)
+  fetchEventSource(url, req)
 }
 
 const fragContainer = document.createElement('template')
@@ -400,18 +400,7 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression) => {
       ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
-      const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
-        return
-      }
-
-      new Promise((resolve) => {
-        da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
-          resolve(void 0)
-        })
-      })
+      fetcher(method, urlExpression, ctx)
     }
     return acc
   },
@@ -424,7 +413,6 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
       return Array.from(indicators).some((indicator) => {
         return indicatorsVisible.some((indicatorVisible) => {
           if (!indicatorVisible) return false
-
           return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
         })
       })

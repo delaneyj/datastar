@@ -206,10 +206,6 @@ export const EventPlugin: AttributePlugin = {
       sendDatastarEvent('plugin', 'event', key, el, 'triggered')
     }
 
-    ctx.upsertIfMissingFromStore('_dsPlugins.on', {
-      lastStoreMarshalled: '',
-    })
-
     const debounceArgs = ctx.modifiers.get('debounce')
     if (debounceArgs) {
       const wait = argsToMs(debounceArgs)
@@ -256,6 +252,7 @@ export const EventPlugin: AttributePlugin = {
         }
 
       case 'store-change':
+        let lastStoreMarshalled = ''
         return ctx.reactivity.effect(() => {
           const store = ctx.store()
           let storeValue = store.value
@@ -263,8 +260,8 @@ export const EventPlugin: AttributePlugin = {
             storeValue = remoteSignals(storeValue)
           }
           const current = JSON.stringify(storeValue)
-          if (store._dsPlugins.on.lastStoreMarshalled !== current) {
-            store._dsPlugins.on.lastStoreMarshalled = current
+          if (lastStoreMarshalled !== current) {
+            lastStoreMarshalled = current
             callback()
           }
         })
