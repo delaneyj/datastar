@@ -1,15 +1,15 @@
 {
-  "manifest_version": 2,
+  "manifest_version": 3,
   "name":"Datastar Inspector",
-  "version": "0.1",
+  "version": "0.2",
   "description":"Inspect state changes and events in datastar apps",
   "icons":{
     "48": "./rocket.png"
   },
-  "permissions":["http://localhost/*"],
+  "permissions" : ["scripting"],
+  "host_permissions" :["http://localhost/*"],
   "background": {
-      "scripts":["background.js"],
-      "persistent": false
+      "scripts": ["background.js"]
   },
   "content_scripts": [{
       "js": ["./content_script.js"],
