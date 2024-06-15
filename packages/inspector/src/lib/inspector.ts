@@ -46,13 +46,13 @@ export class DatastarInspectorElement extends LitElement {
   protected firstUpdated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-
     /* @ts-ignore */
     this.port = browser.runtime.connect({name:"datastarDevTools"})
+
     this.port.postMessage({
-        /* @ts-ignore */
-        tabId: browser.devtools.inspectedWindow.tabId,
-        action: 'connect-dev'
+    /* @ts-ignore */
+            tabId: browser.devtools.inspectedWindow.tabId,
+            action: 'connect-dev'
     });
     this.port.onMessage.addListener((detail: CustomEvent<DatastarEvent>['detail']) => {
       console.log('inspector got message ', detail);
