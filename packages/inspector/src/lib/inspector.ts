@@ -52,13 +52,13 @@ export class DatastarInspectorElement extends LitElement {
     this.port.postMessage({
         /* @ts-ignore */
         tabId: browser.devtools.inspectedWindow.tabId,
+        action: 'connect-dev'
     });
     this.port.onMessage.addListener((detail: CustomEvent<DatastarEvent>['detail']) => {
-        console.log('inspector got the event')
+      console.log('inspector got message ', detail);
       this.events = [...this.events, detail].slice(-this.maxEvents);
 
       const currentStore = detail.ctx.store;
-      console.log(detail)
       if (!currentStore) return;
       const currentStoreMarshalled = JSON.stringify(currentStore);
 

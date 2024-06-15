@@ -1,8 +1,8 @@
+console.log("datastar inspector extension is running in tab");
 const port = browser.runtime.connect({name:"datastarDevToolsContentScript"})
-
 globalThis.addEventListener("datastar-event", ((evt) => {
-    const {el, ...ctx} = evt.detail.ctx; 
-    port.postMessage({...evt.detail, ctx: {...ctx, el: elemToSelector(el)}});
+    const {el, ...ctx} = evt.detail.ctx;
+    port.postMessage({action: 'message-dev', ...evt.detail, ctx: {...ctx, el: elemToSelector(el)}});
 }));
 
 function elemToSelector(elm) {
