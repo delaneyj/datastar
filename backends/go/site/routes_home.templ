@@ -3,10 +3,9 @@ package site
 import (
 	"fmt"
 	"github.com/delaneyj/datastar"
-	"encoding/gob"
 )
 
-templ Home(todoMVC *TodoMVC) {
+templ Home() {
 	{{
 		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>`
 	}}
@@ -60,7 +59,7 @@ templ Home(todoMVC *TodoMVC) {
 					</div>
 				</div>
 				@templ.Raw(homePageChartSVG)
-				@TodosMVCView(todoMVC)
+				<div id="todosMVC" data-on-load="$$get('/api/todos')">Todos</div>
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"
 					href={ templ.SafeURL("/guide") }
@@ -95,11 +94,6 @@ type TodoMVC struct {
 	Mode       TodoViewMode `json:"mode"`
 }
 
-func init() {
-	gob.Register(&TodoMVC{})
-	gob.Register(&Todo{})
-}
-
 templ TodosMVCView(mvc *TodoMVC) {
 	{{
 		hasTodos := len(mvc.Todos) > 0
@@ -124,12 +118,23 @@ templ TodosMVCView(mvc *TodoMVC) {
 			>
 				<section class="flex flex-col gap-2">
 					<header class="flex flex-col gap-2">
+						<div class="alert alert-info">
+							@icon("material-symbols:info")
+							<p>
+								<div class="text-lg">
+									This mini application is driven by a
+									<br/>
+									<span class="italic font-bold uppercase text-primary">single get request!</span>
+									As you interact with the UI, the backend state is updated and new partial HTML fragments are sent down to the client via Server-Sent Events.  You can make simple apps or full blown SPA replacements with this pattern.  Open you dev tools and watch the network tab to see the magic happen (you will want to look for the "/todos" Network/EventStream tab).
+								</div>
+							</p>
+						</div>
 						<div class="flex items-baseline gap-2">
 							<h1 class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">todos</h1>
 							<h3 class="text-lg">example</h3>
 						</div>
 						<h2 class="text-sm">
-							The input is bound to a local store, but this is not a single page application.  The backend state is updated on user input, sending down new partial HTML fragments. It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
+							The input is bound to a local store, but this is not a single page application.  It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
 						</h2>
 						<div class="flex items-center gap-2">
 							if hasTodos {

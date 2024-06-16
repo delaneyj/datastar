@@ -143,10 +143,16 @@ func setupRoutes(router chi.Router) error {
 		})
 	}
 
+	ns, err := toolbelt.NewEmbeddedNATsServer(context.Background(), true)
+	if err != nil {
+		return fmt.Errorf("error creating embedded nats server: %w", err)
+	}
+	ns.WaitForServer()
+
 	sessionStore := sessions.NewCookieStore([]byte("datastar-session-secret"))
 
 	if err := errors.Join(
-		setupHome(router, sessionStore),
+		setupHome(router, sessionStore, ns),
 		setupGuide(router),
 		setupReferenceRoutes(router),
 		setupExamples(router, sessionStore),

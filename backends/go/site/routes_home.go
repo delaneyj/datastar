@@ -2,14 +2,19 @@ package site
 
 import (
 	"bytes"
+	"context"
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/delaneyj/datastar"
+	"github.com/delaneyj/toolbelt"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
 	"github.com/goccy/go-json"
 	"github.com/gorilla/sessions"
+	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
@@ -17,7 +22,7 @@ import (
 
 var homePageChartSVG string
 
-func setupHome(router chi.Router, store sessions.Store) error {
+func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
 
 	chartWidth := 480
 	graph := chart.BarChart{
@@ -64,46 +69,118 @@ func setupHome(router chi.Router, store sessions.Store) error {
 	}
 	homePageChartSVG = buffer.String()
 
-	mvcStore := func(w http.ResponseWriter, r *http.Request) (*TodoMVC, *sessions.Session) {
-		const key = "datastar-todos"
-		session, err := store.Get(r, key)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return nil, nil
-		}
-		mvc, ok := session.Values["todos"].(*TodoMVC)
-		if !ok {
-			mvc = &TodoMVC{
-				Mode: TodoViewModeAll,
-				Todos: []*Todo{
-					{Text: "Learn Go", Completed: true},
-					{Text: "Learn Datastar", Completed: false},
-					{Text: "???", Completed: false},
-					{Text: "Profit", Completed: false},
-				},
-				EditingIdx: -1,
-			}
-			session.Values["todos"] = mvc
-			session.Save(r, w)
-		}
-
-		return mvc, session
+	nc, err := ns.Client()
+	if err != nil {
+		return fmt.Errorf("error creating nats client: %w", err)
+	}
+	js, err := jetstream.New(nc)
+	if err != nil {
+		return fmt.Errorf("error creating jetstream client: %w", err)
+	}
+	kv, err := js.CreateOrUpdateKeyValue(context.Background(), jetstream.KeyValueConfig{
+		Bucket:      "todos",
+		Description: "Datastar Todos",
+		Compression: true,
+		TTL:         time.Hour,
+		MaxBytes:    16 * 1024 * 1024,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating key value: %w", err)
 	}
 
-	saveMVC := func(w http.ResponseWriter, r *http.Request, mvc *TodoMVC, session *sessions.Session) {
-		session.Values["todos"] = mvc
-		session.Save(r, w)
+	saveMVC := func(ctx context.Context, sessionID string, mvc *TodoMVC) error {
+		b, err := json.Marshal(mvc)
+		if err != nil {
+			return fmt.Errorf("failed to marshal mvc: %w", err)
+		}
+		if _, err := kv.Put(ctx, sessionID, b); err != nil {
+			return fmt.Errorf("failed to put key value: %w", err)
+		}
+		return nil
+	}
+
+	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *TodoMVC, error) {
+		ctx := r.Context()
+		sessionID, err := upsertSessionID(store, r, w)
+		if err != nil {
+			return "", nil, fmt.Errorf("failed to get session id: %w", err)
+		}
+
+		mvc := &TodoMVC{}
+		if entry, err := kv.Get(ctx, sessionID); err != nil {
+			if err != jetstream.ErrKeyNotFound {
+				return "", nil, fmt.Errorf("failed to get key value: %w", err)
+			}
+			mvc.Mode = TodoViewModeAll
+			mvc.Todos = []*Todo{
+				{Text: "Learn any backend language", Completed: true},
+				{Text: "Learn Datastar", Completed: false},
+				{Text: "???", Completed: false},
+				{Text: "Profit", Completed: false},
+			}
+			mvc.EditingIdx = -1
+
+			if err := saveMVC(ctx, sessionID, mvc); err != nil {
+				return "", nil, fmt.Errorf("failed to save mvc: %w", err)
+			}
+		} else {
+			if err := json.Unmarshal(entry.Value(), mvc); err != nil {
+				return "", nil, fmt.Errorf("failed to unmarshal mvc: %w", err)
+			}
+		}
+		return sessionID, mvc, nil
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		todoMVC, _ := mvcStore(w, r)
-		Home(todoMVC).Render(r.Context(), w)
+		Home().Render(r.Context(), w)
 	})
 
 	router.Route("/api", func(apiRouter chi.Router) {
 		apiRouter.Route("/todos", func(todosRouter chi.Router) {
+			todosRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+
+				sse := datastar.NewSSE(w, r)
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				// Watch for updates
+				ctx := r.Context()
+				watcher, err := kv.Watch(ctx, sessionID)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				defer watcher.Stop()
+
+				for {
+					select {
+					case <-ctx.Done():
+						return
+					case entry := <-watcher.Updates():
+						if entry == nil {
+							continue
+						}
+						if err := json.Unmarshal(entry.Value(), mvc); err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+						datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+					}
+				}
+			})
+
 			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
-				mvc, session := mvcStore(w, r)
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
 				modeStr := chi.URLParam(r, "mode")
 				modeRaw, err := strconv.Atoi(modeStr)
 				if err != nil {
@@ -118,10 +195,12 @@ func setupHome(router chi.Router, store sessions.Store) error {
 				}
 
 				mvc.Mode = mode
-				saveMVC(w, r, mvc, session)
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
 
-				sse := datastar.NewSSE(w, r)
-				datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+				datastar.NewSSE(w, r)
 			})
 
 			todosRouter.Route("/{idx}", func(todoRouter chi.Router) {
@@ -136,7 +215,12 @@ func setupHome(router chi.Router, store sessions.Store) error {
 				}
 
 				todoRouter.Post("/toggle", func(w http.ResponseWriter, r *http.Request) {
-					mvc, session := mvcStore(w, r)
+					sessionID, mvc, err := mvcSession(w, r)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
 					i, err := routeIndex(w, r)
 					if err != nil {
 						return
@@ -158,25 +242,28 @@ func setupHome(router chi.Router, store sessions.Store) error {
 						todo.Completed = !todo.Completed
 					}
 
-					saveMVC(w, r, mvc, session)
+					saveMVC(r.Context(), sessionID, mvc)
 
-					sse := datastar.NewSSE(w, r)
-					datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+					datastar.NewSSE(w, r)
 				})
 
 				todoRouter.Route("/edit", func(editRouter chi.Router) {
 					editRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-						mvc, session := mvcStore(w, r)
+						sessionID, mvc, err := mvcSession(w, r)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+
 						i, err := routeIndex(w, r)
 						if err != nil {
 							return
 						}
 
 						mvc.EditingIdx = i
-						saveMVC(w, r, mvc, session)
+						saveMVC(r.Context(), sessionID, mvc)
 
-						sse := datastar.NewSSE(w, r)
-						datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+						datastar.NewSSE(w, r)
 					})
 
 					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
@@ -190,7 +277,12 @@ func setupHome(router chi.Router, store sessions.Store) error {
 							return
 						}
 
-						mvc, session := mvcStore(w, r)
+						sessionID, mvc, err := mvcSession(w, r)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+
 						i, err := routeIndex(w, r)
 						if err != nil {
 							return
@@ -206,10 +298,8 @@ func setupHome(router chi.Router, store sessions.Store) error {
 						}
 						mvc.EditingIdx = -1
 
-						saveMVC(w, r, mvc, session)
-
-						sse := datastar.NewSSE(w, r)
-						datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+						saveMVC(r.Context(), sessionID, mvc)
+						datastar.NewSSE(w, r)
 					})
 				})
 
@@ -219,7 +309,11 @@ func setupHome(router chi.Router, store sessions.Store) error {
 						return
 					}
 
-					mvc, session := mvcStore(w, r)
+					sessionID, mvc, err := mvcSession(w, r)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
 
 					if i >= 0 && i < len(mvc.Todos) {
 						mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
@@ -228,10 +322,9 @@ func setupHome(router chi.Router, store sessions.Store) error {
 							return !todo.Completed
 						})
 					}
-					saveMVC(w, r, mvc, session)
+					saveMVC(r.Context(), sessionID, mvc)
 
-					sse := datastar.NewSSE(w, r)
-					datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+					datastar.NewSSE(w, r)
 				})
 			})
 		})
@@ -246,4 +339,21 @@ func MustJSONMarshal(v any) string {
 		panic(err)
 	}
 	return string(b)
+}
+
+func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
+
+	sess, err := store.Get(r, "connections")
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
+	id, ok := sess.Values["id"].(string)
+	if !ok {
+		id = toolbelt.NextEncodedID()
+		sess.Values["id"] = id
+		if err := sess.Save(r, w); err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
+	}
+	return id, nil
 }
