@@ -9,24 +9,10 @@ import (
 templ Home(todoMVC *TodoMVC) {
 	{{
 		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>`
-		features := []string{
-			"Fine grained signals",
-			"Two-way data binding",
-			"Partial HTML updates",
-			"Server sent events",
-			"Visibility state",
-			"Expressions",
-			"Intersection Observers",
-			"Teleport",
-			"Bind to any attribute",
-			"Respond to any event",
-			"Offline / sync support",
-			"And more...",
-		}
 	}}
 	@Page() {
 		<div class="flex flex-col items-center min-h-screen gap-4 p-16 bg-gradient-to-br from-base-300 to-base-100">
-			<div class="flex flex-col items-center max-w-lg gap-8">
+			<div class="flex flex-col items-center gap-8 md:max-w-xl">
 				<img
 					class="w-24 border-4 rounded-full shadow-xl md:w-96 border-primary"
 					src={ staticPath("/images/rocket.jpg") }
@@ -74,14 +60,6 @@ templ Home(todoMVC *TodoMVC) {
 					</div>
 				</div>
 				@templ.Raw(homePageChartSVG)
-				<div class="flex flex-col items-center">
-					<label class="card-title text-primary">Batteries included</label>
-					<ul class="flex flex-wrap justify-center gap-1">
-						for _, feature := range features {
-							<li class="p-2 font-bold badge badge-secondary">{ feature }</li>
-						}
-					</ul>
-				</div>
 				@TodosMVCView(todoMVC)
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"
