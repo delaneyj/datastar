@@ -66,7 +66,7 @@ templ Home(todoMVC *TodoMVC) {
 								@icon("material-symbols:content-copy")
 							</button>
 							<code
-								class="flex-1 overflow-hidden text-xs text-primary text-ellipsis"
+								class="flex-1 overflow-auto text-xs text-primary text-ellipsis"
 							>
 								{ cdnText }
 							</code>
@@ -138,7 +138,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 			input = mvc.Todos[mvc.EditingIdx].Text
 		}
 	}}
-	<div id="todosMVC" class="w-full overflow-hidden shadow-xl card bg-base-100">
+	<div id="todosMVC" class="w-full shadow-xl card bg-base-100">
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
@@ -186,7 +186,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									} else {
 										<button
 											class="btn btn-xs join-item"
-											data-on-click={ fmt.Sprintf("$$patch('/api/todos/mode/%d')", i) }
+											data-on-click={ fmt.Sprintf("$$put('/api/todos/mode/%d')", i) }
 										>
 											{ TodoViewModeStrings[i] }
 										</button>
@@ -194,7 +194,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								}
 							</div>
 							if completed > 0 {
-								<div class="tooltip" data-tip="clear completed todos">
+								<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
 									<button
 										class="btn btn-ghost btn-lg"
 										data-on-click="$$delete('/api/todos/-1')"
