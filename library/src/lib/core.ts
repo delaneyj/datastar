@@ -53,7 +53,6 @@ export class Datastar {
       if (p.onGlobalInit) {
         p.onGlobalInit({
           actions: this.actions,
-          refs: this.refs,
           reactivity: this.reactivity,
           mergeStore: this.mergeStore.bind(this),
           store: this.store,
@@ -197,7 +196,6 @@ export class Datastar {
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),
             actions: this.actions,
-            refs: this.refs,
             reactivity: this.reactivity,
             el,
             key,
