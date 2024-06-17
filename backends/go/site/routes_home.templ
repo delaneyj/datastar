@@ -242,7 +242,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				}
 			</label>
 			<label
-				class="flex-1 text-lg cursor-pointer"
+				class="flex-1 text-lg cursor-pointer select-none"
 				data-on-dblclick={ fmt.Sprintf("$$get('/api/todos/%d/edit')", i) }
 			>{ todo.Text }</label>
 			<button
