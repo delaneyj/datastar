@@ -72,6 +72,7 @@ func setupExamples(router chi.Router) (err error) {
 				{ID: "raf_update"},
 				{ID: "update_store"},
 				{ID: "refs"},
+				{ID: "multiline_expressions"},
 			},
 		},
 		{
