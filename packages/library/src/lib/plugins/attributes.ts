@@ -197,11 +197,11 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
+  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    let callback = () => {
+    let callback = (_?: Event) => {
       expressionFn(ctx)
       sendDatastarEvent('plugin', 'event', key, el, 'triggered')
     }
@@ -267,10 +267,25 @@ export const EventPlugin: AttributePlugin = {
         })
 
       default:
-        el.addEventListener(eventName, callback, evtListOpts)
+        const testOutside = ctx.modifiers.has('outside')
+        let target: HTMLElement | Document = el as HTMLElement
+        if (testOutside) {
+          target = document
+          const cb = callback
+          const targetOutsideCallback = (e?: Event) => {
+            const n = e?.target as Node
+            if (!n) return
+            const isEl = el === n
+            const isElChild = el.contains(n)
+            if (!isEl && !isElChild) cb(e)
+          }
+          callback = targetOutsideCallback
+        }
+
+        target.addEventListener(eventName, callback, evtListOpts)
         return () => {
           // console.log(`Removing event listener for ${eventName} on ${el}`)
-          el.removeEventListener(eventName, callback)
+          target.removeEventListener(eventName, callback)
         }
     }
   },

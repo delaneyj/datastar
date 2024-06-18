@@ -189,11 +189,6 @@ templ TodosMVCView(mvc *TodoMVC) {
 						</footer>
 					}
 				</section>
-				if hasTodos {
-					<footer class="w-full text-xs italic text-center">
-						<p>Double-click to edit a todo</p>
-					</footer>
-				}
 				@datastar.TemplSignalStoreView()
 				<div class="card bg-base-200">
 					<div class="card-body">
@@ -216,10 +211,13 @@ templ TodoInput(i int) {
 		data-model="input"
 		data-on-keypress={ fmt.Sprintf(`
 			if (event.key === 'Enter') {
-				$$put('/api/todos/%d/edit', {text: $input});
+				$$put('/api/todos/%d/edit');
 				$input = '';
 			}
 		`, i) }
+		if i >= 0 {
+			data-on-click.outside.once="$$put('/api/todos/cancel')"
+		}
 	/>
 }
 
@@ -243,7 +241,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			</label>
 			<label
 				class="flex-1 text-lg cursor-pointer select-none"
-				data-on-dblclick={ fmt.Sprintf("$$get('/api/todos/%d/edit')", i) }
+				data-on-click={ fmt.Sprintf("$$get('/api/todos/%d/edit')", i) }
 			>{ todo.Text }</label>
 			<button
 				class="invisible btn btn-error group-hover:visible"

@@ -173,6 +173,23 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 				}
 			})
 
+			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				mvc.EditingIdx = -1
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				datastar.NewSSE(w, r)
+			})
+
 			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
 
 				sessionID, mvc, err := mvcSession(w, r)
@@ -288,7 +305,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 							return
 						}
 
-						if i >= 0 && i < len(mvc.Todos) {
+						if i >= 0 {
 							mvc.Todos[i].Text = store.Input
 						} else {
 							mvc.Todos = append(mvc.Todos, &Todo{
@@ -315,7 +332,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 						return
 					}
 
-					if i >= 0 && i < len(mvc.Todos) {
+					if i >= 0 {
 						mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
 					} else {
 						mvc.Todos = lo.Filter(mvc.Todos, func(todo *Todo, i int) bool {
