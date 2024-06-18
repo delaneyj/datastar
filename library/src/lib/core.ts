@@ -234,7 +234,6 @@ Check if the expression is valid before raising an issue.
 }
             `
 
-            console.log(fnContent)
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn

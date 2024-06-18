@@ -38,7 +38,7 @@ const ActionProcessor: Preprocessor = {
 const RefProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
-    return `ctx.store()._dsPlugins.refs.${ref}`
+    return `document.querySelector(ctx.store()._dsPlugins.refs.${ref})`
   },
 }
 
