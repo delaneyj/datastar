@@ -16,7 +16,10 @@ templ Home() {
 					class="w-24 border-4 rounded-full shadow-xl md:w-96 border-primary"
 					src={ staticPath("/images/rocket.jpg") }
 				/>
-				<div class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">Datastar</div>
+				<div class="flex flex-col items-end font-bold uppercase font-brand">
+					<div class="md:text-6xl text-primary">Datastar</div>
+					<div class="md:text-sm text-secondary">v{ packageJSON.Version }</div>
+				</div>
 				<div class="text-center font-brand">
 					<div class="text-xl">Real-time hypermedia framework</div>
 				</div>
@@ -224,7 +227,7 @@ templ TodoInput(i int) {
 		autofocus
 		data-model="input"
 		data-on-keypress={ fmt.Sprintf(`
-			if (event.key === 'Enter') {
+			if (event.key === 'Enter' && $input.trim().length) {
 				$$put('/api/todos/%d/edit');
 				$input = '';
 			}

@@ -314,6 +314,11 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 							return
 						}
 
+						datastar.NewSSE(w, r)
+						if store.Input == "" {
+							return
+						}
+
 						sessionID, mvc, err := mvcSession(w, r)
 						if err != nil {
 							http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -336,7 +341,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 						mvc.EditingIdx = -1
 
 						saveMVC(r.Context(), sessionID, mvc)
-						datastar.NewSSE(w, r)
+
 					})
 				})
 
