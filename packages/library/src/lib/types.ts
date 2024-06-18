@@ -20,7 +20,6 @@ export type AttributeContext = {
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void
   actions: Readonly<Actions>
-  refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
   el: Readonly<HTMLorSVGElement>
   key: Readonly<string>
@@ -34,7 +33,6 @@ export type InitContext = {
   store: any
   mergeStore: (store: DeepState) => void
   actions: Readonly<Actions>
-  refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
 }
 
