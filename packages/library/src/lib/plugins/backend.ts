@@ -1,9 +1,9 @@
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
+import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
-import { Signal } from '../external/preact-core'
 
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = 'datastar-request'
@@ -105,7 +105,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
+function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
   const store = ctx.store()
 
   if (!urlExpression) {
@@ -116,10 +116,10 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
   const loadingTarget = ctx.el as HTMLElement
 
-  const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-    ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+  const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
+    ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
     : []
-  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store._dsPlugins.fetch?.indicatorsVisible
+  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store?._dsPlugins.fetch?.indicatorsVisible
   indicatorElements.forEach((indicator) => {
     if (!indicator || !indicatorsVisible) return
     const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
@@ -234,10 +234,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
     onclose: () => {
       const store = ctx.store()
-      const indicatorsVisible: Signal<IndicatorReference[]> = store._dsPlugins.fetch?.indicatorsVisible
-      const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-        ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
-        : []
+      const indicatorsVisible: Signal<IndicatorReference[]> = store?._dsPlugins?.fetch?.indicatorsVisible || []
+      const indicatorElements: HTMLElement[] =
+        store?._dsPlugins?.fetch?.indicatorElements || []
+          ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+          : []
 
       const indicatorCleanupPromises: Promise<() => void>[] = []
 
@@ -272,8 +273,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     },
   }
 
-  if (req.headers && store._dsPlugins.fetch?.headers?.size()) {
-    for (const key in store._dsPlugins.fetch.headers) {
+  if (req.headers && store?._dsPlugins?.fetch?.headers?.size()) {
+    for (const key in store?._dsPlugins.fetch.headers) {
       const value = store._dsPlugins.fetch.headers.value[key]
       req.headers[key] = value
     }
@@ -287,7 +288,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     req.body = storeJSON
   }
 
-  await fetchEventSource(url, req)
+  fetchEventSource(url, req)
 }
 
 const fragContainer = document.createElement('template')
@@ -399,19 +400,7 @@ export function mergeHTMLFragment(
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression) => {
-      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
-      const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
-        return
-      }
-
-      new Promise((resolve) => {
-        da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
-          resolve(void 0)
-        })
-      })
+      fetcher(method, urlExpression, ctx)
     }
     return acc
   },
@@ -419,12 +408,12 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
     isFetching: async (ctx: AttributeContext, selector: string) => {
       const indicators = document.querySelectorAll(selector)
       const store = ctx.store()
-      const indicatorsVisible: IndicatorReference[] | undefined = store._dsPlugins?.fetch.indicatorsVisible?.value
+      const indicatorsVisible: IndicatorReference[] | undefined =
+        store?._dsPlugins?.fetch.indicatorsVisible?.value || []
       if (!indicatorsVisible) return false
       return Array.from(indicators).some((indicator) => {
         return indicatorsVisible.some((indicatorVisible) => {
           if (!indicatorVisible) return false
-
           return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
         })
       })

@@ -2,24 +2,30 @@ package site
 
 import (
 	"fmt"
+	"github.com/delaneyj/datastar"
 )
 
 templ Home() {
-	{{ cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>` }}
+	{{
+		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>`
+	}}
 	@Page() {
 		<div class="flex flex-col items-center min-h-screen gap-4 p-16 bg-gradient-to-br from-base-300 to-base-100">
-			<div class="flex flex-col items-center max-w-lg gap-8">
+			<div class="flex flex-col items-center gap-8 md:max-w-xl">
 				<img
 					class="w-24 border-4 rounded-full shadow-xl md:w-96 border-primary"
-					src={ staticPath("/images/rocket.png") }
+					src={ staticPath("/images/rocket.jpg") }
 				/>
-				<div class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">Datastar</div>
+				<div class="flex flex-col items-end font-bold uppercase font-brand">
+					<div class="md:text-6xl text-primary">Datastar</div>
+					<div class="md:text-sm text-secondary">v{ packageJSON.Version }</div>
+				</div>
 				<div class="text-center font-brand">
 					<div class="text-xl">Real-time hypermedia framework</div>
 				</div>
 				<p>
 					Using a single
-					<span class="text-lg font-bold text-primary">{ iifeBuildSize }</span>
+					<span class="text-lg font-bold text-primary">{ iifeBuildSizeStr }</span>
 					CDN link and have access to everything needed to rival a full-stack SPA framework; all in the language of your choice.
 				</p>
 				<div class="flex flex-wrap w-full gap-4">
@@ -48,7 +54,7 @@ templ Home() {
 								@icon("material-symbols:content-copy")
 							</button>
 							<code
-								class="flex-1 overflow-hidden text-xs text-primary text-ellipsis"
+								class="flex-1 overflow-auto text-xs text-primary text-ellipsis"
 							>
 								{ cdnText }
 							</code>
@@ -56,59 +62,210 @@ templ Home() {
 					</div>
 				</div>
 				@templ.Raw(homePageChartSVG)
-				<div class="w-full shadow-xl card bg-base-100">
-					<div class="card-body">
-						<h2 class="card-title">Example of a dynamically loaded area of page with shared global state</h2>
-						<div
-							id="global-count-example"
-							class="flex items-center justify-center gap-4 p-4"
-							data-on-load="$$get('/api/globalCount')"
-							data-fetch-indicator="'#spinner'"
-						>
-							<span class="text-2xl">Loading example on delay...</span>
-							@icon("svg-spinners:eclipse", "id", "spinner")
-						</div>
-					</div>
-				</div>
+				<div id="todosMVC" data-on-load="$$get('/api/todos')">Todos</div>
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"
 					href={ templ.SafeURL("/guide") }
 				>
 					@icon("simple-icons:rocket")
-					Let's Get Started!
+					{ "Let's Get Started!" }
 				</a>
 			</div>
 		</div>
 	}
 }
 
-type GlobalCountStore struct {
-	Count int32 `json:"count"`
+type TodoViewMode int
+
+const (
+	TodoViewModeAll TodoViewMode = iota
+	TodoViewModeActive
+	TodoViewModeCompleted
+	TodoViewModeLast
+)
+
+var TodoViewModeStrings = []string{"All", "Active", "Completed"}
+
+type Todo struct {
+	Text      string `json:"text"`
+	Completed bool   `json:"completed"`
 }
 
-templ HomeGlobalCountExample(store GlobalCountStore) {
-	<div
-		id="global-count-example"
-		class="flex flex-col gap-4"
-		data-store={ templ.JSONString(store) }
-	>
-		<div class="flex gap-4">
-			<a class="flex-1 btn btn-success" data-on-click="$count++">Increment Local +</a>
-			<a class="flex-1 btn btn-error" data-on-click="$count--">Decrement Local -</a>
-		</div>
-		<div class="flex flex-col gap-2">
-			<div data-text="`Count is ${$count % 2 === 0 ? 'even' : 'odd'}`"></div>
-			<input
-				class="flex-1 input input-bordered"
-				type="number"
-				name="count"
-				data-model="count"
-				data-testid="localcount_input"
-			/>
-		</div>
-		<div class="flex gap-4">
-			<a class="flex-1 btn btn-info" data-on-click="$$get('/api/globalCount')">Load global</a>
-			<a class="flex-1 btn btn-warning" data-on-click="$$post('/api/globalCount')">Store global</a>
+type TodoMVC struct {
+	Todos      []*Todo      `json:"todos"`
+	EditingIdx int          `json:"editingIdx"`
+	Mode       TodoViewMode `json:"mode"`
+}
+
+templ TodosMVCView(mvc *TodoMVC) {
+	{{
+		hasTodos := len(mvc.Todos) > 0
+		left, completed := 0, 0
+		for _, todo := range mvc.Todos {
+			if !todo.Completed {
+				left++
+			} else {
+				completed++
+			}
+		}
+		input := ""
+		if mvc.EditingIdx >= 0 {
+			input = mvc.Todos[mvc.EditingIdx].Text
+		}
+	}}
+	<div id="todosMVC" class="w-full shadow-xl card bg-base-100">
+		<div class="card-body">
+			<div
+				class="flex flex-col w-full gap-4"
+				data-store={ fmt.Sprintf("{input:'%s'}", input) }
+			>
+				<section class="flex flex-col gap-2">
+					<header class="flex flex-col gap-2">
+						<div class="alert alert-info">
+							@icon("material-symbols:info")
+							<p>
+								<div class="text-sm">
+									This mini application is driven by a
+									<br/>
+									<span class="italic font-bold uppercase text-primary">single get request!</span>
+									As you interact with the UI, the backend state is updated and new partial HTML fragments are sent down to the client via Server-Sent Events.  You can make simple apps or full blown SPA replacements with this pattern.  Open you dev tools and watch the network tab to see the magic happen (you will want to look for the "/todos" Network/EventStream tab).
+								</div>
+							</p>
+						</div>
+						<div class="flex items-baseline gap-2">
+							<h1 class="text-4xl font-bold uppercase font-brand md:text-6xl text-primary">todos</h1>
+							<h3 class="text-lg">example</h3>
+						</div>
+						<h2 class="text-sm">
+							The input is bound to a local store, but this is not a single page application.  It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
+						</h2>
+						<div class="flex items-center gap-2">
+							if hasTodos {
+								<div class="tooltip" data-tip="toggle all todos">
+									<button
+										class="btn btn-lg"
+										data-on-click="$$post('/api/todos/-1/toggle')"
+									>
+										@icon("material-symbols:checklist")
+									</button>
+								</div>
+							}
+							if mvc.EditingIdx <0 {
+								@TodoInput(-1)
+							}
+						</div>
+					</header>
+					if hasTodos {
+						<section>
+							<ul class="divide-y divide-primary">
+								for i, todo := range mvc.Todos {
+									@TodoRow(mvc.Mode, todo, i, i == mvc.EditingIdx)
+								}
+							</ul>
+						</section>
+						<footer class="flex items-center justify-between">
+							<span class="todo-count"><strong>{ fmt.Sprint(left) }</strong> item left</span>
+							<div class="join">
+								for i := TodoViewModeAll; i < TodoViewModeLast; i++ {
+									if i == mvc.Mode {
+										<div class="btn btn-xs btn-primary join-item">{ TodoViewModeStrings[i] }</div>
+									} else {
+										<button
+											class="btn btn-xs join-item"
+											data-on-click={ fmt.Sprintf("$$put('/api/todos/mode/%d')", i) }
+										>
+											{ TodoViewModeStrings[i] }
+										</button>
+									}
+								}
+							</div>
+							<div class="join">
+								if completed > 0 {
+									<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
+										<button
+											class="btn btn-error btn-xs join-item"
+											data-on-click="$$delete('/api/todos/-1')"
+										>
+											@icon("material-symbols:delete")
+										</button>
+									</div>
+								}
+								<div class="tooltip" data-tip="Reset list">
+									<button
+										class="btn btn-warning btn-xs join-item"
+										data-on-click="$$put('/api/todos/reset')"
+									>
+										@icon("material-symbols:delete-sweep")
+									</button>
+								</div>
+							</div>
+						</footer>
+						<footer class="flex justify-center text-xs">
+							<div>Click to edit, click away to cancel, press enter to save.</div>
+						</footer>
+					}
+				</section>
+				@datastar.TemplSignalStoreView()
+				<div class="card bg-base-200">
+					<div class="card-body">
+						<div class="card-title">Backend State</div>
+						<pre class="overflow-auto font-mono text-xs">
+							{ MustJSONMarshal(mvc) }
+						</pre>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
+}
+
+templ TodoInput(i int) {
+	<input
+		id="todoInput"
+		class="flex-1 w-full italic input input-bordered input-lg"
+		placeholder="What needs to be done?"
+		autofocus
+		data-model="input"
+		data-on-keypress={ fmt.Sprintf(`
+			if (event.key === 'Enter' && $input.trim().length) {
+				$$put('/api/todos/%d/edit');
+				$input = '';
+			}
+		`, i) }
+		if i >= 0 {
+			data-on-click.outside.capture="$$put('/api/todos/cancel')"
+		}
+	/>
+}
+
+templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
+	if isEditing {
+		@TodoInput(i)
+	} else if (
+		mode == TodoViewModeAll) ||
+		(mode == TodoViewModeActive && !todo.Completed) ||
+		(mode == TodoViewModeCompleted && todo.Completed) {
+		<li class="flex items-center gap-8 p-1 p-2 group" id={ fmt.Sprintf("todo%d", i) }>
+			<label
+				class="text-4xl cursor-pointer"
+				data-on-click={ fmt.Sprintf("$$post('/api/todos/%d/toggle')", i) }
+			>
+				if todo.Completed {
+					@icon("material-symbols:check-box-outline")
+				} else {
+					@icon("material-symbols:check-box-outline-blank")
+				}
+			</label>
+			<label
+				class="flex-1 text-lg cursor-pointer select-none"
+				data-on-click={ fmt.Sprintf("$$get('/api/todos/%d/edit')", i) }
+			>{ todo.Text }</label>
+			<button
+				class="invisible btn btn-error group-hover:visible"
+				data-on-click={ fmt.Sprintf("$$delete('/api/todos/%d')", i) }
+			>
+				@icon("material-symbols:close")
+			</button>
+		</li>
+	}
 }

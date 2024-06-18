@@ -1,3 +1,4 @@
+import { sendDatastarEvent } from '..'
 import { Actions, AttributeContext, AttributePlugin, RegexpGroups } from '../types'
 
 const kebabize = (str: string) => str.replace(/[A-Z]+(?![a-z])|[A-Z]/g, ($, ofs) => (ofs ? '-' : '') + $.toLowerCase())
@@ -196,17 +197,14 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
+  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    let callback = () => {
+    let callback = (_?: Event) => {
       expressionFn(ctx)
+      sendDatastarEvent('plugin', 'event', key, el, 'triggered')
     }
-
-    ctx.upsertIfMissingFromStore('_dsPlugins.on', {
-      lastStoreMarshalled: '',
-    })
 
     const debounceArgs = ctx.modifiers.get('debounce')
     if (debounceArgs) {
@@ -254,6 +252,7 @@ export const EventPlugin: AttributePlugin = {
         }
 
       case 'store-change':
+        let lastStoreMarshalled = ''
         return ctx.reactivity.effect(() => {
           const store = ctx.store()
           let storeValue = store.value
@@ -261,17 +260,35 @@ export const EventPlugin: AttributePlugin = {
             storeValue = remoteSignals(storeValue)
           }
           const current = JSON.stringify(storeValue)
-          if (store._dsPlugins.on.lastStoreMarshalled !== current) {
-            store._dsPlugins.on.lastStoreMarshalled = current
+          if (lastStoreMarshalled !== current) {
+            lastStoreMarshalled = current
             callback()
           }
         })
 
       default:
-        el.addEventListener(eventName, callback, evtListOpts)
+        const testOutside = ctx.modifiers.has('outside')
+        let target: HTMLElement | Document = el as HTMLElement
+        if (testOutside) {
+          target = document
+          const cb = callback
+          let called = false
+          const targetOutsideCallback = (e?: Event) => {
+            const targetHTML = e?.target as HTMLElement
+            if (!targetHTML) return
+            const isEl = el.id === targetHTML.id
+            if (!isEl && !called) {
+              cb(e)
+              called = true
+            }
+          }
+          callback = targetOutsideCallback
+        }
+
+        target.addEventListener(eventName, callback, evtListOpts)
         return () => {
           // console.log(`Removing event listener for ${eventName} on ${el}`)
-          el.removeEventListener(eventName, callback)
+          target.removeEventListener(eventName, callback)
         }
     }
   },

@@ -349,11 +349,11 @@ If you're still here I imagine you want to know more. Let's define things a litt
 
 To be more precise, think of Datastar as an extension to HTML's [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also setup events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
 
-- Declare global state: `data-store = "{foo: ''}"`
-- Link-up HTML elements to state slots: `data-model = "foo"`
-- Adjust HTML elements text content: `data-text = "$foo"`
-- Hookup other effects on your DOM to the state: `data-show= "$foo"`
-- Setup events using `data-on-(load or click) = "$$get(/endpoint)"`
+- Declare global state: `data-store="{foo: ''}"`
+- Link-up HTML elements to state slots: `data-model="foo"`
+- Adjust HTML elements text content: `data-text="$foo"`
+- Hookup other effects on your DOM to the state: `data-show="$foo"`
+- Setup events using `data-on-click="$$get(/endpoint)"`
 - Respond in HTML wrapped in SSE with a target element ID to update
 
 It's that simple. To dive deeper check out some of the other links or just click below.

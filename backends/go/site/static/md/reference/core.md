@@ -6,7 +6,7 @@ These are the only plugins that are required in order to have a working system. 
 
 ## Attributes Plugins
 
-### MergeStore
+### Store
 
 ```html
 <div data-store="{foo:1234}"></div>
@@ -20,7 +20,7 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 <div data-ref="foo"></div>
 ```
 
-Makes an element available in the `ctx.refs` object. This is useful for accessing elements in the DOM. Can be accessed in scripts via `~foo`.
+Makes an element available in the `ctx._dsPlugins.refs` object. This is useful for accessing elements in the DOM. Can be accessed in scripts via `~foo`.
 
 ## Preprocessor Plugins
 
