@@ -58,8 +58,8 @@ Please don't hesitate to reach out if you have any questions. We are always look
 
 # Choose your own adventure
 
-<div class="flex gap-4 items-center">
-<a href="/examples" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Show me</a>
-<a href="/reference" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Let me dig in</a>
-<a href="/essays" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Pontificating</a>
+<div class="flex justify-center gap-4">
+<a href="/examples" role="button" class="no-underline btn ">Show me</a>
+<a href="/reference" role="button" class="no-underline btn ">Let me dig in</a>
+<a href="/essays" role="button" class="no-underline btn ">Pontificating</a>
 </div>

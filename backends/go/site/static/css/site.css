@@ -6447,6 +6447,12 @@ html:has(.drawer-toggle:checked) {
   cursor: wait;
 }
 
+.select-none {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+}
+
 .select-all {
   -webkit-user-select: all;
      -moz-user-select: all;

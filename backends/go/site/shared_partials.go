@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"compress/gzip"
 	"fmt"
-	"log"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -13,11 +12,14 @@ import (
 	"github.com/gomarkdown/markdown/parser"
 )
 
-var iifeBuildSize string
+var (
+	iifeBuildSize    int
+	iifeBuildSizeStr string
+)
 
 func upsertIIfeBuildSize() string {
-	if iifeBuildSize != "" {
-		return iifeBuildSize
+	if iifeBuildSizeStr != "" {
+		return iifeBuildSizeStr
 	}
 	build, err := staticFS.ReadFile("static/library/datastar.iife.js")
 	if err != nil {
@@ -33,9 +35,9 @@ func upsertIIfeBuildSize() string {
 		panic(err)
 	}
 	w.Close()
-	log.Printf("iife build size: %s", humanize.IBytes(uint64(buf.Len())))
-	iifeBuildSize = humanize.IBytes(uint64(buf.Len()))
-	return iifeBuildSize
+	iifeBuildSize = buf.Len()
+	iifeBuildSizeStr = humanize.IBytes(uint64(iifeBuildSize))
+	return iifeBuildSizeStr
 }
 
 func markdownRenders(staticMdPath string) (mdElementRenderers map[string]string, mdAnchors map[string][]string, err error) {

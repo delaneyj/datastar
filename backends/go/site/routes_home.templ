@@ -22,7 +22,7 @@ templ Home() {
 				</div>
 				<p>
 					Using a single
-					<span class="text-lg font-bold text-primary">{ iifeBuildSize }</span>
+					<span class="text-lg font-bold text-primary">{ iifeBuildSizeStr }</span>
 					CDN link and have access to everything needed to rival a full-stack SPA framework; all in the language of your choice.
 				</p>
 				<div class="flex flex-wrap w-full gap-4">
@@ -121,7 +121,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 						<div class="alert alert-info">
 							@icon("material-symbols:info")
 							<p>
-								<div class="text-lg">
+								<div class="text-sm">
 									This mini application is driven by a
 									<br/>
 									<span class="italic font-bold uppercase text-primary">single get request!</span>
@@ -179,7 +179,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 							if completed > 0 {
 								<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
 									<button
-										class="btn btn-ghost btn-lg"
+										class="btn btn-error btn-xs"
 										data-on-click="$$delete('/api/todos/-1')"
 									>
 										@icon("material-symbols:delete")
