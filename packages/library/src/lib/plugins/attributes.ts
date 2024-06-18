@@ -272,12 +272,15 @@ export const EventPlugin: AttributePlugin = {
         if (testOutside) {
           target = document
           const cb = callback
+          let called = false
           const targetOutsideCallback = (e?: Event) => {
-            const n = e?.target as Node
-            if (!n) return
-            const isEl = el === n
-            const isElChild = el.contains(n)
-            if (!isEl && !isElChild) cb(e)
+            const targetHTML = e?.target as HTMLElement
+            if (!targetHTML) return
+            const isEl = el.id === targetHTML.id
+            if (!isEl && !called) {
+              cb(e)
+              called = true
+            }
           }
           callback = targetOutsideCallback
         }

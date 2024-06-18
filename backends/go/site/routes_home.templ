@@ -176,16 +176,29 @@ templ TodosMVCView(mvc *TodoMVC) {
 									}
 								}
 							</div>
-							if completed > 0 {
-								<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
+							<div class="join">
+								if completed > 0 {
+									<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
+										<button
+											class="btn btn-error btn-xs join-item"
+											data-on-click="$$delete('/api/todos/-1')"
+										>
+											@icon("material-symbols:delete")
+										</button>
+									</div>
+								}
+								<div class="tooltip" data-tip="Reset list">
 									<button
-										class="btn btn-error btn-xs"
-										data-on-click="$$delete('/api/todos/-1')"
+										class="btn btn-warning btn-xs join-item"
+										data-on-click="$$put('/api/todos/reset')"
 									>
-										@icon("material-symbols:delete")
+										@icon("material-symbols:delete-sweep")
 									</button>
 								</div>
-							}
+							</div>
+						</footer>
+						<footer class="flex justify-center text-xs">
+							<div>Click to edit, click away to cancel, press enter to save.</div>
 						</footer>
 					}
 				</section>
@@ -205,6 +218,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 
 templ TodoInput(i int) {
 	<input
+		id="todoInput"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
 		autofocus
@@ -216,7 +230,7 @@ templ TodoInput(i int) {
 			}
 		`, i) }
 		if i >= 0 {
-			data-on-click.outside.once="$$put('/api/todos/cancel')"
+			data-on-click.outside.capture="$$put('/api/todos/cancel')"
 		}
 	/>
 }

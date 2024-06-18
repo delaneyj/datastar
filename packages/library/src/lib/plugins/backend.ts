@@ -116,10 +116,10 @@ function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
 
   const loadingTarget = ctx.el as HTMLElement
 
-  const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-    ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+  const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
+    ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
     : []
-  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store._dsPlugins.fetch?.indicatorsVisible
+  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store?._dsPlugins.fetch?.indicatorsVisible
   indicatorElements.forEach((indicator) => {
     if (!indicator || !indicatorsVisible) return
     const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
@@ -234,10 +234,11 @@ function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
     },
     onclose: () => {
       const store = ctx.store()
-      const indicatorsVisible: Signal<IndicatorReference[]> = store._dsPlugins.fetch?.indicatorsVisible
-      const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-        ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
-        : []
+      const indicatorsVisible: Signal<IndicatorReference[]> = store?._dsPlugins?.fetch?.indicatorsVisible || []
+      const indicatorElements: HTMLElement[] =
+        store?._dsPlugins?.fetch?.indicatorElements || []
+          ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+          : []
 
       const indicatorCleanupPromises: Promise<() => void>[] = []
 
@@ -272,8 +273,8 @@ function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
     },
   }
 
-  if (req.headers && store._dsPlugins.fetch?.headers?.size()) {
-    for (const key in store._dsPlugins.fetch.headers) {
+  if (req.headers && store?._dsPlugins?.fetch?.headers?.size()) {
+    for (const key in store?._dsPlugins.fetch.headers) {
       const value = store._dsPlugins.fetch.headers.value[key]
       req.headers[key] = value
     }
@@ -399,7 +400,6 @@ export function mergeHTMLFragment(
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression) => {
-      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
       fetcher(method, urlExpression, ctx)
     }
     return acc
@@ -408,7 +408,8 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
     isFetching: async (ctx: AttributeContext, selector: string) => {
       const indicators = document.querySelectorAll(selector)
       const store = ctx.store()
-      const indicatorsVisible: IndicatorReference[] | undefined = store._dsPlugins?.fetch.indicatorsVisible?.value
+      const indicatorsVisible: IndicatorReference[] | undefined =
+        store?._dsPlugins?.fetch.indicatorsVisible?.value || []
       if (!indicatorsVisible) return false
       return Array.from(indicators).some((indicator) => {
         return indicatorsVisible.some((indicatorVisible) => {

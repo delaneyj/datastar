@@ -99,6 +99,17 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 		return nil
 	}
 
+	resetMVC := func(mvc *TodoMVC) {
+		mvc.Mode = TodoViewModeAll
+		mvc.Todos = []*Todo{
+			{Text: "Learn any backend language", Completed: true},
+			{Text: "Learn Datastar", Completed: false},
+			{Text: "???", Completed: false},
+			{Text: "Profit", Completed: false},
+		}
+		mvc.EditingIdx = -1
+	}
+
 	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *TodoMVC, error) {
 		ctx := r.Context()
 		sessionID, err := upsertSessionID(store, r, w)
@@ -111,14 +122,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 			if err != jetstream.ErrKeyNotFound {
 				return "", nil, fmt.Errorf("failed to get key value: %w", err)
 			}
-			mvc.Mode = TodoViewModeAll
-			mvc.Todos = []*Todo{
-				{Text: "Learn any backend language", Completed: true},
-				{Text: "Learn Datastar", Completed: false},
-				{Text: "???", Completed: false},
-				{Text: "Profit", Completed: false},
-			}
-			mvc.EditingIdx = -1
+			resetMVC(mvc)
 
 			if err := saveMVC(ctx, sessionID, mvc); err != nil {
 				return "", nil, fmt.Errorf("failed to save mvc: %w", err)
@@ -171,6 +175,22 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 						datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
 					}
 				}
+			})
+
+			todosRouter.Put("/reset", func(w http.ResponseWriter, r *http.Request) {
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				resetMVC(mvc)
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				datastar.NewSSE(w, r)
 			})
 
 			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
