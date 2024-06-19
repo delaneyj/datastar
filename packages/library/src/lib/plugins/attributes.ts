@@ -197,13 +197,19 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
+  allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
+
+    let target: Element | Window | Document = ctx.el
+    if (ctx.modifiers.get('window')) {
+      target = window
+    }
+
     let callback = (_?: Event) => {
       expressionFn(ctx)
-      sendDatastarEvent('plugin', 'event', key, el, 'triggered')
+      sendDatastarEvent('plugin', 'event', key, target, 'triggered')
     }
 
     const debounceArgs = ctx.modifiers.get('debounce')
@@ -235,7 +241,7 @@ export const EventPlugin: AttributePlugin = {
     switch (eventName) {
       case 'load':
         callback()
-        delete el.dataset.onLoad
+        delete ctx.el.dataset.onLoad
         return () => {}
 
       case 'raf':
@@ -268,7 +274,6 @@ export const EventPlugin: AttributePlugin = {
 
       default:
         const testOutside = ctx.modifiers.has('outside')
-        let target: HTMLElement | Document = el as HTMLElement
         if (testOutside) {
           target = document
           const cb = callback

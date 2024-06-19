@@ -1,5 +1,13 @@
 import { sendDatastarEvent } from '..'
-import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
+import { DATASTAR_STR } from '../core'
+import {
+  AttributeContext,
+  AttributePlugin,
+  DatastarEvent,
+  Preprocessor,
+  RegexpGroups,
+  datastarEventName,
+} from '../types'
 
 const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
@@ -59,12 +67,40 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
+  allowedModifiers: new Set(['offline']),
   onLoad: (ctx: AttributeContext) => {
+    let lastOfflineMarshalled = ``
+    const offlineFn = ((_: CustomEvent<DatastarEvent>) => {
+      const s = ctx.store()
+      const marshalledStore = JSON.stringify(s)
+
+      if (marshalledStore !== lastOfflineMarshalled) {
+        window.localStorage.setItem(DATASTAR_STR, marshalledStore)
+        lastOfflineMarshalled = marshalledStore
+      }
+    }) as EventListener
+
+    const hasOffline = ctx.modifiers.has('offline')
+
+    if (hasOffline) {
+      const marshalledStore = window.localStorage.getItem(DATASTAR_STR) || '{}'
+      const store = JSON.parse(marshalledStore)
+      ctx.mergeStore(store)
+
+      window.addEventListener(datastarEventName, offlineFn)
+    }
+
     const bodyStore = ctx.expressionFn(ctx)
     const marshalled = JSON.stringify(bodyStore)
     sendDatastarEvent('plugin', 'store', 'merged', ctx.el, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
+
+    return () => {
+      if (hasOffline) {
+        window.removeEventListener(datastarEventName, offlineFn)
+      }
+    }
   },
 }
 
