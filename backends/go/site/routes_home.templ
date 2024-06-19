@@ -10,15 +10,15 @@ templ Home() {
 		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>`
 	}}
 	@Page() {
-		<div class="flex flex-col items-center min-h-screen gap-4 p-16 bg-gradient-to-br from-base-300 to-base-100">
-			<div class="flex flex-col items-center gap-8 md:max-w-xl">
+		<div class="flex flex-col w-full bg-gradient-to-br md:items-center from-base-300 to-base-100">
+			<div class="flex flex-col items-center gap-8 p-4 md:pt-16 md:max-w-3xl max-w-none">
 				<img
-					class="w-24 border-4 rounded-full shadow-xl md:w-96 border-primary"
+					class="border-4 rounded-full shadow-xl w-96 border-primary"
 					src={ staticPath("/images/rocket.jpg") }
 				/>
 				<div class="flex flex-col items-end font-bold uppercase font-brand">
-					<div class="md:text-6xl text-primary">Datastar</div>
-					<div class="md:text-sm text-secondary">v{ packageJSON.Version }</div>
+					<div class="text-6xl text-primary">Datastar</div>
+					<div class="text-sm text-secondary">v{ packageJSON.Version }</div>
 				</div>
 				<div class="text-center font-brand">
 					<div class="text-xl">Real-time hypermedia framework</div>
@@ -61,7 +61,9 @@ templ Home() {
 						</div>
 					</div>
 				</div>
-				@templ.Raw(homePageChartSVG)
+				<div class="w-96">
+					@templ.Raw(homePageChartSVG)
+				</div>
 				<div id="todosMVC" data-on-load="$$get('/api/todos')">Todos</div>
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"

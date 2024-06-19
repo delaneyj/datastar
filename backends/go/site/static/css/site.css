@@ -6371,10 +6371,6 @@ html:has(.drawer-toggle:checked) {
   height: 2rem;
 }
 
-.h-full {
-  height: 100%;
-}
-
 .min-h-full {
   min-height: 100%;
 }
@@ -6383,12 +6379,12 @@ html:has(.drawer-toggle:checked) {
   min-height: 100vh;
 }
 
-.w-24 {
-  width: 6rem;
-}
-
 .w-80 {
   width: 20rem;
+}
+
+.w-96 {
+  width: 24rem;
 }
 
 .w-full {
@@ -6804,10 +6800,6 @@ html:has(.drawer-toggle:checked) {
 
 .p-1 {
   padding: 0.25rem;
-}
-
-.p-16 {
-  padding: 4rem;
 }
 
 .p-2 {
@@ -8011,22 +8003,21 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 768px) {
-  .md\:w-96 {
-    width: 24rem;
+  .md\:max-w-3xl {
+    max-width: 48rem;
   }
 
-  .md\:max-w-xl {
-    max-width: 36rem;
+  .md\:items-center {
+    align-items: center;
+  }
+
+  .md\:pt-16 {
+    padding-top: 4rem;
   }
 
   .md\:text-6xl {
     font-size: 3.75rem;
     line-height: 1;
-  }
-
-  .md\:text-sm {
-    font-size: 0.875rem;
-    line-height: 1.25rem;
   }
 }
 

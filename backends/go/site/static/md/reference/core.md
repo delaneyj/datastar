@@ -1,6 +1,6 @@
 # Core Plugins
 
-[Source](https://github.com/delaneyj/datastar/blob/main/library/src/lib/plugins/core.ts)
+[Source](https://github.com/delaneyj/datastar/blob/main/packages/library/src/lib/plugins/core.ts)
 
 These are the only plugins that are required in order to have a working system. In the default build all (including core) plugins are included as they cover the most common use cases.
 

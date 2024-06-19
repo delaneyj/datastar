@@ -1,6 +1,6 @@
 # Action Plugins
 
-[Source](https://github.com/delaneyj/datastar/blob/main/library/src/lib/plugins/helpers.ts)
+[Source](https://github.com/delaneyj/datastar/blob/main/packages/library/src/lib/plugins/helpers.ts)
 
 ## `$$setAll(regexp: string, value: any)`
 
