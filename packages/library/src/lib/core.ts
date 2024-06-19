@@ -55,7 +55,6 @@ export class Datastar {
       if (p.onGlobalInit) {
         p.onGlobalInit({
           actions: this.actions,
-          refs: this.refs,
           reactivity: this.reactivity,
           mergeStore: this.mergeStore.bind(this),
           store: this.store,
@@ -165,12 +164,14 @@ export class Datastar {
             throw new Error(`'${rawKey}' must have non-empty expression`)
           }
 
+          const splitRegex = /;|\n/
+
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
             appliedProcessors.add(processor)
 
-            const expressionParts = expression.split(';')
+            const expressionParts = expression.split(splitRegex)
             const revisedParts: string[] = []
 
             expressionParts.forEach((exp) => {
@@ -199,7 +200,6 @@ export class Datastar {
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),
             actions: this.actions,
-            refs: this.refs,
             reactivity: this.reactivity,
             el,
             key,
@@ -212,17 +212,30 @@ export class Datastar {
           }
 
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
-            const statements = expression.split(';').map((s) => s.trim())
+            const statements = expression
+              .split(splitRegex)
+              .map((s) => s.trim())
+              .filter((s) => s.length)
             statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
-            let fnContent = `
+            const joined = statements.map((s) => `  ${s}`).join(';\n')
+            const fnContent = `
 try {
-${statements.map((s) => `  ${s}`).join(';\n')}
+${joined}
 } catch (e) {
-  throw e
+ const msg = \`
+Error evaluating Datastar expression:
+${joined.replaceAll('`', '\\`')}
+
+Error: \${e.message}
+
+Check if the expression is valid before raising an issue.
+\`.trim()
+ console.error(msg)
+ debugger
+ throw new Error(msg)
 }
             `
 
-            // console.log(fnContent)
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn

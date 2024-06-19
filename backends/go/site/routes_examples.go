@@ -17,7 +17,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(router chi.Router) (err error) {
+func setupExamples(router chi.Router, store sessions.Store) (err error) {
 	mdElementRenderers, _, err := markdownRenders("examples")
 	if err != nil {
 		return err
@@ -72,6 +72,8 @@ func setupExamples(router chi.Router) (err error) {
 				{ID: "raf_update"},
 				{ID: "update_store"},
 				{ID: "offline_sync"},
+				{ID: "refs"},
+				{ID: "multiline_expressions"},
 			},
 		},
 		{
@@ -131,8 +133,6 @@ func setupExamples(router chi.Router) (err error) {
 			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
 		})
 
-		examplesSessionStore := sessions.NewCookieStore([]byte("ExampleSession"))
-
 		if err := errors.Join(
 			setupExamplesClickToEdit(examplesRouter),
 			setupExamplesBulkUpdate(examplesRouter),
@@ -141,7 +141,7 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesDeleteRow(examplesRouter),
 			setupExamplesLazyLoad(examplesRouter),
 			setupExamplesFetchIndicator(examplesRouter),
-			setupExamplesOnLoad(examplesRouter, examplesSessionStore),
+			setupExamplesOnLoad(examplesRouter, store),
 			setupExamplesDisableButton(examplesRouter),
 			setupExampleInlineValidation(examplesRouter),
 			setupExamplesInfiniteScroll(examplesRouter),
@@ -156,17 +156,17 @@ func setupExamples(router chi.Router) (err error) {
 			setupExamplesRedirects(examplesRouter),
 			setupExamplesMultilineFragments(examplesRouter),
 			setupExamplesUpdateStore(examplesRouter),
-			setupExamplesOfflineSync(examplesRouter, examplesSessionStore),
+			setupExamplesOfflineSync(examplesRouter, store),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleUpdateBackend(examplesRouter),
-			setupExamplesStoreChanged(examplesRouter, examplesSessionStore),
+			setupExamplesStoreChanged(examplesRouter, store),
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
-			setupExamplesTemplCounter(examplesRouter, examplesSessionStore),
+			setupExamplesTemplCounter(examplesRouter, store),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}

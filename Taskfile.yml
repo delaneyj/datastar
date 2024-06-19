@@ -8,7 +8,7 @@ vars:
   NAME: "site"
   BIN_NAME: "{{.NAME}}_bin"
   VERSION:
-    sh: cat library/package.json| jq -r .version
+    sh: cat packages/library/package.json| jq -r .version
 
 tasks:
   tools:
@@ -20,7 +20,7 @@ tasks:
     cmds:
       - echo {{.VERSION}}
   libpub:
-    dir: ./library
+    dir: packages/library
     deps:
       - library
     cmds:
@@ -65,6 +65,25 @@ tasks:
       - pnpm i
       # - pnpm vitest --watch=false
       - pnpm prettier -w .
+      - pnpm build
+      - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
+      - rsync -av package.json {{.BACKEND_STATIC_DIR}}
+
+  inspector:
+    library:
+    vars:
+      BACKEND_STATIC_DIR: "../../backends/go/{{.NAME}}/static/inspector"
+    dir: packages/inspector
+    generates:
+      - "dist/**/*"
+    sources:
+      - "src/**/*.ts"
+      - "package.json"
+    cmds:
+      # - echo "{{.BACKEND_STATIC_DIR}}"
+      - pnpm i
+      # - pnpm vitest --watch=false
+      - pnpm prettier -w . --log-level silent
       - pnpm build
       - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}

@@ -2,24 +2,29 @@ package site
 
 import (
 	"bytes"
-	"math/rand"
+	"context"
+	"fmt"
 	"net/http"
-	"sync/atomic"
+	"strconv"
+	"time"
 
-	"github.com/a-h/templ"
 	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	"github.com/dustin/go-humanize"
 	"github.com/go-chi/chi/v5"
+	"github.com/goccy/go-json"
+	"github.com/gorilla/sessions"
+	"github.com/nats-io/nats.go/jetstream"
+	"github.com/samber/lo"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
 var homePageChartSVG string
 
-func setupHome(router chi.Router) error {
+func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
 
-	chartWidth := 480
+	chartWidth := 400
 	graph := chart.BarChart{
 		Title:  "File Size (Hello World) first load",
 		Width:  chartWidth,
@@ -52,7 +57,7 @@ func setupHome(router chi.Router) error {
 			{Label: "SvelteKit", Value: 81920},
 			{Label: "HTMX+\nhyperscript", Value: 40653},
 			{Label: "HTMX+\nAlpine", Value: 37980},
-			{Label: "Datastar", Value: 10445},
+			{Label: "Datastar", Value: float64(iifeBuildSize)},
 			{Label: "Datastar Core", Value: 4526},
 		},
 	}
@@ -64,15 +69,70 @@ func setupHome(router chi.Router) error {
 	}
 	homePageChartSVG = buffer.String()
 
-	var globalCount = new(int32)
-	c := int32(toolbelt.Fit(rand.Float32(), 0, 1, -100, 100))
-	globalCount = &c
+	nc, err := ns.Client()
+	if err != nil {
+		return fmt.Errorf("error creating nats client: %w", err)
+	}
+	js, err := jetstream.New(nc)
+	if err != nil {
+		return fmt.Errorf("error creating jetstream client: %w", err)
+	}
+	kv, err := js.CreateOrUpdateKeyValue(context.Background(), jetstream.KeyValueConfig{
+		Bucket:      "todos",
+		Description: "Datastar Todos",
+		Compression: true,
+		TTL:         time.Hour,
+		MaxBytes:    16 * 1024 * 1024,
+	})
+	if err != nil {
+		return fmt.Errorf("error creating key value: %w", err)
+	}
 
-	globalCountExample := func() templ.Component {
-		store := &GlobalCountStore{
-			Count: atomic.LoadInt32(globalCount),
+	saveMVC := func(ctx context.Context, sessionID string, mvc *TodoMVC) error {
+		b, err := json.Marshal(mvc)
+		if err != nil {
+			return fmt.Errorf("failed to marshal mvc: %w", err)
 		}
-		return HomeGlobalCountExample(*store)
+		if _, err := kv.Put(ctx, sessionID, b); err != nil {
+			return fmt.Errorf("failed to put key value: %w", err)
+		}
+		return nil
+	}
+
+	resetMVC := func(mvc *TodoMVC) {
+		mvc.Mode = TodoViewModeAll
+		mvc.Todos = []*Todo{
+			{Text: "Learn any backend language", Completed: true},
+			{Text: "Learn Datastar", Completed: false},
+			{Text: "???", Completed: false},
+			{Text: "Profit", Completed: false},
+		}
+		mvc.EditingIdx = -1
+	}
+
+	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *TodoMVC, error) {
+		ctx := r.Context()
+		sessionID, err := upsertSessionID(store, r, w)
+		if err != nil {
+			return "", nil, fmt.Errorf("failed to get session id: %w", err)
+		}
+
+		mvc := &TodoMVC{}
+		if entry, err := kv.Get(ctx, sessionID); err != nil {
+			if err != jetstream.ErrKeyNotFound {
+				return "", nil, fmt.Errorf("failed to get key value: %w", err)
+			}
+			resetMVC(mvc)
+
+			if err := saveMVC(ctx, sessionID, mvc); err != nil {
+				return "", nil, fmt.Errorf("failed to save mvc: %w", err)
+			}
+		} else {
+			if err := json.Unmarshal(entry.Value(), mvc); err != nil {
+				return "", nil, fmt.Errorf("failed to unmarshal mvc: %w", err)
+			}
+		}
+		return sessionID, mvc, nil
 	}
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
@@ -80,25 +140,262 @@ func setupHome(router chi.Router) error {
 	})
 
 	router.Route("/api", func(apiRouter chi.Router) {
-		apiRouter.Route("/globalCount", func(globalCountRouter chi.Router) {
-			globalCountRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-				sse := datastar.NewSSE(w, r)
-				datastar.RenderFragmentTempl(sse, globalCountExample())
-			})
+		apiRouter.Route("/todos", func(todosRouter chi.Router) {
+			todosRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
-			globalCountRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-				store := &GlobalCountStore{}
-				if err := datastar.BodyUnmarshal(r, store); err != nil {
+				sse := datastar.NewSSE(w, r)
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
 
-				atomic.StoreInt32(globalCount, store.Count)
-				sse := datastar.NewSSE(w, r)
-				datastar.RenderFragmentTempl(sse, globalCountExample())
+				// Watch for updates
+				ctx := r.Context()
+				watcher, err := kv.Watch(ctx, sessionID)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+				defer watcher.Stop()
+
+				for {
+					select {
+					case <-ctx.Done():
+						return
+					case entry := <-watcher.Updates():
+						if entry == nil {
+							continue
+						}
+						if err := json.Unmarshal(entry.Value(), mvc); err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+						datastar.RenderFragmentTempl(sse, TodosMVCView(mvc))
+					}
+				}
+			})
+
+			todosRouter.Put("/reset", func(w http.ResponseWriter, r *http.Request) {
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				resetMVC(mvc)
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				datastar.NewSSE(w, r)
+			})
+
+			todosRouter.Put("/cancel", func(w http.ResponseWriter, r *http.Request) {
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				mvc.EditingIdx = -1
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				datastar.NewSSE(w, r)
+			})
+
+			todosRouter.Put("/mode/{mode}", func(w http.ResponseWriter, r *http.Request) {
+
+				sessionID, mvc, err := mvcSession(w, r)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				modeStr := chi.URLParam(r, "mode")
+				modeRaw, err := strconv.Atoi(modeStr)
+				if err != nil {
+					http.Error(w, err.Error(), http.StatusBadRequest)
+					return
+				}
+
+				mode := TodoViewMode(modeRaw)
+				if mode < TodoViewModeAll || mode > TodoViewModeCompleted {
+					http.Error(w, "invalid mode", http.StatusBadRequest)
+					return
+				}
+
+				mvc.Mode = mode
+				if err := saveMVC(r.Context(), sessionID, mvc); err != nil {
+					http.Error(w, err.Error(), http.StatusInternalServerError)
+					return
+				}
+
+				datastar.NewSSE(w, r)
+			})
+
+			todosRouter.Route("/{idx}", func(todoRouter chi.Router) {
+				routeIndex := func(w http.ResponseWriter, r *http.Request) (int, error) {
+					idx := chi.URLParam(r, "idx")
+					i, err := strconv.Atoi(idx)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusBadRequest)
+						return 0, err
+					}
+					return i, nil
+				}
+
+				todoRouter.Post("/toggle", func(w http.ResponseWriter, r *http.Request) {
+					sessionID, mvc, err := mvcSession(w, r)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
+					i, err := routeIndex(w, r)
+					if err != nil {
+						return
+					}
+
+					if i < 0 {
+						setCompletedTo := false
+						for _, todo := range mvc.Todos {
+							if !todo.Completed {
+								setCompletedTo = true
+								break
+							}
+						}
+						for _, todo := range mvc.Todos {
+							todo.Completed = setCompletedTo
+						}
+					} else {
+						todo := mvc.Todos[i]
+						todo.Completed = !todo.Completed
+					}
+
+					saveMVC(r.Context(), sessionID, mvc)
+
+					datastar.NewSSE(w, r)
+				})
+
+				todoRouter.Route("/edit", func(editRouter chi.Router) {
+					editRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+						sessionID, mvc, err := mvcSession(w, r)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+
+						i, err := routeIndex(w, r)
+						if err != nil {
+							return
+						}
+
+						mvc.EditingIdx = i
+						saveMVC(r.Context(), sessionID, mvc)
+
+						datastar.NewSSE(w, r)
+					})
+
+					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
+						type Store struct {
+							Input string `json:"input"`
+						}
+						store := &Store{}
+
+						if err := datastar.BodyUnmarshal(r, store); err != nil {
+							http.Error(w, err.Error(), http.StatusBadRequest)
+							return
+						}
+
+						datastar.NewSSE(w, r)
+						if store.Input == "" {
+							return
+						}
+
+						sessionID, mvc, err := mvcSession(w, r)
+						if err != nil {
+							http.Error(w, err.Error(), http.StatusInternalServerError)
+							return
+						}
+
+						i, err := routeIndex(w, r)
+						if err != nil {
+							return
+						}
+
+						if i >= 0 {
+							mvc.Todos[i].Text = store.Input
+						} else {
+							mvc.Todos = append(mvc.Todos, &Todo{
+								Text:      store.Input,
+								Completed: false,
+							})
+						}
+						mvc.EditingIdx = -1
+
+						saveMVC(r.Context(), sessionID, mvc)
+
+					})
+				})
+
+				todoRouter.Delete("/", func(w http.ResponseWriter, r *http.Request) {
+					i, err := routeIndex(w, r)
+					if err != nil {
+						return
+					}
+
+					sessionID, mvc, err := mvcSession(w, r)
+					if err != nil {
+						http.Error(w, err.Error(), http.StatusInternalServerError)
+						return
+					}
+
+					if i >= 0 {
+						mvc.Todos = append(mvc.Todos[:i], mvc.Todos[i+1:]...)
+					} else {
+						mvc.Todos = lo.Filter(mvc.Todos, func(todo *Todo, i int) bool {
+							return !todo.Completed
+						})
+					}
+					saveMVC(r.Context(), sessionID, mvc)
+
+					datastar.NewSSE(w, r)
+				})
 			})
 		})
 	})
 
 	return nil
+}
+
+func MustJSONMarshal(v any) string {
+	b, err := json.MarshalIndent(v, "", " ")
+	if err != nil {
+		panic(err)
+	}
+	return string(b)
+}
+
+func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
+
+	sess, err := store.Get(r, "connections")
+	if err != nil {
+		return "", fmt.Errorf("failed to get session: %w", err)
+	}
+	id, ok := sess.Values["id"].(string)
+	if !ok {
+		id = toolbelt.NextEncodedID()
+		sess.Values["id"] = id
+		if err := sess.Save(r, w); err != nil {
+			return "", fmt.Errorf("failed to save session: %w", err)
+		}
+	}
+	return id, nil
 }

@@ -1,6 +1,6 @@
 # Backend Plugins
 
-[Source](https://github.com/delaneyj/datastar/blob/main/library/src/lib/plugins/backend.ts)
+[Source](https://github.com/delaneyj/datastar/blob/main/packages/library/src/lib/plugins/backend.ts)
 
 A set of plugins that allow for the integration of any backend services that supports SSE with Datastar.
 
@@ -31,9 +31,11 @@ data: fragment <div id="foo">Hello!</div>
 
 Addtional `data` lines can be added to the response to override the default behavior.
 
+### data-fragment
+
 | Key                             | Description                                                                                                                                                      | Default |     |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --- |
-| `data: selector #foo`             | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
+| `data: selector #foo`           | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
 | `data: merge morph_element`     | Merge the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph).                                                                               | \*      |
 | `data: merge inner_html`        | Replace target's innerHTML with fragment                                                                                                                         |         |
 | `data: merge outer_html`        | Replace target's outerHTML with fragment                                                                                                                         |         |
@@ -47,6 +49,15 @@ Addtional `data` lines can be added to the response to override the default beha
 | `data: fragment`                | The HTML fragment to merge into the DOM. **_Should only be one per event_**                                                                                      | \*      |
 | `data: redirect /foo`           | Redirect the page to `/foo`. Can be used in place of a `data: fragment` **_Should only be one per event_**                                                       |         |
 | `data: error oh noes`           | Will throw an error with the message `oh noes` and stop the request. Can be used in place of a `data: fragment` **_Should only be one per event_**               |         |
+
+### datastar-signal
+
+```go
+event: datastar-signal
+data: {foo: 1234}
+```
+
+The `datastar-signal` event is used to update the store with new values. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
 
 ## Attribute Plugins
 
@@ -81,4 +92,3 @@ Show a spinner when the request is in flight. The `data-fetch-indicator` attribu
 ```
 
 The `data-is-loading-id` attribute is used to specify the name of the identifier that will be present in the store's isLoading array when an element is fetching.
-

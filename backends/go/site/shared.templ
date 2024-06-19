@@ -10,6 +10,7 @@ templ Page() {
 	<html lang="en">
 		<head>
 			<title>DATASTAR</title>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<link rel="icon" href={ staticPath("images/datastar_icon.svg") }/>
 			<link
 				rel="stylesheet"
@@ -27,27 +28,27 @@ templ Page() {
                 gtag('config', 'G-QZ4RYHJW6X');
             </script>
 			<script type="module" defer src={ staticPath("library/datastar.js") }></script>
-			// <script defer>
-			//     function initHotReload() {
-			// 	console.log("Hot reload initializing")
-			// 	if (typeof(EventSource) !== "undefined") {
-			// 		const es = new EventSource("/hotreload");
-			// 		es.onmessage = function(event) {
-			// 			location.reload();
-			// 		}
-			// 		es.onerror = function(err) {
-			// 			console.log("lost connection to server, reloading");
-			// 			setTimeout(() => {
-			// 			location.reload();
-			// 			}, 500);
-			// 		};
-			// 	}
-			// 	}
-			// 	initHotReload();
-			// </script>
+			<script defer>
+			    function initHotReload() {
+				console.log("Hot reload initializing")
+				if (typeof(EventSource) !== "undefined") {
+					const es = new EventSource("/hotreload");
+					es.onmessage = function(event) {
+						location.reload();
+					}
+					es.onerror = function(err) {
+						console.log("lost connection to server, reloading");
+						setTimeout(() => {
+						location.reload();
+						}, 500);
+					};
+				}
+				}
+				initHotReload();
+			</script>
 			<link href={ staticPath("css/site.css") } rel="stylesheet" type="text/css"/>
 		</head>
-		<body class="flex flex-col w-full h-full min-h-screen overflow-y-scroll scrollbar scrollbar-thumb-primary scrollbar-track-accent">
+		<body class="flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent">
 			{ children... }
 		</body>
 	</html>
@@ -101,18 +102,18 @@ templ header(r *http.Request) {
 				</a>
 				<div class="font-mono text-xs text-accent">v{ packageJSON.Version }</div>
 			</div>
-			<div class="hidden md:text-md lg:text-lg md:flex md:gap-4 md:visible ">
+			<div class="hidden lg:text-md lg:text-lg lg:flex lg:gap-4 lg:visible ">
 				@headerTopLevelLinks(r)
 			</div>
-			<div class="hidden text-xl md:flex md:gap-4 md:visible">
+			<div class="hidden text-xl lg:flex lg:gap-4 lg:visible">
 				@headerExternalLinks()
 			</div>
 		</div>
 	</div>
-	<div class="flex flex-wrap justify-around visible gap-2 pb-8 text-sm bg-base-200 md:hidden">
+	<div class="flex flex-wrap justify-around visible gap-2 pb-8 text-sm bg-base-200 lg:hidden">
 		@headerTopLevelLinks(r)
 	</div>
-	<div class="visible navbar bg-base-300 md:hidden">
+	<div class="visible navbar bg-base-300 lg:hidden">
 		<div class="navbar-start">
 			<label for="sidebar-drawer" class="btn btn-ghost drawer-button">
 				@icon("material-symbols:menu")
@@ -146,17 +147,13 @@ templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *Sideb
 			<div class="flex flex-col min-h-screen drawer-content">
 				@header(r)
 				<div class="flex flex-1">
-					<aside class="flex-col hidden gap-4 px-4 py-8 overflow-y-auto md:flex min-w-64 bg-base-300 md:visible">
+					<aside class="flex-col hidden gap-4 px-4 py-8 overflow-y-auto lg:flex min-w-64 bg-base-300 lg:visible">
 						@SidebarContents(sidebarGroups, current)
 					</aside>
-					<div class="flex flex-col items-center w-full gap-16 p-4 md:p-16">
+					<div class="flex flex-col w-full gap-16 p-4 lg:items-center lg:p-16">
 						@SidebarPrevNextLinks(sidebarGroups, current)
 						<article
-							class={
-								"flex-1",
-								"prose prose-primary prose-sm md:prose lg:prose-lg p-4",
-								"prose-a:link-primary",
-							}
+							class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary"
 						>
 							@templ.Raw(contents)
 						</article>

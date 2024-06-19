@@ -15,11 +15,13 @@ import (
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/benbjohnson/hashfs"
+	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
+	"github.com/gorilla/sessions"
 )
 
 //go:embed static/*
@@ -76,11 +78,11 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 
 func setupRoutes(router chi.Router) error {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
-	// defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
-	// 	sse := datastar.NewSSE(w, r)
-	// 	<-r.Context().Done()
-	// 	sse.Send("reload", datastar.WithSSERetry(250))
-	// })
+	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
+		sse := datastar.NewSSE(w, r)
+		<-r.Context().Done()
+		sse.Send("reload", datastar.WithSSERetry(250))
+	})
 
 	htmlFormatter := html.New(html.WithClasses(true), html.TabWidth(2))
 	if htmlFormatter == nil {
@@ -141,11 +143,19 @@ func setupRoutes(router chi.Router) error {
 		})
 	}
 
+	ns, err := toolbelt.NewEmbeddedNATsServer(context.Background(), true)
+	if err != nil {
+		return fmt.Errorf("error creating embedded nats server: %w", err)
+	}
+	ns.WaitForServer()
+
+	sessionStore := sessions.NewCookieStore([]byte("datastar-session-secret"))
+
 	if err := errors.Join(
-		setupHome(router),
+		setupHome(router, sessionStore, ns),
 		setupGuide(router),
 		setupReferenceRoutes(router),
-		setupExamples(router),
+		setupExamples(router, sessionStore),
 		setupEssays(router),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
