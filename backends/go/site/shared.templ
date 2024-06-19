@@ -153,7 +153,7 @@ templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *Sideb
 					<div class="flex flex-col w-full gap-16 p-4 lg:items-center lg:p-16">
 						@SidebarPrevNextLinks(sidebarGroups, current)
 						<article
-							class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary"
+							class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary max-w-none lg:max-w-prose"
 						>
 							@templ.Raw(contents)
 						</article>

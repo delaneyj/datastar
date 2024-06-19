@@ -44,13 +44,13 @@ func setupExamplesOfflineSync(examplesRouter chi.Router, store sessions.Store) e
 
 		sse := datastar.NewSSE(w, r)
 		datastar.RenderFragmentString(sse, fmt.Sprintf(`
-			<div id="results">
+		<div id="results">
 				<p>Synchronized offline data!</p>
 				<p>at %s</p>
 				<p>Session ID: %s</p>
 				<p>Store JSON: %s</p>
-			</div>
-		`,
+				</div>
+				`,
 			time.Now().Format(time.RFC3339),
 			sessionID, storeJSON,
 		))
