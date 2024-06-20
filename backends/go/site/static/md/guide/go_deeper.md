@@ -2,7 +2,7 @@
 
 ## Javascript Fatigue
 
-Web development has become a technical occultism activity, in which the focus is on JavaScript and the capabilities of making HTML content dynamic instead of making a better job of delivering HTML. This JavaScript religion has led to the rise of frontend frameworks such as React, Vue, Svelte, Solid, etc. In turn those were not enough for full application and progress led the industry to full-stack JavaScript frameworks like Next.js, Nuxt, Svelte and Solid Start. Once you need a framework for reactivity it makes sense to embrace it in the backend too for consistency.
+Web development has become a technical occultism activity, in which the focus is on JavaScript and the capabilities of making HTML content dynamic instead of making a better job of delivering HTML. This has led to the rise of frontend frameworks such as React, Vue, Svelte, Solid, etc. In turn those were not enough for full application and progress led the industry to full-stack JavaScript frameworks like Next.js, Nuxt, Svelte and Solid Start. Once you need a framework for reactivity it makes sense to embrace it in the backend too for consistency.
 
 In reality almost all frameworks come down to updating the DOM as fast and as simply as possible with some effort around improving developer experience.
 
@@ -16,7 +16,7 @@ Datastar started as just a plugin framework but found that by having no overlap 
 
 With Datastar, even if you have never coded before, with a few examples, you can easily create high interconnected web assets. It doesn't matter if you are a making a user interface for bank or a simple blog. The approach is simplicity through declarative HTML.
 
-If Datastar doesn't match your needs, you still might be interested in using it as originally intended [and write your own library](https://github.com/delaneyj/datastar/tree/main/library/src/lib/plugins).
+If Datastar doesn't match your needs, you still might be interested in using it as originally intended [and write your own library](https://github.com/delaneyj/datastar/tree/main/packages/library/src/lib/plugins).
 
 ## Time to think declaratively
 
@@ -84,7 +84,13 @@ Ok so back to our hypothetical framework let's have a way to declare stuff that 
 <div data-store="{value:'hello world'}"></div>
 ```
 
-The contents is just a set of data that can evaluated by [JSON.parse](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/parse) and will convert this data into a tree of signals and merge into a store that tracks all of the reactivity on the page. In this case we want there to be a a single `value` signal with the contents of `'hello world'`.
+The contents is just a set of data that can evaluated
+
+1. into a valid Javascript Object
+2. converted into a tree of signals
+3. merge into a store that tracks all of the reactivity on the page.
+
+In this case we want there to be a a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-store` attribute and think declaratively.
 
 ## Models
 

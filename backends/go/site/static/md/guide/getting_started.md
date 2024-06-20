@@ -165,10 +165,10 @@ function setHeaders(res) {
 Copy this to your server code:
 
 ```js
-function sendSSE({ res, frag, selector, merge, mergeType, end }) {
+function sendSSE({ res, frag, selector, mergeType, end }) {
   res.write("event: datastar-fragment\n");
   if (selector) res.write(`data: selector ${selector}\n`);
-  if (merge) res.write(`data: merge ${mergeType}\n`);
+  if (mergeType?.length) res.write(`data: merge ${mergeType}\n`);
   res.write(`data: fragment ${frag}\n\n`);
   if (end) res.end();
 }
@@ -208,9 +208,6 @@ app.put("/put", (req, res) => {
   sendSSE({
     res,
     frag,
-    selector: null,
-    merge: true,
-    mergeType: "morph_element",
     end: true,
   });
 });
@@ -260,9 +257,6 @@ app.get("/get", (req, res) => {
   sendSSE({
     res,
     frag,
-    selector: null,
-    merge: true,
-    mergeType: "morph_element",
     end: true,
   });
 });
@@ -296,7 +290,6 @@ sendSSE({
   res,
   frag,
   selector: "#main",
-  merge: true,
   mergeType: "prepend_element",
   end: true,
 });
@@ -317,9 +310,6 @@ app.get("/feed", async (req, res) => {
     sendSSE({
       res,
       frag,
-      selector: null,
-      merge: false,
-      mergeType: null,
       end: false,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
