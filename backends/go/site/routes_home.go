@@ -143,13 +143,13 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 		apiRouter.Route("/todos", func(todosRouter chi.Router) {
 			todosRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
-				sse := datastar.NewSSE(w, r)
-
 				sessionID, mvc, err := mvcSession(w, r)
 				if err != nil {
 					http.Error(w, err.Error(), http.StatusInternalServerError)
 					return
 				}
+
+				sse := datastar.NewSSE(w, r)
 
 				// Watch for updates
 				ctx := r.Context()
