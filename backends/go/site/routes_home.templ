@@ -226,7 +226,6 @@ templ TodoInput(i int) {
 		id="todoInput"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
-		autofocus
 		data-model="input"
 		data-on-keypress={ fmt.Sprintf(`
 			if (event.key === 'Enter' && $input.trim().length) {
