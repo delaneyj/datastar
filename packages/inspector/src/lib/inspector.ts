@@ -13,6 +13,12 @@ interface VersionedStore {
   contents: Object;
 }
 
+type EventDetail = Omit<CustomEvent<DatastarEvent>['detail'], 'ctx'> & {
+  ctx: {
+     el: string,
+     store: any
+  }
+}
 
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
@@ -35,27 +41,18 @@ export class DatastarInspectorElement extends LitElement {
   stores: VersionedStore[] = [];
 
   @state()
-  events: DatastarEvent[] = [];
+  events: Record<string, any>[] = [];
 
   @state()
   prevStoreMarshalled = "";
 
   @state()
-  port: Record<string, any> = {};
+  port = undefined
 
   protected firstUpdated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
-    /* @ts-ignore */
-    this.port = browser.runtime.connect({name:"datastarDevTools"})
-
-    this.port.postMessage({
-    /* @ts-ignore */
-            tabId: browser.devtools.inspectedWindow.tabId,
-            action: 'connect-dev'
-    });
-    this.port.onMessage.addListener((detail: CustomEvent<DatastarEvent>['detail']) => {
-      console.log('inspector got message ', detail);
+    const listener = (detail: EventDetail) => {
       this.events = [...this.events, detail].slice(-this.maxEvents);
 
       const currentStore = detail.ctx.store;
@@ -73,7 +70,38 @@ export class DatastarInspectorElement extends LitElement {
           },
         ];
       }
-    });
+    };
+    // @ts-ignore
+    console.log(browser)
+     // @ts-ignore
+   if (browser) {
+      // @ts-ignore
+    this.port = browser.runtime.connect({name:"datastarDevTools"});
+
+     // @ts-ignore
+      this.port.postMessage({
+         // @ts-ignore
+	tabId: browser.devtools.inspectedWindow.tabId,
+           action: 'connect-dev'
+      });
+
+     // @ts-ignore
+      this.port.onMessage.addListener(listener);
+    } else {
+     const winAny = window as any;
+     winAny.addEventListener("datastar-event", (evt: CustomEvent<DatastarEvent>) => {
+        const detail: EventDetail = {
+          ...evt.detail,
+          ctx: {
+            el: elemToSelector(evt.detail.ctx.el),
+            store: evt.detail.ctx.store
+          }
+        }
+
+        listener(detail);
+     });
+    }
+
   }
 
   public render() {
@@ -228,3 +256,23 @@ export class DatastarInspectorElement extends LitElement {
   }
 }
 
+
+function elemToSelector(elm: Element) {
+  if (!elm) return "null";
+
+  if (elm.tagName === "BODY") return "BODY";
+  const names = [];
+  while (elm.parentElement && elm.tagName !== "BODY") {
+    if (elm.id) {
+      names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
+      break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+    } else {
+      let c = 1,
+        e = elm;
+      for (; e.previousElementSibling; e = e.previousElementSibling, c++);
+      names.unshift(elm.tagName + ":nth-child(" + c + ")");
+    }
+    elm = elm.parentElement;
+  }
+  return names.join(">");
+}
