@@ -51,8 +51,6 @@ export function sendDatastarEvent(
   message: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) {
-  console.log(message)
-  console.log(ctx)
   winAny.dispatchEvent(
     new CustomEvent<DatastarEvent>(
       datastarEventName,
