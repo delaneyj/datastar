@@ -12,8 +12,8 @@ export const BindAttributePlugin: AttributePlugin = {
   onLoad: (ctx: AttributeContext) => {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
-      const value = await ctx.expressionFn(ctx)
-      const v = `${value}`
+      const value = ctx.expressionFn(ctx)
+      const v = JSON.stringify(value)
       if (!v || v === 'false' || v === 'null' || v === 'undefined') {
         ctx.el.removeAttribute(key)
       } else {
@@ -250,8 +250,7 @@ export const EventPlugin: AttributePlugin = {
           callback()
           rafId = requestAnimationFrame(raf)
         }
-        requestAnimationFrame(raf)
-        delete el.dataset.onRaf
+        rafId = requestAnimationFrame(raf)
 
         return () => {
           if (rafId) cancelAnimationFrame(rafId)
