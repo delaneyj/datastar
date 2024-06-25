@@ -9,7 +9,8 @@
   "permissions" : ["scripting"],
   "host_permissions" :["http://localhost/*"],
   "background": {
-      "scripts": ["background.js"]
+      "scripts": ["background.js"],
+      "service_worker": "background.js"
   },
   "content_scripts": [{
       "js": ["./content_script.js"],
