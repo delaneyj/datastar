@@ -19,6 +19,7 @@ tasks:
   version:
     cmds:
       - echo {{.VERSION}}
+
   libpub:
     dir: packages/library
     deps:

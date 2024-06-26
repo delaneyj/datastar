@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/alecthomas/chroma"
@@ -150,6 +151,7 @@ func setupRoutes(router chi.Router) error {
 	ns.WaitForServer()
 
 	sessionStore := sessions.NewCookieStore([]byte("datastar-session-secret"))
+	sessionStore.MaxAge(int(24 * time.Hour / time.Second))
 
 	if err := errors.Join(
 		setupHome(router, sessionStore, ns),
