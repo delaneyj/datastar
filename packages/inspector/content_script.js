@@ -1,12 +1,21 @@
-const port = browser.runtime.connect({name:"datastarDevToolsContentScript"});
+console.log('content script started');
+const extension = browser ? browser : chrome ? chrome : console.error('Not being run as extension');
+const port = extension.runtime.connect({name:"datastarDevToolsContentScript"});
+port.postMessage({
+  action: 'connect-dev'
+});
 
 globalThis.addEventListener("datastar-event", ((evt) => {
     const {el, ...ctx} = evt.detail.ctx;
+
     port.postMessage({action: 'message-dev', ...evt.detail, ctx: {...ctx, el: elemToSelector(el)}});
 }));
 
 function elemToSelector(elm) {
   if (!elm) return "null";
+
+  if (elm instanceof Window) return "Window";
+  if (elm instanceof Document) return "Document";
 
   if (elm.tagName === "BODY") return "BODY";
   const names = [];

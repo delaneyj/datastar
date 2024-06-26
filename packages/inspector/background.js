@@ -1,3 +1,5 @@
+console.log('background script started');
+const extension = browser ? browser : chrome ? chrome : console.error('Not being run as extension');
 const ports = {};
 
 function connected(p) {
@@ -24,7 +26,7 @@ function connected(p) {
     }})
 }
 
-browser.runtime.onConnect.addListener(
+extension.runtime.onConnect.addListener(
     connected
 );
 
