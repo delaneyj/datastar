@@ -1,6 +1,20 @@
 console.log('devtool script started');
-const extension = browser ? browser : chrome ? chrome : console.error('Not being run as extension');
+const getExtension = () => {
+  try {
+  // @ts-ignore
+    if (browser) return browser
+  } catch (_) {
+    //do nothing
+  }
 
+  try {
+  // @ts-ignore
+    if (chrome) return chrome
+  } catch (_) {
+    return false
+  }
+}
+const extension = getExtension();
 function panelCreate (datastar) {
   if (datastar) {
     extension.devtools.panels.create(
