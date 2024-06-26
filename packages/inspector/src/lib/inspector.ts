@@ -73,17 +73,30 @@ export class DatastarInspectorElement extends LitElement {
         ];
       }
     };
-    // @ts-ignore
-    console.log(browser)
-     // @ts-ignore
-   if (browser) {
+    const getExtension = () => {
+      try {
       // @ts-ignore
-    this.port = browser.runtime.connect({name:"datastarDevTools"});
+        if (browser) return browser
+      } catch (_:unknown) {
+        //do nothing
+      }
+
+      try {
+      // @ts-ignore
+        if (chrome) return chrome
+      } catch (_:unknown) {
+        return false
+      }
+    }
+   const extension = getExtension();
+   if (extension) {
+      // @ts-ignore
+    this.port = extension.runtime.connect({name:"datastarDevTools"});
 
      // @ts-ignore
       this.port.postMessage({
          // @ts-ignore
-	tabId: browser.devtools.inspectedWindow.tabId,
+	tabId: extension.devtools.inspectedWindow.tabId,
            action: 'connect-dev'
       });
 
@@ -91,7 +104,7 @@ export class DatastarInspectorElement extends LitElement {
       this.port.onMessage.addListener(listener);
     } else {
      const winAny = window as any;
-     winAny.addEventListener("datastar-event", (evt: CustomEvent<DatastarEvent>) => {
+     winAny.addEventListener(datastarEventName, (evt: CustomEvent<DatastarEvent>) => {
         const detail: EventDetail = {
           ...evt.detail,
           ctx: {
@@ -257,8 +270,11 @@ export class DatastarInspectorElement extends LitElement {
   }
 }
 
-function elemToSelector(elm: Element | null) {
+function elemToSelector(elm: Element | Window | Document | null) {
   if (!elm) return "null";
+
+  if (elm instanceof Window) return "Window";
+  if (elm instanceof Document) return "Document";
 
   if (elm.tagName === "BODY") return "BODY";
   const names = [];

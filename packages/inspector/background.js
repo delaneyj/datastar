@@ -1,3 +1,20 @@
+console.log('background script started');
+const getExtension = () => {
+    try {
+    // @ts-ignore
+      if (browser) return browser
+    } catch (_) {
+      //do nothing
+    }
+
+    try {
+    // @ts-ignore
+      if (chrome) return chrome
+    } catch (_) {
+      return false
+    }
+}
+const extension = getExtension();
 const ports = {};
 
 function connected(p) {
@@ -24,7 +41,7 @@ function connected(p) {
     }})
 }
 
-browser.runtime.onConnect.addListener(
+extension.runtime.onConnect.addListener(
     connected
 );
 

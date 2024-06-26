@@ -1,12 +1,36 @@
-const port = browser.runtime.connect({name:"datastarDevToolsContentScript"});
+console.log('content script started');
+const getExtension = () => {
+  try {
+  // @ts-ignore
+    if (browser) return browser
+  } catch (_) {
+    //do nothing
+  }
+
+  try {
+  // @ts-ignore
+    if (chrome) return chrome
+  } catch (_) {
+    return false
+  }
+}
+const extension = getExtension();
+const port = extension.runtime.connect({name:"datastarDevToolsContentScript"});
+port.postMessage({
+  action: 'connect-dev'
+});
 
 globalThis.addEventListener("datastar-event", ((evt) => {
     const {el, ...ctx} = evt.detail.ctx;
+
     port.postMessage({action: 'message-dev', ...evt.detail, ctx: {...ctx, el: elemToSelector(el)}});
 }));
 
 function elemToSelector(elm) {
   if (!elm) return "null";
+
+  if (elm instanceof Window) return "Window";
+  if (elm instanceof Document) return "Document";
 
   if (elm.tagName === "BODY") return "BODY";
   const names = [];
