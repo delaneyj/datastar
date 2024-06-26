@@ -73,15 +73,30 @@ export class DatastarInspectorElement extends LitElement {
         ];
       }
     };
-     // @ts-ignore
-   if (browser || chrome) {
+    const getExtension = () => {
+      try {
       // @ts-ignore
-    this.port = (browser ?? chrome).runtime.connect({name:"datastarDevTools"});
+        if (browser) return browser
+      } catch (_:unknown) {
+        //do nothing
+      }
+
+      try {
+      // @ts-ignore
+        if (chrome) return chrome
+      } catch (_:unknown) {
+        return false
+      }
+    }
+   const extension = getExtension();
+   if (extension) {
+      // @ts-ignore
+    this.port = extension.runtime.connect({name:"datastarDevTools"});
 
      // @ts-ignore
       this.port.postMessage({
          // @ts-ignore
-	tabId: (browser ?? chrome).devtools.inspectedWindow.tabId,
+	tabId: extension.devtools.inspectedWindow.tabId,
            action: 'connect-dev'
       });
 
