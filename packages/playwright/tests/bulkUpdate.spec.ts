@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
 
+function checkboxLocator(page, name) {
+  return page
+      .getByRole("row", { name })
+      .locator(".checkbox");
+}
+
 test.describe("Bulk Update UI Suite", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("http://localhost:8080/examples/bulk_update");
@@ -26,45 +32,39 @@ test.describe("Bulk Update UI Suite", () => {
   });
 
   test("test individual activate", async ({ page }) => {
-    await page
-      .getByRole("row", { name: "Joe Smith joe@smith.org" })
-      .getByRole("cell")
-      .first()
-      .click();
+    const joe = checkboxLocator(page, "Joe Smith joe@smith.org");
+    await joe.click();
+    await expect(joe).toBeChecked();
     await page.getByRole("button", { name: "Activate", exact: true }).click();
     await expect(page.locator("#contact_0")).toContainText("Active");
-    await page
-      .getByRole("row", { name: "Angie MacDowell angie@macdowell.org" })
-      .getByRole("cell")
-      .first()
-      .click();
+    const angie = checkboxLocator(page,"Angie MacDowell angie@macdowell.org");
+    await angie.click();
+    await expect(angie).toBeChecked();
     await page.getByRole("button", { name: "Activate", exact: true }).click();
     await expect(page.locator("#contact_1")).toContainText("Active");
   });
 
   test("test individual deactivate", async ({ page }) => {
-    await page
+    const joe = page
       .getByRole("row", { name: "Joe Smith joe@smith.org" })
-      .getByRole("cell")
-      .first()
-      .click();
+      .locator(".checkbox");
+    await joe.click();
+    await expect(joe).toBeChecked();
     await page.getByRole("button", { name: "Deactivate" }).click();
     await expect(page.locator("#contact_0")).toContainText("Inactive");
-    await page
-      .getByRole("row", { name: "Angie MacDowell angie@macdowell.org" })
-      .getByRole("cell")
-      .first()
-      .click();
+    const angie = checkboxLocator(page, "Angie MacDowell angie@macdowell.org");
+    await angie.click();
+    await expect(angie).toBeChecked();
     await page.getByRole("button", { name: "Deactivate", exact: true }).click();
     await expect(page.locator("#contact_1")).toContainText("Inactive");
   });
 
   test("test bulk activate", async ({ page }) => {
-    await page
+    const checkAll = page
       .getByRole("row", { name: "Name Email Status" })
-      .getByRole("cell")
-      .first()
-      .click();
+      .locator(".checkbox");
+    await checkAll.click();
+    await expect(checkAll).toBeChecked();
     await page.getByRole("button", { name: "Activate", exact: true }).click();
     await expect(page.locator("#contact_0")).toContainText("Active");
     await expect(page.locator("#contact_1")).toContainText("Active");
@@ -73,11 +73,11 @@ test.describe("Bulk Update UI Suite", () => {
   });
 
   test("test bulk deactivate", async ({ page }) => {
-    await page
+    const checkAll = page
       .getByRole("row", { name: "Name Email Status" })
-      .getByRole("cell")
-      .first()
-      .click();
+      .locator(".checkbox");
+    await checkAll.click();
+    await expect(checkAll).toBeChecked();
     await page.getByRole("button", { name: "Deactivate", exact: true }).click();
     await expect(page.locator("#contact_0")).toContainText("Inactive");
     await expect(page.locator("#contact_1")).toContainText("Inactive");
