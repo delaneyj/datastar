@@ -6,7 +6,7 @@ Datastar was originally a branch of HTMX that was meant to make it more modular 
 
 ## Evaluating data-\* attributes
 
-Before we had used something like `data-text="$foo"` attribute. What this is actually doing under the hood is turning the string into a function that is evaluated safely into `(ctx)=> ctx.store.foo.value` where `ctx` is the Datastar object that was injected into the page. In this case its connected directly to the contents of a signal but you could do any javascript that is valid. This also means you could eval to a constant string but that would looks something like `data-text="'hello world'"`, notice the quotes, otherwise it would be looking for variable `hello world` which isn't valid and would fail to evaluate. This is the one major gotcha of declarative code, you have to be careful about the context.
+Before we had used something like `data-text="$foo"` attribute. What this is actually doing under the hood is turning the string into a function that is evaluated safely into `(ctx)=> ctx.store.foo.value` where `ctx` is a Datastar object that gives a sandboxed context to the expression. In this case its connected directly to the contents of a signal but you could do any Javascript that is valid. This also means you could evaluate to a constant string but that would looks something like `data-text="'hello world'"`, notice the quotes, otherwise it would be looking for variable `hello world` which isn't valid and would fail to evaluate. This is the one major gotcha of declarative code, you have to be careful about the context. We aren't using `eval` but generating [sandboxed functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/Function) that are evaluated in a safe way similar to Alpine.js.
 
 ## More attributes
 
@@ -22,9 +22,9 @@ This is a simple way to show and hide elements. It's a simple way to do `v-if` i
 
 When the `foo` signal is truthy the div will be shown, otherwise it will be hidden.
 
-### `data-on`
+### `data-on-*`
 
-This is a way to add event listeners to elements. It's a simple way to do `v-on` in Vue or `x-on` in Alpine.
+This is a way to add event listeners to elements. It's a simple way to do `v-on` in Vue or `x-on` in Alpine. Any valid `addEventListener` event type can be used. For example, `click`, `mouseover`, `dblclick`, etc.
 
 ```html
 <button data-on-click="console.log('hello world')">Click me</button>
@@ -34,7 +34,7 @@ When the button is clicked it will log `hello world` to the console.
 
 ## Actions
 
-Actions are helper functions that are made available during a data-\* attribute evaluation. They are a way to do more complex operations without having to write a lot of javascript. Here are a few of the most common actions. They are prefixed with `$$` to avoid any conflicts with other attributes.
+Actions are helper functions that are made available during a `data-*` attribute evaluation. They are a way to do more complex operations without having to write a lot of javascript. Here are a few of the most common actions. They are prefixed with `$$` to avoid any conflicts with other attributes.
 
 ### `$$setAll`
 

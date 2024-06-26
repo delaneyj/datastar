@@ -16,7 +16,7 @@ None of these are deal breakers but starting from first principles we can do bet
 
 ## SSE
 
-If you aren't familiar with SSE its a way to a chunked response to the browser. The browser will automatically reconnect if the connection is lost. The server can also send a `retry` header to tell the browser how often to reconnect. The browser will also automatically reconnect if the connection is lost. The nice part of having a chunked response is you can send multiple updates or a single update and the browser will handle it. A modern backend HTTP server framework should allow for easy SSE support (it's just a few headers and a specific text format for content).
+If you aren't familiar with SSE its a way to create a chunked response to the browser. The browser will automatically reconnect if the connection is lost. The server can also send a `retry` header to tell the browser how often to reconnect. The browser will also automatically reconnect if the connection is lost. The nice part of having a chunked response is you can send multiple updates or a single update and the browser will handle it. Any modern backend HTTP server framework should allow for easy SSE support (it's just a few headers and a specific text format for content).
 
 ## SSE backend, fetch on the frontend
 
@@ -24,13 +24,13 @@ For a reason that I still haven't figured out, the SSE spec and [EventSource](ht
 
 ## Let's get some data
 
-On the [home page](/) there is a global store example. When you first load the page the contents is basically empty.
+On the [click to edit example](/examples/click_to_edit) when you first load the page the contents is basically empty.
 
 ```html
-<div id="global-count-example" data-on-load="$$get('/api/globalCount')">
-  <span>Loading example on delay...</span>
-  <div class="spinner datastar-indicator"></div>
-</div>
+<div
+  id="contact_1"
+  data-on-load="$$get('/examples/click_to_edit/contact/1')"
+></div>
 ```
 
 Normally you don't need to do this but its trying to show that you can load a page and then have the data update. The `$$get` action is a helper function that will make a fetch request and update the store with the results. The `datastar-indicator` class is a helper class that will show a spinner when the request is in flight.
@@ -58,8 +58,8 @@ Please don't hesitate to reach out if you have any questions. We are always look
 
 # Choose your own adventure
 
-<div class="flex gap-4 items-center">
-<a href="/examples" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Show me</a>
-<a href="/reference" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Let me dig in</a>
-<a href="/essays" class="flex-1 no-underline p-4 rounded-md bg-primary-600 text-center hover:bg-primary-500">Pontificating</a>
+<div class="flex justify-center gap-4">
+<a href="/examples" role="button" class="no-underline btn ">Show me</a>
+<a href="/reference" role="button" class="no-underline btn ">Let me dig in</a>
+<a href="/essays" role="button" class="no-underline btn ">Pontificating</a>
 </div>

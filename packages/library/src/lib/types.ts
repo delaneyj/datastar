@@ -20,7 +20,6 @@ export type AttributeContext = {
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void
   actions: Readonly<Actions>
-  refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
   el: Readonly<HTMLorSVGElement>
   key: Readonly<string>
@@ -34,7 +33,6 @@ export type InitContext = {
   store: any
   mergeStore: (store: DeepState) => void
   actions: Readonly<Actions>
-  refs: Record<string, HTMLorSVGElement>
   reactivity: Reactivity
 }
 
@@ -64,7 +62,7 @@ export type Preprocessor = {
   replacer: (groups: RegexpGroups) => string
 }
 
-export type Action = (ctx: AttributeContext, ...args: string[]) => Promise<any>
+export type Action = (ctx: AttributeContext, ...args: any[]) => Promise<any>
 export type Actions = Record<string, Action>
 
 export const datastarEventName = 'datastar-event'
@@ -73,6 +71,6 @@ export interface DatastarEvent {
   category: 'core' | 'plugin'
   subcategory: string
   type: string
-  ctx: { el: Element; store: any }
+  ctx: { el: Element | Document | Window | null; store: any }
   message: string
 }

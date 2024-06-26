@@ -4,6 +4,7 @@ import { customElement, property, state } from "lit/decorators.js";
 
 import {
   DatastarEvent,
+  datastarEventName,
   remoteSignals,
 } from "@sudodevnull/datastar";
 import styles from "./tailwind.css";
@@ -56,6 +57,7 @@ export class DatastarInspectorElement extends LitElement {
       this.events = [...this.events, detail].slice(-this.maxEvents);
 
       const currentStore = detail.ctx.store;
+
       if (!currentStore) return;
       const currentStoreMarshalled = JSON.stringify(currentStore);
 
@@ -101,7 +103,6 @@ export class DatastarInspectorElement extends LitElement {
         listener(detail);
      });
     }
-
   }
 
   public render() {
@@ -256,8 +257,7 @@ export class DatastarInspectorElement extends LitElement {
   }
 }
 
-
-function elemToSelector(elm: Element) {
+function elemToSelector(elm: Element | null) {
   if (!elm) return "null";
 
   if (elm.tagName === "BODY") return "BODY";

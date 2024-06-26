@@ -64,7 +64,7 @@ tasks:
       # - echo "{{.BACKEND_STATIC_DIR}}"
       - pnpm i
       # - pnpm vitest --watch=false
-      - pnpm prettier -w .
+      - pnpm prettier -w . --log-level silent
       - pnpm build
       - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
       - rsync -av package.json {{.BACKEND_STATIC_DIR}}
@@ -121,7 +121,7 @@ tasks:
       - ./{{.BIN_NAME}}
 
   test:
-    dir: playwright
+    dir: packages/playwright
     cmds:
       - curl -o - -I http://localhost:8080
       - pnpm i

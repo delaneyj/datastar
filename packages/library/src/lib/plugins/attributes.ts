@@ -197,19 +197,20 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['once', 'passive', 'capture', 'debounce', 'throttle', 'remote']),
+  allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
 
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
-    let callback = () => {
-      expressionFn(ctx)
-      console.log(ctx)
-      sendDatastarEvent('plugin', 'event', key, { el, store: ctx.store().value }, 'triggered')
+
+    let target: Element | Window | Document = ctx.el
+    if (ctx.modifiers.get('window')) {
+      target = window
     }
 
-    ctx.upsertIfMissingFromStore('_dsPlugins.on', {
-      lastStoreMarshalled: '',
-    })
+    let callback = (_?: Event) => {
+      expressionFn(ctx)
+      sendDatastarEvent('plugin', 'event', key, { el: target, store: ctx.store().value }, 'triggered')
+    }
 
     const debounceArgs = ctx.modifiers.get('debounce')
     if (debounceArgs) {
@@ -240,7 +241,7 @@ export const EventPlugin: AttributePlugin = {
     switch (eventName) {
       case 'load':
         callback()
-        delete el.dataset.onLoad
+        delete ctx.el.dataset.onLoad
         return () => {}
 
       case 'raf':
@@ -257,6 +258,7 @@ export const EventPlugin: AttributePlugin = {
         }
 
       case 'store-change':
+        let lastStoreMarshalled = ''
         return ctx.reactivity.effect(() => {
           const store = ctx.store()
           let storeValue = store.value
@@ -264,17 +266,34 @@ export const EventPlugin: AttributePlugin = {
             storeValue = remoteSignals(storeValue)
           }
           const current = JSON.stringify(storeValue)
-          if (store._dsPlugins.on.lastStoreMarshalled !== current) {
-            store._dsPlugins.on.lastStoreMarshalled = current
+          if (lastStoreMarshalled !== current) {
+            lastStoreMarshalled = current
             callback()
           }
         })
 
       default:
-        el.addEventListener(eventName, callback, evtListOpts)
+        const testOutside = ctx.modifiers.has('outside')
+        if (testOutside) {
+          target = document
+          const cb = callback
+          let called = false
+          const targetOutsideCallback = (e?: Event) => {
+            const targetHTML = e?.target as HTMLElement
+            if (!targetHTML) return
+            const isEl = el.id === targetHTML.id
+            if (!isEl && !called) {
+              cb(e)
+              called = true
+            }
+          }
+          callback = targetOutsideCallback
+        }
+
+        target.addEventListener(eventName, callback, evtListOpts)
         return () => {
           // console.log(`Removing event listener for ${eventName} on ${el}`)
-          el.removeEventListener(eventName, callback)
+          target.removeEventListener(eventName, callback)
         }
     }
   },

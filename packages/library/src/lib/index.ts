@@ -47,7 +47,7 @@ export function sendDatastarEvent(
   category: 'core' | 'plugin',
   subcategory: string,
   type: string,
-  ctx: { el: Element | null; store: any },
+  ctx: { el: Element | Window | Document | null; store: any },
   message: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) {

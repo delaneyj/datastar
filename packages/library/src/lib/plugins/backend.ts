@@ -1,15 +1,16 @@
+import { DATASTAR_STR } from '../core'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
+import { Signal } from '../external/preact-core'
 import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
-import { Signal } from '../external/preact-core'
 
 const CONTENT_TYPE = 'Content-Type'
-const DATASTAR_REQUEST = 'datastar-request'
+const DATASTAR_REQUEST = `${DATASTAR_STR}-request`
 const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
-const DATASTAR_CLASS_PREFIX = 'datastar-'
+const DATASTAR_CLASS_PREFIX = `${DATASTAR_STR}-`
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
@@ -105,21 +106,23 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext) {
+async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote: boolean) {
   const store = ctx.store()
 
   if (!urlExpression) {
     throw new Error(`No signal for ${method} on ${urlExpression}`)
   }
 
-  const storeJSON = JSON.stringify(remoteSignals({ ...store.value }))
+  let storeValue = { ...store.value }
+  if (onlyRemote) storeValue = remoteSignals(storeValue)
+  const storeJSON = JSON.stringify(storeValue)
 
   const loadingTarget = ctx.el as HTMLElement
 
-  const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-    ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
+  const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
+    ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
     : []
-  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store._dsPlugins.fetch?.indicatorsVisible
+  const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store?._dsPlugins.fetch?.indicatorsVisible
   indicatorElements.forEach((indicator) => {
     if (!indicator || !indicatorsVisible) return
     const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
@@ -232,48 +235,54 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         }
       }
     },
+    onerror: (evt) => {
+      console.error(evt)
+    },
     onclose: () => {
-      const store = ctx.store()
-      const indicatorsVisible: Signal<IndicatorReference[]> = store._dsPlugins.fetch?.indicatorsVisible
-      const indicatorElements: HTMLElement[] = store._dsPlugins.fetch?.indicatorElements
-        ? store._dsPlugins.fetch?.indicatorElements[loadingTarget.id]?.value || []
-        : []
-
-      const indicatorCleanupPromises: Promise<() => void>[] = []
-
-      indicatorElements.forEach((indicator) => {
-        if (!indicator || !indicatorsVisible) return
-        const indicatorsVisibleNew = indicatorsVisible.value
-        const indicatorVisibleIndex = indicatorsVisibleNew.findIndex((indicatorVisible) => {
-          if (!indicatorVisible) return false
-          return indicator.isSameNode(indicatorVisible.el)
+      try {
+        const store = ctx.store()
+        const indicatorsVisible: Signal<IndicatorReference[]> = store?._dsPlugins?.fetch?.indicatorsVisible || []
+        const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
+          ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
+          : []
+        const indicatorCleanupPromises: Promise<() => void>[] = []
+        indicatorElements.forEach((indicator) => {
+          if (!indicator || !indicatorsVisible) return
+          const indicatorsVisibleNew = indicatorsVisible.value
+          const indicatorVisibleIndex = indicatorsVisibleNew.findIndex((indicatorVisible) => {
+            if (!indicatorVisible) return false
+            return indicator.isSameNode(indicatorVisible.el)
+          })
+          const indicatorVisible = indicatorsVisibleNew[indicatorVisibleIndex]
+          if (!indicatorVisible) return
+          if (indicatorVisible.count < 2) {
+            indicatorCleanupPromises.push(
+              new Promise(() =>
+                setTimeout(() => {
+                  indicator.classList.remove(INDICATOR_LOADING_CLASS)
+                  indicator.classList.add(INDICATOR_CLASS)
+                }, 300),
+              ),
+            )
+            delete indicatorsVisibleNew[indicatorVisibleIndex]
+          } else if (indicatorVisibleIndex > -1) {
+            indicatorsVisibleNew[indicatorVisibleIndex].count = indicatorsVisibleNew[indicatorVisibleIndex].count - 1
+          }
+          indicatorsVisible.value = indicatorsVisibleNew.filter((ind) => {
+            return !!ind
+          })
         })
-        const indicatorVisible = indicatorsVisibleNew[indicatorVisibleIndex]
-        if (!indicatorVisible) return
-        if (indicatorVisible.count < 2) {
-          indicatorCleanupPromises.push(
-            new Promise(() =>
-              setTimeout(() => {
-                indicator.classList.remove(INDICATOR_LOADING_CLASS)
-                indicator.classList.add(INDICATOR_CLASS)
-              }, 300),
-            ),
-          )
-          delete indicatorsVisibleNew[indicatorVisibleIndex]
-        } else if (indicatorVisibleIndex > -1) {
-          indicatorsVisibleNew[indicatorVisibleIndex].count = indicatorsVisibleNew[indicatorVisibleIndex].count - 1
-        }
-        indicatorsVisible.value = indicatorsVisibleNew.filter((ind) => {
-          return !!ind
-        })
-      })
 
-      Promise.all(indicatorCleanupPromises)
+        Promise.all(indicatorCleanupPromises)
+      } catch (e) {
+        console.error(e)
+        debugger
+      }
     },
   }
 
-  if (req.headers && store._dsPlugins.fetch?.headers?.size()) {
-    for (const key in store._dsPlugins.fetch.headers) {
+  if (req.headers && store?._dsPlugins?.fetch?.headers?.size()) {
+    for (const key in store?._dsPlugins.fetch.headers) {
       const value = store._dsPlugins.fetch.headers.value[key]
       req.headers[key] = value
     }
@@ -287,7 +296,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     req.body = storeJSON
   }
 
-  await fetchEventSource(url, req)
+  fetchEventSource(url, req)
 }
 
 const fragContainer = document.createElement('template')
@@ -398,20 +407,8 @@ export function mergeHTMLFragment(
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
-    acc[method] = async (ctx, urlExpression) => {
-      ctx.upsertIfMissingFromStore('_dsPlugins.fetch', {})
-      const da = Document as any
-      if (!da.startViewTransition) {
-        await fetcher(method, urlExpression, ctx)
-        return
-      }
-
-      new Promise((resolve) => {
-        da.startViewTransition(async () => {
-          await fetcher(method, urlExpression, ctx)
-          resolve(void 0)
-        })
-      })
+    acc[method] = async (ctx, urlExpression, onlyRemoteRaw) => {
+      fetcher(method, urlExpression, ctx, onlyRemoteRaw)
     }
     return acc
   },
@@ -419,12 +416,12 @@ export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
     isFetching: async (ctx: AttributeContext, selector: string) => {
       const indicators = document.querySelectorAll(selector)
       const store = ctx.store()
-      const indicatorsVisible: IndicatorReference[] | undefined = store._dsPlugins?.fetch.indicatorsVisible?.value
+      const indicatorsVisible: IndicatorReference[] | undefined =
+        store?._dsPlugins?.fetch.indicatorsVisible?.value || []
       if (!indicatorsVisible) return false
       return Array.from(indicators).some((indicator) => {
         return indicatorsVisible.some((indicatorVisible) => {
           if (!indicatorVisible) return false
-
           return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
         })
       })

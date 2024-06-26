@@ -20,6 +20,7 @@ func setupEssays(router chi.Router) error {
 		{
 			Label: "2024",
 			Links: []*SidebarLink{
+				{ID: "htmx_sucks"},
 				{ID: "another_dependency"},
 				{ID: "event_streams_all_the_way_down"},
 			},

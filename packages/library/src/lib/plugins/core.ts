@@ -1,5 +1,13 @@
 import { sendDatastarEvent } from '..'
-import { AttributeContext, AttributePlugin, Preprocessor, RegexpGroups } from '../types'
+import { DATASTAR_STR } from '../core'
+import {
+  AttributeContext,
+  AttributePlugin,
+  DatastarEvent,
+  Preprocessor,
+  RegexpGroups,
+  datastarEventName,
+} from '../types'
 
 const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
@@ -39,7 +47,7 @@ const ActionProcessor: Preprocessor = {
 const RefProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
-    return `data.refs.${ref}`
+    return `document.querySelector(ctx.store()._dsPlugins.refs.${ref})`
   },
 }
 
@@ -59,13 +67,40 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
+  allowedModifiers: new Set(['offline']),
   onLoad: (ctx: AttributeContext) => {
+    let lastOfflineMarshalled = ``
+    const offlineFn = ((_: CustomEvent<DatastarEvent>) => {
+      const s = ctx.store()
+      const marshalledStore = JSON.stringify(s)
+
+      if (marshalledStore !== lastOfflineMarshalled) {
+        window.localStorage.setItem(DATASTAR_STR, marshalledStore)
+        lastOfflineMarshalled = marshalledStore
+      }
+    }) as EventListener
+
+    const hasOffline = ctx.modifiers.has('offline')
+
+    if (hasOffline) {
+      const marshalledStore = window.localStorage.getItem(DATASTAR_STR) || '{}'
+      const store = JSON.parse(marshalledStore)
+      ctx.mergeStore(store)
+
+      window.addEventListener(datastarEventName, offlineFn)
+    }
+
     const bodyStore = ctx.expressionFn(ctx)
     const marshalled = JSON.stringify(bodyStore)
-    console.log(ctx)
     sendDatastarEvent('plugin', 'store', 'merged', { el: ctx.el, store: ctx.store().value }, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
+
+    return () => {
+      if (hasOffline) {
+        window.removeEventListener(datastarEventName, offlineFn)
+      }
+    }
   },
 }
 
@@ -76,10 +111,47 @@ const RefPlugin: AttributePlugin = {
   mustNotEmptyExpression: true,
   bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
+    ctx.upsertIfMissingFromStore('_dsPlugins.refs', {})
     const { el, expression } = ctx
-    ctx.refs[expression] = el
-    return () => delete ctx.refs[expression]
+    const s = ctx.store()
+
+    const revised = {
+      _dsPlugins: {
+        refs: {
+          ...s._dsPlugins.refs.value,
+          [expression]: elemToSelector(el),
+        },
+      },
+    }
+    ctx.mergeStore(revised)
+
+    return () => {
+      const s = ctx.store()
+      const revised = { ...s._dsPlugins.refs.value }
+      delete revised[expression]
+      s._dsPlugins.refs = revised
+    }
   },
 }
 
 export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, RefPlugin]
+
+export function elemToSelector(elm: Element | null) {
+  if (!elm) return 'null'
+
+  if (elm.tagName === 'BODY') return 'BODY'
+  const names = []
+  while (elm.parentElement && elm.tagName !== 'BODY') {
+    if (elm.id) {
+      names.unshift('#' + elm.getAttribute('id')) // getAttribute, because `elm.id` could also return a child element with name "id"
+      break // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+    } else {
+      let c = 1,
+        e = elm
+      for (; e.previousElementSibling; e = e.previousElementSibling, c++);
+      names.unshift(elm.tagName + ':nth-child(' + c + ')')
+    }
+    elm = elm.parentElement
+  }
+  return names.join('>')
+}

@@ -165,10 +165,10 @@ function setHeaders(res) {
 Copy this to your server code:
 
 ```js
-function sendSSE({ res, frag, selector, merge, mergeType, end }) {
+function sendSSE({ res, frag, selector, mergeType, end }) {
   res.write("event: datastar-fragment\n");
   if (selector) res.write(`data: selector ${selector}\n`);
-  if (merge) res.write(`data: merge ${mergeType}\n`);
+  if (mergeType?.length) res.write(`data: merge ${mergeType}\n`);
   res.write(`data: fragment ${frag}\n\n`);
   if (end) res.end();
 }
@@ -208,9 +208,6 @@ app.put("/put", (req, res) => {
   sendSSE({
     res,
     frag,
-    selector: null,
-    merge: true,
-    mergeType: "morph_element",
     end: true,
   });
 });
@@ -260,9 +257,6 @@ app.get("/get", (req, res) => {
   sendSSE({
     res,
     frag,
-    selector: null,
-    merge: true,
-    mergeType: "morph_element",
     end: true,
   });
 });
@@ -296,7 +290,6 @@ sendSSE({
   res,
   frag,
   selector: "#main",
-  merge: true,
   mergeType: "prepend_element",
   end: true,
 });
@@ -317,9 +310,6 @@ app.get("/feed", async (req, res) => {
     sendSSE({
       res,
       frag,
-      selector: null,
-      merge: false,
-      mergeType: null,
       end: false,
     });
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -349,11 +339,11 @@ If you're still here I imagine you want to know more. Let's define things a litt
 
 To be more precise, think of Datastar as an extension to HTML's [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also setup events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
 
-- Declare global state: `data-store = "{foo: ''}"`
-- Link-up HTML elements to state slots: `data-model = "foo"`
-- Adjust HTML elements text content: `data-text = "$foo"`
-- Hookup other effects on your DOM to the state: `data-show= "$foo"`
-- Setup events using `data-on-(load or click) = "$$get(/endpoint)"`
+- Declare global state: `data-store="{foo: ''}"`
+- Link-up HTML elements to state slots: `data-model="foo"`
+- Adjust HTML elements text content: `data-text="$foo"`
+- Hookup other effects on your DOM to the state: `data-show="$foo"`
+- Setup events using `data-on-click="$$get(/endpoint)"`
 - Respond in HTML wrapped in SSE with a target element ID to update
 
 It's that simple. To dive deeper check out some of the other links or just click below.

@@ -14,9 +14,9 @@ test.describe("File Upload UI Suite", () => {
   });
 
   test("file upload test", async ({ page }) => {
-    const basePath = process.cwd().includes("/playwright")
+    const basePath = process.cwd().includes("packages/playwright")
       ? process.cwd()
-      : path.join(process.cwd(), "playwright");
+      : path.join(process.cwd(), "packages", "playwright");
     const relativePathToTestData = "tests/testdata/testfile.txt";
     const filePath = path.resolve(basePath, relativePathToTestData);
     const fileInput = await page.locator('input[type="file"]');
@@ -39,9 +39,9 @@ test.describe("File Upload UI Suite", () => {
   });
 
   test("multiple file upload test", async ({ page }) => {
-    const basePath = process.cwd().includes("/playwright")
+    const basePath = process.cwd().includes("packages/playwright")
       ? process.cwd()
-      : path.join(process.cwd(), "playwright");
+      : path.join(process.cwd(), "packages", "playwright");
     const testDataFolder = path.join(basePath, "tests/testdata");
 
     const filepaths = ["testfile.txt", "testfile2.txt"].map((filename) => {

@@ -1,6 +1,6 @@
 # Attribute Plugins
 
-[Source](https://github.com/delaneyj/datastar/blob/main/library/src/lib/plugins/attributes.ts)
+[Source](https://github.com/delaneyj/datastar/blob/main/packages/library/src/lib/plugins/attributes.ts)
 
 Primarily used to help hook up the store and the DOM.
 
