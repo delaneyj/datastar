@@ -64,7 +64,11 @@ templ Home() {
 				<div class="w-96">
 					@templ.Raw(homePageChartSVG)
 				</div>
-				<div id="todosMVC" data-on-load="$$get('/api/todos')">Todos</div>
+				<div id="todosMVC" data-on-load="$$get('/api/todos')">
+					<p>Todos Example</p>
+					<p>If you are seeing this message, please clear you cookies and refresh the page.</p>
+					<p>We recently updated the site and the old cookies are causing issues.</p>
+				</div>
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"
 					href={ templ.SafeURL("/guide") }
