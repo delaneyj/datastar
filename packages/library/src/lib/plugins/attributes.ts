@@ -192,13 +192,14 @@ export const TextPlugin: AttributePlugin = {
   },
 }
 
+let lastStoreMarshalled = ''
+
 // Sets the event listener of the element
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
   allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
-
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
 
@@ -257,7 +258,6 @@ export const EventPlugin: AttributePlugin = {
         }
 
       case 'store-change':
-        let lastStoreMarshalled = ''
         return ctx.reactivity.effect(() => {
           const store = ctx.store()
           let storeValue = store.value
