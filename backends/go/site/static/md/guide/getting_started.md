@@ -78,7 +78,7 @@ We have basic server set up. Now let's get to the fun part. Let's add some Datas
 
 ## Handling State
 
-Let's start out with how Datastar handles state. Enter the [store](/reference/plugins_core#merge-store) attribute.
+Let's start out with how Datastar handles state. Enter the [store](/reference/plugins_core#store) attribute.
 
 Go ahead and add this as a data attribute to the `<main>` element:
 

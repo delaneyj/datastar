@@ -17,13 +17,13 @@ func setupReferenceRoutes(router chi.Router) error {
 
 	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Included",
+			Label: "Plugins Included",
 			Links: []*SidebarLink{
-				{ID: "core"},
-				{ID: "attributes"},
-				{ID: "backend"},
-				{ID: "helpers"},
-				{ID: "visibility"},
+				{ID: "plugins_core"},
+				{ID: "plugins_attributes"},
+				{ID: "plugins_backend"},
+				{ID: "plugins_helpers"},
+				{ID: "plugins_visibility"},
 			},
 		},
 		{

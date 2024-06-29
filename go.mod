@@ -5,7 +5,7 @@ go 1.22.1
 require (
 	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/TwiN/go-away v1.6.13
-	github.com/a-h/templ v0.2.707
+	github.com/a-h/templ v0.2.731
 	github.com/alecthomas/chroma v0.10.0
 	github.com/benbjohnson/hashfs v0.2.2
 	github.com/delaneyj/gostar v0.7.2
