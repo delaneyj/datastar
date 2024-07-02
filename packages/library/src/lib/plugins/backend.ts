@@ -106,7 +106,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
 
 export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
 
-async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote: boolean) {
+async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote = true) {
   const store = ctx.store()
 
   if (!urlExpression) {
@@ -408,7 +408,8 @@ export function mergeHTMLFragment(
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
     acc[method] = async (ctx, urlExpression, onlyRemoteRaw) => {
-      fetcher(method, urlExpression, ctx, onlyRemoteRaw)
+      const onlyRemotes = ['true', true, undefined].includes(onlyRemoteRaw)
+      fetcher(method, urlExpression, ctx, onlyRemotes)
     }
     return acc
   },
