@@ -1,11 +1,11 @@
-browser.devtools.panels.create(
-  "Datastar",
-  "icon/128.png",
-  "devtools-panel.html"
-);
+const datastarExists = 'window.ds.plugins?.length';
 
-browser.devtools.panels.elements.createSidebarPane("Datastar").then((pane) => {
-  pane.setPage("devtools-pane.html");
-});
-
-debugger;
+ browser.devtools.inspectedWindow.eval(datastarExists).then((results) => {
+   if (results) {
+     browser.devtools.panels.create(
+      "Datastar Inspector",
+      "icon/128.png",
+      "devtools-panel.html"
+    );
+   }
+ });
