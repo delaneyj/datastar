@@ -24,10 +24,21 @@ export type AttributeContext = {
   el: Readonly<HTMLorSVGElement>
   key: Readonly<string>
   rawKey: Readonly<string>
+  rawExpression: Readonly<string>
   expression: Readonly<string>
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
+  sendDatastarEvent: SendDatastarEvent
 }
+
+export type SendDatastarEvent = (
+  category: 'core' | 'plugin',
+  subcategory: string,
+  type: string,
+  target: Element | Document | Window | string,
+  message: string,
+  opts: CustomEventInit,
+) => void
 
 export type InitContext = {
   store: any

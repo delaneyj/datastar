@@ -30,6 +30,7 @@ export class Datastar {
   parentID = ''
   missingIDNext = 0
   removals = new Map<Element, Set<OnRemovalFn>>()
+  mergeRemovals = new Array<OnRemovalFn>()
 
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
     this.actions = Object.assign(this.actions, actions)
@@ -76,11 +77,16 @@ export class Datastar {
   }
 
   private mergeStore<T extends object>(patchStore: T) {
+    this.mergeRemovals.forEach((removal) => removal())
+    this.mergeRemovals = this.mergeRemovals.slice(0)
+
     const revisedStore = apply(this.store.value, patchStore) as DeepState
     this.store = deepSignal(revisedStore)
-    this.reactivity.effect(() => {
-      sendDatastarEvent('core', 'store', 'merged', 'STORE', JSON.stringify(this.store.value))
-    })
+    this.mergeRemovals.push(
+      this.reactivity.effect(() => {
+        sendDatastarEvent('core', 'store', 'merged', 'STORE', JSON.stringify(this.store.value))
+      }),
+    )
   }
 
   private upsertIfMissingFromStore(path: string, value: any) {
@@ -96,6 +102,7 @@ export class Datastar {
     const last = parts[parts.length - 1]
     if (!!subStore[last]) return
     subStore[last] = this.reactivity.signal(value)
+    sendDatastarEvent('core', 'store', 'upsert', path, value)
   }
 
   signalByName<T>(name: string) {
@@ -110,7 +117,8 @@ export class Datastar {
         if (!pi) this.cleanupElementRemovals(el)
 
         for (const rawKey in el.dataset) {
-          let expression = el.dataset[rawKey] || ''
+          const rawExpression = el.dataset[rawKey] || ''
+          let expression = rawExpression
 
           if (!rawKey.startsWith(p.prefix)) continue
 
@@ -208,11 +216,13 @@ export class Datastar {
             el,
             key,
             rawKey,
+            rawExpression,
             expression,
             expressionFn: () => {
               throw new Error('Expression function not created')
             },
             modifiers,
+            sendDatastarEvent,
           }
 
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {
@@ -220,12 +230,15 @@ export class Datastar {
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length)
-            statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
+            statements[statements.length - 1] = `${statements[statements.length - 1]}`
             const joined = statements.map((s) => `  ${s}`).join(';\n')
             const fnContent = `
 try {
-${joined}
+const val = ${joined}
+ctx.sendDatastarEvent('core', 'attributes', 'expr_eval', ctx.el, '${rawKey} equals ' + JSON.stringify(val))
+return val
 } catch (e) {
+ctx.sendDatastarEvent('core', 'attributes', 'expr_eval_err', ctx.el, msg)
  const msg = \`
 Error evaluating Datastar expression:
 ${joined.replaceAll('`', '\\`')}
@@ -239,11 +252,18 @@ Check if the expression is valid before raising an issue.
  throw new Error(msg)
 }
             `
-
+            sendDatastarEvent(
+              'core',
+              'attributes',
+              'expr_construction',
+              ctx.el,
+              `${rawKey}="${rawExpression}" becomes "${joined} "`,
+            )
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
+              sendDatastarEvent('core', 'attributes', 'expr_construction_err', ctx.el, String(e))
               throw new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
             }
           }
