@@ -14,7 +14,10 @@ import {
   VisibilityPlugins,
 } from './plugins'
 import { HelperActions } from './plugins/helpers'
+import { elemToSelector } from './plugins/core'
 import { Actions, AttributePlugin, DatastarEvent, datastarEventName } from './types'
+
+export { apply } from './external/ts-merge-patch'
 
 export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlugin[]) {
   const ds = new Datastar(actions, ...plugins)
@@ -47,7 +50,7 @@ export function sendDatastarEvent(
   category: 'core' | 'plugin',
   subcategory: string,
   type: string,
-  ctx: { el: Element | Window | Document | null; store: any },
+  target: Element | Document | Window | string,
   message: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) {
@@ -61,7 +64,7 @@ export function sendDatastarEvent(
             category,
             subcategory,
             type,
-            ctx,
+            target: elemToSelector(target),
             message,
           },
         },
@@ -74,16 +77,7 @@ export function sendDatastarEvent(
 // Timeeout allows inspector to attach to all elements before sending the event
 if (!winAny.ds) {
   setTimeout(() => {
-    sendDatastarEvent(
-      'core',
-      'init',
-      'start',
-      {
-        el: document.body,
-        store: {},
-      },
-      `Datastar v${version} loading`,
-    )
+    sendDatastarEvent('core', 'init', 'start', document.body, `Datastar v${version} loading`)
 
     const start = performance.now()
     winAny.ds = runDatastarWithAllPlugins()
@@ -93,10 +87,7 @@ if (!winAny.ds) {
       'core',
       'init',
       'end',
-      {
-        el: document.body,
-        store: winAny.ds.store.value,
-      },
+      document.body,
       `Datastar v${version} loaded and attached to all DOM elements in ${(end - start).toFixed(2)}ms`,
     )
   }, 0)

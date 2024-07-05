@@ -1,25 +1,22 @@
-/*global browser*/
 import { LitElement, PropertyValueMap, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
+import { unsafeHTML } from "lit/directives/unsafe-html.js";
 
 import {
   DatastarEvent,
   datastarEventName,
   remoteSignals,
+  apply
 } from "@sudodevnull/datastar";
 import styles from "./tailwind.css";
+import { diffJson } from 'diff';
 
 interface VersionedStore {
   time: Date;
   contents: Object;
 }
 
-type EventDetail = Omit<CustomEvent<DatastarEvent>['detail'], 'ctx'> & {
-  ctx: {
-     el: string,
-     store: any
-  }
-}
+type EventDetail = CustomEvent<DatastarEvent>['detail']
 
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
@@ -39,83 +36,74 @@ export class DatastarInspectorElement extends LitElement {
   showPlugins = false;
 
   @state()
-  stores: VersionedStore[] = [];
+  stores: VersionedStore[] = [{
+            contents: {},
+            time: new Date(),
+          }];
 
   @state()
   events: Record<string, any>[] = [];
 
   @state()
-  prevStoreMarshalled = "";
-
-  @state()
-  port = undefined
+  prevStoreMarshalled = "{}";
 
   protected firstUpdated(
     _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
   ): void {
     const listener = (detail: EventDetail) => {
-      this.events = [...this.events, detail].slice(-this.maxEvents);
+      console.log('inspector got event', detail);
 
-      const currentStore = detail.ctx.store;
+      // most events can be logged as is
+      if (!(detail.category === "core" && detail.subcategory === "store" && detail.type === "merged")) {
+        this.events = [...this.events, detail].slice(-this.maxEvents);
+        return;
+      }
 
-      if (!currentStore) return;
-      const currentStoreMarshalled = JSON.stringify(currentStore);
+      // merge events are special
+      const { message, target } = detail;
+      let patch;
 
-      if (currentStoreMarshalled !== this.prevStoreMarshalled) {
-        this.prevStoreMarshalled = currentStoreMarshalled;
+      // if the message only includes a part of the store we need to build a patch
+    if (target !== 'STORE') {
+      const parts = message.split('.')
+      const last: Record<string, any> = {};
+      last[parts[parts.length -1]] = JSON.parse(message);
+      patch = parts.slice(0, -1).reduceRight((subStore, currKey) => {
+        const top: Record<string, any> = {};
+        return top[currKey] = subStore;
+      }, last);
+    }
+
+      const currentStore = this.stores[this.stores.length - 1].contents;
+      const newStore = patch ? apply(currentStore, patch) : JSON.parse(message);
+
+      const diff = diffJson(currentStore, newStore);
+
+      const diffMessage = diff.filter((d) => d.added || d.removed).reduce((acc, curr) => {
+        const change = curr.added ? 'color: green' : curr.removed ? 'color: red' : '';
+        const symbol = curr.added ? ' + ' : curr.removed ? ' - ' : ' ';
+        return acc.concat(`<span style="${change}">${symbol}${curr.value}</span>`);
+      }, "")
+
+      if (!diffMessage) return;
+
         this.v = this.stores.length;
         this.stores = [
           ...this.stores,
           {
-            contents: currentStore,
+            contents: newStore,
             time: new Date(),
           },
         ];
-      }
-    };
-    const getExtension = () => {
-      try {
-      // @ts-ignore
-        if (browser) return browser
-      } catch (_:unknown) {
-        //do nothing
-      }
 
-      try {
-      // @ts-ignore
-        if (chrome) return chrome
-      } catch (_:unknown) {
-        return false
-      }
-    }
-   const extension = getExtension();
-   if (extension) {
-      // @ts-ignore
-    this.port = extension.runtime.connect({name:"datastarDevTools"});
+        this.events = [...this.events, {...detail, message: diffMessage }].slice(-this.maxEvents);
+   };
 
-     // @ts-ignore
-      this.port.postMessage({
-         // @ts-ignore
-	tabId: extension.devtools.inspectedWindow.tabId,
-           action: 'connect-dev'
-      });
-
-     // @ts-ignore
-      this.port.onMessage.addListener(listener);
-    } else {
      const winAny = window as any;
      winAny.addEventListener(datastarEventName, (evt: CustomEvent<DatastarEvent>) => {
-        const detail: EventDetail = {
-          ...evt.detail,
-          ctx: {
-            el: elemToSelector(evt.detail.ctx.el),
-            store: evt.detail.ctx.store
-          }
-        }
 
-        listener(detail);
+        listener(evt.detail);
      });
-    }
   }
 
   public render() {
@@ -186,8 +174,8 @@ export class DatastarInspectorElement extends LitElement {
               <summary class="collapse-title text-xl font-medium">
                 Store
               </summary>
-              <div class="collapse-content flex gap-4">
-                <ul class="menu bg-base-200 w-48 rounded-box">
+              <div class="collapse-content flex gap-4 max-h-[40vh]">
+                <ul class="menu bg-base-200 w-48 rounded-box overflow-y-scroll flex-col flex-nowrap">
                   <div>Versions</div>
                   ${this.stores.map(
                     (store, i) => html`
@@ -243,23 +231,25 @@ export class DatastarInspectorElement extends LitElement {
                       <th>Time</th>
                       <th>Category</th>
                       <th>Type</th>
-                      <th>Element</th>
+                      <th>Target</th>
                       <th>Message</th>
                     </tr>
                   </thead>
                   <tbody>
                     ${this.events.map(
-                      (evt) => html`
+                      (evt) => {
+                      return html`
                         <tr>
                           <td class="font-mono">
                             ${evt.time.toISOString().split("T")[1].slice(0, 12)}
                           </td>
                           <td>${evt.category}/${evt.subcategory}</td>
                           <td>${evt.type}</td>
-                          <td>${evt.ctx.el}</td>
-                          <td class="w-full">${evt.message}</td>
+                          <td>${evt.target}</td>
+                          <td class="w-full">${unsafeHTML(evt.message)}</td>
                         </tr>
                       `
+                      }
                     )}
                   </tbody>
                 </table>
@@ -268,27 +258,4 @@ export class DatastarInspectorElement extends LitElement {
       </div>
     `;
   }
-}
-
-function elemToSelector(elm: Element | Window | Document | null) {
-  if (!elm) return "null";
-
-  if (elm instanceof Window) return "Window";
-  if (elm instanceof Document) return "Document";
-
-  if (elm.tagName === "BODY") return "BODY";
-  const names = [];
-  while (elm.parentElement && elm.tagName !== "BODY") {
-    if (elm.id) {
-      names.unshift("#" + elm.getAttribute("id")); // getAttribute, because `elm.id` could also return a child element with name "id"
-      break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
-    } else {
-      let c = 1,
-        e = elm;
-      for (; e.previousElementSibling; e = e.previousElementSibling, c++);
-      names.unshift(elm.tagName + ":nth-child(" + c + ")");
-    }
-    elm = elm.parentElement;
-  }
-  return names.join(">");
 }

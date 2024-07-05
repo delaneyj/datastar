@@ -71,6 +71,6 @@ export interface DatastarEvent {
   category: 'core' | 'plugin'
   subcategory: string
   type: string
-  ctx: { el: Element | Document | Window | null; store: any }
+  target: string
   message: string
 }

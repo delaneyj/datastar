@@ -1,4 +1,3 @@
-import { sendDatastarEvent } from '..'
 import { DATASTAR_STR } from '../core'
 import {
   AttributeContext,
@@ -91,8 +90,6 @@ const StoreAttributePlugin: AttributePlugin = {
     }
 
     const bodyStore = ctx.expressionFn(ctx)
-    const marshalled = JSON.stringify(bodyStore)
-    sendDatastarEvent('plugin', 'store', 'merged', { el: ctx.el, store: ctx.store().value }, marshalled)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
 
@@ -135,9 +132,11 @@ const RefPlugin: AttributePlugin = {
 }
 
 export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, RefPlugin]
-
-export function elemToSelector(elm: Element | null) {
+export function elemToSelector(elm: Element | Window | Document | string | null) {
   if (!elm) return 'null'
+  if (typeof elm === 'string') return elm
+  if (elm instanceof Window) return 'Window'
+  if (elm instanceof Document) return 'Document'
 
   if (elm.tagName === 'BODY') return 'BODY'
   const names = []

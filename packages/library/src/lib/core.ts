@@ -2,6 +2,7 @@ import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
 import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
+import { sendDatastarEvent } from '.'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
   Actions,
@@ -77,6 +78,9 @@ export class Datastar {
   private mergeStore<T extends object>(patchStore: T) {
     const revisedStore = apply(this.store.value, patchStore) as DeepState
     this.store = deepSignal(revisedStore)
+    this.reactivity.effect(() => {
+      sendDatastarEvent('core', 'store', 'merged', 'STORE', JSON.stringify(this.store.value))
+    })
   }
 
   private upsertIfMissingFromStore(path: string, value: any) {

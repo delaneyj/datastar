@@ -1,7 +1,19 @@
 {
   "name": "@sudodevnull/datastar-inspector",
-  "private": true,
-  "version": "0.0.0",
+  "files": [
+    "dist"
+  ],
+  "private": false,
+  "main": "dist/datastar-inspector.js",
+  "module": "dist/datastar-inspector.js",
+  "types": "dist/datastar-inspector.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/datastar-inspector.js",
+      "require": "./dist/datastar-inspector.js"
+    }
+  },
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -11,9 +23,11 @@
   "dependencies": {
     "@sudodevnull/datastar": "workspace:*",
     "daisyui": "latest",
+    "diff": "^5.2.0",
     "lit": "^3.1.2"
   },
   "devDependencies": {
+    "@types/diff": "^5.2.0",
     "@types/node": "^20.14.2",
     "autoprefixer": "^10.4.19",
     "esbuild": "^0.19.4",

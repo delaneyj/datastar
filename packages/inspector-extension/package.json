@@ -14,6 +14,10 @@
     "compile": "tsc --noEmit",
     "postinstall": "wxt prepare"
   },
+  "dependencies": {
+    "@sudodevnull/datastar-inspector": "workspace:*",
+    "@sudodevnull/datastar": "workspace:*"
+  },
   "devDependencies": {
     "typescript": "^5.4.5",
     "wxt": "^0.18.6"

@@ -209,8 +209,8 @@ export const EventPlugin: AttributePlugin = {
     }
 
     let callback = (_?: Event) => {
+      sendDatastarEvent('plugin', 'event', key, target, 'triggered')
       expressionFn(ctx)
-      sendDatastarEvent('plugin', 'event', key, { el: target, store: ctx.store().value }, 'triggered')
     }
 
     const debounceArgs = ctx.modifiers.get('debounce')
