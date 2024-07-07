@@ -9,37 +9,39 @@ test.describe("Fetch Indicator Suite", () => {
   });
 
   test("test fetch indicator", async ({ page }) => {
+    const ind = await page.locator("#ind");
+    const greeting = await page.locator("#greeting");
+
     await page.getByTestId("greeting_button").click();
-    await expect(page.locator("div#ind")).toBeVisible();
-    await expect(page.locator("div#greeting")).toBeVisible();
-    await expect(page.locator("div#greeting")).toContainText(
-      "Hello, the time is"
-    );
+    await expect(ind).toBeVisible();
+    await expect(greeting).toBeVisible();
+    await expect(greeting).toContainText("Hello, the time is");
   });
 
   // Had multiple bugs that could only be detected when run twice
   test("test second run of fetch indicator ", async ({ page }) => {
-    await page.getByTestId("greeting_button").click();
-    await expect(page.locator("div#ind")).toBeVisible();
-    await expect(page.locator("div#greeting")).toBeVisible();
-    await expect(page.locator("div#greeting")).toContainText(
-      "Hello, the time is"
-    );
-    await page.getByTestId("greeting_button").click();
-    await expect(page.locator("div#ind")).toBeVisible();
-    await expect(page.locator("div#greeting")).toBeVisible();
-    await expect(page.locator("div#greeting")).toContainText(
-      "Hello, the time is"
-    );
+    const ind = await page.locator("#ind");
+    const greeting = await page.locator("#greeting");
+    const greetingButton = await page.getByTestId("greeting_button");
+
+    await greetingButton.click();
+    await expect(ind).toBeVisible();
+    await expect(greeting).toBeVisible();
+    await expect(greeting).toContainText("Hello, the time is");
+    await greetingButton.click();
+    await expect(ind).toBeVisible();
+    await expect(greeting).toBeVisible();
+    await expect(greeting).toContainText("Hello, the time is");
   });
 
   test("test isFetching", async ({ page }) => {
-    await page.getByTestId("greeting_button").click();
-    await expect(page.getByTestId("greeting_button")).toBeDisabled();
-    await expect(page.locator("div#greeting")).toBeVisible();
-    await expect(page.locator("div#greeting")).toContainText(
-      "Hello, the time is"
-    );
-    await expect(page.getByTestId("greeting_button")).toBeEnabled();
+    const greeting = await page.locator("#greeting");
+    const greetingButton = await page.getByTestId("greeting_button");
+
+    await greetingButton.click();
+    await expect(greetingButton).toBeDisabled();
+    await expect(greeting).toBeVisible();
+    await expect(greeting).toContainText("Hello, the time is");
+    await expect(greetingButton).toBeEnabled();
   });
 });
