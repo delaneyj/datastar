@@ -73,7 +73,7 @@ export type Preprocessor = {
   replacer: (groups: RegexpGroups) => string
 }
 
-export type Action = (ctx: AttributeContext, ...args: any[]) => Promise<any>
+export type Action = (ctx: AttributeContext, ...args: any[]) => any
 export type Actions = Record<string, Action>
 
 export const datastarEventName = 'datastar-event'

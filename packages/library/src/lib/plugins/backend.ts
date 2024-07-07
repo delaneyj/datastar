@@ -407,24 +407,25 @@ export function mergeHTMLFragment(
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(
   (acc, method) => {
-    acc[method] = async (ctx, urlExpression, onlyRemoteRaw) => {
+    acc[method] = (ctx, urlExpression, onlyRemoteRaw) => {
       const onlyRemotes = ['true', true, undefined].includes(onlyRemoteRaw)
       fetcher(method, urlExpression, ctx, onlyRemotes)
     }
     return acc
   },
   {
-    isFetching: async (ctx: AttributeContext, selector: string) => {
-      const indicators = document.querySelectorAll(selector)
+    isFetching: (ctx: AttributeContext, selector: string) => {
+      const indicators = [...document.querySelectorAll(selector)]
       const store = ctx.store()
-      const indicatorsVisible: IndicatorReference[] | undefined =
-        store?._dsPlugins?.fetch.indicatorsVisible?.value || []
-      if (!indicatorsVisible) return false
-      return Array.from(indicators).some((indicator) => {
-        return indicatorsVisible.some((indicatorVisible) => {
-          if (!indicatorVisible) return false
-          return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
-        })
+      const indicatorsVisible: IndicatorReference[] = store?._dsPlugins?.fetch.indicatorsVisible?.value || []
+      if (!!!indicators.length) return false
+
+      return indicators.some((indicator) => {
+        return indicatorsVisible
+          .filter((val) => !!val)
+          .some((indicatorVisible) => {
+            return indicatorVisible.el.isSameNode(indicator) && indicatorVisible.count > 0
+          })
       })
     },
   } as Actions,
