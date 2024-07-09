@@ -1,8 +1,8 @@
+import { sendDatastarEvent } from '.'
 import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
 import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
-import { sendDatastarEvent } from '.'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
   Actions,
@@ -214,8 +214,8 @@ export class Datastar {
             actions: this.actions,
             reactivity: this.reactivity,
             el,
-            key,
             rawKey,
+            key,
             rawExpression,
             expression,
             expressionFn: () => {
@@ -230,15 +230,17 @@ export class Datastar {
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length)
-            statements[statements.length - 1] = `${statements[statements.length - 1]}`
+            statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
             const joined = statements.map((s) => `  ${s}`).join(';\n')
             const fnContent = `
 try {
-const val = ${joined}
-ctx.sendDatastarEvent('core', 'attributes', 'expr_eval', ctx.el, '${rawKey} equals ' + JSON.stringify(val))
-return val
+  const _datastarExpression = () => {
+${joined}
+  }
+  const _datastarReturnVal = _datastarExpression()
+  ctx.sendDatastarEvent('core', 'attributes', 'expr_eval', ctx.el, '${rawKey} equals ' + JSON.stringify(_datastarReturnVal))
+  return _datastarReturnVal
 } catch (e) {
-ctx.sendDatastarEvent('core', 'attributes', 'expr_eval_err', ctx.el, msg)
  const msg = \`
 Error evaluating Datastar expression:
 ${joined.replaceAll('`', '\\`')}
@@ -247,11 +249,12 @@ Error: \${e.message}
 
 Check if the expression is valid before raising an issue.
 \`.trim()
+ ctx.sendDatastarEvent('core', 'attributes', 'expr_eval_err', ctx.el, msg)
  console.error(msg)
  debugger
- throw new Error(msg)
 }
             `
+
             sendDatastarEvent(
               'core',
               'attributes',
@@ -263,8 +266,10 @@ Check if the expression is valid before raising an issue.
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
-              sendDatastarEvent('core', 'attributes', 'expr_construction_err', ctx.el, String(e))
-              throw new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
+              const err = new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
+              sendDatastarEvent('core', 'attributes', 'expr_construction_err', ctx.el, String(err))
+              console.error(err)
+              debugger
             }
           }
 

@@ -5,11 +5,13 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sync"
 	"time"
 )
 
 type ServerSentEventsHandler struct {
 	ctx             context.Context
+	mu              *sync.Mutex
 	w               http.ResponseWriter
 	flusher         http.Flusher
 	shouldLogPanics bool
@@ -29,6 +31,7 @@ func NewSSE(w http.ResponseWriter, r *http.Request) *ServerSentEventsHandler {
 
 	return &ServerSentEventsHandler{
 		ctx:             r.Context(),
+		mu:              &sync.Mutex{},
 		w:               w,
 		flusher:         flusher,
 		shouldLogPanics: true,
@@ -72,6 +75,9 @@ func (sse *ServerSentEventsHandler) Send(data string, opts ...SSEEventOption) {
 }
 
 func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEEventOption) {
+	sse.mu.Lock()
+	defer sse.mu.Unlock()
+
 	if sse.hasPanicked && len(dataArr) > 0 {
 		return
 	}
