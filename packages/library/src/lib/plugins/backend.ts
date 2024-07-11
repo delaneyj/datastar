@@ -338,7 +338,14 @@ export function mergeHTMLFragment(
       let modifiedTarget = initialTarget
       switch (merge) {
         case FragmentMergeOptions.MorphElement:
-          const result = idiomorph(modifiedTarget, frag)
+          const result = idiomorph(modifiedTarget, frag, {
+            callbacks: {
+              beforeNodeRemoved: (oldNode: Element, _: Element) => {
+                ctx.cleanupElementRemovals(oldNode)
+                return true
+              },
+            },
+          })
           if (!result?.length) {
             throw new Error(`No morph result`)
           }
@@ -379,9 +386,9 @@ export function mergeHTMLFragment(
         default:
           throw new Error(`Unknown merge type: ${merge}`)
       }
+      ctx.cleanupElementRemovals(modifiedTarget)
       modifiedTarget.classList.add(SWAPPING_CLASS)
 
-      ctx.cleanupElementRemovals(initialTarget)
       ctx.applyPlugins(document.body)
 
       setTimeout(() => {
