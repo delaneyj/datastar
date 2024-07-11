@@ -28,7 +28,7 @@ export class DatastarInspectorElement extends LitElement {
   v = 0;
 
   @property()
-  maxEvents = 10;
+  maxEvents = 100;
 
   @property()
   remoteOnly = false;
