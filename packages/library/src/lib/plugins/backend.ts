@@ -1,4 +1,5 @@
 import { DATASTAR_STR } from '../core'
+import { sendDatastarEvent } from '../.'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
@@ -333,6 +334,7 @@ export function mergeHTMLFragment(
     for (const initialTarget of targets) {
       initialTarget.classList.add(SWAPPING_CLASS)
       const originalHTML = initialTarget.outerHTML
+      sendDatastarEvent('plugin', 'backend', merge, initialTarget, `${fragment}`)
       let modifiedTarget = initialTarget
       switch (merge) {
         case FragmentMergeOptions.MorphElement:

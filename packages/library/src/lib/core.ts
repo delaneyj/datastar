@@ -29,7 +29,7 @@ export class Datastar {
   }
   parentID = ''
   missingIDNext = 0
-  removals = new Map<Element, Set<OnRemovalFn>>()
+  removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>()
   mergeRemovals = new Array<OnRemovalFn>()
 
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
@@ -69,7 +69,8 @@ export class Datastar {
   private cleanupElementRemovals(element: Element) {
     const removalSet = this.removals.get(element)
     if (removalSet) {
-      for (const removal of removalSet) {
+      sendDatastarEvent('core', 'elements', 'removal', `#${removalSet.id}`, 'removed element')
+      for (const removal of removalSet.set) {
         removal()
       }
       this.removals.delete(element)
@@ -260,7 +261,7 @@ Check if the expression is valid before raising an issue.
               'attributes',
               'expr_construction',
               ctx.el,
-              `${rawKey}="${rawExpression}" becomes "${joined} "`,
+              JSON.stringify({ rawKey: String(rawKey), rawExpression: String(rawExpression), result: String(joined) }),
             )
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
@@ -276,9 +277,9 @@ Check if the expression is valid before raising an issue.
           const removal = p.onLoad(ctx)
           if (removal) {
             if (!this.removals.has(el)) {
-              this.removals.set(el, new Set())
+              this.removals.set(el, { id: el.id, set: new Set() })
             }
-            this.removals.get(el)!.add(removal)
+            this.removals.get(el)!.set.add(removal)
           }
         }
       })

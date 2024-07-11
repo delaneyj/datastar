@@ -21,7 +21,7 @@ type EventDetail = CustomEvent<DatastarEvent>['detail']
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
   static styles = [styles];
-  static maxEventOptions = [5, 10, 20, 50];
+  static maxEventOptions = [10, 50, 100, 500, 1000];
 
   @property()
   v = 0;
@@ -45,6 +45,9 @@ export class DatastarInspectorElement extends LitElement {
   events: Record<string, any>[] = [];
 
   @state()
+  dom: Record<string, any[]> = {};
+
+  @state()
   prevStoreMarshalled = "{}";
 
   protected firstUpdated(
@@ -56,6 +59,19 @@ export class DatastarInspectorElement extends LitElement {
       // most events can be logged as is
       if (!(detail.category === "core" && detail.subcategory === "store" && detail.type === "merged")) {
         this.events = [...this.events, detail].slice(-this.maxEvents);
+
+        // keep new attributes in mind
+        if (detail.category === "core" && detail.subcategory === "attributes" && detail.type === "expr_construction") {
+          const parsedMessage: { rawKey: string, rawExpression: string, result: string } = JSON.parse(detail.message);
+          if (!this.dom[detail.target]) this.dom[detail.target] = []
+          this.dom[detail.target].push(parsedMessage);
+        }
+        // keep new attributes in mind
+        if (detail.category === "core" && detail.subcategory === "elements" && detail.type === "removal") {
+          if (this.dom[detail.target]) {
+            delete this.dom[detail.target]
+          }
+        }
         return;
       }
 
@@ -157,10 +173,28 @@ export class DatastarInspectorElement extends LitElement {
                 />
               </label>
             </div>
+            <div class="form-control">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  @click=${(_: Event) => {
+                    this.stores = [{
+            contents: {},
+            time: new Date(),
+          }]
+                    this.events = []
+                    this.dom = {}
+                  }}
+                >Reset</button>
+            </div>
           </div>
+
         </div>
         <code class="font-mono text-xs overflow-auto">
           <pre>${JSON.stringify(contents, null, 2)}</pre>
+        </code>
+        <code class="font-mono text-xs overflow-auto">
+          <pre>${JSON.stringify(this.dom, null, 2)}</pre>
         </code>
       `;
     }
@@ -193,7 +227,7 @@ export class DatastarInspectorElement extends LitElement {
                     `
                   )}
                 </ul>
-                <div class="card w-full bg-base-200 h-full">
+                <div class="card w-full bg-base-200 overflow-auto">
                   <div class="card-body flex-1">${storeDOM}</div>
                 </div>
               </div>
