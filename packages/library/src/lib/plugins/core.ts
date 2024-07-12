@@ -1,4 +1,4 @@
-import { DATASTAR_STR } from '../core'
+import { DATASTAR_STR } from '../engine'
 import {
   AttributeContext,
   AttributePlugin,

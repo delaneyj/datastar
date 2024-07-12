@@ -1,10 +1,10 @@
-export * from './core'
+export * from './engine'
 export * from './dom'
 export * from './plugins'
 export * from './types'
 
 import { version } from '../../package.json'
-import { Datastar } from './core'
+import { Datastar } from './engine'
 import {
   AttributeActions,
   AttributePlugins,
