@@ -66,7 +66,7 @@ templ Home() {
 				</div>
 				<div id="todosMVC" data-on-load="$$get('/api/todos')">
 					<p>Todos Example</p>
-					<p>If you are seeing this message, please clear you cookies and refresh the page.</p>
+					<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
 					<p>We recently updated the site and the old cookies are causing issues.</p>
 				</div>
 				<a
@@ -151,6 +151,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										class="btn btn-lg"
 										data-on-click="$$post('/api/todos/-1/toggle')"
+										data-testid="toggle_all_todos"
 									>
 										@icon("material-symbols:checklist")
 									</button>
@@ -163,22 +164,31 @@ templ TodosMVCView(mvc *TodoMVC) {
 					</header>
 					if hasTodos {
 						<section>
-							<ul class="divide-y divide-primary">
+							<ul class="divide-y divide-primary" data-testid="todos_list">
 								for i, todo := range mvc.Todos {
 									@TodoRow(mvc.Mode, todo, i, i == mvc.EditingIdx)
 								}
 							</ul>
 						</section>
 						<footer class="flex items-center justify-between">
-							<span class="todo-count"><strong>{ fmt.Sprint(left) }</strong> item left</span>
+							<span class="todo-count">
+								<strong data-testid="todo_count">{ fmt.Sprint(left) }
+									if (len(mvc.Todos) > 1) {
+										items
+									} else {
+										item
+									}
+								</strong> left
+							</span>
 							<div class="join">
 								for i := TodoViewModeAll; i < TodoViewModeLast; i++ {
 									if i == mvc.Mode {
-										<div class="btn btn-xs btn-primary join-item">{ TodoViewModeStrings[i] }</div>
+										<div class="btn btn-xs btn-primary join-item" data-testid={TodoViewModeStrings[i] + "_mode"} >{ TodoViewModeStrings[i] }</div>
 									} else {
 										<button
 											class="btn btn-xs join-item"
 											data-on-click={ fmt.Sprintf("$$put('/api/todos/mode/%d')", i) }
+											data-testid={TodoViewModeStrings[i] + "_mode"}
 										>
 											{ TodoViewModeStrings[i] }
 										</button>
@@ -191,6 +201,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										<button
 											class="btn btn-error btn-xs join-item"
 											data-on-click="$$delete('/api/todos/-1')"
+											data-testid="clear_todos"
 										>
 											@icon("material-symbols:delete")
 										</button>
@@ -200,6 +211,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										class="btn btn-warning btn-xs join-item"
 										data-on-click="$$put('/api/todos/reset')"
+										data-testid="reset_todos"
 									>
 										@icon("material-symbols:delete-sweep")
 									</button>
@@ -228,6 +240,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 templ TodoInput(i int) {
 	<input
 		id="todoInput"
+		data-testid="todos_input"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
 		data-model="input"
@@ -268,6 +281,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			<button
 				class="invisible btn btn-error group-hover:visible"
 				data-on-click={ fmt.Sprintf("$$delete('/api/todos/%d')", i) }
+				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 			>
 				@icon("material-symbols:close")
 			</button>
