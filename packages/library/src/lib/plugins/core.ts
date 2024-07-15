@@ -1,4 +1,5 @@
 import { DATASTAR_STR } from '../core'
+import { sendDatastarEvent } from '../.'
 import {
   AttributeContext,
   AttributePlugin,
@@ -92,6 +93,7 @@ const StoreAttributePlugin: AttributePlugin = {
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
     delete ctx.el.dataset.store
+    sendDatastarEvent('plugin', 'core', 'expr_removal', ctx.el, ctx.rawKey)
 
     return () => {
       if (hasOffline) {

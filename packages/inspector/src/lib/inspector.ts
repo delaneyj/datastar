@@ -13,12 +13,12 @@ import { diffJson } from 'diff';
 
 interface VersionedStore {
   time: Date;
-  expressions: Record<string, any>;
+  expressions: Record<string, Expression[]>;
   contents: Record<string, any>;
 }
 
 type EventDetail = CustomEvent<DatastarEvent>['detail']
-
+type Expression = { rawKey: string, rawExpression: string}
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
   static styles = [styles];
@@ -69,14 +69,23 @@ export class DatastarInspectorElement extends LitElement {
 
           this.stores[this.stores.length - 1].expressions = currentExpressions
         }
-        // remove old attributes
+        // remove attributes related to deleted elements
         if (detail.category === "core" && detail.subcategory === "elements" && detail.type === "removal") {
           if (currentExpressions[detail.target]) {
             delete currentExpressions[detail.target]
             this.stores[this.stores.length - 1].expressions = currentExpressions
           }
         }
-
+        // remove old attributes
+        if (detail.type === "expr_removal") {
+          if (currentExpressions[detail.target]) {
+            currentExpressions[detail.target] = currentExpressions[detail.target].filter((expr: Expression) => {
+              return expr.rawKey !== detail.message
+            })
+            if (currentExpressions[detail.target].length === 0) delete currentExpressions[detail.target]
+            this.stores[this.stores.length - 1].expressions = currentExpressions
+          }
+        }
         return;
       }
 
@@ -136,11 +145,11 @@ export class DatastarInspectorElement extends LitElement {
     } else {
       const currentStore = this.stores[this.v];
       let contents = Object.assign({}, currentStore?.contents);
-      let expressions = Object.assign({}, currentStore?.expressions);
+      let rawExpressions = Object.assign({}, currentStore?.expressions);
 
-      expressions = Object.keys(expressions).map((key) => {
-        return html`<span class="element">${key}</span> ${expressions[key].map((expr: {rawKey: string, rawExpression: string}) => {
-          return html`<span class="dataset">data-${expr.rawKey}</span>="${expr.rawExpression}"`
+      let expressions = Object.keys(rawExpressions).map((key) => {
+        return html`<pre><span class="element">${key}</span> ${rawExpressions[key].map((expr) => {
+          return html`<span class="dataset">data-${expr.rawKey}</span>="${expr.rawExpression}"</pre>`
         })}`
       })
 
@@ -207,7 +216,7 @@ export class DatastarInspectorElement extends LitElement {
           <pre>${JSON.stringify(contents, null, 2)}</pre>
         </code>
         <code class="font-mono text-xs overflow-auto">
-          <pre>${expressions}</pre>
+          ${expressions}
         </code>
       `;
     }
