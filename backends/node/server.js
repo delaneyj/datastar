@@ -3,7 +3,7 @@ const { randomBytes } = require("crypto");
 
 const app = express();
 app.use(express.json());
-app.use(express.static("../../packages/library/dist"));
+app.use(express.static("../../library/dist"));
 app.use(express.urlencoded({ extended: true }));
 
 const target = "target";
@@ -24,46 +24,10 @@ function makeIndexPage() {
         <button data-on-click="$show=!$show">Toggle Feed</button>
         <div id="output" data-text="$output"></div>
         <div id="${target}"></div>
-        <div data-show.duration_400="$show">
+        <div data-show="$show">
             <span>Feed from server: </span>
-            HI
+            <span id="feed" data-on-load="$$get('/feed')"></span>
         </div>
-
-        <div class="flex flex-col gap-4" >
-          <div id="ind" class="flex items-center gap-2">
-            <iconify-icon  icon="svg-spinners:blocks-wave"></iconify-icon>
-            <span>Loading</span>
-          </div>
-            <button
-            class="btn btn-primary"
-            data-on-click="$$get('/greet')"
-            data-fetch-indicator="'#ind'"
-            data-testid="greeting_button"
-            data-bind-disabled="$$isFetching('#ind')"
-        >
-            Click me for a greeting
-          </button>
-          <div id="greeting"></div>
-        </div>
-        
-
-        <div class="flex flex-col gap-4" >
-          <div id="ind2" class="flex items-center gap-2">
-            <iconify-icon  icon="svg-spinners:blocks-wave"></iconify-icon>
-            <span>Loading</span>
-          </div>
-            <button
-            class="btn btn-primary"
-            data-on-click="$$get('/greet')"
-            data-fetch-indicator="'#ind2'"
-            data-testid="greeting_button2"
-            data-bind-disabled="$$isFetching('#ind2')"
-        >
-            Click me for a greeting
-          </button>
-          <div id="greeting"></div>
-        </div>
-
 
         <h5>Datastar Store</h5>
         <pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
@@ -83,10 +47,10 @@ function datastarSetupSSE(res) {
   res.flushHeaders();
 }
 
-function datastarSetupFragment(res, frag, shouldUpsertAttributes, vt = true, end) {
+function datastarSetupFragment(res, frag, shouldUpsertAttributes, end) {
   res.write("event: datastar-fragment\n");
   if (shouldUpsertAttributes) res.write("data: merge upsert_attributes\n");
-  res.write(`data: fragment ${frag}\ndata: vt ${vt}\n\n`);
+  res.write(`data: fragment ${frag}\n\n`);
   if (end) res.end();
 }
 
@@ -117,20 +81,11 @@ app.get("/feed", async (req, res) => {
   while (res.writable) {
     const rand = randomBytes(8).toString("hex");
     const frag = `<span id="feed">${rand}</span>`;
-    datastarSetupFragment(res, frag, false, false);
+    datastarSetupFragment(res, frag);
     await new Promise((resolve) => setTimeout(resolve, 1000));
   }
   res.end();
 });
-
-app.get("/greet", async (req, res) => {
-  datastarSetupSSE(res);
-  const today = new Date();
-  const stamp = today.toDateString() + " " + today.toTimeString().split(" ")[0];
-  let frag = `<div id=\"greeting\">Hello, the time is ${stamp}</div>`;
-  await new Promise((resolve) => setTimeout(resolve, 2000));
-  datastarSetupFragment(res, frag, false, true, true);
-})
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
