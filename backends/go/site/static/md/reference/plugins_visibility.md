@@ -14,6 +14,11 @@ Focused on showing and hiding elements based on signals. Most of the time you wa
 
 Shows the element when the expression is true.
 
+#### Modifiers
+
+- `.duration` - Duration for the show animation
+  - `_1000ms` - Duration for 1000ms
+
 ### Intersects
 
 ```html
