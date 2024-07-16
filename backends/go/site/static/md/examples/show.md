@@ -16,10 +16,10 @@ This example displays how to use the show attribute. You can use show without mo
 >
   <button
     class="btn btn-primary"
-    data-on-click="$bindBoolDefault=!$bindBoolDefault">
+    data-on-click="$bindBool=!$bindBool">
     Toggle
   </button>
-    <div data-show="$bindBoolDefault">
+    <div data-show="$bindBool">
     Hello!
   </div>
 </div>

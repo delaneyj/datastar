@@ -12,8 +12,7 @@ func setupExamplesShow(examplesRouter chi.Router) error {
 		sse := datastar.NewSSE(w, r)
 
 		store := &ShowStore{
-			BindBoolDefault:   false,
-			BindBoolAnimation: false,
+			BindBool: false,
 		}
 
 		datastar.RenderFragmentTempl(sse, ShowView(store))

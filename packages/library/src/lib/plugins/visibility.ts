@@ -29,7 +29,7 @@ export const ShowPlugin: AttributePlugin = {
       const style = document.createElement('style')
       document.head.appendChild(style)
 
-      const durationMs = argsToMs(durationArgs)
+      const durationMs = argsToMs(durationArgs) || '300'
       style.innerHTML = `
         .${SHOW_CLASS} {
           visibility: visible;

@@ -16,8 +16,10 @@ Shows the element when the expression is true.
 
 #### Modifiers
 
-- `.duration` - Duration for the show animation
+- `.duration`* - Duration for the show animation 
   - `_1000ms` - Duration for 1000ms
+
+*default is 300ms if duration value not provided
 
 ### Intersects
 
