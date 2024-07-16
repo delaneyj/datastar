@@ -1,0 +1,40 @@
+package site
+
+import (
+	"github.com/delaneyj/datastar"
+)
+
+type ShowStore struct {
+	BindBoolDefault      bool   `json:"bindBoolDefault"`
+	BindBoolAnimation      bool   `json:"bindBoolAnimation"`
+}
+
+templ ShowView(store *ShowStore) {
+	<div
+		id="container"
+		class="flex flex-col gap-4"
+		data-store={ templ.JSONString(store) }
+	>
+		<div>Without Modifiers</div>
+		<button
+			class="btn btn-primary"
+			data-on-click="$bindBoolDefault=!$bindBoolDefault">
+			Toggle
+		</button>
+		 <div data-show="$bindBoolDefault">
+			Hello!
+        </div>
+
+		<div>With Modifiers</div>
+		<button
+			class="btn btn-primary"
+			data-on-click="$bindBoolAnimation=!$bindBoolAnimation">
+			Toggle
+		</button>
+		 <div data-show.duration_500ms="$bindBoolAnimation">
+			Hello Animation!
+        </div>
+
+		@datastar.TemplSignalStoreView()
+	</div>
+}
