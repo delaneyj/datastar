@@ -51,13 +51,17 @@ export const ShowPlugin: AttributePlugin = {
       showFn = () => {
         el.addEventListener('transitionend', transitionEndHandler(SHOW_CLASS))
         el.classList.add(SHOW_CLASS)
-        el.style.setProperty('opacity', '1', priority)
+        requestAnimationFrame(() => {
+          el.style.setProperty('opacity', '1', priority)
+        })
       }
 
       hideFn = () => {
         el.addEventListener('transitionend', transitionEndHandler(HIDE_CLASS))
         el.classList.add(HIDE_CLASS)
-        el.style.setProperty('opacity', '0', priority)
+        requestAnimationFrame(() => {
+          el.style.setProperty('opacity', '0', priority)
+        })
       }
     } else {
       showFn = () => {
