@@ -53,6 +53,13 @@ export class Datastar {
   }
 
   run() {
+    const observer = new MutationObserver((_mutationList, _observer) => {
+      sendDatastarEvent('core', 'dom', 'mutation', document.body, document.body.outerHTML)
+    })
+
+    // Start observing the target node for configured mutations
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true })
+
     this.plugins.forEach((p) => {
       if (p.onGlobalInit) {
         p.onGlobalInit({
@@ -61,15 +68,16 @@ export class Datastar {
           mergeStore: this.mergeStore.bind(this),
           store: this.store,
         })
+        sendDatastarEvent('core', 'plugins', 'registration', 'BODY', `On prefix ${p.prefix}`)
       }
     })
+
     this.applyPlugins(document.body)
   }
 
   private cleanupElementRemovals(element: Element) {
     const removalSet = this.removals.get(element)
     if (removalSet) {
-      sendDatastarEvent('core', 'elements', 'removal', `#${removalSet.id}`, 'removed element')
       for (const removal of removalSet.set) {
         removal()
       }

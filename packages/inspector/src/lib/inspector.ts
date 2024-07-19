@@ -1,24 +1,77 @@
 import { LitElement, PropertyValueMap, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { unsafeHTML } from "lit/directives/unsafe-html.js";
-
 import {
   DatastarEvent,
   datastarEventName,
   remoteSignals,
-  apply
+  apply,
 } from "@sudodevnull/datastar";
 import styles from "./tailwind.css";
-import { diffJson } from 'diff';
+import { diffJson, diffLines } from "diff";
+import { rehype } from "rehype";
+import rehypeFormat from "rehype-format";
 
 interface VersionedStore {
   time: Date;
-  expressions: Record<string, Expression[]>;
+  dom: Document;
   contents: Record<string, any>;
 }
 
-type EventDetail = CustomEvent<DatastarEvent>['detail']
-type Expression = { rawKey: string, rawExpression: string}
+type EventDetail = CustomEvent<DatastarEvent>["detail"];
+
+function transformToDetails(doc: Document, element: Element, depth: number) {
+  if (element.childNodes.length > 0) {
+    const details = doc.createElement("details");
+    details.className = "collapse collapse-arrow";
+    details.style.cssText = `margin-left: ${depth}em`;
+    const summary = doc.createElement("summary");
+    summary.className = "collapse-title";
+    const summaryPre = doc.createElement("pre");
+    const header = doc.createTextNode(
+      `<${element.tagName.toLowerCase()}${[...element.attributes].reduce(
+        (acc, curr) => {
+          return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
+        },
+        "",
+      )}>`,
+    );
+    summaryPre.appendChild(header);
+    summary.appendChild(summaryPre);
+    details.appendChild(summary);
+
+    if (element.children.length > 0) {
+      [...element.children].forEach((child) => {
+        details.appendChild(transformToDetails(doc, child, depth + 0.2));
+      });
+    } else {
+      const leafPre = doc.createElement("pre");
+      const leaf = doc.createTextNode(element.innerHTML);
+      leafPre.className = "collapse-content";
+      leafPre.style.cssText = `margin-left: ${depth}em`;
+      leafPre.appendChild(leaf);
+      details.appendChild(leafPre);
+    }
+    return details;
+  }
+  const leafPre = doc.createElement("pre");
+
+  const leaf = doc.createTextNode(
+    `<${element.tagName.toLowerCase()}${[...element.attributes].reduce(
+      (acc, curr) => {
+        return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
+      },
+      "",
+    )} />`,
+  );
+  leafPre.className = "collapse-content";
+  leafPre.style.cssText = `margin-left: ${depth}em`;
+  leafPre.appendChild(leaf);
+  return leafPre;
+}
+
+const parser = new DOMParser();
+
 @customElement("datastar-inspector")
 export class DatastarInspectorElement extends LitElement {
   static styles = [styles];
@@ -37,11 +90,13 @@ export class DatastarInspectorElement extends LitElement {
   showPlugins = false;
 
   @state()
-  stores: VersionedStore[] = [{
-            contents: {},
-            expressions: {},
-            time: new Date(),
-          }];
+  stores: VersionedStore[] = [
+    {
+      contents: {},
+      dom: parser.parseFromString("<html></html>", "text/html"),
+      time: new Date(),
+    },
+  ];
 
   @state()
   events: Record<string, any>[] = [];
@@ -50,15 +105,22 @@ export class DatastarInspectorElement extends LitElement {
   prevStoreMarshalled = "{}";
 
   protected firstUpdated(
-    _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>
+    _changedProperties: PropertyValueMap<any> | Map<PropertyKey, unknown>,
   ): void {
-    const listener = (detail: EventDetail) => {
-      console.log('inspector got event', detail);
+    const listener = async (detail: EventDetail) => {
+      console.log("inspector got event", detail);
 
       // most events can be logged as is
-      if (!(detail.category === "core" && detail.subcategory === "store" && detail.type === "merged")) {
+      if (
+        !(
+          detail.category === "core" &&
+          detail.subcategory === "store" &&
+          detail.type === "merged"
+        ) &&
+        !(detail.category === "core" && detail.subcategory === "dom")
+      ) {
         this.events = [...this.events, detail].slice(-this.maxEvents);
-
+        /*
         const currentExpressions = this.stores[this.stores.length - 1].expressions || {};
         // keep new attributes in mind
         if (detail.category === "core" && detail.subcategory === "attributes" && detail.type === "expr_construction") {
@@ -85,14 +147,78 @@ export class DatastarInspectorElement extends LitElement {
             if (currentExpressions[detail.target].length === 0) delete currentExpressions[detail.target]
             this.stores[this.stores.length - 1].expressions = currentExpressions
           }
-        }
+        }*/
+        return;
+      }
+
+      if (detail.subcategory === "dom") {
+        const currentDom = this.stores[this.stores.length - 1].dom;
+        const doc = parser.parseFromString(detail.message, "text/html");
+
+        const newDom = doc;
+        const diff = diffLines(
+          currentDom.documentElement.outerHTML,
+          newDom.documentElement.outerHTML,
+        );
+
+        const diffMessage = (
+          await Promise.all(
+            diff
+              .filter((d) => d.added || d.removed)
+              .map(async (d) => {
+                const newValue = String(
+                  await rehype()
+                    .use(rehypeFormat)
+                    .data("settings", { fragment: true })
+                    .process(d.value),
+                );
+                return { ...d, value: newValue };
+              }),
+          )
+        ).reduce(
+          (acc, curr) => {
+            const change = curr.added
+              ? "color: green"
+              : curr.removed
+                ? "color: red"
+                : "";
+            acc.push(
+              html`<div style="${change};">
+                <pre style="display: inline-block; width: 50vw;">
+${curr.value}</pre
+                >
+              </div>`,
+            );
+            return acc;
+          },
+          [] as ReturnType<typeof html>[],
+        );
+
+        if (!diffMessage) return;
+
+        this.v = this.stores.length;
+        this.stores = [
+          ...this.stores,
+          {
+            contents: this.stores[this.stores.length - 1].contents,
+            dom: newDom,
+            time: new Date(),
+          },
+        ];
+
+        this.events = [
+          ...this.events,
+          { ...detail, message: diffMessage },
+        ].slice(-this.maxEvents);
+
         return;
       }
 
       // merge events are special
-      const { message, target } = detail;
+      //const { message, target } = detail;
+      const { message } = detail;
       let patch;
-
+      /*
       // if the message only includes a part of the store we need to build a patch
     if (target !== 'STORE') {
       const parts = message.split('.')
@@ -103,38 +229,54 @@ export class DatastarInspectorElement extends LitElement {
         return top[currKey] = subStore;
       }, last);
     }
-
+*/
       const currentStore = this.stores[this.stores.length - 1].contents;
       const newStore = patch ? apply(currentStore, patch) : JSON.parse(message);
 
       const diff = diffJson(currentStore, newStore);
 
-      const diffMessage = diff.filter((d) => d.added || d.removed).reduce((acc, curr) => {
-        const change = curr.added ? 'color: green' : curr.removed ? 'color: red' : '';
-        const symbol = curr.added ? ' + ' : curr.removed ? ' - ' : ' ';
-        return acc.concat(`<span style="${change}">${symbol}${curr.value}</span>`);
-      }, "")
+      const diffMessage = diff
+        .filter((d) => d.added || d.removed)
+        .reduce(
+          (acc, curr) => {
+            const change = curr.added
+              ? "color: green"
+              : curr.removed
+                ? "color: red"
+                : "";
+            const symbol = curr.added ? " + " : curr.removed ? " - " : " ";
+            acc.push(
+              html`<span style="${change}">${symbol}${curr.value}</span>`,
+            );
+            return acc;
+          },
+          [] as ReturnType<typeof html>[],
+        );
 
       if (!diffMessage) return;
 
-        this.v = this.stores.length;
-        this.stores = [
-          ...this.stores,
-          {
-            contents: newStore,
-            expressions: this.stores[this.stores.length - 1].expressions,
-            time: new Date(),
-          },
-        ];
+      this.v = this.stores.length;
+      this.stores = [
+        ...this.stores,
+        {
+          contents: newStore,
+          dom: this.stores[this.stores.length - 1].dom,
+          time: new Date(),
+        },
+      ];
 
-        this.events = [...this.events, {...detail, message: diffMessage }].slice(-this.maxEvents);
-   };
+      this.events = [...this.events, { ...detail, message: diffMessage }].slice(
+        -this.maxEvents,
+      );
+    };
 
-     const winAny = window as any;
-     winAny.addEventListener(datastarEventName, (evt: CustomEvent<DatastarEvent>) => {
-
+    const winAny = window as any;
+    winAny.addEventListener(
+      datastarEventName,
+      (evt: CustomEvent<DatastarEvent>) => {
         listener(evt.detail);
-     });
+      },
+    );
   }
 
   public render() {
@@ -145,13 +287,7 @@ export class DatastarInspectorElement extends LitElement {
     } else {
       const currentStore = this.stores[this.v];
       let contents = Object.assign({}, currentStore?.contents);
-      let rawExpressions = Object.assign({}, currentStore?.expressions);
-
-      let expressions = Object.keys(rawExpressions).map((key) => {
-        return html`<pre><span class="element">${key}</span> ${rawExpressions[key].map((expr) => {
-          return html`<span class="dataset">data-${expr.rawKey}</span>="${expr.rawExpression}"</pre>`
-        })}`
-      })
+      let dom = currentStore?.dom || "";
 
       if (this.remoteOnly) {
         contents = remoteSignals(contents);
@@ -196,121 +332,121 @@ export class DatastarInspectorElement extends LitElement {
               </label>
             </div>
             <div class="form-control">
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  @click=${(_: Event) => {
-                    this.stores = [{
+              <button
+                type="button"
+                class="btn btn-primary"
+                @click=${(_: Event) => {
+                  this.stores = [
+                    {
                       contents: {},
-                      expressions: {},
+                      dom: parser.parseFromString("<html></html>", "text/html"),
                       time: new Date(),
-                    }]
-                    this.events = []
-                  }}
-                >Reset</button>
+                    },
+                  ];
+                  this.events = [];
+                }}
+              >
+                Reset
+              </button>
             </div>
           </div>
-
         </div>
         <code class="font-mono text-xs overflow-auto">
           <pre>${JSON.stringify(contents, null, 2)}</pre>
         </code>
-        <code class="font-mono text-xs overflow-auto">
-          ${expressions}
-        </code>
+
+        <div>
+          ${unsafeHTML(
+            transformToDetails(dom, dom.documentElement, 0.2).outerHTML,
+          )}
+        </div>
       `;
     }
 
     return html`
       <div data-theme="dark">
-            <details
-              class="bg-base-100 collapse  collapse-arrow  select-none"
-              open
+        <details class="bg-base-100 collapse  collapse-arrow  select-none" open>
+          <summary class="collapse-title text-xl font-medium">Store</summary>
+          <div class="collapse-content flex gap-4 max-h-[40vh]">
+            <ul
+              class="menu bg-base-200 w-48 rounded-box overflow-y-scroll flex-col flex-nowrap"
             >
-              <summary class="collapse-title text-xl font-medium">
-                Store
-              </summary>
-              <div class="collapse-content flex gap-4 max-h-[40vh]">
-                <ul class="menu bg-base-200 w-48 rounded-box overflow-y-scroll flex-col flex-nowrap">
-                  <div>Versions</div>
-                  ${this.stores.map(
-                    (store, i) => html`
-                      <li
-                        class=${`flex gap-1 ${this.v === i ? "text-primary" : ""}`}
-                        @click=${() => (this.v = i)}
-                      >
-                        <div>
-                          ${i + 1} /
-                          <div class="font-bold">
-                            ${store.time.toLocaleTimeString()}
-                          </div>
-                        </div>
-                      </li>
-                    `
-                  )}
-                </ul>
-                <div class="card w-full bg-base-200 overflow-auto">
-                  <div class="card-body flex-1">${storeDOM}</div>
-                </div>
-              </div>
-            </details>
-            <details class="bg-base-100 collapse collapse-arrow " open>
-              <summary class="collapse-title text-xl font-medium">
-                <div class="flex gap-8 items-center">
-                  Events
-                  <select
-                    class="select w-full max-w-xs"
-                    @change=${(evt: Event) => {
-                      const target: HTMLSelectElement =
-                        evt.target as HTMLSelectElement;
-                      const val = parseInt(target.value);
-                      this.maxEvents = val;
-                    }}
+              <div>Versions</div>
+              ${this.stores.map(
+                (store, i) => html`
+                  <li
+                    class=${`flex gap-1 ${this.v === i ? "text-primary" : ""}`}
+                    @click=${() => (this.v = i)}
                   >
-                    ${DatastarInspectorElement.maxEventOptions.map(
-                      (opt) => html`
-                        <option
-                          value=${opt}
-                          ?selected=${this.maxEvents === opt}
-                        >
-                          ${opt} max
-                        </option>
-                      `
-                    )}
-                  </select>
-                </div>
-              </summary>
-              <div class="collapse-content">
-                <table class="table table-zebra table-compact w-full">
-                  <thead>
+                    <div>
+                      ${i + 1} /
+                      <div class="font-bold">
+                        ${store.time.toLocaleTimeString()}
+                      </div>
+                    </div>
+                  </li>
+                `,
+              )}
+            </ul>
+            <div class="card w-full bg-base-200 overflow-auto">
+              <div class="card-body flex-1">${storeDOM}</div>
+            </div>
+          </div>
+        </details>
+        <details class="bg-base-100 collapse collapse-arrow " open>
+          <summary class="collapse-title text-xl font-medium">
+            <div class="flex gap-8 items-center">
+              Events
+              <select
+                class="select w-full max-w-xs"
+                @change=${(evt: Event) => {
+                  const target: HTMLSelectElement =
+                    evt.target as HTMLSelectElement;
+                  const val = parseInt(target.value);
+                  this.maxEvents = val;
+                }}
+              >
+                ${DatastarInspectorElement.maxEventOptions.map(
+                  (opt) => html`
+                    <option value=${opt} ?selected=${this.maxEvents === opt}>
+                      ${opt} max
+                    </option>
+                  `,
+                )}
+              </select>
+            </div>
+          </summary>
+          <div class="collapse-content">
+            <table
+              class="table table-zebra table-compact w-[100]vw overflow-x-auto"
+            >
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Category</th>
+                  <th>Type</th>
+                  <th>Target</th>
+                  <th>Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${this.events.map((evt) => {
+                  return html`
                     <tr>
-                      <th>Time</th>
-                      <th>Category</th>
-                      <th>Type</th>
-                      <th>Target</th>
-                      <th>Message</th>
+                      <td class="font-mono">
+                        ${evt.time.toISOString().split("T")[1].slice(0, 12)}
+                      </td>
+                      <td>${evt.category}/${evt.subcategory}</td>
+                      <td>${evt.type}</td>
+                      <td>${evt.target}</td>
+                      <td class="w-full overflow-x-auto">${evt.message}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    ${this.events.map(
-                      (evt) => {
-                      return html`
-                        <tr>
-                          <td class="font-mono">
-                            ${evt.time.toISOString().split("T")[1].slice(0, 12)}
-                          </td>
-                          <td>${evt.category}/${evt.subcategory}</td>
-                          <td>${evt.type}</td>
-                          <td>${evt.target}</td>
-                          <td class="w-full">${unsafeHTML(evt.message)}</td>
-                        </tr>
-                      `
-                      }
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </details>
+                  `;
+                })}
+              </tbody>
+            </table>
+          </div>
+        </details>
       </div>
     `;
   }
