@@ -194,12 +194,13 @@ export const TextPlugin: AttributePlugin = {
 
 let lastStoreMarshalled = ''
 
+const knownOnModifiers = new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside'])
+
 // Sets the event listener of the element
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
 
@@ -237,6 +238,45 @@ export const EventPlugin: AttributePlugin = {
     if (!ctx.modifiers.has('capture')) evtListOpts.capture = false
     if (ctx.modifiers.has('passive')) evtListOpts.passive = true
     if (ctx.modifiers.has('once')) evtListOpts.once = true
+    if (ctx.modifiers.has('prevent')) {
+      const cb = callback
+      callback = () => {
+        event?.preventDefault()
+        cb()
+      }
+    }
+
+    const unknownModifierKeys = [...ctx.modifiers.keys()].filter((key) => !knownOnModifiers.has(key))
+
+    console.log('unknownModifierKeys', unknownModifierKeys)
+    unknownModifierKeys.forEach((attrName) => {
+      const eventValues = ctx.modifiers.get(attrName) || []
+      const cb = callback
+      const revisedCallback = () => {
+        const evt = event as any
+        const attr = evt[attrName]
+        let valid: boolean
+
+        if (typeof attr === 'function') {
+          valid = attr(...eventValues)
+        } else if (typeof attr === 'boolean') {
+          valid = attr
+        } else if (typeof attr === 'string') {
+          const expr = eventValues.join('')
+          valid = attr === expr
+        } else {
+          const msg = `Invalid value for ${attrName} modifier on ${key} on ${el}`
+          console.error(msg)
+          debugger
+          throw new Error(msg)
+        }
+
+        if (valid) {
+          cb()
+        }
+      }
+      callback = revisedCallback
+    })
 
     const eventName = kebabize(key).toLowerCase()
     switch (eventName) {

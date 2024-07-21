@@ -60,6 +60,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
 				{ID: "multiline_fragments"},
+				{ID: "bind_keys"},
 				{ID: "scroll_into_view"},
 				{ID: "on_load"},
 				{ID: "model_binding"},
