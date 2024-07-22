@@ -15,10 +15,10 @@ def send_index():
     index_page = f'''
     <!doctype html><html>
     <head>
-      <title>Node/Express + Datastar Example</title>
+      <title>Python + Datastar Example</title>
       <script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script></head>
     <body>
-      <h2>Node/Express + Datastar Example</h2>
+      <h2>Python + Datastar Example</h2>
       <main class="container" id="main" data-store=\'{json.dumps(store)}\'>
         <input type="text" placeholder="Send to server..." data-model="input"/>
         <button data-on-click="$$get('/get')">Send State Roundtrip</button>
