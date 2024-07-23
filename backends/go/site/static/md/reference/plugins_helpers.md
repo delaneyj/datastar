@@ -25,3 +25,20 @@ Toggles all the signals that start with the prefix. This is useful for toggling 
 ```
 
 Copies the text to the clipboard. This is useful for copying text to the clipboard.
+
+## `$$fit(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+
+Make a value linear interpolate from an origial range to new one.
+
+
+## `$$fitInt(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+
+Same as `$$fit` but rounded to nearest integer
+
+## `$$fitClamp(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+
+Same as `$$fit` but clamped to `newMin` -> `newMax` range
+
+## `$$clampFitInt(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+
+Same as `$$clampFit` but rounded to nearest integer

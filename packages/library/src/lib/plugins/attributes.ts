@@ -243,13 +243,6 @@ export const EventPlugin: AttributePlugin = {
     if (!ctx.modifiers.has('capture')) evtListOpts.capture = false
     if (ctx.modifiers.has('passive')) evtListOpts.passive = true
     if (ctx.modifiers.has('once')) evtListOpts.once = true
-    if (ctx.modifiers.has('prevent')) {
-      const cb = callback
-      callback = () => {
-        event?.preventDefault()
-        cb()
-      }
-    }
 
     const unknownModifierKeys = [...ctx.modifiers.keys()].filter((key) => !knownOnModifiers.has(key))
 
