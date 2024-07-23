@@ -332,7 +332,7 @@ export const AttributeActions: Actions = {
   },
 }
 
-function argsToMs(args: string[] | undefined) {
+export function argsToMs(args: string[] | undefined) {
   if (!args || args?.length === 0) return 0
 
   for (const arg of args) {
@@ -350,7 +350,7 @@ function argsToMs(args: string[] | undefined) {
   return 0
 }
 
-function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
+export function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
   if (!args) return false
   return args.includes(arg) || defaultValue
 }
