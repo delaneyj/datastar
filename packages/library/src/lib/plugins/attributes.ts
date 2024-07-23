@@ -13,7 +13,12 @@ export const BindAttributePlugin: AttributePlugin = {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
       const value = ctx.expressionFn(ctx)
-      const v = JSON.stringify(value)
+      let v: string
+      if (typeof value === 'string') {
+        v = value
+      } else {
+        v = JSON.stringify(value)
+      }
       if (!v || v === 'false' || v === 'null' || v === 'undefined') {
         ctx.el.removeAttribute(key)
       } else {
@@ -367,7 +372,7 @@ export const AttributeActions: Actions = {
   },
 }
 
-function argsToMs(args: string[] | undefined) {
+export function argsToMs(args: string[] | undefined) {
   if (!args || args?.length === 0) return 0
 
   for (const arg of args) {
@@ -385,7 +390,7 @@ function argsToMs(args: string[] | undefined) {
   return 0
 }
 
-function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
+export function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
   if (!args) return false
   return args.includes(arg) || defaultValue
 }

@@ -75,6 +75,8 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "offline_sync"},
 				{ID: "refs"},
 				{ID: "multiline_expressions"},
+				{ID: "show"},
+				{ID: "img_src_bind"},
 			},
 		},
 		{
@@ -168,6 +170,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 			setupExamplesTemplCounter(examplesRouter, store),
+			setupExamplesShow(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}

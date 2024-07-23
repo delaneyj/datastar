@@ -37,11 +37,11 @@ target = "target"
 makeIndexPage :: String -> Builder
 makeIndexPage x = byteString . convert $ [trimming|
 <head>
-    <title>Node/Express + Datastar Example</title>
+    <title>Haskell + Datastar Example</title>
     <script type="module" defer src="/datastar.js"></script>
 </head>
 <body>
-    <h2>Node/Express + Datastar Example</h2>
+    <h2>Haskell + Datastar Example</h2>
     <main class="container" id="main" data-store="{input:'', output:'', show: true}">
         <input type="text" placeholder="Send to server..." data-model="input"/>
         <button data-on-click="$$$$get('/get')">Send State Roundtrip</button>
