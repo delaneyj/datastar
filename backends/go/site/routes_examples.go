@@ -75,6 +75,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "refs"},
 				{ID: "multiline_expressions"},
 				{ID: "show"},
+				{ID: "img_src_bind"},
 			},
 		},
 		{

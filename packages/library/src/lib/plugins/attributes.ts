@@ -13,7 +13,12 @@ export const BindAttributePlugin: AttributePlugin = {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
       const value = ctx.expressionFn(ctx)
-      const v = JSON.stringify(value)
+      let v: string
+      if (typeof value === 'string') {
+        v = value
+      } else {
+        v = JSON.stringify(value)
+      }
       if (!v || v === 'false' || v === 'null' || v === 'undefined') {
         ctx.el.removeAttribute(key)
       } else {
