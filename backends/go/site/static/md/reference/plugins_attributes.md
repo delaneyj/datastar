@@ -49,7 +49,6 @@ If any signal in the expression changes, the event listener will be updated to r
 3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
-
 - `.once`\* - Only trigger the event once
 - `.passive`\* - Do not call `preventDefault` on the event
 - `.capture`\* - Use a capture event listener

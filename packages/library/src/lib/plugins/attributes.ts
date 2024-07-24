@@ -246,7 +246,6 @@ export const EventPlugin: AttributePlugin = {
 
     const unknownModifierKeys = [...ctx.modifiers.keys()].filter((key) => !knownOnModifiers.has(key))
 
-    console.log('unknownModifierKeys', unknownModifierKeys)
     unknownModifierKeys.forEach((attrName) => {
       const eventValues = ctx.modifiers.get(attrName) || []
       const cb = callback
