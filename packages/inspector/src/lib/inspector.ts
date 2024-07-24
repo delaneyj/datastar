@@ -1,6 +1,5 @@
 import { LitElement, PropertyValueMap, html } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
-import { unsafeHTML } from "lit/directives/unsafe-html.js";
 import {
   DatastarEvent,
   datastarEventName,
@@ -11,6 +10,7 @@ import styles from "./tailwind.css";
 import { diffJson, diffLines } from "diff";
 import { rehype } from "rehype";
 import rehypeFormat from "rehype-format";
+import { sendDatastarInspectorEvent } from "./utils.ts";
 
 interface VersionedStore {
   time: Date;
@@ -20,56 +20,78 @@ interface VersionedStore {
 
 type EventDetail = CustomEvent<DatastarEvent>["detail"];
 
-function transformToDetails(doc: Document, element: Element, depth: number) {
-  if (element.childNodes.length > 0) {
-    const details = doc.createElement("details");
-    details.className = "collapse collapse-arrow";
-    details.style.cssText = `margin-left: ${depth}em`;
-    const summary = doc.createElement("summary");
-    summary.className = "collapse-title";
-    const summaryPre = doc.createElement("pre");
-    const header = doc.createTextNode(
-      `<${element.tagName.toLowerCase()}${[...element.attributes].reduce(
-        (acc, curr) => {
-          return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
-        },
-        "",
-      )}>`,
-    );
-    summaryPre.appendChild(header);
-    summary.appendChild(summaryPre);
-    details.appendChild(summary);
+function elementToStr(element: Element): string {
+  const attributes = [...element.attributes].reduce((acc, curr) => {
+    return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
+  }, "");
 
-    if (element.children.length > 0) {
-      [...element.children].forEach((child) => {
-        details.appendChild(transformToDetails(doc, child, depth + 0.2));
-      });
-    } else {
-      const leafPre = doc.createElement("pre");
-      const leaf = doc.createTextNode(element.innerHTML);
-      leafPre.className = "collapse-content";
-      leafPre.style.cssText = `margin-left: ${depth}em`;
-      leafPre.appendChild(leaf);
-      details.appendChild(leafPre);
-    }
-    return details;
-  }
-  const leafPre = doc.createElement("pre");
+  const closingTag = element.childNodes.length > 0 ? ">" : "/>";
 
-  const leaf = doc.createTextNode(
-    `<${element.tagName.toLowerCase()}${[...element.attributes].reduce(
-      (acc, curr) => {
-        return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
-      },
-      "",
-    )} />`,
-  );
-  leafPre.className = "collapse-content";
-  leafPre.style.cssText = `margin-left: ${depth}em`;
-  leafPre.appendChild(leaf);
-  return leafPre;
+  return `<${element.tagName.toLowerCase()}${attributes}${closingTag}`;
 }
 
+const highlightClass = "datastar-inspector-highlight";
+
+function highlightElement(element: Element): void {
+  sendDatastarInspectorEvent(
+    "highlight_element",
+    `return document.getElementById('${element.id}')?.classList.add('${highlightClass}')`,
+  );
+}
+
+function highlightElementStop(element: Element): void {
+  sendDatastarInspectorEvent(
+    "highlight_element_stop",
+    `return document.getElementById('${element.id}')?.classList.length === 1 ? document.getElementById('${element.id}').removeAttribute('class') : document.getElementById('${element.id}')?.classList.remove('${highlightClass}') `,
+  );
+}
+
+function transformToDetails(
+  doc: Document,
+  element: Element,
+  depth: number,
+): ReturnType<typeof html> {
+  if (element.childNodes.length > 0) {
+    return html`
+      <details class="collapse collapse-arrow" style="margin-left: ${depth}em">
+        <summary
+          class="collapse-title"
+          @mouseover="${() => highlightElement(element)}"
+          @mouseout="${() => highlightElementStop(element)}"
+        >
+          <pre>${elementToStr(element)}</pre>
+        </summary>
+        ${element.children.length > 0
+          ? [...element.children].map((child) => {
+              return transformToDetails(doc, child, depth + 0.2);
+            })
+          : html`<pre class="collapse-content" style="margin-left: ${depth}em">
+${element.innerHTML}</pre
+            >`}
+      </details>
+    `;
+  }
+
+  return html`<pre class="collapse-content" style="margin-left: ${depth}em">
+${elementToStr(element)}</pre
+  >`;
+}
+
+function getRoot(
+  document: Document,
+  rootElementId: `#${string}` | undefined,
+): HTMLElement {
+  if (rootElementId) {
+    const root = document.getElementById(rootElementId);
+    if (root) return root;
+    console.warn(
+      `Inspector could not find root element with id ${rootElementId}`,
+    );
+    return document.documentElement;
+  } else {
+    return document.documentElement;
+  }
+}
 const parser = new DOMParser();
 
 @customElement("datastar-inspector")
@@ -88,6 +110,9 @@ export class DatastarInspectorElement extends LitElement {
 
   @property()
   showPlugins = false;
+
+  @property()
+  rootElementId?: `#${string}` = undefined;
 
   @state()
   stores: VersionedStore[] = [
@@ -138,6 +163,7 @@ export class DatastarInspectorElement extends LitElement {
             this.stores[this.stores.length - 1].expressions = currentExpressions
           }
         }
+
         // remove old attributes
         if (detail.type === "expr_removal") {
           if (currentExpressions[detail.target]) {
@@ -153,12 +179,19 @@ export class DatastarInspectorElement extends LitElement {
 
       if (detail.subcategory === "dom") {
         const currentDom = this.stores[this.stores.length - 1].dom;
+
         const doc = parser.parseFromString(detail.message, "text/html");
 
         const newDom = doc;
+        newDom.querySelectorAll(`.${highlightClass}`).forEach((node) => {
+          console.log("test");
+          node.classList.remove(highlightClass);
+          if (node.classList.length === 0) node.removeAttribute("class");
+        });
+
         const diff = diffLines(
-          currentDom.documentElement.outerHTML,
-          newDom.documentElement.outerHTML,
+          getRoot(currentDom, this.rootElementId).outerHTML,
+          getRoot(newDom, this.rootElementId).outerHTML,
         );
 
         const diffMessage = (
@@ -194,7 +227,7 @@ ${curr.value}</pre
           [] as ReturnType<typeof html>[],
         );
 
-        if (!diffMessage) return;
+        if (diffMessage.length === 0) return;
 
         this.v = this.stores.length;
         this.stores = [
@@ -356,9 +389,7 @@ ${curr.value}</pre
         </code>
 
         <div>
-          ${unsafeHTML(
-            transformToDetails(dom, dom.documentElement, 0.2).outerHTML,
-          )}
+          ${transformToDetails(dom, getRoot(dom, this.rootElementId), 0.2)}
         </div>
       `;
     }
