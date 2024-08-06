@@ -12,10 +12,14 @@ templ Home() {
 	@Page() {
 		<div class="flex flex-col w-full min-h-screen bg-base-200 md:bg-gradient-to-br md:items-center from-base-300 to-base-100">
 			<div class="flex flex-col items-center gap-8 p-4 md:pt-16 md:max-w-3xl max-w-none">
-				<img
-					class="border-4 rounded-full shadow-xl w-96 border-primary"
-					src={ staticPath("/images/rocket.jpg") }
-				/>
+				<picture>
+					<source srcset={ staticPath("/images/rocket.webp") } type="image/webp"/>
+					<img
+						class="w-96 h-96"
+						src={ staticPath("/images/rocket.gif") }
+						alt="🚀"
+					/>
+				</picture>
 				<div class="flex flex-col items-end font-bold uppercase font-brand">
 					<div class="text-6xl text-primary">Datastar</div>
 					<div class="text-sm text-secondary">v{ packageJSON.Version }</div>
@@ -172,7 +176,8 @@ templ TodosMVCView(mvc *TodoMVC) {
 						</section>
 						<footer class="flex items-center justify-between">
 							<span class="todo-count">
-								<strong data-testid="todo_count">{ fmt.Sprint(left) }
+								<strong data-testid="todo_count">
+									{ fmt.Sprint(left) }
 									if (len(mvc.Todos) > 1) {
 										items
 									} else {
@@ -183,12 +188,12 @@ templ TodosMVCView(mvc *TodoMVC) {
 							<div class="join">
 								for i := TodoViewModeAll; i < TodoViewModeLast; i++ {
 									if i == mvc.Mode {
-										<div class="btn btn-xs btn-primary join-item" data-testid={TodoViewModeStrings[i] + "_mode"} >{ TodoViewModeStrings[i] }</div>
+										<div class="btn btn-xs btn-primary join-item" data-testid={ TodoViewModeStrings[i] + "_mode" }>{ TodoViewModeStrings[i] }</div>
 									} else {
 										<button
 											class="btn btn-xs join-item"
 											data-on-click={ fmt.Sprintf("$$put('/api/todos/mode/%d')", i) }
-											data-testid={TodoViewModeStrings[i] + "_mode"}
+											data-testid={ TodoViewModeStrings[i] + "_mode" }
 										>
 											{ TodoViewModeStrings[i] }
 										</button>
