@@ -295,7 +295,7 @@ sendSSE({
 });
 ```
 
-Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend_element` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastar's event types [here](http://localhost:8080/reference/plugins_backend).
+Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend_element` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastar's event types [here](/reference/plugins_backend).
 
 There's one last thing we're going to do. Let's add a simple data feed upon loading the page.
 
