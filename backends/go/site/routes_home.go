@@ -24,7 +24,7 @@ var homePageChartSVG string
 
 func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
 
-	chartWidth := 512
+	chartWidth := 475
 	graph := chart.BarChart{
 		Title:  "File Size (Hello World) first load",
 		Width:  chartWidth,
