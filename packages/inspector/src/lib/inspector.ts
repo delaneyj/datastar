@@ -16,13 +16,15 @@ interface VersionedStore {
   time: Date;
   dom: Document;
   contents: Record<string, any>;
+  expressions: HTMLElement[];
 }
 
 type EventDetail = CustomEvent<DatastarEvent>["detail"];
 
-function elementToStr(element: Element): string {
-  const attributes = [...element.attributes].reduce((acc, curr) => {
-    return acc.concat(` ${curr.nodeName}="${curr.nodeValue}"`);
+function elementToStr(element: HTMLElement): string {
+  const dataset = { ...element.dataset };
+  const attributes = Object.keys(dataset).reduce((acc, curr) => {
+    return acc.concat(` ${curr}="${dataset[curr]}" `);
   }, "");
 
   const closingTag = element.childNodes.length > 0 ? ">" : "/>";
@@ -32,49 +34,18 @@ function elementToStr(element: Element): string {
 
 const highlightClass = "datastar-inspector-highlight";
 
-function highlightElement(element: Element): void {
+function highlightElement(elementId: string): void {
   sendDatastarInspectorEvent(
     "highlight_element",
-    `return document.getElementById('${element.id}')?.classList.add('${highlightClass}')`,
+    `return document.getElementById('${elementId}')?.classList.add('${highlightClass}')`,
   );
 }
 
-function highlightElementStop(element: Element): void {
+function highlightElementStop(elementId: string): void {
   sendDatastarInspectorEvent(
     "highlight_element_stop",
-    `return document.getElementById('${element.id}')?.classList.length === 1 ? document.getElementById('${element.id}').removeAttribute('class') : document.getElementById('${element.id}')?.classList.remove('${highlightClass}') `,
+    `return document.getElementById('${elementId}')?.classList.length === 1 ? document.getElementById('${elementId}').removeAttribute('class') : document.getElementById('${elementId}')?.classList.remove('${highlightClass}') `,
   );
-}
-
-function transformToDetails(
-  doc: Document,
-  element: Element,
-  depth: number,
-): ReturnType<typeof html> {
-  if (element.childNodes.length > 0) {
-    return html`
-      <details class="collapse collapse-arrow" style="margin-left: ${depth}em">
-        <summary
-          class="collapse-title"
-          @mouseover="${() => highlightElement(element)}"
-          @mouseout="${() => highlightElementStop(element)}"
-        >
-          <pre>${elementToStr(element)}</pre>
-        </summary>
-        ${element.children.length > 0
-          ? [...element.children].map((child) => {
-              return transformToDetails(doc, child, depth + 0.2);
-            })
-          : html`<pre class="collapse-content" style="margin-left: ${depth}em">
-${element.innerHTML}</pre
-            >`}
-      </details>
-    `;
-  }
-
-  return html`<pre class="collapse-content" style="margin-left: ${depth}em">
-${elementToStr(element)}</pre
-  >`;
 }
 
 function getRoot(
@@ -92,6 +63,7 @@ function getRoot(
     return document.documentElement;
   }
 }
+
 const parser = new DOMParser();
 
 @customElement("datastar-inspector")
@@ -120,6 +92,7 @@ export class DatastarInspectorElement extends LitElement {
       contents: {},
       dom: parser.parseFromString("<html></html>", "text/html"),
       time: new Date(),
+      expressions: [],
     },
   ];
 
@@ -145,35 +118,7 @@ export class DatastarInspectorElement extends LitElement {
         !(detail.category === "core" && detail.subcategory === "dom")
       ) {
         this.events = [...this.events, detail].slice(-this.maxEvents);
-        /*
-        const currentExpressions = this.stores[this.stores.length - 1].expressions || {};
-        // keep new attributes in mind
-        if (detail.category === "core" && detail.subcategory === "attributes" && detail.type === "expr_construction") {
-          const parsedMessage: { rawKey: string, rawExpression: string, result: string } = JSON.parse(detail.message);
-          if (!currentExpressions[detail.target]) currentExpressions[detail.target] = []
 
-          currentExpressions[detail.target].push(parsedMessage);
-
-          this.stores[this.stores.length - 1].expressions = currentExpressions
-        }
-        // remove attributes related to deleted elements
-        if (detail.category === "core" && detail.subcategory === "elements" && detail.type === "removal") {
-          if (currentExpressions[detail.target]) {
-            delete currentExpressions[detail.target]
-            this.stores[this.stores.length - 1].expressions = currentExpressions
-          }
-        }
-
-        // remove old attributes
-        if (detail.type === "expr_removal") {
-          if (currentExpressions[detail.target]) {
-            currentExpressions[detail.target] = currentExpressions[detail.target].filter((expr: Expression) => {
-              return expr.rawKey !== detail.message
-            })
-            if (currentExpressions[detail.target].length === 0) delete currentExpressions[detail.target]
-            this.stores[this.stores.length - 1].expressions = currentExpressions
-          }
-        }*/
         return;
       }
 
@@ -229,6 +174,13 @@ ${curr.value}</pre
 
         if (diffMessage.length === 0) return;
 
+        const expressions: HTMLElement[] = [
+          ...newDom.querySelectorAll("*"),
+        ].filter((el: Element): el is HTMLElement => {
+          if (!(el instanceof HTMLElement)) return false;
+          return Object.keys({ ...el.dataset }).length > 0;
+        });
+
         this.v = this.stores.length;
         this.stores = [
           ...this.stores,
@@ -236,6 +188,7 @@ ${curr.value}</pre
             contents: this.stores[this.stores.length - 1].contents,
             dom: newDom,
             time: new Date(),
+            expressions,
           },
         ];
 
@@ -295,6 +248,7 @@ ${curr.value}</pre
           contents: newStore,
           dom: this.stores[this.stores.length - 1].dom,
           time: new Date(),
+          expressions: this.stores[this.stores.length - 1].expressions,
         },
       ];
 
@@ -320,7 +274,8 @@ ${curr.value}</pre
     } else {
       const currentStore = this.stores[this.v];
       let contents = Object.assign({}, currentStore?.contents);
-      let dom = currentStore?.dom || "";
+      let dom = currentStore?.dom;
+      let expressions = currentStore?.expressions || [];
 
       if (this.remoteOnly) {
         contents = remoteSignals(contents);
@@ -328,6 +283,43 @@ ${curr.value}</pre
 
       if (!this.showPlugins) {
         delete (contents as any)["_dsPlugins"];
+      }
+
+      function listRefsTo(key: string) {
+        return expressions
+          .filter((el) => {
+            return !!Object.keys(el.dataset)
+              .map((data) => el.dataset[data])
+              .find((val) => {
+                return val?.includes(`\$${key}`);
+              });
+          })
+          .map((el) => {
+            return html`<pre
+              @mouseover="${() => highlightElement(el.id)}"
+              @mouseout="${() => highlightElementStop(el.id)}"
+            >
+            ${elementToStr(el)}
+          </pre
+            >`;
+          });
+      }
+
+      function listContents(state: typeof contents): ReturnType<typeof html>[] {
+        return Object.keys(state).map((key) => {
+          if (typeof state[key] === "object") {
+            return html`<details>
+              <summary>${key}</summary>
+              ${listContents(state[key])}
+            </details>`;
+          }
+          return html`<details>
+		<summary><pre>${key}</pre></summary>
+            Value: ${state[key]}</br>
+            Used by:</br>
+                ${listRefsTo(key)}
+           </details> `;
+        });
       }
 
       storeDOM = html`
@@ -374,6 +366,7 @@ ${curr.value}</pre
                       contents: {},
                       dom: parser.parseFromString("<html></html>", "text/html"),
                       time: new Date(),
+                      expressions: [],
                     },
                   ];
                   this.events = [];
@@ -384,13 +377,16 @@ ${curr.value}</pre
             </div>
           </div>
         </div>
-        <code class="font-mono text-xs overflow-auto">
-          <pre>${JSON.stringify(contents, null, 2)}</pre>
-        </code>
+        <dl>
+          ${listContents(contents)}
 
-        <div>
-          ${transformToDetails(dom, getRoot(dom, this.rootElementId), 0.2)}
-        </div>
+          <div>
+            <iframe
+              srcdoc="${dom.getElementById(this.rootElementId || "")
+                ?.outerHTML || dom.documentElement.outerHTML}"
+            ></iframe>
+          </div>
+        </dl>
       `;
     }
 
@@ -469,7 +465,12 @@ ${curr.value}</pre
                       </td>
                       <td>${evt.category}/${evt.subcategory}</td>
                       <td>${evt.type}</td>
-                      <td>${evt.target}</td>
+                      <td
+                        @mouseover="${() => highlightElement(evt.target)}"
+                        @mouseout="${() => highlightElementStop(evt.target)}"
+                      >
+                        ${evt.target}
+                      </td>
                       <td class="w-full overflow-x-auto">${evt.message}</td>
                     </tr>
                   `;

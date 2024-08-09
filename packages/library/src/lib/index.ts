@@ -90,7 +90,7 @@ if (!winAny.ds) {
       document.body,
       `Datastar v${version} loaded and attached to all DOM elements in ${(end - start).toFixed(2)}ms`,
     )
-    
+
     // define classes needed by the inspector
     const style = document.createElement('style')
     style.innerHTML = `
@@ -100,21 +100,19 @@ if (!winAny.ds) {
 `
     document.head.appendChild(style)
 
-
     // listen for messages from the inspector
-    window.addEventListener("datastar-inspector-event", (evt) => {
+    window.addEventListener('datastar-inspector-event', (evt) => {
       if ('detail' in evt && typeof evt.detail === 'object' && evt.detail) {
         const { detail } = evt
         if ('script' in detail && typeof detail.script === 'string') {
-	 try {
+          try {
             const func = new Function(detail.script)
-	   func()
-	 } catch (e: unknown) {
-	   console.error(e);
-	 }
+            func()
+          } catch (e: unknown) {
+            console.error(e)
+          }
         }
-      } 
-    });
-
+      }
+    })
   }, 0)
 }
