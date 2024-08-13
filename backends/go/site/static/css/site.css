@@ -991,7 +991,6 @@ html {
 .prose :where(table):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   width: 100%;
   table-layout: auto;
-  text-align: start;
   margin-top: 2em;
   margin-bottom: 2em;
   font-size: 0.875em;
@@ -1032,6 +1031,10 @@ html {
 
 .prose :where(tfoot td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
   vertical-align: top;
+}
+
+.prose :where(th, td):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+  text-align: start;
 }
 
 .prose :where(figure > *):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
@@ -6417,12 +6420,12 @@ html:has(.drawer-toggle:checked) {
   min-height: 100vh;
 }
 
-.w-80 {
-  width: 20rem;
+.w-64 {
+  width: 16rem;
 }
 
-.w-96 {
-  width: 24rem;
+.w-80 {
+  width: 20rem;
 }
 
 .w-full {
@@ -6716,10 +6719,6 @@ html:has(.drawer-toggle:checked) {
   border-radius: var(--rounded-box, 1rem);
 }
 
-.rounded-full {
-  border-radius: 9999px;
-}
-
 .rounded-lg {
   border-radius: 0.5rem;
 }
@@ -6734,10 +6733,6 @@ html:has(.drawer-toggle:checked) {
 
 .border-2 {
   border-width: 2px;
-}
-
-.border-4 {
-  border-width: 4px;
 }
 
 .border-x {
@@ -6761,11 +6756,6 @@ html:has(.drawer-toggle:checked) {
 .border-accent {
   --tw-border-opacity: 1;
   border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
-}
-
-.border-primary {
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
 }
 
 .bg-accent {
@@ -6901,6 +6891,11 @@ html:has(.drawer-toggle:checked) {
 .text-2xl {
   font-size: 1.5rem;
   line-height: 2rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
 }
 
 .text-4xl {
@@ -8043,6 +8038,10 @@ html:has(.drawer-toggle:checked) {
 }
 
 @media (min-width: 768px) {
+  .md\:w-96 {
+    width: 24rem;
+  }
+
   .md\:max-w-3xl {
     max-width: 48rem;
   }
