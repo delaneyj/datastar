@@ -79,6 +79,7 @@ tasks:
       # - "../**/*.go"
       - "../**/*.templ"
     cmds:
+      - pnpm i
       - pnpm tailwindcss build -o ../static/css/site.css
 
   templ:

@@ -20,54 +20,7 @@ import (
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-var homePageChartSVG string
-
 func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
-
-	chartWidth := 475
-	graph := chart.BarChart{
-		Title:  "File Size (Hello World) first load",
-		Width:  chartWidth,
-		Height: chartWidth,
-		Background: chart.Style{
-			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
-			FontColor: drawing.ColorWhite,
-		},
-		Canvas: chart.Style{
-			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
-			FontColor: drawing.ColorWhite,
-			FontSize:  6,
-		},
-		TitleStyle: chart.Style{
-			FontColor: drawing.ColorWhite,
-		},
-		XAxis: chart.Style{
-			FontColor: drawing.ColorWhite,
-		},
-		YAxis: chart.YAxis{
-			Style: chart.Style{
-				FontColor: drawing.ColorWhite,
-			},
-			ValueFormatter: func(v any) string {
-				return humanize.Bytes(uint64(v.(float64)))
-			},
-		},
-		Bars: []chart.Value{
-			{Label: "Next.js", Value: 86221},
-			{Label: "SvelteKit", Value: 81920},
-			{Label: "HTMX+\nhyperscript", Value: 40653},
-			{Label: "HTMX+\nAlpine", Value: 37980},
-			{Label: "Datastar", Value: float64(iifeBuildSize)},
-			{Label: "Datastar Core", Value: 4526},
-		},
-	}
-
-	buffer := bytes.NewBuffer([]byte{})
-	err := graph.Render(chart.SVG, buffer)
-	if err != nil {
-		panic(err)
-	}
-	homePageChartSVG = buffer.String()
 
 	nc, err := ns.Client()
 	if err != nil {
@@ -137,6 +90,54 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		Home().Render(r.Context(), w)
+	})
+
+	chartWidth := 475
+	graph := chart.BarChart{
+		Title:  "File Size (Hello World) first load",
+		Width:  chartWidth,
+		Height: chartWidth,
+		Background: chart.Style{
+			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
+			FontColor: drawing.ColorWhite,
+		},
+		Canvas: chart.Style{
+			FillColor: drawing.Color{R: 1, G: 1, B: 1, A: 0},
+			FontColor: drawing.ColorWhite,
+			FontSize:  6,
+		},
+		TitleStyle: chart.Style{
+			FontColor: drawing.ColorWhite,
+		},
+		XAxis: chart.Style{
+			FontColor: drawing.ColorWhite,
+		},
+		YAxis: chart.YAxis{
+			Style: chart.Style{
+				FontColor: drawing.ColorWhite,
+			},
+			ValueFormatter: func(v any) string {
+				return humanize.Bytes(uint64(v.(float64)))
+			},
+		},
+		Bars: []chart.Value{
+			{Label: "Next.js", Value: 86221},
+			{Label: "SvelteKit", Value: 81920},
+			{Label: "HTMX+\nhyperscript", Value: 40653},
+			{Label: "HTMX+\nAlpine", Value: 37980},
+			{Label: "Datastar", Value: float64(iifeBuildSize)},
+			{Label: "Datastar Core", Value: 4526},
+		},
+	}
+
+	buffer := bytes.NewBuffer([]byte{})
+	if err = graph.Render(chart.SVG, buffer); err != nil {
+		panic(err)
+	}
+	homePageChartSVG := buffer.Bytes()
+	router.Get("/chart", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "image/svg+xml")
+		w.Write(homePageChartSVG)
 	})
 
 	router.Route("/api", func(apiRouter chi.Router) {
