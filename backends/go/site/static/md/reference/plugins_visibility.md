@@ -78,3 +78,5 @@ Scrolls the element into view. Useful when updating DOM from the server and you 
 ```
 
 Page level transitions are automatically handled by an injected meta tag. Inter-page elements are automatically transitioned if the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API) is available. To set the `view-transition-name` style attribute explictily you use the `data-view-transition` attribute. The spec is still in draft and not available in all browsers but Datastar will do best effort.
+
+When sending many Datastar messages in a small period of time it is often reccomended to not perform view-transitions as it can make elements unresponsive. You can always [turn them off](/reference/plugins_backend#data-fragment) on a per-message basis.
