@@ -5,7 +5,7 @@ theme: default
 # like them? see https://unsplash.com/collections/94734566/slidev
 background: https://images.unsplash.com/photo-1691331170260-39662795f1bc?q=80&w=2998&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
 # some information about your slides (markdown enabled)
-title: Welcome to Slidev
+title: Datastar
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
@@ -24,7 +24,7 @@ mdc: true
 ---
 
 # Datastar
-Real-time hypermedia
+Real-time hypermedia!
 
 Embrace the web, explore new frontiers
 
@@ -44,7 +44,7 @@ layout: intro
         - Vue / Svelte / Solid
 
 - I 💗 NATS
-    - Now work at Synadia (company behind the project)
+    - Now work at [Synadia](https://www.synadia.com/) (company behind the project)
     - Spend quite a bit of time making POCs and demos for customers
     - Distributive apps are a challenge, change comes for any where
 
@@ -52,6 +52,7 @@ layout: intro
 
 ---
 
+# Single Page Applications are a pain
 <v-clicks depth="3">
 
 - Even with all the frameworks SPA available unhappy with client side
@@ -143,6 +144,7 @@ layout: center
 - Able to fully replace a SPA
 - Tree shaking and small
 - Easy to add plugins
+- Market place of ideas, à la carte
 
 </v-clicks>
 
@@ -153,6 +155,7 @@ layout: center
 
 https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 
+<Transform :scale="1.5">
 ````md magic-move
 ```html
 <div>
@@ -213,9 +216,40 @@ https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 ```
 
 ```html
+<script
+    type="module" defer
+    src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar">
+</script>
+<div data-store="{input:'hello', show:false}>
+    <input type="text" placeholder="Type here!" data-model="input" />
+    <div data-text="$input.toUppercase()">
+    <button data-on-click="$show=!$show">Toggle</button>
+    <div data-show="$show">
+        <span>Hello From Datastar!</span>
+    </div>
+</div>
+```
+````
+</Transform>
+
+---
+
+
+# Let's use interact with the backend
+
+<Transform :scale="1.5">
+````md magic-move
+```html
 <div>
     <button>Click me<button>
-    <div id="output">I'm where server code will update</div>
+    <div>I'm where server code will update</div>
+</div>
+```
+
+```html
+<div>
+    <button data-on-click="$$put('/do_something')">Click me<button>
+    <div>I'm where server code will update</div>
 </div>
 ```
 
@@ -226,9 +260,11 @@ https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes
 </div>
 ```
 ````
+</Transform>
 
 ---
-
+layout: center
+---
 # data-* attributes all the way down
 
 <v-clicks depth="3">
@@ -260,12 +296,15 @@ HTMX Flow
 
 - Your render your `hx-` tags into the next render fragment
 - If you want to update it's primarily polling
+- Normal HTTP verbs
 
 ::right::
 
 ```mermaid
 sequenceDiagram
   Browser->>Server: Initial page
+  Server->>Browser: Page with HTMX tags
+  Browser->>Server: Click on something
   Server->>Browser: Page with HTMX tags
   Browser->>Server: Click on something
   Server->>Browser: Page with HTMX tags
@@ -286,13 +325,14 @@ Datastar Flow
 - Same workflow for 1 or thousands of updates
 - Works with any HTTP server with flushing support
 - Works with all HTTP verbs with full error handling and chunking
+- Still normal HTTP verbs, no need for websockets
 
 ::right::
 
 ```mermaid
 sequenceDiagram
   Browser->>Server: Initial page
-  Server->>Browser: Page with HTMX tags
+  Server->>Browser: Page with data-* tags
   Browser->>Server: Some reactive expression on page
   Server-->>Browser: Update 1
   Server-->>Browser: Update 2
@@ -300,8 +340,9 @@ sequenceDiagram
 ```
 
 ---
-
-# Plugins I need from Alpine + HTMX
+layout: center
+---
+# Plugins I need for a full framework
 
 <v-clicks depth="3">
 
@@ -311,13 +352,14 @@ sequenceDiagram
 - Events `data-on-click` `data-online`
     - Custom events `data-on-load` `data-on-store-changed`
     - Throttling/Debounce `data-on-raf.debounce_250ms`
+    - Targeting window `data-on-offline.window`
 - Refs `data-ref`
 - Reactive Stores `data-store`
 - Visibility `data-show`
 - Intersect `data-intersects`
 - Scrolling `data-scroll-into-view`
-- HTMX like support `$$get`
-- Animation helpers `$$fit`
+- HTMX like support `$$get` `$$put` `$$post` `$$delete` `$$patch`
+- Animation helpers `$$fit` `$$toggle`
 
 </v-clicks>
 
@@ -329,20 +371,158 @@ layout: center
 <img src="./images/chart.png" width="384"/>
 
 ---
+layout: center
+---
+# It's easier than multiple libraries
 
-# It's easier than Alpine + HTMX
 
 <v-clicks depth="3">
 
 - You don't have competing event models
 - Signals first reducing complexity for user
-    - Harder for plugin developers
+    - But it's pushing that on the plugin developers
 - Datastar plugins are aware of each other
 - Less typing checking inside of plugins
 - One way to do things, scales easier
 </v-clicks>
 
+::right::
+
+
+---
+layout: image-right
+image: /pages/images/todomvc.png
 ---
 
-# Let's make a real-time TODO MVC
 
+# Let's make a [TodoMVC](https://todomvc.com/)
+
+<v-clicks depth="3">
+
+- Used to compare SPA frameworks
+- Minimal application
+- More about the vibe
+
+</v-clicks>
+
+
+---
+layout: two-cols
+---
+# Let's make a ***real-time*** TodoMVC
+
+## Initialize
+
+- Get the initial HTML
+    - Hands back a cookie with an ID
+- Hookup a single `GET` for `/updates`
+    - Uses cookie to get personalize todo
+
+
+::right::
+
+<Transform :scale="1">
+```mermaid
+sequenceDiagram
+    participant b as Browser
+    participant idx as GET /
+    participant u as GET /updates
+
+    b-->>idx: Initial Page
+    idx->>b: Page with "data-on-load='$$get('/updates')"
+    b-->>u: request with cookie
+    u->>b: todo update 1
+    u->>b: todo update 2
+    u->>b: todo update 3
+
+```
+</Transform>
+
+---
+layout: two-cols
+---
+# Let's make a ***real-time*** TodoMVC
+
+## Update
+
+- Commands can come from anywhere
+    - HTTP Request
+    - Another service
+    - Another user
+    - Event bus
+- Command Query Responsibility Segration (CQRS)
+    - Decouple reads from writes
+    - Commands succeed or fail but don't return state
+    - Not needed for simple apps but scales well
+
+::right::
+
+<Transform :scale="1">
+```mermaid
+sequenceDiagram
+    participant b as Browser
+    participant t as POST /toggle
+    participant u as GET /updates
+
+    b-->>t: /toggle/1
+    u->>b: new view
+
+```
+</Transform>
+
+---
+layout: two-cols
+---
+# Let's make a ***real-time*** TodoMVC
+
+## NATS to the rescue
+
+<v-clicks depth="1">
+
+- Gradient of features
+    - Scales from embedded to global superclusters
+    - Any language
+    - Any message format
+    - Key Value + Object Store
+    - High Availablity + Persistence
+- Let's use the KV
+    - Key = ID from cookie
+    - Value = Todo State
+    - Watch from updates
+    - TTL of 15 minutes
+
+</v-clicks>
+
+::right::
+
+<Transform :scale="1.1">
+```mermaid
+sequenceDiagram
+    participant b as Browser
+    participant u as GET /updates
+    participant kv as NATS KV
+    participant t as POST /toggle
+
+    u-->>kv: watch my id per request
+    kv->>u: catch up
+    t->>kv: update state to A
+    kv->>u: A
+    u->>b: SSE Event
+
+```
+</Transform>
+
+---
+layout: fact
+---
+
+### Let's play with the Datastar home page
+## https://data-star.dev
+
+
+---
+layout: end
+---
+
+# Questions?
+https://data-star.dev
