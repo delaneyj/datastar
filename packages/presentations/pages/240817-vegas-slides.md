@@ -3,9 +3,15 @@
 theme: default
 # random image from a curated Unsplash collection by Anthony
 # like them? see https://unsplash.com/collections/94734566/slidev
-background: https://images.unsplash.com/photo-1691331170260-39662795f1bc?q=80&w=2998&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D
+background: /pages/images/bg_blur.png
 # some information about your slides (markdown enabled)
 title: Datastar
+fonts:
+    sans: Inter
+    serif: Orbitron
+    mono: Fira COde
+    italic: true
+
 info: |
   ## Slidev Starter Template
   Presentation slides for developers.
@@ -23,10 +29,15 @@ mdc: true
 
 ---
 
-# Datastar
-Real-time hypermedia!
+# DATASTAR
+Real-time hypermedia UI framework
 
 Embrace the web, explore new frontiers
+
+<!--
+# X
+This is a ***note***
+-->
 
 ---
 layout: intro
@@ -51,6 +62,8 @@ layout: intro
 </v-clicks>
 
 ---
+layout: two-cols
+---
 
 # Single Page Applications are a pain
 <v-clicks depth="3">
@@ -64,9 +77,27 @@ layout: intro
         - JWT
         - Runtime content auth checks
     - Dynamic content
+</v-clicks>
+
+
+---
+layout: two-cols
+---
+
+# Single Page Applications are a pain
+- Even with all the frameworks SPA available unhappy with client side
+    - Million NPM Modules
+    - Routing woes
+    - Validation overlap
+    - Security
+        - CORS
+        - JWT
+        - Runtime content auth checks
+    - Dynamic content
     - JSON + *"REST"* APIs
 
-</v-clicks>
+::right::
+![alt text](/pages/images/rest.png)
 
 ---
 layout: image-right
@@ -99,6 +130,7 @@ backgroundSize: contain
 - Indicators when loading
 - Focus on ***real*** hypermedia
     - https://hypermedia.systems/ is a great resource
+    - Especially Part 1 before it becomes a HTMX tutorial
 - But ...
 </v-clicks>
 
@@ -118,8 +150,7 @@ backgroundSize: contain
     - https://github.com/delaneyj/nothtmx2
         - Tried moving to Typescript + Vite
         - Hundreds of issues
-        - Not pure JS, not seen as worth the change
-            - ![thunderdome](./images/thunderdome.png)
+        - Not pure JS, not seen as worth the change ![thunderdome](./images/thunderdome.png)
     - Got the bug to ***really*** fix it
 - Agree with the hypermedia first approach but not the implementation
 
@@ -320,7 +351,7 @@ Push vs Pull
 
 Datastar Flow
 
-- Intial page
+- Initial page
 - Send *N* updates depending on state
 - Same workflow for 1 or thousands of updates
 - Works with any HTTP server with flushing support
@@ -477,7 +508,7 @@ layout: two-cols
 
 ## NATS to the rescue
 
-<v-clicks depth="1">
+<v-clicks depth="3">
 
 - Gradient of features
     - Scales from embedded to global superclusters
@@ -493,6 +524,25 @@ layout: two-cols
 
 </v-clicks>
 
+---
+layout: two-cols
+---
+# Let's make a ***real-time*** TodoMVC
+
+## NATS to the rescue
+
+- Gradient of features
+    - Scales from embedded to global superclusters
+    - Any language
+    - Any message format
+    - Key Value + Object Store
+    - High Availablity + Persistence
+- Let's use the KV
+    - Key = ID from cookie
+    - Value = Todo State
+    - Watch from updates
+    - TTL of 15 minutes
+
 ::right::
 
 <Transform :scale="1.1">
@@ -505,6 +555,7 @@ sequenceDiagram
 
     u-->>kv: watch my id per request
     kv->>u: catch up
+    u->>b: SSE Event
     t->>kv: update state to A
     kv->>u: A
     u->>b: SSE Event
@@ -521,8 +572,15 @@ layout: fact
 
 
 ---
-layout: end
+layout: two-cols
+background: /pages/images/bg_blur.png
 ---
 
 # Questions?
-https://data-star.dev
+* https://twitter.com/DelaneyGillilan
+* https://data-star.dev
+* https://github.com/delaneyj/datastar
+::right::
+<Transform :scale="0.625">
+<Tweet id="1824478943610568900"/>
+</Transform>
