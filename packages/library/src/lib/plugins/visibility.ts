@@ -10,6 +10,7 @@ const DURATION = 'duration'
 const SHOW = 'show'
 const SHOW_CLASS = `${DATASTAR_CLASS_PREFIX}showing`
 const HIDE_CLASS = `${DATASTAR_CLASS_PREFIX}hiding`
+const SHOW_DURATION_TRANSITION_STYLE = `${DATASTAR_CLASS_PREFIX}show-transition-style`
 
 // Sets the display of the element
 export const ShowPlugin: AttributePlugin = {
@@ -26,20 +27,23 @@ export const ShowPlugin: AttributePlugin = {
 
     const durationArgs = ctx.modifiers.get(DURATION)
     if (durationArgs) {
-      const style = document.createElement('style')
-      document.head.appendChild(style)
-
-      const durationMs = argsToMs(durationArgs) || '300'
-      style.innerHTML = `
-        .${SHOW_CLASS} {
-          visibility: visible;
-          transition: opacity ${durationMs}ms linear;
-        }
-        .${HIDE_CLASS} {
-          visibility: hidden;
-          transition: visibility 0s ${durationMs}ms, opacity ${durationMs}ms linear;
-        }
-      `
+      let style = document.getElementById(SHOW_DURATION_TRANSITION_STYLE)
+      if (!style) {
+        style = document.createElement('style')
+        style.id = SHOW_DURATION_TRANSITION_STYLE
+        document.head.appendChild(style)
+        const durationMs = argsToMs(durationArgs) || '300'
+        style.innerHTML = `
+          .${SHOW_CLASS} {
+            visibility: visible;
+            transition: opacity ${durationMs}ms linear;
+          }
+          .${HIDE_CLASS} {
+            visibility: hidden;
+            transition: visibility 0s ${durationMs}ms, opacity ${durationMs}ms linear;
+          }
+        `
+      }
 
       const transitionEndHandler = (classNameToRemove: string) => (event: Event) => {
         if (event.target === el) {
