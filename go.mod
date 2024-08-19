@@ -3,6 +3,7 @@ module github.com/delaneyj/datastar
 go 1.22.1
 
 require (
+	github.com/CAFxX/httpcompression v0.0.9
 	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/TwiN/go-away v1.6.13
 	github.com/a-h/templ v0.2.747
@@ -29,7 +30,6 @@ require (
 )
 
 require (
-	github.com/CAFxX/httpcompression v0.0.9 // indirect
 	github.com/andybalholm/brotli v1.1.0 // indirect
 	github.com/blend/go-sdk v1.20220411.3 // indirect
 	github.com/cenkalti/backoff v2.2.1+incompatible // indirect

@@ -80,7 +80,7 @@ tasks:
       - "../**/*.templ"
     cmds:
       - pnpm i
-      - pnpm tailwindcss build -o ../static/css/site.css
+      - pnpm tailwindcss build -o ../static/css/site.css -w
 
   templ:
     env:

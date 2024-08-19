@@ -77,6 +77,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "multiline_expressions"},
 				{ID: "show"},
 				{ID: "img_src_bind"},
+				{ID: "dbmon"},
 			},
 		},
 		{
@@ -160,6 +161,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesMultilineFragments(examplesRouter),
 			setupExamplesUpdateStore(examplesRouter),
 			setupExamplesOfflineSync(examplesRouter, store),
+			setupExamplesDbmon(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
