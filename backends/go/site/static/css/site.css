@@ -5227,6 +5227,10 @@ details.collapse summary::-webkit-details-marker {
       calc(var(--filler-size) * -1 - var(--filler-offset)) 0 0 var(--filler-size);
 }
 
+.range-primary {
+  --range-shdw: var(--fallback-p,oklch(var(--p)/1));
+}
+
 @keyframes rating-pop {
   0% {
     transform: translateY(-0.125em);
@@ -6420,6 +6424,10 @@ html:has(.drawer-toggle:checked) {
   display: none;
 }
 
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -6940,6 +6948,10 @@ html:has(.drawer-toggle:checked) {
   line-height: 1;
 }
 
+.text-\[11px\] {
+  font-size: 11px;
+}
+
 .text-lg {
   font-size: 1.125rem;
   line-height: 1.75rem;
@@ -6986,6 +6998,10 @@ html:has(.drawer-toggle:checked) {
 
 .not-italic {
   font-style: normal;
+}
+
+.leading-\[0\.25rem\] {
+  line-height: 0.25rem;
 }
 
 .text-accent {
