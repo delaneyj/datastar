@@ -21,6 +21,7 @@ require (
 	github.com/gorilla/sessions v1.3.0
 	github.com/hashicorp/golang-lru/v2 v2.0.7
 	github.com/joho/godotenv v1.5.1
+	github.com/klauspost/compress v1.17.9
 	github.com/lithammer/fuzzysearch v1.1.8
 	github.com/nats-io/nats.go v1.36.0
 	github.com/samber/lo v1.44.0
@@ -42,7 +43,6 @@ require (
 	github.com/gorilla/securecookie v1.1.2 // indirect
 	github.com/iancoleman/strcase v0.3.0 // indirect
 	github.com/igrmk/treemap/v2 v2.0.1 // indirect
-	github.com/klauspost/compress v1.17.9 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.8 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/minio/highwayhash v1.0.3 // indirect

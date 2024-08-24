@@ -78,6 +78,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "show"},
 				{ID: "img_src_bind"},
 				{ID: "dbmon"},
+				{ID: "bad_apple"},
 			},
 		},
 		{
@@ -162,6 +163,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesUpdateStore(examplesRouter),
 			setupExamplesOfflineSync(examplesRouter, store),
 			setupExamplesDbmon(examplesRouter),
+			setupExamplesBadApple(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//

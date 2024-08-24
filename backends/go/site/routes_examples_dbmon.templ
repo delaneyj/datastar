@@ -5,23 +5,24 @@ import (
 	"time"
 )
 
-templ pageDBmon(dbs []*DbmonDatabase,mutationRate float64, renderTime time.Duration) {
+templ pageDBmon(dbs []*DbmonDatabase, mutationRate float64, renderTime time.Duration) {
 	<div
 		id="contents"
 		class="flex flex-col gap-4 p-4 w-full"
-		data-store={fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate))}
+		data-store={ fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate)) }
 		data-on-load="$$get('/examples/dbmon/updates')"
-		>
+	>
 		@dbmonFPS(renderTime)
 		<div style="display: flex;">
 			<label>mutations: <span data-text="$mutationRate"></span>%</label>
 			<input
-			class="range"
-			type="range" min="1" max="100"
-			data-model="mutationRate"
-			data-on-click="$$post('/examples/dbmon/inputs')"
+				class="range"
+				type="range"
+				min="1"
+				max="100"
+				data-model="mutationRate"
+				data-on-click="$$post('/examples/dbmon/inputs')"
 			/>
-
 		</div>
 		<div id="dbmon">
 			@dbmonApp(dbs)
@@ -44,8 +45,8 @@ templ dbmonPopover(query string) {
 
 templ dbmonQuery(query string, elapsed time.Duration) {
 	<td class="text-xs font-mono">
-		<div class="tooltip" data-tip={query}>
-  			{ elapsed.String() }
+		<div class="tooltip" data-tip={ query }>
+			{ elapsed.String() }
 		</div>
 	</td>
 }
@@ -54,7 +55,7 @@ templ dbmonDatabase(db *DbmonDatabase) {
 	{{ t5q := db.top5Queries() }}
 	<tr>
 		<td class="dbname">{ db.name }</td>
-		<td class={dbmonCounterClasses(len(db.queries))}>
+		<td class={ dbmonCounterClasses(len(db.queries)) }>
 			<span class={ dbmonCounterClasses(len(db.queries)) }>
 				{ fmt.Sprintf("%d", len(db.queries)) }
 			</span>
