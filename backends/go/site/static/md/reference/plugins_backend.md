@@ -62,14 +62,6 @@ The `datastar-signal` event is used to update the store with new values. The `da
 
 ## Attribute Plugins
 
-### Header
-
-```html
-<div data-header-X-My-Header="foo"></div>
-```
-
-Add a header to the request. This can be used to send additional information to the server.
-
 ### Fetch Indicator
 
 ```html
