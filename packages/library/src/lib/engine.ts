@@ -270,7 +270,7 @@ Check if the expression is valid before raising an issue.
               'attributes',
               'expr_construction',
               ctx.el,
-              JSON.stringify({ rawKey: String(rawKey), rawExpression: String(rawExpression), result: String(joined) }),
+              `${rawKey}="${rawExpression}" becomes: ${joined}`,
             )
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction

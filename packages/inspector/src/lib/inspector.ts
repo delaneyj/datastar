@@ -205,19 +205,7 @@ export class DatastarInspectorElement extends LitElement {
       //const { message, target } = detail;
       const { message } = detail;
       let patch;
-      /*
-      // if the message only includes a part of the store we need to build a patch
-    if (target !== 'STORE') {
-      const parts = message.split('.')
-      const last: Record<string, any> = {};
-      last[parts[parts.length -1]] = JSON.parse(message);
-      patch = parts.slice(0, -1).reduceRight((subStore, currKey) => {
-        const top: Record<string, any> = {};
-        return top[currKey] = subStore;
-      }, last);
-    }
-*/
-      const currentStore = this.stores[this.stores.length - 1].contents;
+   const currentStore = this.stores[this.stores.length - 1].contents;
       const newStore = patch ? apply(currentStore, patch) : JSON.parse(message);
 
       const diff = diffJson(currentStore, newStore);
@@ -392,6 +380,8 @@ export class DatastarInspectorElement extends LitElement {
 
     return html`
       <div data-theme="dark">
+        <details class="bg-base-100 collapse  collapse-arrow  select-none">
+          <summary class="collapse-title text-xl font-medium">Inspector</summary>
         <details class="bg-base-100 collapse  collapse-arrow  select-none" open>
           <summary class="collapse-title text-xl font-medium">Store</summary>
           <div class="collapse-content flex gap-4 max-h-[40vh]">
@@ -479,6 +469,7 @@ export class DatastarInspectorElement extends LitElement {
             </table>
           </div>
         </details>
+</details>
       </div>
     `;
   }

@@ -1,4 +1,3 @@
-import { DATASTAR_STR } from '../core'
 import { sendDatastarEvent } from '../.'
 import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
