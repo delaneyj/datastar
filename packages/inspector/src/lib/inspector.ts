@@ -128,6 +128,9 @@ export class DatastarInspectorElement extends LitElement {
         const doc = parser.parseFromString(detail.message, "text/html");
 
         const newDom = doc;
+        [...newDom.getElementsByTagName('datastar-inspector')].forEach((el) => {
+	  el.parentNode?.removeChild(el);
+	})
         newDom.querySelectorAll(`.${highlightClass}`).forEach((node) => {
           console.log("test");
           node.classList.remove(highlightClass);
@@ -162,9 +165,7 @@ export class DatastarInspectorElement extends LitElement {
                 : "";
             acc.push(
               html`<div style="${change};">
-                <pre style="display: inline-block; width: 50vw;">
-${curr.value}</pre
-                >
+                <pre style="display: inline-block; width: 50vw;">${curr.value}</pre>
               </div>`,
             );
             return acc;
@@ -382,8 +383,7 @@ ${curr.value}</pre
 
           <div>
             <iframe
-              srcdoc="${dom.getElementById(this.rootElementId || "")
-                ?.outerHTML || dom.documentElement.outerHTML}"
+              srcdoc="${dom.documentElement.outerHTML}"
             ></iframe>
           </div>
         </dl>

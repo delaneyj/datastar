@@ -4,5 +4,6 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   manifest: {
     name: "Datastar Inspector",
+    permissions: [ "scripting", "activeTab" ]
   },
 });

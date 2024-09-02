@@ -16,8 +16,12 @@ export default defineBackground(() => {
 
       switch(m.action) {
         case "connect-dev":
-	   if (!('tabId' in m && typeof m.tabId === 'string')) {
-              console.error(`No tabId or wrong type in message ${m}`)
+	   if (!('tabId' in m)) {
+              console.error('No tabId in message', m)
+	     return
+            }
+            if (!(typeof m.tabId === 'string')) {
+              console.error('tabId should be a string', m)
 	     return
 	   }
             console.log(`connected to dev port on tab ${m.tabId}`);
@@ -37,8 +41,12 @@ export default defineBackground(() => {
 	   else console.error('sender with no tabId', s);
             break;
          case "message-content":
-	   if (!('tabId' in m && typeof m.tabId === 'string')) {
-              console.error(`No tabId or wrong type in message ${m}`)
+	   if (!('tabId' in m)) {
+              console.error('No tabId in message', m)
+	     return
+            }
+            if (!(typeof m.tabId === 'string')) {
+              console.error('tabId should be a string', m)
 	     return
 	   }
             ports[m.tabId].content.postMessage(m);
