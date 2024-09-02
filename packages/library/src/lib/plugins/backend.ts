@@ -1,5 +1,6 @@
 import { DATASTAR_STR } from '../core'
 import { sendDatastarEvent } from '../.'
+import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
@@ -11,7 +12,6 @@ const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = `${DATASTAR_STR}-request`
 const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
-const DATASTAR_CLASS_PREFIX = `${DATASTAR_STR}-`
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
@@ -43,23 +43,6 @@ const FragmentMergeOptions = {
 } as const
 type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
 
-// Sets the header of the fetch request
-export const HeadersPlugin: AttributePlugin = {
-  prefix: 'header',
-  mustNotEmptyKey: true,
-  mustNotEmptyExpression: true,
-
-  onLoad: (ctx) => {
-    ctx.upsertIfMissingFromStore('_dsPlugins.fetch', { headers: new Map<string, string>() })
-    const s = ctx.store()
-    const { headers } = s._dsPlugins.fetch
-    const key = ctx.key[0].toUpperCase() + ctx.key.slice(1)
-    headers[key] = ctx.reactivity.computed(() => ctx.expressionFn(ctx))
-    return () => {
-      delete headers[key]
-    }
-  },
-}
 type IndicatorReference = { el: HTMLElement; count: number }
 
 // Sets the fetch indicator selector
@@ -105,7 +88,7 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [HeadersPlugin, FetchIndicatorPlugin]
+export const BackendPlugins: AttributePlugin[] = [FetchIndicatorPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote = true) {
   const store = ctx.store()
@@ -298,13 +281,6 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         sendDatastarEvent('plugin', 'backend', 'fetch_end', loadingTarget, JSON.stringify({ method, urlExpression }))
       }
     },
-  }
-
-  if (req.headers && store?._dsPlugins?.fetch?.headers?.size()) {
-    for (const key in store?._dsPlugins.fetch.headers) {
-      const value = store._dsPlugins.fetch.headers.value[key]
-      req.headers[key] = value
-    }
   }
 
   if (method === 'GET') {

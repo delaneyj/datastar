@@ -60,6 +60,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
 				{ID: "multiline_fragments"},
+				{ID: "bind_keys"},
 				{ID: "scroll_into_view"},
 				{ID: "on_load"},
 				{ID: "model_binding"},
@@ -74,6 +75,10 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "offline_sync"},
 				{ID: "refs"},
 				{ID: "multiline_expressions"},
+				{ID: "show"},
+				{ID: "img_src_bind"},
+				{ID: "dbmon"},
+				{ID: "bad_apple"},
 			},
 		},
 		{
@@ -157,6 +162,8 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesMultilineFragments(examplesRouter),
 			setupExamplesUpdateStore(examplesRouter),
 			setupExamplesOfflineSync(examplesRouter, store),
+			setupExamplesDbmon(examplesRouter),
+			setupExamplesBadApple(examplesRouter),
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
@@ -167,6 +174,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
 			setupExamplesTemplCounter(examplesRouter, store),
+			setupExamplesShow(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}

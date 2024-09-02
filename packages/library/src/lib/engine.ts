@@ -16,6 +16,7 @@ import {
 } from './types'
 
 export const DATASTAR_STR = 'datastar'
+export const DATASTAR_CLASS_PREFIX = `${DATASTAR_STR}-`
 
 export class Datastar {
   plugins: AttributePlugin[] = []

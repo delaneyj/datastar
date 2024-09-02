@@ -219,24 +219,26 @@ func RenderFragmentGostar(sse *ServerSentEventsHandler, child elements.ElementRe
 	return RenderFragmentString(sse, buf.String(), opts...)
 }
 
+const defaultSettleDuration = 500 * time.Millisecond
+
 func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
 		Merge:          FragmentMergeMorphElement,
-		SettleDuration: 500 * time.Millisecond,
+		SettleDuration: defaultSettleDuration,
 	}
 	for _, opt := range opts {
 		opt(options)
 	}
 
 	dataRows := []string{}
-	if options.QuerySelector != "" {
+	if options.QuerySelector != FragmentSelectorUseID {
 		dataRows = append(dataRows, fmt.Sprintf("selector %s", options.QuerySelector))
 	}
-	if options.Merge != "" {
+	if options.Merge != FragmentMergeMorphElement {
 		dataRows = append(dataRows, fmt.Sprintf("merge %s", options.Merge))
 	}
-	if options.SettleDuration > 0 {
+	if options.SettleDuration > 0 && options.SettleDuration != defaultSettleDuration {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
 	if options.UseViewTransitions != nil {

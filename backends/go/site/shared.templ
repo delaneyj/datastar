@@ -17,32 +17,7 @@ templ Page() {
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:wght@100..900&family=Gideon+Roman:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet"/>
 			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
-			<script async src="https://www.googletagmanager.com/gtag/js?id=G-QZ4RYHJW6X"></script>
-			<script>
-                window.dataLayer = window.dataLayer || [];
-                function gtag(){dataLayer.push(arguments);}
-                gtag('js', new Date());
-                gtag('config', 'G-QZ4RYHJW6X');
-            </script>
 			<script type="module" defer src={ staticPath("library/datastar.js") }></script>
-			<script defer>
-			    function initHotReload() {
-				console.log("Hot reload initializing")
-				if (typeof(EventSource) !== "undefined") {
-					const es = new EventSource("/hotreload");
-					es.onmessage = function(event) {
-						location.reload();
-					}
-					es.onerror = function(err) {
-						console.log("lost connection to server, reloading");
-						setTimeout(() => {
-						location.reload();
-						}, 500);
-					};
-				}
-				}
-				initHotReload();
-			</script>
 		</head>
 		<body class="flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent">
 			{ children... }
@@ -51,7 +26,7 @@ templ Page() {
 }
 
 templ icon(icon string, attrs ...string) {
-	<iconify-icon icon={ icon } { KVPairsAttrs(attrs...)... }></iconify-icon>
+	<iconify-icon icon={ icon } { KVPairsAttrs(attrs...)... } noobserver></iconify-icon>
 }
 
 templ headerIconLink(iconName, href string) {
@@ -61,7 +36,7 @@ templ headerIconLink(iconName, href string) {
 }
 
 templ headerTopLevelLink(r *http.Request, text string) {
-	{{ url := templ.SafeURL("/"+ strings.ToLower(text)) }}
+	{{ url := templ.SafeURL("/" + strings.ToLower(text)) }}
 	<a
 		href={ url }
 		class={
@@ -75,7 +50,7 @@ templ headerExternalLinks() {
 	@headerIconLink("simple-icons:discord", "https://discord.gg/CHvPMrAp6F")
 	@headerIconLink("simple-icons:github", "https://github.com/delaneyj/datastar/tree/main/packages/library")
 	@headerIconLink("simple-icons:npm", "https://www.npmjs.com/package/@sudodevnull/datastar")
-	@headerIconLink("simple-icons:twitter", "https://twitter.com/delaneyj")
+	@headerIconLink("simple-icons:twitter", "https://x.com/DelaneyGillilan")
 }
 
 templ headerTopLevelLinks(r *http.Request) {

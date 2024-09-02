@@ -48,6 +48,7 @@ Addtional `data` lines can be added to the response to override the default beha
 | `data: settle 1000`             | Settle the element after 1000ms, useful for transitions. Defaults to `500` if missing                                                                            | \*      |
 | `data: fragment`                | The HTML fragment to merge into the DOM. **_Should only be one per event_**                                                                                      | \*      |
 | `data: redirect /foo`           | Redirect the page to `/foo`. Can be used in place of a `data: fragment` **_Should only be one per event_**                                                       |         |
+| `data: vt false`                | Turn off View-Transitions on Datastar messages. Defaults to true if missing                                                                                      |         |
 | `data: error oh noes`           | Will throw an error with the message `oh noes` and stop the request. Can be used in place of a `data: fragment` **_Should only be one per event_**               |         |
 
 ### datastar-signal
@@ -60,14 +61,6 @@ data: {foo: 1234}
 The `datastar-signal` event is used to update the store with new values. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
 
 ## Attribute Plugins
-
-### Header
-
-```html
-<div data-header-X-My-Header="foo"></div>
-```
-
-Add a header to the request. This can be used to send additional information to the server.
 
 ### Fetch Indicator
 

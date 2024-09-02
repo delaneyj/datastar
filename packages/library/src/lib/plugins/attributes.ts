@@ -13,7 +13,12 @@ export const BindAttributePlugin: AttributePlugin = {
     return ctx.reactivity.effect(async () => {
       const key = kebabize(ctx.key)
       const value = ctx.expressionFn(ctx)
-      const v = JSON.stringify(value)
+      let v: string
+      if (typeof value === 'string') {
+        v = value
+      } else {
+        v = JSON.stringify(value)
+      }
       if (!v || v === 'false' || v === 'null' || v === 'undefined') {
         ctx.el.removeAttribute(key)
       } else {
@@ -194,12 +199,13 @@ export const TextPlugin: AttributePlugin = {
 
 let lastStoreMarshalled = ''
 
+const knownOnModifiers = new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside'])
+
 // Sets the event listener of the element
 export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
-  allowedModifiers: new Set(['window', 'once', 'passive', 'capture', 'debounce', 'throttle', 'remote', 'outside']),
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
 
@@ -237,6 +243,37 @@ export const EventPlugin: AttributePlugin = {
     if (!ctx.modifiers.has('capture')) evtListOpts.capture = false
     if (ctx.modifiers.has('passive')) evtListOpts.passive = true
     if (ctx.modifiers.has('once')) evtListOpts.once = true
+
+    const unknownModifierKeys = [...ctx.modifiers.keys()].filter((key) => !knownOnModifiers.has(key))
+
+    unknownModifierKeys.forEach((attrName) => {
+      const eventValues = ctx.modifiers.get(attrName) || []
+      const cb = callback
+      const revisedCallback = () => {
+        const evt = event as any
+        const attr = evt[attrName]
+        let valid: boolean
+
+        if (typeof attr === 'function') {
+          valid = attr(...eventValues)
+        } else if (typeof attr === 'boolean') {
+          valid = attr
+        } else if (typeof attr === 'string') {
+          const expr = eventValues.join('')
+          valid = attr === expr
+        } else {
+          const msg = `Invalid value for ${attrName} modifier on ${key} on ${el}`
+          console.error(msg)
+          debugger
+          throw new Error(msg)
+        }
+
+        if (valid) {
+          cb()
+        }
+      }
+      callback = revisedCallback
+    })
 
     const eventName = kebabize(key).toLowerCase()
     switch (eventName) {
@@ -327,7 +364,7 @@ export const AttributeActions: Actions = {
   },
 }
 
-function argsToMs(args: string[] | undefined) {
+export function argsToMs(args: string[] | undefined) {
   if (!args || args?.length === 0) return 0
 
   for (const arg of args) {
@@ -345,7 +382,7 @@ function argsToMs(args: string[] | undefined) {
   return 0
 }
 
-function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
+export function argsHas(args: string[] | undefined, arg: string, defaultValue = false) {
   if (!args) return false
   return args.includes(arg) || defaultValue
 }

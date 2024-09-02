@@ -7,17 +7,14 @@ import (
 
 templ Home() {
 	{{
-		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar" ></script>`
+		cdnText := `<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>`
 	}}
 	@Page() {
 		<div class="flex flex-col w-full min-h-screen bg-base-200 md:bg-gradient-to-br md:items-center from-base-300 to-base-100">
 			<div class="flex flex-col items-center gap-8 p-4 md:pt-16 md:max-w-3xl max-w-none">
-				<img
-					class="border-4 rounded-full shadow-xl w-96 border-primary"
-					src={ staticPath("/images/rocket.jpg") }
-				/>
+				<img class="w-64 md:w-96" src={ staticPath("images/rocket.webp") }/>
 				<div class="flex flex-col items-end font-bold uppercase font-brand">
-					<div class="text-6xl text-primary">Datastar</div>
+					<div class="text-3xl md:text-6xl text-primary">Datastar</div>
 					<div class="text-sm text-secondary">v{ packageJSON.Version }</div>
 				</div>
 				<div class="text-center font-brand">
@@ -61,21 +58,27 @@ templ Home() {
 						</div>
 					</div>
 				</div>
-				<div class="w-96">
-					@templ.Raw(homePageChartSVG)
-				</div>
-				<div id="todosMVC" data-on-load="$$get('/api/todos')">
-					<p>Todos Example</p>
-					<p>If you are seeing this message, please clear you cookies and refresh the page.</p>
-					<p>We recently updated the site and the old cookies are causing issues.</p>
-				</div>
+				<a
+					class="flex items-center w-full gap-4 btn btn-accent btn-outline btn-lg"
+					href={ templ.SafeURL("/examples") }
+				>
+					@icon("svg-spinners:bars-scale-middle")
+					{ "Show me cool examples!" }
+					@icon("svg-spinners:bars-scale-middle")
+				</a>
 				<a
 					class="flex items-center w-full gap-1 btn btn-primary btn-outline btn-lg"
 					href={ templ.SafeURL("/guide") }
 				>
 					@icon("simple-icons:rocket")
-					{ "Let's Get Started!" }
+					{ "Getting Started" }
 				</a>
+				<img class="w-full" src="/chart"/>
+				<div id="todosMVC" data-on-load="$$get('/api/todos')">
+					<p>Todos Example</p>
+					<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
+					<p>We recently updated the site and the old cookies are causing issues.</p>
+				</div>
 			</div>
 		</div>
 	}
@@ -151,6 +154,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										class="btn btn-lg"
 										data-on-click="$$post('/api/todos/-1/toggle')"
+										data-testid="toggle_all_todos"
 									>
 										@icon("material-symbols:checklist")
 									</button>
@@ -163,22 +167,32 @@ templ TodosMVCView(mvc *TodoMVC) {
 					</header>
 					if hasTodos {
 						<section>
-							<ul class="divide-y divide-primary">
+							<ul class="divide-y divide-primary" data-testid="todos_list">
 								for i, todo := range mvc.Todos {
 									@TodoRow(mvc.Mode, todo, i, i == mvc.EditingIdx)
 								}
 							</ul>
 						</section>
-						<footer class="flex items-center justify-between">
-							<span class="todo-count"><strong>{ fmt.Sprint(left) }</strong> item left</span>
+						<footer class="flex items-center justify-between flex-wrap gap-2">
+							<span class="todo-count">
+								<strong data-testid="todo_count">
+									{ fmt.Sprint(left) }
+									if (len(mvc.Todos) > 1) {
+										items
+									} else {
+										item
+									}
+								</strong> left
+							</span>
 							<div class="join">
 								for i := TodoViewModeAll; i < TodoViewModeLast; i++ {
 									if i == mvc.Mode {
-										<div class="btn btn-xs btn-primary join-item">{ TodoViewModeStrings[i] }</div>
+										<div class="btn btn-xs btn-primary join-item" data-testid={ TodoViewModeStrings[i] + "_mode" }>{ TodoViewModeStrings[i] }</div>
 									} else {
 										<button
 											class="btn btn-xs join-item"
 											data-on-click={ fmt.Sprintf("$$put('/api/todos/mode/%d')", i) }
+											data-testid={ TodoViewModeStrings[i] + "_mode" }
 										>
 											{ TodoViewModeStrings[i] }
 										</button>
@@ -191,6 +205,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										<button
 											class="btn btn-error btn-xs join-item"
 											data-on-click="$$delete('/api/todos/-1')"
+											data-testid="clear_todos"
 										>
 											@icon("material-symbols:delete")
 										</button>
@@ -200,6 +215,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										class="btn btn-warning btn-xs join-item"
 										data-on-click="$$put('/api/todos/reset')"
+										data-testid="reset_todos"
 									>
 										@icon("material-symbols:delete-sweep")
 									</button>
@@ -228,6 +244,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 templ TodoInput(i int) {
 	<input
 		id="todoInput"
+		data-testid="todos_input"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
 		data-model="input"
@@ -268,6 +285,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 			<button
 				class="invisible btn btn-error group-hover:visible"
 				data-on-click={ fmt.Sprintf("$$delete('/api/todos/%d')", i) }
+				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 			>
 				@icon("material-symbols:close")
 			</button>
