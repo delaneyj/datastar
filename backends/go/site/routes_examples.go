@@ -73,6 +73,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "raf_update"},
 				{ID: "update_store"},
 				{ID: "offline_sync"},
+				{ID: "session_storage"},
 				{ID: "refs"},
 				{ID: "multiline_expressions"},
 				{ID: "show"},

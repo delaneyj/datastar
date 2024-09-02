@@ -80,28 +80,29 @@ const StoreAttributePlugin: AttributePlugin = {
     }) as EventListener
     const hasLocal = ctx.modifiers.has('local')
     if (hasLocal) {
+      window.addEventListener(datastarEventName, localFn)
       const marshalledStore = window.localStorage.getItem(DATASTAR_STR) || '{}'
       const store = JSON.parse(marshalledStore)
       ctx.mergeStore(store)
-      window.addEventListener(datastarEventName, localFn)
     }
 
+    const hasSession = ctx.modifiers.has('session')
     const sessionFn = ((_: CustomEvent<DatastarEvent>) => {
       const s = ctx.store()
       const marshalledStore = JSON.stringify(s)
       window.sessionStorage.setItem(DATASTAR_STR, marshalledStore)
     }) as EventListener
-    const hasSession = ctx.modifiers.has('session')
     if (hasSession) {
+      window.addEventListener(datastarEventName, sessionFn)
       const marshalledStore = window.sessionStorage.getItem(DATASTAR_STR) || '{}'
       const store = JSON.parse(marshalledStore)
       ctx.mergeStore(store)
-      window.addEventListener(datastarEventName, sessionFn)
     }
 
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
-    delete ctx.el.dataset.store
+
+    delete ctx.el.dataset[ctx.rawKey]
 
     return () => {
       if (hasLocal) {
