@@ -265,13 +265,13 @@ Check if the expression is valid before raising an issue.
 }
             `
 
-            sendDatastarEvent(
+            /*sendDatastarEvent(
               'core',
               'attributes',
               'expr_construction',
               ctx.el,
               `${rawKey}="${rawExpression}" becomes: ${joined}`,
-            )
+            )*/
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn

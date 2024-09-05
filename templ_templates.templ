@@ -11,10 +11,5 @@ templ ScriptCDNLatest() {
 }
 
 templ TemplSignalStoreView() {
-	<div class="card bg-base-200">
-		<div class="card-body">
-			<div class="card-title">Datastar Store</div>
-			<pre class="text-xs" data-text="JSON.stringify(ctx.store(),null,2)"></pre>
-		</div>
-	</div>
+	<datastar-inspector />
 }
