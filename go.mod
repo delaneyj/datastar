@@ -1,12 +1,12 @@
 module github.com/delaneyj/datastar
 
-go 1.22.1
+go 1.23.1
 
 require (
 	github.com/CAFxX/httpcompression v0.0.9
 	github.com/Jeffail/gabs/v2 v2.7.0
 	github.com/TwiN/go-away v1.6.13
-	github.com/a-h/templ v0.2.747
+	github.com/a-h/templ v0.2.771
 	github.com/alecthomas/chroma v0.10.0
 	github.com/benbjohnson/hashfs v0.2.2
 	github.com/delaneyj/gostar v0.7.3
@@ -28,6 +28,7 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/wcharczuk/go-chart/v2 v2.1.1
 	github.com/zeebo/xxh3 v1.0.2
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
 )
 
 require (
@@ -60,10 +61,9 @@ require (
 	github.com/ysmood/gson v0.7.3 // indirect
 	github.com/ysmood/leakless v0.8.0 // indirect
 	golang.org/x/crypto v0.25.0 // indirect
-	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/image v0.18.0 // indirect
-	golang.org/x/sync v0.7.0 // indirect
-	golang.org/x/sys v0.22.0 // indirect
+	golang.org/x/sync v0.8.0 // indirect
+	golang.org/x/sys v0.23.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/time v0.5.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
