@@ -66,36 +66,51 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
-  allowedModifiers: new Set(['offline']),
+  allowedModifiers: new Set(['local', 'session']),
   onLoad: (ctx: AttributeContext) => {
-    let lastOfflineMarshalled = ``
-    const offlineFn = ((_: CustomEvent<DatastarEvent>) => {
+    let lastCachedMarshalled = ``
+    const localFn = ((_: CustomEvent<DatastarEvent>) => {
       const s = ctx.store()
       const marshalledStore = JSON.stringify(s)
 
-      if (marshalledStore !== lastOfflineMarshalled) {
+      if (marshalledStore !== lastCachedMarshalled) {
         window.localStorage.setItem(DATASTAR_STR, marshalledStore)
-        lastOfflineMarshalled = marshalledStore
+        lastCachedMarshalled = marshalledStore
       }
     }) as EventListener
-
-    const hasOffline = ctx.modifiers.has('offline')
-
-    if (hasOffline) {
+    const hasLocal = ctx.modifiers.has('local')
+    if (hasLocal) {
+      window.addEventListener(datastarEventName, localFn)
       const marshalledStore = window.localStorage.getItem(DATASTAR_STR) || '{}'
       const store = JSON.parse(marshalledStore)
       ctx.mergeStore(store)
+    }
 
-      window.addEventListener(datastarEventName, offlineFn)
+    const hasSession = ctx.modifiers.has('session')
+    const sessionFn = ((_: CustomEvent<DatastarEvent>) => {
+      const s = ctx.store()
+      const marshalledStore = JSON.stringify(s)
+      window.sessionStorage.setItem(DATASTAR_STR, marshalledStore)
+    }) as EventListener
+    if (hasSession) {
+      window.addEventListener(datastarEventName, sessionFn)
+      const marshalledStore = window.sessionStorage.getItem(DATASTAR_STR) || '{}'
+      const store = JSON.parse(marshalledStore)
+      ctx.mergeStore(store)
     }
 
     const bodyStore = ctx.expressionFn(ctx)
     ctx.mergeStore(bodyStore)
-    delete ctx.el.dataset.store
+
+    delete ctx.el.dataset[ctx.rawKey]
 
     return () => {
-      if (hasOffline) {
-        window.removeEventListener(datastarEventName, offlineFn)
+      if (hasLocal) {
+        window.removeEventListener(datastarEventName, localFn)
+      }
+
+      if (hasSession) {
+        window.removeEventListener(datastarEventName, sessionFn)
       }
     }
   },
