@@ -17,7 +17,7 @@ export const sendDatastarInspectorEvent = (
   script: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) => {
-  console.log("dispatching inspector event");
+  // console.log("dispatching inspector event");
   globalThis.dispatchEvent(
     new CustomEvent<DatastarInspectorEvent>(
       datastarInspectorEvtName,

@@ -1,15 +1,15 @@
-import { LitElement, PropertyValueMap, html } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
 import {
   DatastarEvent,
+  apply,
   datastarEventName,
   remoteSignals,
-  apply,
 } from "@sudodevnull/datastar";
-import styles from "./tailwind.css";
 import { diffJson, diffLines } from "diff";
+import { LitElement, PropertyValueMap, html } from "lit";
+import { customElement, property, state } from "lit/decorators.js";
 import { rehype } from "rehype";
 import rehypeFormat from "rehype-format";
+import styles from "./tailwind.css";
 import { sendDatastarInspectorEvent } from "./utils.ts";
 
 interface VersionedStore {
@@ -69,7 +69,10 @@ export class DatastarInspectorElement extends LitElement {
   v = 0;
 
   @property()
-  maxEvents = 100;
+  maxEvents = 10;
+
+  @property()
+  maxVersions = 10;
 
   @property()
   remoteOnly = false;
@@ -79,6 +82,8 @@ export class DatastarInspectorElement extends LitElement {
 
   @property()
   rootElementId?: `#${string}` = undefined;
+
+  versionOffset = 0;
 
   @state()
   stores: VersionedStore[] = [
@@ -201,14 +206,15 @@ export class DatastarInspectorElement extends LitElement {
           ).reduce(
             (acc, curr) => {
               const change = curr.added
-                ? "color: green"
+                ? "color: oklch(var(--suc)); background-color: oklch(var(--su)); padding: 0.5rem;"
                 : curr.removed
-                  ? "color: red"
+                  ? "color: oklch(var(--erc)); background-color: oklch(var(--er)); padding: 0.5rem;"
                   : "";
               acc.push(
                 html`<div style="${change};">
                   <pre style="display: inline-block; width: 50vw;">
-${curr.value}</pre
+                    ${curr.value}
+                  </pre
                   >
                 </div>`,
               );
@@ -219,10 +225,7 @@ ${curr.value}</pre
 
           if (diffMessage.length === 0) return;
 
-          this.events = [
-            ...this.events,
-            { ...detail, message: diffMessage },
-          ].slice(-this.maxEvents);
+          this.events = [...this.events, { ...detail, message: diffMessage }];
         }
 
         const changeInExpression =
@@ -238,6 +241,10 @@ ${curr.value}</pre
               expressions,
             },
           ];
+          if (this.stores.length > this.maxVersions) {
+            this.versionOffset += this.stores.length - this.maxVersions;
+            this.stores = this.stores.slice(-this.maxVersions);
+          }
         }
 
         return;
@@ -263,9 +270,9 @@ ${curr.value}</pre
           .reduce(
             (acc, curr) => {
               const change = curr.added
-                ? "color: green"
+                ? "color: oklch(var(--suc)); background-color: oklch(var(--su)); padding: 0.5rem;"
                 : curr.removed
-                  ? "color: red"
+                  ? "color: oklch(var(--erc)); background-color: oklch(var(--er)); padding: 0.5rem;"
                   : "";
               const symbol = curr.added ? " + " : curr.removed ? " - " : " ";
               acc.push(
@@ -287,6 +294,10 @@ ${curr.value}</pre
             expressions: this.stores[this.stores.length - 1].expressions,
           },
         ];
+        if (this.stores.length > this.maxVersions) {
+          this.versionOffset += this.stores.length - this.maxVersions;
+          this.stores = this.stores.slice(-this.maxVersions);
+        }
 
         this.events = [
           ...this.events,
@@ -345,13 +356,29 @@ ${curr.value}</pre
           }
           const surround = typeof state[key] === "string" ? '"' : "";
           const fullKey = state[key].toString().length > 10 ? state[key] : "";
-          return html`<details class="collapse collapse-arrow">
-	   <summary class="collapse-title">${key} = ${surround}${state[key].toString().substring(0, 10)}${surround}</summary>
-            <div class="collapse-content"><pre>${fullKey}</pre>
-            Used by:</br>
-                ${listRefsTo(key)}
-           </div>
-           </details>`;
+          const refs = listRefsTo(key);
+
+          if (refs.length > 0) {
+            return html`
+              <details class="collapse collapse-arrow">
+                <summary class="collapse-title bg-base-100">
+                ${key} = ${surround}${state[key].toString().substring(0, 10)}${surround}
+              </summary>
+                <div class="collapse-content bg-base-300">
+                    <pre>${fullKey}</pre>
+                    Used by:</br>
+                    ${refs}
+                </div>
+              </details>
+            `;
+          }
+
+          return html`
+            <summary>
+              ${key} =
+              ${surround}${state[key].toString().substring(0, 10)}${surround}
+            </summary>
+          `;
         });
       }
 
@@ -397,7 +424,7 @@ ${curr.value}</pre
     }
 
     return html`
-      <div data-theme="dark">
+      <div data-theme="datastar">
         <details class="bg-base-100 collapse  collapse-arrow">
           <summary class="collapse-title text-xl font-medium">
             Inspector
@@ -406,7 +433,7 @@ ${curr.value}</pre
             <summary class="collapse-title text-xl font-medium">Store</summary>
             <div class="collapse-content flex gap-4 max-h-[40vh]">
               <ul
-                class="menu bg-base-200 w-48 rounded-box overflow-y-scroll flex-col flex-nowrap"
+                class="menu bg-base-200 w-48 rounded-box overflow-y-scroll flex-col flex-nowrap text-xs"
               >
                 <div>Versions</div>
                 ${this.stores.map(
@@ -416,7 +443,7 @@ ${curr.value}</pre
                       @click=${() => (this.v = i)}
                     >
                       <div>
-                        ${i + 1} /
+                        <span>${i + 1 + this.versionOffset}</span>
                         <div class="font-bold">
                           ${store.time.toLocaleTimeString()}
                         </div>
@@ -464,40 +491,41 @@ ${curr.value}</pre
                 </div>
               </div>
             </summary>
-            <div class="collapse-content">
-              <table
-                class="table table-zebra table-compact w-[100]vw overflow-x-auto"
-              >
-                <thead>
-                  <tr>
-                    <th>Time</th>
-                    <th>Category</th>
-                    <th>Type</th>
-                    <th>Target</th>
-                    <th>Message</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${this.events.map((evt) => {
-                    return html`
-                      <tr>
-                        <td class="font-mono">
-                          ${evt.time.toISOString().split("T")[1].slice(0, 12)}
-                        </td>
-                        <td>${evt.category}/${evt.subcategory}</td>
-                        <td>${evt.type}</td>
-                        <td
-                          @mouseover="${() => highlightElement(evt.target)}"
-                          @mouseout="${() => highlightElementStop(evt.target)}"
-                        >
-                          ${evt.target}
-                        </td>
-                        <td class="w-full overflow-x-auto">${evt.message}</td>
-                      </tr>
-                    `;
-                  })}
-                </tbody>
-              </table>
+            <div class="collapse-content relative">
+              <div class="overflow-auto">
+                <table class="table table-zebra table-compact w-full">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Category</th>
+                      <th>Type</th>
+                      <th>Target</th>
+                      <th>Message</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${this.events.map((evt) => {
+                      return html`
+                        <tr class="text-xs">
+                          <td class="font-mono opacity-50">
+                            ${evt.time.toISOString().split("T")[1].slice(0, 12)}
+                          </td>
+                          <td>${evt.category}/${evt.subcategory}</td>
+                          <td>${evt.type}</td>
+                          <td
+                            @mouseover="${() => highlightElement(evt.target)}"
+                            @mouseout="${() =>
+                              highlightElementStop(evt.target)}"
+                          >
+                            ${evt.target}
+                          </td>
+                          <td class="w-full overflow-x-auto">${evt.message}</td>
+                        </tr>
+                      `;
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </details>
         </details>

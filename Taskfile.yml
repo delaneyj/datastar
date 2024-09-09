@@ -115,7 +115,7 @@ tasks:
       - library
       - kill
       - templ
-      - inspector
+      # - inspector
       # - css
 
     cmds:

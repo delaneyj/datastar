@@ -1,11 +1,7 @@
 package site
 
-import (
-	"github.com/delaneyj/datastar"
-)
-
 type ShowStore struct {
-	BindBool      bool   `json:"bindBool"`
+	BindBool bool `json:"bindBool"`
 }
 
 templ ShowView(store *ShowStore) {
@@ -16,22 +12,17 @@ templ ShowView(store *ShowStore) {
 	>
 		<button
 			class="btn btn-primary"
-			data-on-click="$bindBool=!$bindBool">
+			data-on-click="$bindBool=!$bindBool"
+		>
 			Toggle
 		</button>
-
 		<div>Without Modifiers</div>
-
-		 <div data-show="$bindBool">
+		<div data-show="$bindBool">
 			Hello!
-        </div>
-
+		</div>
 		<div>With Modifiers</div>
-
-		 <div data-show.duration_500ms="$bindBool">
+		<div data-show.duration_500ms="$bindBool">
 			Hello Animation!
-        </div>
-
-		@datastar.TemplSignalStoreView()
+		</div>
 	</div>
 }

@@ -44,7 +44,9 @@ templ headerTopLevelLink(r *http.Request, text string) {
 			"font-bold uppercase link-hover",
 			templ.KV("link-primary", strings.HasPrefix(r.URL.Path, string(url))),
 		}
-	>{ text }</a>
+	>
+		{ text }
+	</a>
 }
 
 templ headerExternalLinks() {
@@ -111,36 +113,49 @@ type SidebarGroup struct {
 	Links []*SidebarLink
 }
 
-templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *SidebarLink, contents string) {
+templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *SidebarLink, contents string, includeInspector bool) {
 	@Page() {
 		@highlightCSS
 		<div class="drawer">
 			<input id="sidebar-drawer" type="checkbox" class="drawer-toggle"/>
 			<div class="flex flex-col min-h-screen drawer-content">
 				@header(r)
-				<div class="flex flex-1">
-					<aside class="flex-col hidden gap-4 px-4 py-8 overflow-y-auto lg:flex min-w-64 bg-base-300 lg:visible">
-						@SidebarContents(sidebarGroups, current)
-					</aside>
-					<div class="flex flex-col w-full gap-16 p-4 lg:items-center lg:p-16">
-						@SidebarPrevNextLinks(sidebarGroups, current)
-						<article
-							class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary max-w-none lg:max-w-prose"
-						>
-							@templ.Raw(contents)
-						</article>
-						@SidebarPrevNextLinks(sidebarGroups, current)
+				if includeInspector {
+					<div class="flex flex-1">
+						@sidebarPageContents(sidebarGroups, current, contents)
+						<div class="hidden 2xl:block overflow-hidden px-4 bg-base-200">
+							<datastar-inspector></datastar-inspector>
+						</div>
 					</div>
-				</div>
+				} else {
+					@sidebarPageContents(sidebarGroups, current, contents)
+				}
 			</div>
 			<aside class="drawer-side">
 				<label for="sidebar-drawer" aria-label="close sidebar" class="drawer-overlay"></label>
-				<ul class="min-h-full p-4 menu w-80 bg-base-300 text-base-content">
+				<ul class="min-h-full px-4 menu w-80 bg-base-300 text-base-content">
 					@SidebarContents(sidebarGroups, current)
 				</ul>
 			</aside>
 		</div>
 	}
+}
+
+templ sidebarPageContents(sidebarGroups []*SidebarGroup, current *SidebarLink, contents string) {
+	<div class="flex flex-1">
+		<aside class="flex-col hidden gap-4 px-4 py-8 overflow-y-auto lg:flex min-w-64 bg-base-300 lg:visible">
+			@SidebarContents(sidebarGroups, current)
+		</aside>
+		<div class="flex flex-col w-full gap-16 p-4 lg:items-center lg:p-16">
+			@SidebarPrevNextLinks(sidebarGroups, current)
+			<article
+				class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary max-w-none lg:max-w-prose"
+			>
+				@templ.Raw(contents)
+			</article>
+			@SidebarPrevNextLinks(sidebarGroups, current)
+		</div>
+	</div>
 }
 
 templ SidebarContents(sidebarGroups []*SidebarGroup, current *SidebarLink) {
