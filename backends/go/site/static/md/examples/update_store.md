@@ -12,7 +12,7 @@
           Apply random signal patch
      </button>
      <pre
-          class="bg-accent border-2 border-accent text-accent text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5"
+          class="border-2 border-accent bg-base-200 text-accent text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5"
           data-text="JSON.stringify(ctx.store(),null,2)"
      >
           Stuff in store
