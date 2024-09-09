@@ -6440,6 +6440,10 @@ html:has(.drawer-toggle:checked) {
   height: 2rem;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .min-h-full {
   min-height: 100%;
 }
@@ -6798,11 +6802,6 @@ html:has(.drawer-toggle:checked) {
   border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
 }
 
-.border-primary {
-  --tw-border-opacity: 1;
-  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
-}
-
 .bg-accent {
   --tw-bg-opacity: 1;
   background-color: var(--fallback-a,oklch(var(--a)/var(--tw-bg-opacity)));
@@ -6898,6 +6897,11 @@ html:has(.drawer-toggle:checked) {
   padding: 1rem;
 }
 
+.px-2 {
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
 .px-4 {
   padding-left: 1rem;
   padding-right: 1rem;
@@ -6910,6 +6914,10 @@ html:has(.drawer-toggle:checked) {
 
 .pb-8 {
   padding-bottom: 2rem;
+}
+
+.pl-2 {
+  padding-left: 0.5rem;
 }
 
 .text-center {
@@ -8195,11 +8203,5 @@ html:has(.drawer-toggle:checked) {
 @media (min-width: 1280px) {
   .xl\:\@container-normal {
     container-type: normal;
-  }
-}
-
-@media (min-width: 1536px) {
-  .\32xl\:block {
-    display: block;
   }
 }

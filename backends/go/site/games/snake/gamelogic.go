@@ -173,7 +173,7 @@ func (eng *SnakeGame) Run(ctx context.Context) error {
 			fs := float64(eng.FoodSize)
 			for foodindex, food := range eng.Food {
 				if food.Position.getDistance(eng.Snake[0]) < fs {
-					fmt.Println("Food found!!")
+					// fmt.Println("Food found!!")
 					eng.Food[foodindex].Position = eng.GetRandomPosition()
 					eng.snakeLength = eng.snakeLength * 3 / 2
 				}
@@ -211,7 +211,7 @@ func (eng *SnakeGame) Run(ctx context.Context) error {
 
 			// Check if snake has hit the wall
 			if eng.Snake[0].X < 0 || eng.Snake[0].X > eng.Width || eng.Snake[0].Y < 0 || eng.Snake[0].Y > eng.Height {
-				fmt.Println("Snake hit the wall")
+				// fmt.Println("Snake hit the wall")
 				eng.Mode = ModeFinished
 			}
 

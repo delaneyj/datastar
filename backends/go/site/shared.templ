@@ -100,12 +100,13 @@ templ header(r *http.Request) {
 }
 
 type SidebarLink struct {
-	ID         string
-	Label      string
-	URL        templ.SafeURL
-	Prev       *SidebarLink
-	Next       *SidebarLink
-	IsDisabled bool
+	ID                     string
+	Label                  string
+	URL                    templ.SafeURL
+	Prev                   *SidebarLink
+	Next                   *SidebarLink
+	IsDisabled             bool
+	ShouldIncludeInspector bool
 }
 
 type SidebarGroup struct {
@@ -113,17 +114,17 @@ type SidebarGroup struct {
 	Links []*SidebarLink
 }
 
-templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *SidebarLink, contents string, includeInspector bool) {
+templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *SidebarLink, contents string) {
 	@Page() {
 		@highlightCSS
 		<div class="drawer">
 			<input id="sidebar-drawer" type="checkbox" class="drawer-toggle"/>
 			<div class="flex flex-col min-h-screen drawer-content">
 				@header(r)
-				if includeInspector {
-					<div class="flex flex-1">
+				if current.ShouldIncludeInspector {
+					<div class="flex">
 						@sidebarPageContents(sidebarGroups, current, contents)
-						<div class="hidden 2xl:block overflow-hidden px-4 bg-base-200">
+						<div class="h-full bg-base-200 pl-2 ">
 							<datastar-inspector></datastar-inspector>
 						</div>
 					</div>

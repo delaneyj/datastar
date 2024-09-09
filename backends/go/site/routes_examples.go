@@ -53,7 +53,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 		{
 			Label: "Web Components Examples",
 			Links: []*SidebarLink{
-				{ID: "shoelace_kitchensink"},
+				{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
 			},
 		},
 		{
@@ -63,7 +63,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "bind_keys"},
 				{ID: "scroll_into_view"},
 				{ID: "on_load"},
-				{ID: "model_binding"},
+				{ID: "model_binding", ShouldIncludeInspector: true},
 				{ID: "disable_button"},
 				{ID: "merge_options"},
 				{ID: "redirects"},
@@ -88,7 +88,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			Links: []*SidebarLink{
 				{ID: "node"},
 				{ID: "python"},
-				{ID: "quick_primer_go"},
+				{ID: "quick_primer_go", ShouldIncludeInspector: true},
 				{ID: "templ_counter"},
 			},
 		},
@@ -137,7 +137,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents, true).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
 		})
 
 		if err := errors.Join(

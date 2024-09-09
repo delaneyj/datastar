@@ -80,7 +80,7 @@ func setupEssays(router chi.Router) error {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents, false).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
 		})
 	})
 

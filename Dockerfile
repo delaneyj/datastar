@@ -1,4 +1,4 @@
-FROM docker.io/golang:1.22.1-alpine AS build
+FROM docker.io/golang:1.23.1-alpine AS build
 
 RUN apk add --no-cache upx
 ENV PORT=8080
