@@ -32,7 +32,7 @@ templ pageDBmon(dbs []*DbmonDatabase, mutationRate float64, renderTime time.Dura
 
 templ dbmonFPS(fps time.Duration) {
 	<div id="fps">
-		Average render time for entire page: { fmt.Sprintf("%s", fps) }
+		Average render time for entire page: { fmt.Sprint( fps) }
 	</div>
 }
 

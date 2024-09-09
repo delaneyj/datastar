@@ -30,7 +30,7 @@ export class Datastar {
   }
   parentID = ''
   missingIDNext = 0
-  removals = new Map<Element, Set<OnRemovalFn>>()
+  removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>()
   mergeRemovals = new Array<OnRemovalFn>()
 
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
@@ -54,6 +54,13 @@ export class Datastar {
   }
 
   run() {
+    const observer = new MutationObserver((_mutationList, _observer) => {
+      sendDatastarEvent('core', 'dom', 'mutation', document.body, document.body.outerHTML)
+    })
+
+    // Start observing the target node for configured mutations
+    observer.observe(document.body, { attributes: true, childList: true, subtree: true })
+
     this.plugins.forEach((p) => {
       if (p.onGlobalInit) {
         p.onGlobalInit({
@@ -62,15 +69,17 @@ export class Datastar {
           mergeStore: this.mergeStore.bind(this),
           store: this.store,
         })
+        sendDatastarEvent('core', 'plugins', 'registration', 'BODY', `On prefix ${p.prefix}`)
       }
     })
+
     this.applyPlugins(document.body)
   }
 
   private cleanupElementRemovals(element: Element) {
     const removalSet = this.removals.get(element)
     if (removalSet) {
-      for (const removal of removalSet) {
+      for (const removal of removalSet.set) {
         removal()
       }
       this.removals.delete(element)
@@ -256,13 +265,13 @@ Check if the expression is valid before raising an issue.
 }
             `
 
-            sendDatastarEvent(
+            /*sendDatastarEvent(
               'core',
               'attributes',
               'expr_construction',
               ctx.el,
-              `${rawKey}="${rawExpression}" becomes "${joined} "`,
-            )
+              `${rawKey}="${rawExpression}" becomes: ${joined}`,
+            )*/
             try {
               const fn = new Function('ctx', fnContent) as ExpressionFunction
               ctx.expressionFn = fn
@@ -277,9 +286,9 @@ Check if the expression is valid before raising an issue.
           const removal = p.onLoad(ctx)
           if (removal) {
             if (!this.removals.has(el)) {
-              this.removals.set(el, new Set())
+              this.removals.set(el, { id: el.id, set: new Set() })
             }
-            this.removals.get(el)!.add(removal)
+            this.removals.get(el)!.set.add(removal)
           }
         }
       })

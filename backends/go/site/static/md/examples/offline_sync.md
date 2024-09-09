@@ -1,4 +1,4 @@
-## Update Store directly
+## Offline Sync
 
 ## Demo
 

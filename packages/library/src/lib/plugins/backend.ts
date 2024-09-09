@@ -1,3 +1,4 @@
+import { sendDatastarEvent } from '../.'
 import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
@@ -101,6 +102,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
   const loadingTarget = ctx.el as HTMLElement
 
+  sendDatastarEvent(
+    'plugin',
+    'backend',
+    'fetch_start',
+    loadingTarget,
+    JSON.stringify({ method, urlExpression, onlyRemote, storeJSON }),
+  )
   const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
     ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
     : []
@@ -196,9 +204,11 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
               case 'fragment':
                 break
               case 'redirect':
+                sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', line)
                 window.location.href = line
                 return
               case 'error':
+                sendDatastarEvent('plugin', 'backend', 'error', 'WINDOW', line)
                 throw new Error(line)
               case 'vt':
                 useViewTransition = line === 'true'
@@ -214,6 +224,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         if (isFragment) {
           if (!fragment?.length) fragment = '<div></div>'
           mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
+          sendDatastarEvent(
+            'plugin',
+            'backend',
+            'merge',
+            selector,
+            JSON.stringify({ fragment, settleTime, useViewTransition }),
+          )
         }
       }
     },
@@ -259,6 +276,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } catch (e) {
         console.error(e)
         debugger
+      } finally {
+        sendDatastarEvent('plugin', 'backend', 'fetch_end', loadingTarget, JSON.stringify({ method, urlExpression }))
       }
     },
   }
@@ -311,7 +330,14 @@ export function mergeHTMLFragment(
       let modifiedTarget = initialTarget
       switch (merge) {
         case FragmentMergeOptions.MorphElement:
-          const result = idiomorph(modifiedTarget, frag)
+          const result = idiomorph(modifiedTarget, frag, {
+            callbacks: {
+              beforeNodeRemoved: (oldNode: Element, _: Element) => {
+                ctx.cleanupElementRemovals(oldNode)
+                return true
+              },
+            },
+          })
           if (!result?.length) {
             throw new Error(`No morph result`)
           }
@@ -352,9 +378,9 @@ export function mergeHTMLFragment(
         default:
           throw new Error(`Unknown merge type: ${merge}`)
       }
+      ctx.cleanupElementRemovals(modifiedTarget)
       modifiedTarget.classList.add(SWAPPING_CLASS)
 
-      ctx.cleanupElementRemovals(initialTarget)
       ctx.applyPlugins(document.body)
 
       setTimeout(() => {
