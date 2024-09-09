@@ -6464,6 +6464,10 @@ html:has(.drawer-toggle:checked) {
   min-width: 16rem;
 }
 
+.max-w-lg {
+  max-width: 32rem;
+}
+
 .max-w-none {
   max-width: none;
 }
@@ -6474,10 +6478,6 @@ html:has(.drawer-toggle:checked) {
 
 .max-w-sm {
   max-width: 24rem;
-}
-
-.max-w-lg {
-  max-width: 32rem;
 }
 
 .flex-1 {
@@ -6544,12 +6544,12 @@ html:has(.drawer-toggle:checked) {
   grid-auto-flow: dense;
 }
 
-.grid-cols-4 {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-}
-
 .grid-cols-3 {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.grid-cols-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
 }
 
 .grid-rows-2 {
@@ -6796,6 +6796,11 @@ html:has(.drawer-toggle:checked) {
 .border-accent {
   --tw-border-opacity: 1;
   border-color: var(--fallback-a,oklch(var(--a)/var(--tw-border-opacity)));
+}
+
+.border-primary {
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-p,oklch(var(--p)/var(--tw-border-opacity)));
 }
 
 .bg-accent {
@@ -7144,6 +7149,11 @@ html:has(.drawer-toggle:checked) {
 .ring-accent {
   --tw-ring-opacity: 1;
   --tw-ring-color: var(--fallback-a,oklch(var(--a)/var(--tw-ring-opacity)));
+}
+
+.ring-primary {
+  --tw-ring-opacity: 1;
+  --tw-ring-color: var(--fallback-p,oklch(var(--p)/var(--tw-ring-opacity)));
 }
 
 .ring-offset-0 {

@@ -76,6 +76,20 @@ templ Home() {
 					<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
 					<p>We recently updated the site and the old cookies are causing issues.</p>
 				</div>
+				<div class="alert alert-info">
+					@icon("material-symbols:info")
+					<div>
+						<div class="font-bold">
+							Datastar now comes with a Inspector WebComponent!
+						</div>
+						<div class="text-xs">
+							Can be added to any page and get full access to the Datastar internals for debugging
+						</div>
+					</div>
+				</div>
+				<div class=" shadow-xl rounded-box p-2 bg-base-100 md:max-w-3xl">
+					<datastar-inspector></datastar-inspector>
+				</div>
 			</div>
 		</div>
 	}
@@ -119,7 +133,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 			input = mvc.Todos[mvc.EditingIdx].Text
 		}
 	}}
-	<div id="todosMVC" class="w-full shadow-xl card bg-base-100">
+	<div id="todosMVC" class="w-full shadow-xl card bg-base-100 ring-4 ring-primary">
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
