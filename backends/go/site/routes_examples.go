@@ -136,7 +136,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents, true).Render(r.Context(), w)
 		})
 
 		if err := errors.Join(

@@ -1,9 +1,5 @@
 package site
 
-import (
-	"github.com/delaneyj/datastar"
-)
-
 type FileUploadStore struct {
 	FilesBase64 []string `json:"files"`
 	FileMimes   []string `json:"filesMimes"`
@@ -38,7 +34,6 @@ templ FileUploadView(store *FileUploadStore) {
 		>
 			Submit
 		</button>
-		@datastar.TemplSignalStoreView()
 	</div>
 }
 

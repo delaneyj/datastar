@@ -6432,6 +6432,10 @@ html:has(.drawer-toggle:checked) {
   aspect-ratio: 1 / 1;
 }
 
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -6460,10 +6464,6 @@ html:has(.drawer-toggle:checked) {
   min-width: 16rem;
 }
 
-.max-w-lg {
-  max-width: 32rem;
-}
-
 .max-w-none {
   max-width: none;
 }
@@ -6474,6 +6474,10 @@ html:has(.drawer-toggle:checked) {
 
 .max-w-sm {
   max-width: 24rem;
+}
+
+.max-w-lg {
+  max-width: 32rem;
 }
 
 .flex-1 {
@@ -6540,12 +6544,12 @@ html:has(.drawer-toggle:checked) {
   grid-auto-flow: dense;
 }
 
-.grid-cols-3 {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
 .grid-cols-4 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.grid-cols-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .grid-rows-2 {
@@ -6887,10 +6891,6 @@ html:has(.drawer-toggle:checked) {
 
 .p-4 {
   padding: 1rem;
-}
-
-.p-8 {
-  padding: 2rem;
 }
 
 .px-4 {
@@ -8185,5 +8185,11 @@ html:has(.drawer-toggle:checked) {
 @media (min-width: 1280px) {
   .xl\:\@container-normal {
     container-type: normal;
+  }
+}
+
+@media (min-width: 1536px) {
+  .\32xl\:block {
+    display: block;
   }
 }

@@ -24,7 +24,10 @@
     "@sudodevnull/datastar": "workspace:*",
     "daisyui": "latest",
     "diff": "^5.2.0",
-    "lit": "^3.1.2"
+    "lit": "^3.1.2",
+    "prettier": "^3.3.3",
+    "rehype": "^13.0.1",
+    "rehype-format": "^5.0.0"
   },
   "devDependencies": {
     "@types/diff": "^5.2.0",

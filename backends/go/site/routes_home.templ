@@ -1,9 +1,6 @@
 package site
 
-import (
-	"fmt"
-	"github.com/delaneyj/datastar"
-)
+import "fmt"
 
 templ Home() {
 	{{
@@ -227,15 +224,6 @@ templ TodosMVCView(mvc *TodoMVC) {
 						</footer>
 					}
 				</section>
-				@datastar.TemplSignalStoreView()
-				<div class="card bg-base-200">
-					<div class="card-body">
-						<div class="card-title">Backend State</div>
-						<pre class="overflow-auto font-mono text-xs">
-							{ MustJSONMarshal(mvc) }
-						</pre>
-					</div>
-				</div>
 			</div>
 		</div>
 	</div>

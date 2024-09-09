@@ -1,9 +1,6 @@
 package site
 
-import (
-	"fmt"
-	"github.com/delaneyj/datastar"
-)
+import "fmt"
 
 type QuickPrimerGoStore struct {
 	Input string `json:"input"`
@@ -29,7 +26,6 @@ templ QuickPrimerGoView(store *QuickPrimerGoStore) {
 				<span id="feed" data-on-load="$$get('/examples/quick_primer_go/data/feed')"></span>
 			</div>
 		</main>
-		@datastar.TemplSignalStoreView()
 	</div>
 }
 

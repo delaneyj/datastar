@@ -1,9 +1,6 @@
 package site
 
-import (
-	"fmt"
-	"github.com/delaneyj/datastar"
-)
+import "fmt"
 
 type inlineValidationUser struct {
 	FirstName string `json:"firstName"`
@@ -46,7 +43,6 @@ templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFir
 			Add User
 		</button>
 		<div class="divider"></div>
-		@datastar.TemplSignalStoreView()
 	</div>
 }
 
