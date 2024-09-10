@@ -27,7 +27,7 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
+const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt', 'history']
 
 const FragmentMergeOptions = {
   MorphElement: 'morph_element',
@@ -202,6 +202,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
                 settleTime = parseInt(line)
                 break
               case 'fragment':
+                break
+              case 'history':
+                history.pushState({}, "", line);
                 break
               case 'redirect':
                 sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', line)
