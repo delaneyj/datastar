@@ -124,7 +124,7 @@ templ SidebarPage(r *http.Request, sidebarGroups []*SidebarGroup, current *Sideb
 				if current.ShouldIncludeInspector {
 					<div class="flex">
 						@sidebarPageContents(sidebarGroups, current, contents)
-						<div class="h-full bg-base-200 pl-2 ">
+						<div class="h-full pl-2 bg-base-200 ">
 							<datastar-inspector></datastar-inspector>
 						</div>
 					</div>

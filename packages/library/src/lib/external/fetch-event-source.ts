@@ -59,6 +59,8 @@ export function fetchEventSource(
   }: FetchEventSourceInit,
 ) {
   return new Promise<void>((resolve, reject) => {
+    let retries = 0
+
     // make a copy of the input headers since we may modify it below:
     const headers = { ...inputHeaders }
     if (!headers.accept) {
@@ -134,6 +136,17 @@ export function fetchEventSource(
             const interval: any = onerror?.(err) ?? retryInterval
             window.clearTimeout(retryTimer)
             retryTimer = window.setTimeout(create, interval)
+            retryInterval *= 1.5 // exponential backoff
+            retryInterval = Math.min(retryInterval, MaxRetryInterval)
+
+            retries++
+            if (retries >= MaxRetryCount) {
+              // we should not retry anymore:
+              dispose()
+              reject(new Error(`Max retries hit, check your server or network connection.`))
+            } else {
+              console.error(`Error fetching event source, retrying in ${interval}ms`)
+            }
           } catch (innerErr) {
             // we should not retry anymore:
             dispose()
@@ -142,6 +155,8 @@ export function fetchEventSource(
         }
       }
     }
+
+    retryInterval = DefaultRetryInterval
 
     create()
   })
@@ -163,7 +178,9 @@ export interface EventSourceMessage {
 }
 
 const EventStreamContentType = 'text/event-stream'
-const DefaultRetryInterval = 1000
+const DefaultRetryInterval = 100
+const MaxRetryInterval = 10000
+const MaxRetryCount = 10
 const LastEventId = 'last-event-id'
 const enum ControlChars {
   NewLine = 10,
