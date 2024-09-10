@@ -59,6 +59,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 		{
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
+				{ID: "backoff"},
 				{ID: "multiline_fragments"},
 				{ID: "bind_keys"},
 				{ID: "scroll_into_view"},
@@ -178,6 +179,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesQuickPrimerGo(examplesRouter),
 			setupExamplesTemplCounter(examplesRouter, store),
 			setupExamplesShow(examplesRouter),
+			setupExamplesBackoff(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))
 		}
