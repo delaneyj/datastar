@@ -322,9 +322,11 @@ export function mergeHTMLFragment(
       throw new Error(`No targets found for ${selectorOrID}`)
     }
   }
+  const allTargets = [...targets]
+  if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
 
-  const applyToTargets = () => {
-    for (const initialTarget of targets) {
+  const applyToTargets = (capturedTargets: Element[]) => {
+    for (const initialTarget of capturedTargets) {
       initialTarget.classList.add(SWAPPING_CLASS)
       const originalHTML = initialTarget.outerHTML
       let modifiedTarget = initialTarget
@@ -400,9 +402,9 @@ export function mergeHTMLFragment(
   }
 
   if (supportsViewTransitions && useViewTransition) {
-    docWithViewTransitionAPI.startViewTransition(() => applyToTargets())
+    docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
   } else {
-    applyToTargets()
+    applyToTargets(allTargets)
   }
 }
 
