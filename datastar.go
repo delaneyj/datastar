@@ -90,12 +90,13 @@ var ValidFragmentMergeTypes = []FragmentMergeType{
 }
 
 const (
-	FragmentSelectorSelf  = "self"
-	FragmentSelectorUseID = ""
-	SSEEventTypeFragment  = "datastar-fragment"
-	SSEEventTypeSignal    = "datastar-signal"
-	SSEEventTypeRedirect  = "datastar-redirect"
-	SSEEventTypeError     = "datastar-error"
+	FragmentSelectorSelf        = "self"
+	FragmentSelectorUseID       = ""
+	SSEEventTypeFragment        = "datastar-fragment"
+	SSEEventTypeSignal          = "datastar-signal"
+	SSEEventTypeSignalIfMissing = "datastar-signal-ifmissing"
+	SSEEventTypeRedirect        = "datastar-redirect"
+	SSEEventTypeError           = "datastar-error"
 )
 
 type RenderFragmentOptions struct {
@@ -282,6 +283,22 @@ func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string) {
 	sse.SendMultiData(
 		lines,
 		WithSSEEvent(SSEEventTypeSignal),
+	)
+}
+
+func PatchStoreIfMissing(sse *ServerSentEventsHandler, store any) {
+	b, err := json.Marshal(store)
+	if err != nil {
+		panic(err)
+	}
+	PatchStoreIfMissingRaw(sse, string(b))
+}
+
+func PatchStoreIfMissingRaw(sse *ServerSentEventsHandler, storeJSON string) {
+	lines := strings.Split(storeJSON, "\n")
+	sse.SendMultiData(
+		lines,
+		WithSSEEvent(SSEEventTypeSignalIfMissing),
 	)
 }
 

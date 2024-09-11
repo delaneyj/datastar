@@ -60,6 +60,15 @@ data: {foo: 1234}
 
 The `datastar-signal` event is used to update the store with new values. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
 
+### datastar-signal-ifmissing
+
+```go
+event: datastar-signal-ifmissing
+data: {foo: 1234}
+```
+
+The `datastar-signal-ifmissing` event is used to update the store with new values only if the key does not exist. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
+
 ## Attribute Plugins
 
 ### Fetch Indicator

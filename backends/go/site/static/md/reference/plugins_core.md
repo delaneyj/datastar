@@ -18,6 +18,7 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 
 - `.local` - Save the store to localStorage and load it on page refresh
 - `.session` - Save the store to sessionStorage and load it on page refresh
+- `.ifmissing` - Only set the store if the key does not exist. This is useful for setting defaults without overwriting existing values.
 
 ### Ref
 
