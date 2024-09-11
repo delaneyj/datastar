@@ -3,13 +3,11 @@
 ## Demo
 
 <div
-  id="demo"
-  data-store="{id: 1234}"
   data-on-load="$$get('/examples/store_ifmissing/updates')"
 >
   <div>
     Should always be 1234:
-    <span data-text="$id">should be replaced</span>
+    <span id="placeholder"></span>
   </div>
 </div>
 

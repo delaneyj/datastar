@@ -178,8 +178,9 @@ export function storeFromPossibleContents(currentStore: any, contents: any, hasI
     Object.assign(actual, contents)
   } else {
     for (const key in contents) {
-      if (!currentStore[key]) {
-        actual[key] = actual[key]
+      const currentValue = currentStore[key]?.value
+      if (currentValue === undefined || currentValue === null) {
+        actual[key] = contents[key]
       }
     }
   }

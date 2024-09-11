@@ -17,7 +17,7 @@ func setupExamplesStoreIfMissing(examplesRouter chi.Router) error {
 		t := time.NewTicker(1 * time.Second)
 		defer t.Stop()
 
-		i := 0
+		i := 1234
 		for {
 			select {
 			case <-r.Context().Done():
@@ -27,7 +27,7 @@ func setupExamplesStoreIfMissing(examplesRouter chi.Router) error {
 
 				switch i % 2 {
 				case 0:
-					fragment := fmt.Sprintf(`<div id="demo" data-store.ifmissing="%s"></div>`, store)
+					fragment := fmt.Sprintf(`<div id="placeholder" data-store.ifmissing="%s" data-text="$id"></div>`, store)
 					datastar.RenderFragmentString(
 						sse, fragment,
 						datastar.WithMergeUpsertAttributes(),
