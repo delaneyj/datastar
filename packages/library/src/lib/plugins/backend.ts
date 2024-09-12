@@ -27,20 +27,6 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-// const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
-
-// const FragmentMergeOptions = {
-//   MorphElement: 'morph_element',
-//   InnerElement: 'inner_element',
-//   OuterElement: 'outer_element',
-//   PrependElement: 'prepend_element',
-//   AppendElement: 'append_element',
-//   BeforeElement: 'before_element',
-//   AfterElement: 'after_element',
-//   DeleteElement: 'delete_element',
-//   UpsertAttributes: 'upsert_attributes',
-// } as const
-
 
 type IndicatorReference = { el: HTMLElement; count: number }
 
