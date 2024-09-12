@@ -1,9 +1,11 @@
-import { sendDatastarEvent } from '.'
+import { localEventProcessors, sendDatastarEvent } from '.'
 import { toHTMLorSVGElement } from './dom'
 import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
 import { Signal, computed, effect, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
+import {EventProcessor} from './types'
+
 import {
   Actions,
   AttributeContext,
@@ -22,6 +24,7 @@ export class Datastar {
   plugins: AttributePlugin[] = []
   store: DeepSignal<any> = deepSignal({ _dsPlugins: {} })
   actions: Actions = {}
+  eventProcessors: Record<string, EventProcessor> = {}
   refs: Record<string, HTMLElement> = {}
   reactivity: Reactivity = {
     signal,
@@ -34,6 +37,7 @@ export class Datastar {
   mergeRemovals = new Array<OnRemovalFn>()
 
   constructor(actions: Actions = {}, ...plugins: AttributePlugin[]) {
+    this.eventProcessors = localEventProcessors
     this.actions = Object.assign(this.actions, actions)
     plugins = [...CorePlugins, ...plugins]
     if (!plugins.length) throw new Error('No plugins provided')
@@ -68,6 +72,7 @@ export class Datastar {
           reactivity: this.reactivity,
           mergeStore: this.mergeStore.bind(this),
           store: this.store,
+          eventProcessors: this.eventProcessors ,
         })
         sendDatastarEvent('core', 'plugins', 'registration', 'BODY', `On prefix ${p.prefix}`)
       }
@@ -233,6 +238,7 @@ export class Datastar {
             },
             modifiers,
             sendDatastarEvent,
+            eventProcessors: this.eventProcessors,
           }
 
           if (!p.bypassExpressionFunctionCreation?.(ctx) && !p.mustHaveEmptyExpression && expression.length) {

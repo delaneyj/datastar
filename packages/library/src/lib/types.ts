@@ -1,5 +1,6 @@
 import { DeepState } from './external/deepsignal'
 import { ReadonlySignal, Signal } from './external/preact-core'
+import type { EventSourceMessage } from './external/fetch-event-source'
 
 export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
 
@@ -11,6 +12,30 @@ export type Reactivity = {
   computed: <T>(fn: () => T) => ReadonlySignal<T>
   effect: (cb: () => void) => OnRemovalFn
 }
+
+
+export enum FragmentMergeOptions {
+  MorphElement = 'morph_element',
+  InnerElement = 'inner_element',
+  OuterElement = 'outer_element',
+  PrependElement = 'prepend_element',
+  AppendElement = 'append_element',
+  BeforeElement = 'before_element',
+  AfterElement = 'after_element',
+  DeleteElement = 'delete_element',
+  UpsertAttributes = 'upsert_attributes',
+}
+
+export type FetchEventLocalParams = {
+  fragment: string,
+  merge: FragmentMergeOptions,
+  exists: boolean,
+  selector: string,
+  settleTime: number,
+  useViewTransition: boolean
+}
+
+export type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
 
 export type AttributeContext = {
   store: () => any
@@ -29,6 +54,7 @@ export type AttributeContext = {
   expressionFn: ExpressionFunction
   modifiers: Map<string, string[]>
   sendDatastarEvent: SendDatastarEvent
+  eventProcessors: Record<string, EventProcessor>
 }
 
 export type SendDatastarEvent = (
@@ -45,7 +71,10 @@ export type InitContext = {
   mergeStore: (store: DeepState) => void
   actions: Readonly<Actions>
   reactivity: Reactivity
+  eventProcessors: Record<string, EventProcessor>
 }
+
+export type EventProcessor = (ctx: AttributeContext, evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => void
 
 export type OnRemovalFn = () => void
 export type AttributePlugin = {

@@ -3,7 +3,7 @@ import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
-import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
+import { Actions, AttributeContext, AttributePlugin, ExpressionFunction, FetchEventLocalParams, FragmentMergeOptions } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
@@ -27,20 +27,20 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
+// const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
 
-const FragmentMergeOptions = {
-  MorphElement: 'morph_element',
-  InnerElement: 'inner_element',
-  OuterElement: 'outer_element',
-  PrependElement: 'prepend_element',
-  AppendElement: 'append_element',
-  BeforeElement: 'before_element',
-  AfterElement: 'after_element',
-  DeleteElement: 'delete_element',
-  UpsertAttributes: 'upsert_attributes',
-} as const
-type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
+// const FragmentMergeOptions = {
+//   MorphElement: 'morph_element',
+//   InnerElement: 'inner_element',
+//   OuterElement: 'outer_element',
+//   PrependElement: 'prepend_element',
+//   AppendElement: 'append_element',
+//   BeforeElement: 'before_element',
+//   AfterElement: 'after_element',
+//   DeleteElement: 'delete_element',
+//   UpsertAttributes: 'upsert_attributes',
+// } as const
+
 
 type IndicatorReference = { el: HTMLElement; count: number }
 
@@ -164,12 +164,14 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           debugger
         }
       } else {
-        let fragment = '',
-          merge: FragmentMergeOption = 'morph_element',
-          exists = false,
-          selector = '',
-          settleTime = 500,
-          useViewTransition = true
+        const localParams: FetchEventLocalParams = {
+          fragment: '',
+          merge: FragmentMergeOptions.MorphElement,
+          exists: false,
+          selector: '',
+          settleTime: 500,
+          useViewTransition: true
+        }
 
         const isFragment = evt.event === EVENT_FRAGMENT
 
@@ -181,55 +183,29 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           if (!line?.length) continue
 
           const firstWord = line.split(' ', 1)[0]
-          const isDatatype = KnowEventTypes.includes(firstWord)
-          const isNewDatatype = isDatatype && firstWord !== currentDatatype
-          if (isNewDatatype) {
-            currentDatatype = firstWord
-            line = line.slice(firstWord.length + 1)
 
-            switch (currentDatatype) {
-              case 'selector':
-                selector = line
-                break
-              case 'merge':
-                merge = line as FragmentMergeOption
-                exists = Object.values(FragmentMergeOptions).includes(merge)
-                if (!exists) {
-                  throw new Error(`Unknown merge option: ${merge}`)
-                }
-                break
-              case 'settle':
-                settleTime = parseInt(line)
-                break
-              case 'fragment':
-                break
-              case 'redirect':
-                sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', line)
-                window.location.href = line
-                return
-              case 'error':
-                sendDatastarEvent('plugin', 'backend', 'error', 'WINDOW', line)
-                throw new Error(line)
-              case 'vt':
-                useViewTransition = line === 'true'
-                break
-              default:
-                throw new Error(`Unknown data type`)
+          currentDatatype = firstWord
+          line = line.slice(firstWord.length + 1)
+
+          for (let k in ctx.eventProcessors) {
+            if (firstWord === k) {
+              ctx.eventProcessors[k](ctx, evt, line, localParams)
+              break;
             }
           }
 
-          if (currentDatatype === 'fragment') fragment += line + '\n'
+          if (currentDatatype === 'fragment') localParams.fragment += line + '\n'
         }
 
         if (isFragment) {
-          if (!fragment?.length) fragment = '<div></div>'
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
+          if (!localParams.fragment?.length) localParams.fragment = '<div></div>'
+          mergeHTMLFragment(ctx, localParams.selector, localParams.merge, localParams.fragment, localParams.settleTime, localParams.useViewTransition)
           sendDatastarEvent(
             'plugin',
             'backend',
             'merge',
-            selector,
-            JSON.stringify({ fragment, settleTime, useViewTransition }),
+            localParams.selector,
+            JSON.stringify({ fragment: localParams.fragment, settleTime: localParams.settleTime, useViewTransition: localParams.useViewTransition }),
           )
         }
       }
@@ -297,7 +273,7 @@ const fragContainer = document.createElement('template')
 export function mergeHTMLFragment(
   ctx: AttributeContext,
   selector: string,
-  merge: FragmentMergeOption,
+  merge: FragmentMergeOptions,
   fragment: string,
   settleTime: number,
   useViewTransition: boolean,

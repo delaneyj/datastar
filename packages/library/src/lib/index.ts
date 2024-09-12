@@ -3,9 +3,12 @@ export * from './dom'
 export * from './plugins'
 export * from './types'
 
+import type { EventProcessor, AttributeContext, FetchEventLocalParams, FragmentMergeOptions } from './types'
+import type { EventSourceMessage } from './external/fetch-event-source'
 import { version } from '../../package.json'
 import { Datastar } from './engine'
 import {
+  BrowserHistoryPlugins,
   AttributeActions,
   AttributePlugins,
   BackendActions,
@@ -24,6 +27,36 @@ export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlug
   ds.run()
   return ds
 }
+// set of event processors that should be loaded as local event processors by default
+export const localEventProcessors: Record<string, EventProcessor> = {
+  "selector": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => {
+    localParams.selector = line
+    return
+  },
+  "merge": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => {
+    localParams.merge = line as FragmentMergeOptions
+    return
+  },
+  "settle": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => {
+    localParams.settleTime = parseInt(line)
+    return
+  },
+  "fragment": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => {
+    localParams.fragment = line
+    return
+  },
+  "redirect": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, _localParams: FetchEventLocalParams) => {
+    window.location.href = line
+    return
+  },
+  "error": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, _localParams: FetchEventLocalParams) => {
+    throw new Error(line)
+  },
+  "vt": (_ctx: AttributeContext, _evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => {
+    localParams.useViewTransition = line === 'true'
+    return
+  }
+}
 
 export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPlugins: AttributePlugin[]) {
   const actions: Actions = Object.assign(
@@ -34,7 +67,7 @@ export function runDatastarWithAllPlugins(addedActions: Actions = {}, ...addedPl
     VisibilityActions,
     addedActions,
   )
-  const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins]
+  const allPlugins = [...BackendPlugins, ...VisibilityPlugins, ...AttributePlugins, ...addedPlugins, ...BrowserHistoryPlugins]
   return runDatastarWith(actions, ...allPlugins)
 }
 
