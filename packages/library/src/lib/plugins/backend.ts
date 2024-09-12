@@ -1,4 +1,4 @@
-import { sendDatastarEvent } from '../.'
+import { sendDatastarEvent, storeFromPossibleContents } from '../.'
 import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
@@ -13,6 +13,7 @@ const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
+const EVENT_SIGNAL_IFMISSING = `${DATASTAR_CLASS_PREFIX}signal-ifmissing`
 // const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
 // const EVENT_ERROR = `${DATASTAR_CLASS_PREFIX}error`
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
@@ -137,12 +138,17 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         debugger
       }
 
-      if (evt.event === EVENT_SIGNAL) {
+      if (evt.event === EVENT_SIGNAL || evt.event === EVENT_SIGNAL_IFMISSING) {
         const fnContents = ` return Object.assign({...ctx.store()}, ${evt.data})`
         try {
           const fn = new Function('ctx', fnContents) as ExpressionFunction
-          const data = fn(ctx)
-          ctx.mergeStore(data)
+          const possibleMergeStore = fn(ctx)
+          const actualMergeStore = storeFromPossibleContents(
+            ctx.store(),
+            possibleMergeStore,
+            evt.event === EVENT_SIGNAL_IFMISSING,
+          )
+          ctx.mergeStore(actualMergeStore)
           ctx.applyPlugins(document.body)
         } catch (e) {
           console.log(fnContents)

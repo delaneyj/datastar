@@ -1,6 +1,9 @@
 package site
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 templ Home() {
 	{{
@@ -21,6 +24,7 @@ templ Home() {
 					Using a single
 					<span class="text-lg font-bold text-primary">{ iifeBuildSizeStr }</span>
 					CDN link and have access to everything needed to rival a full-stack SPA framework; all in the language of your choice.
+					To give some perspective, the entire Datastar framework over <span class="text-lg font-bold text-primary">{ fmt.Sprintf("%.0f", math.Floor(186*1024/float64(iifeBuildSize))) }x</span> smaller than the rocket image above.
 				</p>
 				<div class="flex flex-wrap w-full gap-4">
 					<a
@@ -87,7 +91,7 @@ templ Home() {
 						</div>
 					</div>
 				</div>
-				<div class=" shadow-xl rounded-box p-2 bg-base-100 md:max-w-3xl">
+				<div class="p-2 shadow-xl rounded-box bg-base-100 md:max-w-3xl">
 					<datastar-inspector></datastar-inspector>
 				</div>
 			</div>
@@ -184,7 +188,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								}
 							</ul>
 						</section>
-						<footer class="flex items-center justify-between flex-wrap gap-2">
+						<footer class="flex flex-wrap items-center justify-between gap-2">
 							<span class="todo-count">
 								<strong data-testid="todo_count">
 									{ fmt.Sprint(left) }

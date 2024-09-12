@@ -66,7 +66,7 @@ const StoreAttributePlugin: AttributePlugin = {
       },
     ],
   },
-  allowedModifiers: new Set(['local', 'session']),
+  allowedModifiers: new Set(['local', 'session', 'ifmissing']),
   onLoad: (ctx: AttributeContext) => {
     let lastCachedMarshalled = ``
     const localFn = ((_: CustomEvent<DatastarEvent>) => {
@@ -99,8 +99,9 @@ const StoreAttributePlugin: AttributePlugin = {
       ctx.mergeStore(store)
     }
 
-    const bodyStore = ctx.expressionFn(ctx)
-    ctx.mergeStore(bodyStore)
+    const possibleMergeStore = ctx.expressionFn(ctx)
+    const actualMergeStore = storeFromPossibleContents(ctx.store(), possibleMergeStore, ctx.modifiers.has('ifmissing'))
+    ctx.mergeStore(actualMergeStore)
 
     delete ctx.el.dataset[ctx.rawKey]
 
@@ -168,4 +169,21 @@ export function elemToSelector(elm: Element | Window | Document | string | null)
     elm = elm.parentElement
   }
   return names.join('>')
+}
+
+export function storeFromPossibleContents(currentStore: any, contents: any, hasIfMissing: boolean) {
+  const actual: any = {}
+
+  if (!hasIfMissing) {
+    Object.assign(actual, contents)
+  } else {
+    for (const key in contents) {
+      const currentValue = currentStore[key]?.value
+      if (currentValue === undefined || currentValue === null) {
+        actual[key] = contents[key]
+      }
+    }
+  }
+
+  return actual
 }

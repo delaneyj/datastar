@@ -73,6 +73,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "store_changed"},
 				{ID: "raf_update"},
 				{ID: "update_store"},
+				{ID: "store_ifmissing"},
 				{ID: "offline_sync"},
 				{ID: "session_storage"},
 				{ID: "refs"},
@@ -171,6 +172,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			//
 			setupExamplesShoelaceKitchensink(examplesRouter),
 			//
+			setupExamplesStoreIfMissing(examplesRouter),
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleUpdateBackend(examplesRouter),
