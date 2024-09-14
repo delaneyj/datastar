@@ -15,21 +15,21 @@ templ Default(content templ.Component) {
 			<div class="flex h-12 bg-gray-400 dark:bg-gray-700 dark:text-gray-100 text-gray-900 w-full drop-shadow-xl items-center justify-between px-12">
 				<div class="flex justify-start">
 					<a class="cursor-pointer" onclick="return false;" href="/">
-						<button class="px-8 py-2" data-on-click="$$get('/api/index')">Main Page</button>
+						<button class="px-8 py-2" data-on-click="$$put('/api/index')">Main Page</button>
 					</a>
 				</div>
 				<div class="flex justify-end items-center">
 					<a class="cursor-pointer" onclick="return false;" href="/guide">
-						<button class="px-8 py-2" data-on-click="$$get('/api/guide')">GUIDE</button>
+						<button class="px-8 py-2" data-on-click="$$put('/api/guide')">GUIDE</button>
 					</a>
 					<a class="cursor-pointer" onclick="return false;" href="/reference">
-						<button class="px-8 py-2" data-on-click="$$get('/api/reference')">REFERENCE</button>
+						<button class="px-8 py-2" data-on-click="$$put('/api/reference')">REFERENCE</button>
 					</a>
 					<a class="cursor-pointer" onclick="return false;" href="/examples">
-						<button class="px-8 py-2" data-on-click="$$get('/api/examples')">EXAMPLES</button>
+						<button class="px-8 py-2" data-on-click="$$put('/api/examples')">EXAMPLES</button>
 					</a>
 					<a class="cursor-pointer" onclick="return false;" href="/essays">
-						<button class="px-8 py-2" data-on-click="$$get('/api/essays')">ESSAYS</button>
+						<button class="px-8 py-2" data-on-click="$$put('/api/essays')">ESSAYS</button>
 					</a>
 				</div>
 			</div>

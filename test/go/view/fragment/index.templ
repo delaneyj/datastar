@@ -12,7 +12,7 @@ templ Index() {
 		<div data-show="$_boolData" class="text-center">
 			<p>button below is going to redirect to guide page using sse push event - redirect will proceed with page reloading</p>
 			<br/>
-			<button class="px-4 py-2 border-2 rounded-xl hover:translate-y-[1px] transition duration-200" data-on-click="$$get('/api/redir')">redirect</button>
+			<button class="px-4 py-2 border-2 rounded-xl hover:translate-y-[1px] transition duration-200" data-on-click="$$put('/api/redir')">redirect</button>
 		</div>
 	</div>
 }

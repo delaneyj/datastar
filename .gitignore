@@ -6,3 +6,4 @@ site_bin
 *_templ.go
 *.png~
 /tmp
+*_templ.txt
