@@ -13,6 +13,13 @@ export const HistoryPush: AttributePlugin = {
           event.state.url,
           true
         )
+        /** TODO this needs to be attached to some hook to correctly apply change and avoid elments moving on page
+         * need help to correctly attach this and not to use timeout 
+        */
+        setTimeout(() => {
+          // ctx.mergeStore({ ...ctx.store.value, ...history.state.store })
+          ctx.applyPlugins(document.body)
+        }, 120)
       }
       if (!window.history.state) {
         window.location.replace(window.location.href)
@@ -22,7 +29,7 @@ export const HistoryPush: AttributePlugin = {
 
     ctx.eventProcessors[prefix] = (ctx: AttributeContext, _evt: EventSourceMessage, line: string) => {
       if (parseline(ctx.rawExpression)) {
-        window.history.pushState(parseline(ctx.rawExpression), '', line);
+        window.history.pushState({ ...parseline(ctx.rawExpression), ...{ store: ctx.store().value } }, '', line);
       }
     }
   },

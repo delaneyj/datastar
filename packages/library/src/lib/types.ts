@@ -72,6 +72,7 @@ export type InitContext = {
   actions: Readonly<Actions>
   reactivity: Reactivity
   eventProcessors: Record<string, EventProcessor>
+  applyPlugins: (rootElement: Element) => void
 }
 
 export type EventProcessor = (ctx: AttributeContext, evt: EventSourceMessage, line: string, localParams: FetchEventLocalParams) => void

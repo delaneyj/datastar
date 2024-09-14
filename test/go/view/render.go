@@ -2,6 +2,7 @@ package view
 
 import (
 	"context"
+	"strings"
 
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
@@ -26,5 +27,5 @@ func RenderHtml(t templ.Component) string {
 		return ""
 	}
 
-	return buf.String()
+	return strings.ReplaceAll(buf.String(), "\n", "")
 }

@@ -5,3 +5,4 @@ site_bin
 .task
 *_templ.go
 *.png~
+/tmp

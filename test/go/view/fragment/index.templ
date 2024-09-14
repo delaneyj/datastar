@@ -7,10 +7,12 @@ templ Index() {
 			<hr/>
 			<p class="py-8">Lorem ipsum dolor sit amet consectetur adipisicing elit. Ducimus voluptates reprehenderit perspiciatis odit dolorem qui harum, error eligendi voluptatibus doloribus corrupti, quo quas magnam repellat expedita necessitatibus consequuntur, totam aperiam?</p>
 		</div>
-		<div class="text-center">
+		<span data-text="$_someData"></span>
+		<button class="px-4 py-2 border-2 rounded-xl hover:translate-y-[1px] transition duration-200" data-on-click="$_boolData=!$_boolData">Show/Hide</button>
+		<div data-show="$_boolData" class="text-center">
 			<p>button below is going to redirect to guide page using sse push event - redirect will proceed with page reloading</p>
 			<br/>
-			<button class="px-8 py-4 border-2 rounded-xl hover:translate-y-[2px] transition duration-500" data-on-click="$$put('/api/redir')">redirect</button>
+			<button class="px-4 py-2 border-2 rounded-xl hover:translate-y-[1px] transition duration-200" data-on-click="$$get('/api/redir')">redirect</button>
 		</div>
 	</div>
 }

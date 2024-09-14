@@ -12,27 +12,44 @@ import (
 
 func ApiHandlers(g *echo.Group) {
 
-	g.PUT("/index", func(c echo.Context) error {
-		return renderToSSE(c, fragment.Index(), "/")
+	g.GET("/index", func(c echo.Context) error {
+		data := [][]string{
+			{
+				"event: datastar-fragment",
+				"data: history /",
+				"data: merge inner_element",
+				"data: selector #main-container",
+				"data: fragment " + view.RenderHtml(fragment.Index()),
+			},
+			{
+				"event: datastar-signal",
+				"data: {_someData: 'some data comming from server'}",
+			},
+			{
+				"event: datastar-signal-ifmissing",
+				"data: {foo: 1234}",
+			},
+		}
+		return renderToSSE(c, data)
 	})
 
-	g.PUT("/guide", func(c echo.Context) error {
-		return renderToSSE(c, fragment.Guide(), "/guide")
+	g.GET("/guide", func(c echo.Context) error {
+		return renderToSSEOld(c, fragment.Guide(), "/guide")
 	})
 
-	g.PUT("/examples", func(c echo.Context) error {
-		return renderToSSE(c, fragment.Examples(), "/examples")
+	g.GET("/examples", func(c echo.Context) error {
+		return renderToSSEOld(c, fragment.Examples(), "/examples")
 	})
 
-	g.PUT("/reference", func(c echo.Context) error {
-		return renderToSSE(c, fragment.Reference(), "/reference")
+	g.GET("/reference", func(c echo.Context) error {
+		return renderToSSEOld(c, fragment.Reference(), "/reference")
 	})
 
-	g.PUT("/essays", func(c echo.Context) error {
-		return renderToSSE(c, fragment.Essays(), "/essays")
+	g.GET("/essays", func(c echo.Context) error {
+		return renderToSSEOld(c, fragment.Essays(), "/essays")
 	})
 
-	g.PUT("/redir", func(c echo.Context) error {
+	g.GET("/redir", func(c echo.Context) error {
 		c.Response().Header().Set(echo.HeaderContentType, "text/event-stream")
 		c.Response().Header().Set("Cache-Control", "no-cache")
 		c.Response().Header().Set("Connection", "keep-alive")
@@ -50,7 +67,7 @@ func ApiHandlers(g *echo.Group) {
 	})
 }
 
-func renderToSSE(c echo.Context, t templ.Component, history string) error {
+func renderToSSEOld(c echo.Context, t templ.Component, history string) error {
 	c.Response().Header().Set(echo.HeaderContentType, "text/event-stream")
 	c.Response().Header().Set("Cache-Control", "no-cache")
 	c.Response().Header().Set("Connection", "keep-alive")
@@ -66,6 +83,28 @@ func renderToSSE(c echo.Context, t templ.Component, history string) error {
 	buf.WriteString("data: merge inner_element\n")
 	buf.WriteString("data: selector #main-container\n")
 	buf.WriteString("data: fragment " + view.RenderHtml(t) + "\n\n")
+
+	return c.Stream(http.StatusOK, "", &buf)
+}
+
+func renderToSSE(c echo.Context, data [][]string) error {
+	c.Response().Header().Set(echo.HeaderContentType, "text/event-stream")
+	c.Response().Header().Set("Cache-Control", "no-cache")
+	c.Response().Header().Set("Connection", "keep-alive")
+
+	c.Response().WriteHeader(http.StatusOK)
+
+	buf := bytes.Buffer{}
+
+	for _, row_out := range data {
+		for i, row_in := range row_out {
+			if i == len(row_out)-1 {
+				buf.WriteString(row_in + "\n\n")
+			} else {
+				buf.WriteString(row_in + "\n")
+			}
+		}
+	}
 
 	return c.Stream(http.StatusOK, "", &buf)
 }
