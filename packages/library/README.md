@@ -47,3 +47,14 @@ Lives as a channel in the EventGraph Discord server. Feel free to join and ask q
 ### Why not just use HTMX+Alpine?
 
 I think HTMX is great and I will continue to recommend it for splashes of contents. In general Datastar is geared towards more complex reactive applications, especially in a realtime context.
+
+## Building
+
+The library itself can be built with https://pnpm.io/ by doing a `pnpm i` and `pnpm build` in the `packages/library` folder.
+
+To run the examples website you will need the following:
+ - [Go](https://go.dev/)
+ - [Taskfile](https://taskfile.dev/)
+ - [Git-LFS](https://git-lfs.com/)
+
+Start with a `git lfs checkout` in the datastar root folder then run `task tools` followed by `task -w hot`.
