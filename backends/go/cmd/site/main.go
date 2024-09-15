@@ -13,12 +13,14 @@ import (
 	"github.com/joho/godotenv"
 )
 
+const port = 8080
+
 func main() {
 	godotenv.Load()
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
-	logger.Info("Starting Docs Server")
+	logger.Info("Starting Docs Server", "url", fmt.Sprintf("http://localhost:%d", port))
 	defer logger.Info("Stopping Docs Server")
 
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
@@ -34,7 +36,7 @@ func main() {
 func run(ctx context.Context) error {
 	eg := toolbelt.NewErrGroupSharedCtx(
 		ctx,
-		site.RunBlocking(8080),
+		site.RunBlocking(port),
 	)
 	if err := eg.Wait(); err != nil {
 		return fmt.Errorf("error running docs server: %w", err)

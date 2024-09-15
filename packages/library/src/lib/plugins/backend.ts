@@ -114,28 +114,30 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
     : []
   const indicatorsVisible: Signal<IndicatorReference[]> | undefined = store?._dsPlugins.fetch?.indicatorsVisible
-  indicatorElements.forEach((indicator) => {
-    if (!indicator || !indicatorsVisible) return
-    const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
-      if (!indicatorVisible) return false
-      return indicator.isSameNode(indicatorVisible.el)
+  if (!!indicatorElements?.forEach) {
+    indicatorElements.forEach((indicator) => {
+      if (!indicator || !indicatorsVisible) return
+      const indicatorVisibleIndex = indicatorsVisible.value.findIndex((indicatorVisible) => {
+        if (!indicatorVisible) return false
+        return indicator.isSameNode(indicatorVisible.el)
+      })
+      if (indicatorVisibleIndex > -1) {
+        const indicatorVisible = indicatorsVisible.value[indicatorVisibleIndex]
+        const indicatorsVisibleNew = [...indicatorsVisible.value]
+        delete indicatorsVisibleNew[indicatorVisibleIndex]
+        indicatorsVisible.value = [
+          ...indicatorsVisibleNew.filter((ind) => {
+            return !!ind
+          }),
+          { el: indicator, count: indicatorVisible.count + 1 },
+        ]
+      } else {
+        indicator.classList.remove(INDICATOR_CLASS)
+        indicator.classList.add(INDICATOR_LOADING_CLASS)
+        indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
+      }
     })
-    if (indicatorVisibleIndex > -1) {
-      const indicatorVisible = indicatorsVisible.value[indicatorVisibleIndex]
-      const indicatorsVisibleNew = [...indicatorsVisible.value]
-      delete indicatorsVisibleNew[indicatorVisibleIndex]
-      indicatorsVisible.value = [
-        ...indicatorsVisibleNew.filter((ind) => {
-          return !!ind
-        }),
-        { el: indicator, count: indicatorVisible.count + 1 },
-      ]
-    } else {
-      indicator.classList.remove(INDICATOR_CLASS)
-      indicator.classList.add(INDICATOR_LOADING_CLASS)
-      indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
-    }
-  })
+  }
 
   const url = new URL(urlExpression, window.location.origin)
   method = method.toUpperCase()
@@ -251,32 +253,34 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           ? store._dsPlugins.fetch.indicatorElements[loadingTarget.id]?.value || []
           : []
         const indicatorCleanupPromises: Promise<() => void>[] = []
-        indicatorElements.forEach((indicator) => {
-          if (!indicator || !indicatorsVisible) return
-          const indicatorsVisibleNew = indicatorsVisible.value
-          const indicatorVisibleIndex = indicatorsVisibleNew.findIndex((indicatorVisible) => {
-            if (!indicatorVisible) return false
-            return indicator.isSameNode(indicatorVisible.el)
+        if (indicatorElements?.forEach) {
+          indicatorElements.forEach((indicator) => {
+            if (!indicator || !indicatorsVisible) return
+            const indicatorsVisibleNew = indicatorsVisible.value
+            const indicatorVisibleIndex = indicatorsVisibleNew.findIndex((indicatorVisible) => {
+              if (!indicatorVisible) return false
+              return indicator.isSameNode(indicatorVisible.el)
+            })
+            const indicatorVisible = indicatorsVisibleNew[indicatorVisibleIndex]
+            if (!indicatorVisible) return
+            if (indicatorVisible.count < 2) {
+              indicatorCleanupPromises.push(
+                new Promise(() =>
+                  setTimeout(() => {
+                    indicator.classList.remove(INDICATOR_LOADING_CLASS)
+                    indicator.classList.add(INDICATOR_CLASS)
+                  }, 300),
+                ),
+              )
+              delete indicatorsVisibleNew[indicatorVisibleIndex]
+            } else if (indicatorVisibleIndex > -1) {
+              indicatorsVisibleNew[indicatorVisibleIndex].count = indicatorsVisibleNew[indicatorVisibleIndex].count - 1
+            }
+            indicatorsVisible.value = indicatorsVisibleNew.filter((ind) => {
+              return !!ind
+            })
           })
-          const indicatorVisible = indicatorsVisibleNew[indicatorVisibleIndex]
-          if (!indicatorVisible) return
-          if (indicatorVisible.count < 2) {
-            indicatorCleanupPromises.push(
-              new Promise(() =>
-                setTimeout(() => {
-                  indicator.classList.remove(INDICATOR_LOADING_CLASS)
-                  indicator.classList.add(INDICATOR_CLASS)
-                }, 300),
-              ),
-            )
-            delete indicatorsVisibleNew[indicatorVisibleIndex]
-          } else if (indicatorVisibleIndex > -1) {
-            indicatorsVisibleNew[indicatorVisibleIndex].count = indicatorsVisibleNew[indicatorVisibleIndex].count - 1
-          }
-          indicatorsVisible.value = indicatorsVisibleNew.filter((ind) => {
-            return !!ind
-          })
-        })
+        }
 
         Promise.all(indicatorCleanupPromises)
       } catch (e) {

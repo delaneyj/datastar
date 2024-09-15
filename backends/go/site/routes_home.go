@@ -126,7 +126,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 			{Label: "HTMX+\nhyperscript", Value: 54000},
 			{Label: "HTMX+\nAlpine", Value: 40300},
 			{Label: "Datastar", Value: float64(iifeBuildSize)},
-			{Label: "Datastar Core", Value: 4526},
+			{Label: "Datastar Core", Value: 2430},
 		},
 	}
 
