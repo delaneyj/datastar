@@ -25,7 +25,7 @@ Consider this div:
 ```html
 <div
   id="color_throb"
-  class="transition-all duration-1000 font-bold text-2xl text-center rounded-box p-4 uppercase"
+  class="p-4 text-2xl font-bold text-center uppercase transition-all duration-1000 rounded-box"
   style="background-color:#b57614;color:#83a598"
 >
   blue on yellow
@@ -37,6 +37,12 @@ With SSE we just update the style every second:
 ### Smooth Progress Bar
 
 The [Progress Bar](/examples/progress_bar) demo uses this basic CSS animation technique as well, by updating the `length` property of a progress bar element, allowing for a smooth animation.
+
+### View Transitions
+
+<div id="view_transition">View Transition Demo</div>
+
+This button swap is happening in the backend.  Each click is causing a transition of state.  The animated opacity animation is provided automatically by the View Transition API.  Doesn't matter if the targetted elements are different types, it will still "do the right thing".
 
 ## Swap Transitions
 

@@ -8,8 +8,8 @@ COPY go.* *.go ./
 RUN go mod download
 COPY backends/go/. ./backends/go/
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -o /out/site backends/go/cmd/site/main.go
-RUN upx /out/site
+    go build -ldflags="-s" -o /out/site backends/go/cmd/site/main.go
+RUN upx -9 -k /out/site
 
 FROM scratch
 COPY --from=build /out/site /
