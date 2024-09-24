@@ -10,7 +10,7 @@ type EditRowStore struct {
 	Email        string `json:"email"`
 }
 
-templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyRow bool) {
+templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow) {
 	{{
 	contact := contacts[i]
 	contactKeyPrefix := fmt.Sprintf("contact_%d", i)
@@ -43,7 +43,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 			}
 		</td>
 		<td class="text-right">
-			if isEditingAnyRow {
+			if isEditingRow {
 				<div class="flex gap-2">
 					<button
 						class="btn btn-sm btn-error"
@@ -93,7 +93,7 @@ templ EditRowContacts(contacts []*ContactEdit, store *EditRowStore) {
 			</thead>
 			<tbody id="edit_row_table_body">
 				for i := range contacts {
-					@EditRowContact(contacts, i, i == store.EditRowIndex, store.EditRowIndex != -1)
+					@EditRowContact(contacts, i, i == store.EditRowIndex)
 				}
 			</tbody>
 		</table>
