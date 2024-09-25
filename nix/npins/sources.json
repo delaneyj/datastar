@@ -1,0 +1,23 @@
+{
+  "pins": {
+    "build-go-cache": {
+      "type": "Git",
+      "repository": {
+        "type": "GitHub",
+        "owner": "numtide",
+        "repo": "build-go-cache"
+      },
+      "branch": "main",
+      "revision": "36f59cea5b4dec39c24b57381d15714cdac5578b",
+      "url": "https://github.com/numtide/build-go-cache/archive/36f59cea5b4dec39c24b57381d15714cdac5578b.tar.gz",
+      "hash": "0xb58bczx0gp1ys97f1bal9pqam7k5wj9gwhg77n3c77a3qglawy"
+    },
+    "nixpkgs": {
+      "type": "Channel",
+      "name": "nixpkgs-unstable",
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre684864.189e5f171b16/nixexprs.tar.xz",
+      "hash": "15rw7qiqbyffnx6fvw81l4pihwf5qxz4q6darr7bxb55jak0ydbd"
+    }
+  },
+  "version": 3
+}

@@ -5,3 +5,7 @@ site_bin
 .task
 *_templ.go
 *.png~
+
+.direnv
+result
+data
