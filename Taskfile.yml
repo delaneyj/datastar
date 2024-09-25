@@ -97,7 +97,7 @@ tasks:
       - killall -q {{.BIN_NAME}}  || echo "Process was not running."
 
   tests:
-    dir: playwright
+    dir: packages/playwright
     cmds:
       - pnpm i
       - pnpm playwright
