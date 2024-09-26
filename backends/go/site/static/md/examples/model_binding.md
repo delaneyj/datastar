@@ -6,7 +6,7 @@
 
 ## Explanation
 
-```html
+```html {"id":"01J8Q23NP6PWRCFMJR7KDTQCEJ"}
 <div
   id="container"
   data-store="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
@@ -39,7 +39,7 @@
     ...
   </div>
   <code>
-    <pre data-star-text="JSON.stringify(ctx.store(),null,2)"></pre>
+    <pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
   </code>
 </div>
 ```
