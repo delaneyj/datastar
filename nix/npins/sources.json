@@ -4,19 +4,19 @@
       "type": "Git",
       "repository": {
         "type": "GitHub",
-        "owner": "numtide",
+        "owner": "phanirithvij",
         "repo": "build-go-cache"
       },
       "branch": "main",
-      "revision": "36f59cea5b4dec39c24b57381d15714cdac5578b",
-      "url": "https://github.com/numtide/build-go-cache/archive/36f59cea5b4dec39c24b57381d15714cdac5578b.tar.gz",
-      "hash": "0xb58bczx0gp1ys97f1bal9pqam7k5wj9gwhg77n3c77a3qglawy"
+      "revision": "db61993c9770dbbe8b195b5352c5cc044b761b49",
+      "url": "https://github.com/phanirithvij/build-go-cache/archive/db61993c9770dbbe8b195b5352c5cc044b761b49.tar.gz",
+      "hash": "09jvqivb0j80kwnpa16j21rks9xcz8klzirxind9vlpr04vkm5sw"
     },
     "nixpkgs": {
       "type": "Channel",
       "name": "nixpkgs-unstable",
-      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre684864.189e5f171b16/nixexprs.tar.xz",
-      "hash": "15rw7qiqbyffnx6fvw81l4pihwf5qxz4q6darr7bxb55jak0ydbd"
+      "url": "https://releases.nixos.org/nixpkgs/nixpkgs-24.11pre685445.4f3154007932/nixexprs.tar.xz",
+      "hash": "0lpabq9a27zqs72ripysm6x8lqkwfpklxi7lsgbcfwvhhd96hy5k"
     }
   },
   "version": 3

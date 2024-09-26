@@ -8,7 +8,11 @@ let
     $(nix-build ${toplevel})/bin/site_bin
   '';
   build-site-bin-nix = pkgs.writeScriptBin "build-site-bin-nix" ''
-    nix-build ${toplevel} --log-format internal-json 2>&1| nom --json
+    if [ -n "$CI" ]; then
+      nix-build ${toplevel}
+    else
+      nix-build ${toplevel} --log-format internal-json 2>&1| nom --json
+    fi
   '';
   playwright-run-ui = pkgs.writeScriptBin "playwright-run-ui" ''
     cd ${toplevel}/packages/playwright

@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+  push:
+    branches: main
+
+jobs:
+  playwright-test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: DeterminateSystems/nix-installer-action@v14
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+      - uses: actions/checkout@v4
+      - run: |
+          nix-shell --run build-site-bin-nix
+          nix-shell --run run-site-bin-nix &
+          nix-shell --run playwright-run-ci
+        continue-on-error: true
+      - uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.os }}
+          path: |
+            packages/playwright/playwright-report/
+            packages/playwright/test-results/

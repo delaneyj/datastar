@@ -6,7 +6,7 @@
   stdenvNoCC,
   templ,
   datastarVer ? "1.18.5",
-  buildGoCache,
+  buildGoCache ? null,
   ...
 }:
 let
@@ -39,10 +39,10 @@ let
 
   vendorHash = "sha256-i7+Wn0eN6kBMt2VWPMdgGkcXuIxkOREN8ScDSpBJtDE=";
   proxyVendor = true;
-  goCache = buildGoCache {
+  goCache = lib.optional (buildGoCache != null) (buildGoCache {
     importPackagesFile = ./imported-packages;
     inherit src proxyVendor vendorHash;
-  };
+  });
   datastar-backends = {
     go = buildGo123Module {
       inherit
@@ -74,7 +74,7 @@ let
         "-s"
         "-extldflags '-static'"
       ];
-      buildInputs = [ goCache ];
+      buildInputs = goCache;
       nativeBuildInputs = [ templ ];
       doCheck = false; # no tests
     };
