@@ -6,7 +6,7 @@
 
 ## Explanation
 
-```html {"id":"01J8Q23NP6PWRCFMJR7KDTQCEJ"}
+```html
 <div
   id="container"
   data-store="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
