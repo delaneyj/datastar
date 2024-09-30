@@ -159,6 +159,7 @@ func setupRoutes(router chi.Router) error {
 		setupReferenceRoutes(router),
 		setupExamples(router, sessionStore),
 		setupEssays(router),
+		setupMemes(router),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}

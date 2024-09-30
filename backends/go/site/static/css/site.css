@@ -509,7 +509,11 @@ html {
 }
 
 * {
-  scrollbar-color: currentColor transparent;
+  scrollbar-color: color-mix(in oklch, currentColor 35%, transparent) transparent;
+}
+
+*:hover {
+  scrollbar-color: color-mix(in oklch, currentColor 60%, transparent) transparent;
 }
 
 :root {
@@ -3798,8 +3802,8 @@ html {
           appearance: none;
   height: 3rem;
   min-height: 3rem;
-  padding-left: 1rem;
-  padding-right: 2.5rem;
+  padding-inline-start: 1rem;
+  padding-inline-end: 2.5rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
   line-height: 2;
@@ -3929,7 +3933,9 @@ html {
   align-items: flex-end;
 }
 
-.tabs-lifted:has(.tab-content[class^="rounded-"]) .tab:first-child:not(:is(.tab-active, [aria-selected="true"])), .tabs-lifted:has(.tab-content[class*=" rounded-"]) .tab:first-child:not(:is(.tab-active, [aria-selected="true"])) {
+.tabs-lifted:has(.tab-content[class^="rounded-"])
+    .tab:first-child:not(:is(.tab-active, [aria-selected="true"])), .tabs-lifted:has(.tab-content[class*=" rounded-"])
+    .tab:first-child:not(:is(.tab-active, [aria-selected="true"])) {
   border-bottom-color: transparent;
 }
 
@@ -4866,6 +4872,14 @@ details.collapse summary::-webkit-details-marker {
   margin-inline-start: -1px;
 }
 
+.join > :where(*:not(:first-child)):is(.btn) {
+  margin-inline-start: calc(var(--border-btn) * -1);
+}
+
+.join > :where(*:not(:first-child)):is(.\!btn) {
+  margin-inline-start: calc(var(--border-btn) * -1) !important;
+}
+
 .join-item:focus {
   isolation: isolate;
 }
@@ -5536,7 +5550,7 @@ details.collapse summary::-webkit-details-marker {
   color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
 }
 
-:is([dir="rtl"] .table) {
+.table:where([dir="rtl"], [dir="rtl"] *) {
   text-align: right;
 }
 
@@ -5562,7 +5576,7 @@ details.collapse summary::-webkit-details-marker {
   background-color: var(--fallback-b3,oklch(var(--b3)/var(--tw-bg-opacity)));
 }
 
-.table :where(thead tr, tbody tr:not(:last-child),tbody tr:first-child:last-child) {
+.table :where(thead tr, tbody tr:not(:last-child), tbody tr:first-child:last-child) {
   border-bottom-width: 1px;
   --tw-border-opacity: 1;
   border-bottom-color: var(--fallback-b2,oklch(var(--b2)/var(--tw-border-opacity)));
@@ -5880,7 +5894,7 @@ html:has(.drawer-toggle:checked) {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-:is([dir="rtl"] .indicator :where(.indicator-item)) {
+.indicator :where(.indicator-item):where([dir="rtl"], [dir="rtl"] *) {
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -5892,7 +5906,7 @@ html:has(.drawer-toggle:checked) {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-:is([dir="rtl"] .indicator :where(.indicator-item.indicator-start)) {
+.indicator :where(.indicator-item.indicator-start):where([dir="rtl"], [dir="rtl"] *) {
   --tw-translate-x: 50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -5904,7 +5918,7 @@ html:has(.drawer-toggle:checked) {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-:is([dir="rtl"] .indicator :where(.indicator-item.indicator-center)) {
+.indicator :where(.indicator-item.indicator-center):where([dir="rtl"], [dir="rtl"] *) {
   --tw-translate-x: 50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -5916,7 +5930,7 @@ html:has(.drawer-toggle:checked) {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
-:is([dir="rtl"] .indicator :where(.indicator-item.indicator-end)) {
+.indicator :where(.indicator-item.indicator-end):where([dir="rtl"], [dir="rtl"] *) {
   --tw-translate-x: -50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -6122,10 +6136,26 @@ html:has(.drawer-toggle:checked) {
   margin-top: -1px;
 }
 
+.join.join-vertical > :where(*:not(:first-child)):is(.btn) {
+  margin-top: calc(var(--border-btn) * -1);
+}
+
+.join.join-vertical > :where(*:not(:first-child)):is(.\!btn) {
+  margin-top: calc(var(--border-btn) * -1) !important;
+}
+
 .join.join-horizontal > :where(*:not(:first-child)) {
   margin-top: 0px;
   margin-bottom: 0px;
   margin-inline-start: -1px;
+}
+
+.join.join-horizontal > :where(*:not(:first-child)):is(.btn) {
+  margin-inline-start: calc(var(--border-btn) * -1);
+}
+
+.join.join-horizontal > :where(*:not(:first-child)):is(.\!btn) {
+  margin-inline-start: calc(var(--border-btn) * -1) !important;
 }
 
 .steps-horizontal .step {
@@ -6144,7 +6174,7 @@ html:has(.drawer-toggle:checked) {
   margin-inline-start: -100%;
 }
 
-:is([dir="rtl"] .steps-horizontal .step):before {
+.steps-horizontal .step:where([dir="rtl"], [dir="rtl"] *):before {
   --tw-translate-x: 0px;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -6166,7 +6196,7 @@ html:has(.drawer-toggle:checked) {
   margin-inline-start: 50%;
 }
 
-:is([dir="rtl"] .steps-vertical .step):before {
+.steps-vertical .step:where([dir="rtl"], [dir="rtl"] *):before {
   --tw-translate-x: 50%;
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
@@ -6216,6 +6246,7 @@ html:has(.drawer-toggle:checked) {
 
 .tooltip:before {
   max-width: 20rem;
+  white-space: normal;
   border-radius: 0.25rem;
   padding-left: 0.5rem;
   padding-right: 0.5rem;
@@ -6482,6 +6513,14 @@ html:has(.drawer-toggle:checked) {
 
 .max-w-sm {
   max-width: 24rem;
+}
+
+.max-w-xl {
+  max-width: 36rem;
+}
+
+.max-w-2xl {
+  max-width: 42rem;
 }
 
 .flex-1 {
@@ -6897,9 +6936,8 @@ html:has(.drawer-toggle:checked) {
   padding: 1rem;
 }
 
-.px-2 {
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+.p-8 {
+  padding: 2rem;
 }
 
 .px-4 {
