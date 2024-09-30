@@ -64,6 +64,7 @@ export type AttributePlugin = {
     pre?: Preprocessor[]
     post?: Preprocessor[]
   }
+  removeNewLines?: boolean // If true, the expression is not split by commas
   bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean // If true, the expression function is not created
 }
 

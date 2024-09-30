@@ -55,6 +55,7 @@ export const CorePreprocessors: Preprocessor[] = [ActionProcessor, SignalProcess
 // Setup the global store
 const StoreAttributePlugin: AttributePlugin = {
   prefix: 'store',
+  removeNewLines: true,
   preprocessors: {
     pre: [
       {

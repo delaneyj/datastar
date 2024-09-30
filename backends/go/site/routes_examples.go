@@ -71,6 +71,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "view_transition_api"},
 				{ID: "title_update_backend"},
 				{ID: "store_changed"},
+				{ID: "multiline_store"},
 				{ID: "raf_update"},
 				{ID: "update_store"},
 				{ID: "store_ifmissing"},

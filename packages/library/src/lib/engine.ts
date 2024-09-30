@@ -188,6 +188,13 @@ export class Datastar {
 
           const splitRegex = /;|\n/
 
+          if (p.removeNewLines) {
+            expression = expression
+              .split('\n')
+              .map((p) => p.trim())
+              .join(' ')
+          }
+
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
