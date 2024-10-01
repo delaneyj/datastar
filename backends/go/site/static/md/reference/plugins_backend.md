@@ -31,6 +31,15 @@ data: fragment <div id="foo">Hello!</div>
 
 Addtional `data` lines can be added to the response to override the default behavior.
 
+<div class="alert alert-warning">
+  <iconify-icon icon="material-symbols:warning-rounded"></iconify-icon>
+  <p>
+  You should almost never need these additional attributes below. They are only for special cases.
+  The default is to use idiomorph to merge the fragment by using the top level id into the DOM.
+  Unless you are adding to a list, this is almost always the right answer!
+  </p>
+</div>
+
 ### data-fragment
 
 | Key                             | Description                                                                                                                                                      | Default |     |

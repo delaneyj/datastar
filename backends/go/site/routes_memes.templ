@@ -7,9 +7,11 @@ templ PageMemes(r *http.Request, memes ...string) {
 		@header(r)
 		<div class="flex flex-col gap-4 p-8">
 			<div class="text-4xl font-bold text-center">Memes</div>
-			<div class="flex flex-col items-center gap-8">
+			<div class="flex flex-wrap justify-center gap-8">
 				for _, meme := range memes {
-					<img src={ meme } class="w-full max-w-xl"/>
+					<div class="flex items-center justify-center">
+						<img src={ meme } class="w-full max-w-xl"/>
+					</div>
 				}
 			</div>
 		</div>

@@ -4089,6 +4089,14 @@ input.tab:checked + .tab-content,
   --alert-bg-mix: var(--fallback-b1,oklch(var(--b1)/1));
 }
 
+.alert-warning {
+  border-color: var(--fallback-wa,oklch(var(--wa)/0.2));
+  --tw-text-opacity: 1;
+  color: var(--fallback-wac,oklch(var(--wac)/var(--tw-text-opacity)));
+  --alert-bg: var(--fallback-wa,oklch(var(--wa)/1));
+  --alert-bg-mix: var(--fallback-b1,oklch(var(--b1)/1));
+}
+
 .alert-error {
   border-color: var(--fallback-er,oklch(var(--er)/0.2));
   --tw-text-opacity: 1;
@@ -4898,12 +4906,21 @@ details.collapse summary::-webkit-details-marker {
     .link-secondary:hover {
       color: color-mix(in oklab,var(--fallback-s,oklch(var(--s)/1)) 80%,black);
     }
+
+    .link-neutral:hover {
+      color: color-mix(in oklab,var(--fallback-n,oklch(var(--n)/1)) 80%,black);
+    }
   }
 }
 
 .link-secondary {
   --tw-text-opacity: 1;
   color: var(--fallback-s,oklch(var(--s)/var(--tw-text-opacity)));
+}
+
+.link-neutral {
+  --tw-text-opacity: 1;
+  color: var(--fallback-n,oklch(var(--n)/var(--tw-text-opacity)));
 }
 
 .link:focus {
@@ -6521,6 +6538,10 @@ html:has(.drawer-toggle:checked) {
 
 .max-w-2xl {
   max-width: 42rem;
+}
+
+.max-w-3xl {
+  max-width: 48rem;
 }
 
 .flex-1 {
