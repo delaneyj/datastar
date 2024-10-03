@@ -39,7 +39,7 @@
     ...
   </div>
   <code>
-    <pre data-star-text="JSON.stringify(ctx.store(),null,2)"></pre>
+    <pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
   </code>
 </div>
 ```
