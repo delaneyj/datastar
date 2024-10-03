@@ -206,6 +206,7 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
+  argumentNames: ['evt'],
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
 
@@ -214,9 +215,9 @@ export const EventPlugin: AttributePlugin = {
       target = window
     }
 
-    let callback = (_?: Event) => {
+    let callback = (evt?: Event) => {
       sendDatastarEvent('plugin', 'event', key, target, 'triggered')
-      expressionFn(ctx)
+      expressionFn(ctx, evt)
     }
 
     const debounceArgs = ctx.modifiers.get('debounce')
@@ -269,7 +270,7 @@ export const EventPlugin: AttributePlugin = {
         }
 
         if (valid) {
-          cb()
+          cb(evt)
         }
       }
       callback = revisedCallback

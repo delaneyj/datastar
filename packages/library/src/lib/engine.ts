@@ -247,7 +247,7 @@ export class Datastar {
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length)
-            statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
+            statements[statements.length - 1] = `return (${statements[statements.length - 1]})`
             const joined = statements.map((s) => `  ${s}`).join(';\n')
             const fnContent = `
 try {
@@ -280,7 +280,8 @@ Check if the expression is valid before raising an issue.
               `${rawKey}="${rawExpression}" becomes: ${joined}`,
             )*/
             try {
-              const fn = new Function('ctx', fnContent) as ExpressionFunction
+              const argumentNames = p.argumentNames || []
+              const fn = new Function('ctx', ...argumentNames, fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
               const err = new Error(`Error creating expression function for '${fnContent}', error: ${e}`)
