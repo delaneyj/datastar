@@ -3,7 +3,7 @@
 ## Demo
 
 <div data-store="{eventCount:0,eventDetails:''}">
-     <div id="foo" data-on-myevent="$eventCount++; $eventDetails=evt.detail">
+     <div id="foo" data-on-myevent="$eventDetails=evt.detail;$eventCount++">
           <div>Event count: <span data-text="$eventCount">EventCount</span></div>
           <div>Last Event Details: <span data-text="$eventDetails">EventTime</span></div>
      </div>

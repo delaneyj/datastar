@@ -247,7 +247,7 @@ export class Datastar {
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length)
-            statements[statements.length - 1] = `return (${statements[statements.length - 1]})`
+            statements[statements.length - 1] = `return ${statements[statements.length - 1]}`
             const joined = statements.map((s) => `  ${s}`).join(';\n')
             const fnContent = `
 try {
