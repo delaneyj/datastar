@@ -260,8 +260,9 @@ export const EventPlugin: AttributePlugin = {
         } else if (typeof attr === 'boolean') {
           valid = attr
         } else if (typeof attr === 'string') {
-          const expr = eventValues.join('')
-          valid = attr === expr
+          const lowerAttr = attr.toLowerCase().trim()
+          const expr = eventValues.join('').toLowerCase().trim()
+          valid = lowerAttr === expr
         } else {
           const msg = `Invalid value for ${attrName} modifier on ${key} on ${el}`
           console.error(msg)
