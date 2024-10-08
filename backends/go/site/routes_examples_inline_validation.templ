@@ -30,8 +30,8 @@ templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFir
 		<div class="text-2xl font-bold">Sign Up</div>
 		<div>
 			@inlineValidationFieldComponent("Email Address", "email", isEmailValid, "Email '%s' is already taken or is invalid.  Please enter another email.", u.Email)
-			@inlineValidationFieldComponent("First Name", "firstName", isFirstNameValid, "First name must be at least 8 characters.")
-			@inlineValidationFieldComponent("Last Name", "lastName", isLastNameValid, "Last name must be at least 8 characters.")
+			@inlineValidationFieldComponent("First Name", "firstName", isFirstNameValid, "First name must be at least 2 characters.")
+			@inlineValidationFieldComponent("Last Name", "lastName", isLastNameValid, "Last name must be at least 2 characters.")
 		</div>
 		<button
 			class="btn btn-success"
