@@ -48,14 +48,15 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "file_upload"},
 				{ID: "dialogs_browser"},
 				{ID: "lazy_tabs"},
+				{ID: "sortable"},
 			},
 		},
-		{
-			Label: "Web Components Examples",
-			Links: []*SidebarLink{
-				{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
-			},
-		},
+		// {
+		// 	Label: "Web Components Examples",
+		// 	Links: []*SidebarLink{
+		// 		{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
+		// 	},
+		// },
 		{
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
@@ -124,6 +125,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 		})
 
 		examplesRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
 			name := chi.URLParam(r, "name")
 			contents, ok := mdElementRenderers[name]
 			if !ok {
@@ -141,7 +143,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(ctx, w)
 		})
 
 		if err := errors.Join(
@@ -172,7 +174,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesBadApple(examplesRouter),
 			// setupExamplesSnake(examplesRouter),
 			//
-			setupExamplesShoelaceKitchensink(examplesRouter),
+			// setupExamplesShoelaceKitchensink(examplesRouter),
 			//
 			setupExamplesStoreIfMissing(examplesRouter),
 			setupExamplesViewTransitionAPI(examplesRouter),
