@@ -320,6 +320,9 @@ export const EventPlugin: AttributePlugin = {
             const targetHTML = e?.target as HTMLElement
             if (!targetHTML) return
             const isEl = el.id === targetHTML.id
+            if (isEl && called) {
+              called = false
+            }
             if (!isEl && !called) {
               cb(e)
               called = true
