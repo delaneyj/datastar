@@ -23,17 +23,17 @@ func main() {
 	logger.Info("Starting Docs Server", "url", fmt.Sprintf("http://localhost:%d", port))
 	defer logger.Info("Stopping Docs Server")
 
-	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
-	defer stop()
-
-	if err := run(ctx); err != nil {
+	if err := run(); err != nil {
 		logger.Error("Error running docs server", slog.Any("err", err))
 		os.Exit(1)
 	}
 
 }
 
-func run(ctx context.Context) error {
+func run() error {
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
 	eg := toolbelt.NewErrGroupSharedCtx(
 		ctx,
 		site.RunBlocking(port),
