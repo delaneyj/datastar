@@ -1,12 +1,14 @@
 package site
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
 	"github.com/gorilla/sessions"
@@ -17,7 +19,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(router chi.Router, store sessions.Store) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) (err error) {
 	mdElementRenderers, _, err := markdownRenders("examples")
 	if err != nil {
 		return err
@@ -85,6 +87,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "img_src_bind"},
 				{ID: "dbmon"},
 				{ID: "bad_apple"},
+				{ID: "mouse_move"},
 				// {ID: "snake"},
 			},
 		},
@@ -172,6 +175,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesOfflineSync(examplesRouter, store),
 			setupExamplesDbmon(examplesRouter),
 			setupExamplesBadApple(examplesRouter),
+			setupExamplesMousemove(ctx, examplesRouter, ns),
 			// setupExamplesSnake(examplesRouter),
 			//
 			// setupExamplesShoelaceKitchensink(examplesRouter),

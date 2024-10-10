@@ -1,0 +1,47 @@
+package site
+
+import (
+	"fmt"
+)
+
+templ MouseMouseUI(id string, collection *MouseXYCollection)  {
+	<div
+	id="container"
+			data-on-store-change.throttle_10ms="$$put('/examples/mouse_move/updates')"
+			data-store={fmt.Sprintf("{id:'%s',x:0,y:0}", id)}
+	>
+		<div>My ID: {id}</div>
+	@cursorSVG( collection.Positions)
+	</div>
+}
+
+templ cursorSVG( cursors map[string]MouseXY){
+	<svg
+		id="cursorSVG"
+		width="512"
+		height="512"
+		style="background-color: goldenrod"
+		data-on-mousemove="$x=evt.offsetX; $y=evt.offsetY"
+	>
+		for id, cursor := range cursors {
+			{{
+				x := fmt.Sprintf("%d", cursor.X)
+				y := fmt.Sprintf("%d", cursor.Y)
+			}}
+			<circle cx={x} cy={y} r="10" fill="blue"></circle>
+			<text
+				x={x}
+				y={y}
+				fill="black"
+				class="text-xs"
+				dominant-baseline="top"
+				text-anchor="middle"
+			>
+				{id}
+			</text>
+		}
+		<g id="myPosition">
+			<circle data-bind-cx="$x" data-bind-cy="$y" r="10" fill="red"></circle>
+		</g>
+	</svg>
+}

@@ -417,27 +417,20 @@ function debounce(callback: TimerHandler, wait: number, leading = false, trailin
 
 function throttle(callback: TimerHandler, wait: number, leading = true, trailing = false): TimerHandler {
   let waiting = false
-  let lastArgs: any[] | null = null
 
   return function wrapper(...args: any[]) {
-    if (!waiting) {
-      waiting = true
+    if (waiting) return
 
-      if (leading) {
-        callback(...args)
-      } else {
-        lastArgs = args
-      }
-
-      setTimeout(() => {
-        if (trailing && lastArgs) {
-          callback(...lastArgs)
-          lastArgs = null
-        }
-        waiting = false
-      }, wait)
-    } else {
-      lastArgs = args
+    if (leading) {
+      callback(...args)
     }
+
+    waiting = true
+    setTimeout(() => {
+      waiting = false
+      if (trailing) {
+        callback(...args)
+      }
+    }, wait)
   }
 }
