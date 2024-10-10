@@ -188,6 +188,13 @@ export class Datastar {
 
           const splitRegex = /;|\n/
 
+          if (p.removeNewLines) {
+            expression = expression
+              .split('\n')
+              .map((p) => p.trim())
+              .join(' ')
+          }
+
           const processors = [...(p.preprocessors?.pre || []), ...CorePreprocessors, ...(p.preprocessors?.post || [])]
           for (const processor of processors) {
             if (appliedProcessors.has(processor)) continue
@@ -273,7 +280,8 @@ Check if the expression is valid before raising an issue.
               `${rawKey}="${rawExpression}" becomes: ${joined}`,
             )*/
             try {
-              const fn = new Function('ctx', fnContent) as ExpressionFunction
+              const argumentNames = p.argumentNames || []
+              const fn = new Function('ctx', ...argumentNames, fnContent) as ExpressionFunction
               ctx.expressionFn = fn
             } catch (e) {
               const err = new Error(`Error creating expression function for '${fnContent}', error: ${e}`)

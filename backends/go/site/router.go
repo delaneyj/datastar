@@ -55,12 +55,12 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 		router := chi.NewRouter()
 
 		router.Use(
-			middleware.Logger,
+			// middleware.Logger,
 			middleware.Recoverer,
 			// toolbelt.CompressMiddleware(),
 		)
 
-		setupRoutes(router)
+		setupRoutes(ctx, router)
 
 		srv := &http.Server{
 			Addr:    fmt.Sprintf(":%d", port),
@@ -77,7 +77,7 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 	}
 }
 
-func setupRoutes(router chi.Router) error {
+func setupRoutes(ctx context.Context, router chi.Router) error {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
@@ -157,8 +157,9 @@ func setupRoutes(router chi.Router) error {
 		setupHome(router, sessionStore, ns),
 		setupGuide(router),
 		setupReferenceRoutes(router),
-		setupExamples(router, sessionStore),
+		setupExamples(ctx, router, sessionStore, ns),
 		setupEssays(router),
+		setupMemes(router),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}

@@ -31,14 +31,23 @@ data: fragment <div id="foo">Hello!</div>
 
 Addtional `data` lines can be added to the response to override the default behavior.
 
+<div class="alert alert-warning">
+  <iconify-icon icon="material-symbols:warning-rounded"></iconify-icon>
+  <p>
+  You should almost never need these additional attributes below. They are only for special cases.
+  The default is to use idiomorph to merge the fragment by using the top level id into the DOM.
+  Unless you are adding to a list, this is almost always the right answer!
+  </p>
+</div>
+
 ### data-fragment
 
 | Key                             | Description                                                                                                                                                      | Default |     |
 | ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --- |
 | `data: selector #foo`           | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
 | `data: merge morph_element`     | Merge the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph).                                                                               | \*      |
-| `data: merge inner_html`        | Replace target's innerHTML with fragment                                                                                                                         |         |
-| `data: merge outer_html`        | Replace target's outerHTML with fragment                                                                                                                         |         |
+| `data: merge inner_element`     | Replace target's innerHTML with fragment                                                                                                                         |         |
+| `data: merge outer_element`     | Replace target's outerHTML with fragment                                                                                                                         |         |
 | `data: merge prepend_element`   | Prepend fragment to target's children                                                                                                                            |         |
 | `data: merge append_element`    | Append fragment to target's children                                                                                                                             |         |
 | `data: merge before_element`    | Insert fragment before target as sibling                                                                                                                         |         |

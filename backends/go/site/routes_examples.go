@@ -1,12 +1,14 @@
 package site
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
 	"github.com/gorilla/sessions"
@@ -17,7 +19,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(router chi.Router, store sessions.Store) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) (err error) {
 	mdElementRenderers, _, err := markdownRenders("examples")
 	if err != nil {
 		return err
@@ -48,14 +50,15 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "file_upload"},
 				{ID: "dialogs_browser"},
 				{ID: "lazy_tabs"},
+				{ID: "sortable"},
 			},
 		},
-		{
-			Label: "Web Components Examples",
-			Links: []*SidebarLink{
-				{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
-			},
-		},
+		// {
+		// 	Label: "Web Components Examples",
+		// 	Links: []*SidebarLink{
+		// 		{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
+		// 	},
+		// },
 		{
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
@@ -71,6 +74,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "view_transition_api"},
 				{ID: "title_update_backend"},
 				{ID: "store_changed"},
+				{ID: "multiline_store"},
 				{ID: "raf_update"},
 				{ID: "update_store"},
 				{ID: "store_ifmissing"},
@@ -78,10 +82,12 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				{ID: "session_storage"},
 				{ID: "refs"},
 				{ID: "multiline_expressions"},
+				{ID: "custom_events"},
 				{ID: "show"},
 				{ID: "img_src_bind"},
 				{ID: "dbmon"},
 				{ID: "bad_apple"},
+				{ID: "mouse_move"},
 				// {ID: "snake"},
 			},
 		},
@@ -122,6 +128,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 		})
 
 		examplesRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
 			name := chi.URLParam(r, "name")
 			contents, ok := mdElementRenderers[name]
 			if !ok {
@@ -139,7 +146,7 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(ctx, w)
 		})
 
 		if err := errors.Join(
@@ -168,9 +175,10 @@ func setupExamples(router chi.Router, store sessions.Store) (err error) {
 			setupExamplesOfflineSync(examplesRouter, store),
 			setupExamplesDbmon(examplesRouter),
 			setupExamplesBadApple(examplesRouter),
+			setupExamplesMousemove(ctx, examplesRouter, ns),
 			// setupExamplesSnake(examplesRouter),
 			//
-			setupExamplesShoelaceKitchensink(examplesRouter),
+			// setupExamplesShoelaceKitchensink(examplesRouter),
 			//
 			setupExamplesStoreIfMissing(examplesRouter),
 			setupExamplesViewTransitionAPI(examplesRouter),

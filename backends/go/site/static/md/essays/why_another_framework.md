@@ -18,4 +18,4 @@ I love what [Caleb Porzio](https://calebporzio.com/) has done with [Alpine.js](h
 
 There was a bit of a rant here before. TL;DR tried to show HTMX v2 could do all these things and it wasn't accepted by the community. I think HTMX is great and I will continue to recommend it. In general I think the some of the choices are throwing the baby out with the bathwater when it comes to things like Vite/TS/etc. Good news is that everything I, and some other lurkers, wanted are available in Datastar or can be added easily via plugins.
 
-[Let's move on to the docs and see what Datastar can do](/docs)
+[Let's move on to the docs and see what Datastar can do](/examples)

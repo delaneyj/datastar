@@ -8,7 +8,7 @@ import {
   datastarEventName,
 } from '../types'
 
-const validNestedJSIdentifier = `[a-zA-Z_$][0-9a-zA-Z_$.]+`
+const validNestedJSIdentifier = `[a-zA-Z_$]+[0-9a-zA-Z_$.]*`
 function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
   return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
 }
@@ -55,6 +55,7 @@ export const CorePreprocessors: Preprocessor[] = [ActionProcessor, SignalProcess
 // Setup the global store
 const StoreAttributePlugin: AttributePlugin = {
   prefix: 'store',
+  removeNewLines: true,
   preprocessors: {
     pre: [
       {

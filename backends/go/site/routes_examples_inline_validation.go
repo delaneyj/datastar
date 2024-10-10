@@ -13,8 +13,8 @@ func setupExampleInlineValidation(examplesRouter chi.Router) error {
 	examplesRouter.Route("/inline_validation/data", func(dataRouter chi.Router) {
 		userValidation := func(u *inlineValidationUser) (isEmailValid bool, isFirstNameValid bool, isLastNameValid bool, isValid bool) {
 			isEmailValid = u.Email == "test@test.com"
-			isFirstNameValid = len(u.FirstName) > 8
-			isLastNameValid = len(u.LastName) > 8
+			isFirstNameValid = len(u.FirstName) >= 2
+			isLastNameValid = len(u.LastName) >= 2
 			isValid = isFirstNameValid && isLastNameValid && isEmailValid
 			return isEmailValid, isFirstNameValid, isLastNameValid, isValid
 		}

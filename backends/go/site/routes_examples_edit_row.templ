@@ -1,8 +1,6 @@
 package site
 
-import (
-	"fmt"
-)
+import "fmt"
 
 type EditRowStore struct {
 	EditRowIndex int    `json:"editRowIndex"`
@@ -44,24 +42,26 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 		</td>
 		<td class="text-right">
 			if isEditingAnyRow {
-				<div class="flex gap-2">
-					<button
-						class="btn btn-sm btn-error"
-						data-on-click="$$get('/examples/edit_row/data')"
-						data-testid={ contactKeyPrefix + "_cancel" }
-					>
-						@icon("material-symbols:cancel")
-						Cancel
-					</button>
-					<button
-						class="btn btn-sm btn-success"
-						data-on-click="$$patch('/examples/edit_row/edit')"
-						data-testid={ contactKeyPrefix + "_save" }
-					>
-						@icon("material-symbols:save")
-						Save
-					</button>
-				</div>
+				if isEditingRow {
+					<div class="flex gap-2">
+						<button
+							class="btn btn-sm btn-error"
+							data-on-click="$$get('/examples/edit_row/data')"
+							data-testid={ contactKeyPrefix + "_cancel" }
+						>
+							@icon("material-symbols:cancel")
+							Cancel
+						</button>
+						<button
+							class="btn btn-sm btn-success"
+							data-on-click="$$patch('/examples/edit_row/edit')"
+							data-testid={ contactKeyPrefix + "_save" }
+						>
+							@icon("material-symbols:save")
+							Save
+						</button>
+					</div>
+				}
 			} else {
 				<button
 					class="btn btn-sm btn-accent"

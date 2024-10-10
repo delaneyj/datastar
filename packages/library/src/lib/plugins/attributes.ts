@@ -206,6 +206,7 @@ export const EventPlugin: AttributePlugin = {
   prefix: 'on',
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,
+  argumentNames: ['evt'],
   onLoad: (ctx: AttributeContext) => {
     const { el, key, expressionFn } = ctx
 
@@ -214,9 +215,9 @@ export const EventPlugin: AttributePlugin = {
       target = window
     }
 
-    let callback = (_?: Event) => {
+    let callback = (evt?: Event) => {
       sendDatastarEvent('plugin', 'event', key, target, 'triggered')
-      expressionFn(ctx)
+      expressionFn(ctx, evt)
     }
 
     const debounceArgs = ctx.modifiers.get('debounce')
@@ -259,8 +260,9 @@ export const EventPlugin: AttributePlugin = {
         } else if (typeof attr === 'boolean') {
           valid = attr
         } else if (typeof attr === 'string') {
-          const expr = eventValues.join('')
-          valid = attr === expr
+          const lowerAttr = attr.toLowerCase().trim()
+          const expr = eventValues.join('').toLowerCase().trim()
+          valid = lowerAttr === expr
         } else {
           const msg = `Invalid value for ${attrName} modifier on ${key} on ${el}`
           console.error(msg)
@@ -269,7 +271,7 @@ export const EventPlugin: AttributePlugin = {
         }
 
         if (valid) {
-          cb()
+          cb(evt)
         }
       }
       callback = revisedCallback
@@ -415,27 +417,20 @@ function debounce(callback: TimerHandler, wait: number, leading = false, trailin
 
 function throttle(callback: TimerHandler, wait: number, leading = true, trailing = false): TimerHandler {
   let waiting = false
-  let lastArgs: any[] | null = null
 
   return function wrapper(...args: any[]) {
-    if (!waiting) {
-      waiting = true
+    if (waiting) return
 
-      if (leading) {
-        callback(...args)
-      } else {
-        lastArgs = args
-      }
-
-      setTimeout(() => {
-        if (trailing && lastArgs) {
-          callback(...lastArgs)
-          lastArgs = null
-        }
-        waiting = false
-      }, wait)
-    } else {
-      lastArgs = args
+    if (leading) {
+      callback(...args)
     }
+
+    waiting = true
+    setTimeout(() => {
+      waiting = false
+      if (trailing) {
+        callback(...args)
+      }
+    }, wait)
   }
 }

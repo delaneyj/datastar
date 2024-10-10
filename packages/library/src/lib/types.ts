@@ -5,7 +5,7 @@ export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
 
 export type DatastarPlugin = {}
 
-export type ExpressionFunction = (ctx: AttributeContext) => any
+export type ExpressionFunction = (ctx: AttributeContext, ...args: any) => any
 export type Reactivity = {
   signal: <T>(value: T) => Signal<T>
   computed: <T>(fn: () => T) => ReadonlySignal<T>
@@ -64,7 +64,9 @@ export type AttributePlugin = {
     pre?: Preprocessor[]
     post?: Preprocessor[]
   }
+  removeNewLines?: boolean // If true, the expression is not split by commas
   bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean // If true, the expression function is not created
+  argumentNames?: Readonly<string[]> // The names of the arguments passed to the expression function
 }
 
 export type RegexpGroups = Record<string, string>

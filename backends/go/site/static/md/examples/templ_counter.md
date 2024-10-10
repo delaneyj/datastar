@@ -9,4 +9,4 @@
 
 ## Explanation
 
-Full explanation can be found on the [Templ website](https://templ.guide/server-side-rendering/data-star)
+Full explanation can be found on the [Templ website](https://templ.guide/server-side-rendering/datastar/)

@@ -135,6 +135,8 @@ tasks:
     deps:
       - library
     cmds:
+      - task: inspector
+      - task: library
       - fly deploy --local-only
 
   default:
