@@ -6,6 +6,7 @@ module.exports = {
       colors: {
         discord: '#5865F2',
         github: '#333',
+        reddit: '#FF4500',
       },
     },
     fontFamily: {
