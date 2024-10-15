@@ -84,22 +84,14 @@ The `datastar-signal-ifmissing` event is used to update the store with new value
 
 ```html
 <svg id="foo">Spinner</svg>
-<div
+<button
   data-on-click="$$get('/examples/click_to_edit/contact/1')"
   data-fetch-indicator="#foo"
-></div>
+  data-bind-disabled="$$isFetching('#foo')"
+></button>
 ```
 
 Show a spinner when the request is in flight. The `data-fetch-indicator` attribute should be a CSS selector to the element(s). When the attribute is present, the element will be hidden when requests are not in flight and shown when they are.
 
-### Is Loading Identifier
+The `$$isFetching` action returns a computed value that allows you to easily react to the state of the indicator.
 
-```html
-<svg data-show="$isLoading.includes('edit-contact')">Spinner</svg>
-<div
-  data-on-click="$$get('/examples/click_to_edit/contact/1')"
-  data-is-loading-id="edit-contact"
-></div>
-```
-
-The `data-is-loading-id` attribute is used to specify the name of the identifier that will be present in the store's isLoading array when an element is fetching.
