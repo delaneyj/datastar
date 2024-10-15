@@ -35,7 +35,7 @@ Make a value linear interpolate from an origial range to new one.
 
 Same as `$$fit` but rounded to nearest integer
 
-## `$$fitClamp(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+## `$$clampFit(v: number, oldMin:number, oldMax:number, newMin, newMax)`
 
 Same as `$$fit` but clamped to `newMin` -> `newMax` range
 
