@@ -3,7 +3,6 @@ package datastar
 import (
 	"context"
 	"fmt"
-	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -15,7 +14,7 @@ type ServerSentEventsHandler struct {
 	w               http.ResponseWriter
 	flusher         http.Flusher
 	shouldLogPanics bool
-	hasPanicked     bool
+	hasErrored      bool
 	nextID          int
 }
 
@@ -70,24 +69,35 @@ func WithSSERetry(retry time.Duration) SSEEventOption {
 	}
 }
 
-func (sse *ServerSentEventsHandler) Send(data string, opts ...SSEEventOption) {
-	sse.SendMultiData([]string{data}, opts...)
+func (sse *ServerSentEventsHandler) Send(data string, opts ...SSEEventOption) error {
+	return sse.sendMultiData([]string{data}, opts...)
 }
 
-func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEEventOption) {
+func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEEventOption) error {
+	return sse.sendMultiData(dataArr, opts...)
+}
+
+func (sse *ServerSentEventsHandler) sendMultiData(dataArr []string, opts ...SSEEventOption) error {
 	sse.mu.Lock()
 	defer sse.mu.Unlock()
-
-	if sse.hasPanicked && len(dataArr) > 0 {
-		return
+	if sse.hasErrored || len(dataArr) == 0 {
+		return fmt.Errorf("cannot send data after error")
 	}
+	err := sse._sendMultiData(dataArr, opts...)
+	if err != nil {
+		sse.hasErrored = true
+		return err
+	}
+	return nil
+}
+
+func (sse *ServerSentEventsHandler) _sendMultiData(dataArr []string, opts ...SSEEventOption) (err error) {
 	defer func() {
 		// Can happen if the client closes the connection or
 		// other middleware panics during flush (such as compression)
 		// Not ideal, but we can't do much about it
 		if r := recover(); r != nil && sse.shouldLogPanics {
-			sse.hasPanicked = true
-			log.Printf("recovered from panic: %v", r)
+			err = fmt.Errorf("recovered from panic: %v", r)
 		}
 	}()
 
@@ -108,7 +118,7 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 		evtFmt := fmt.Sprintf("event: %s\n", evt.Event)
 		eventSize, err := sse.w.Write([]byte(evtFmt))
 		if err != nil {
-			panic(fmt.Sprintf("failed to write event: %v", err))
+			return fmt.Errorf("failed to write event: %w", err)
 		}
 		totalSize += eventSize
 	}
@@ -116,7 +126,7 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 		idFmt := fmt.Sprintf("id: %s\n", evt.Id)
 		idSize, err := sse.w.Write([]byte(idFmt))
 		if err != nil {
-			panic(fmt.Sprintf("failed to write id: %v", err))
+			return fmt.Errorf("failed to write id: %w", err)
 		}
 		totalSize += idSize
 	}
@@ -124,7 +134,7 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 		retryFmt := fmt.Sprintf("retry: %d\n", evt.Retry.Milliseconds())
 		retrySize, err := sse.w.Write([]byte(retryFmt))
 		if err != nil {
-			panic(fmt.Sprintf("failed to write retry: %v", err))
+			return fmt.Errorf("failed to write retry: %w", err)
 		}
 		totalSize += retrySize
 	}
@@ -134,13 +144,16 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 		dataFmt := fmt.Sprintf("data: %s", d)
 		dataSize, err := sse.w.Write([]byte(dataFmt))
 		if err != nil {
-			panic(fmt.Sprintf("failed to write data: %v", err))
+			return fmt.Errorf("failed to write data: %v", err)
 		}
 		totalSize += dataSize
 		sse.w.Write(newLineBuf)
 	}
-	sse.w.Write([]byte("\n\n"))
+	_, err = sse.w.Write([]byte("\n\n"))
+	if err != nil {
+		return fmt.Errorf("failed to write final newline: %w", err)
+	}
 	sse.flusher.Flush()
-
+	return nil
 	// log.Printf("flushed %d bytes", totalSize)
 }
