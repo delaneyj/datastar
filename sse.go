@@ -3,6 +3,7 @@ package datastar
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"sync"
 	"time"
@@ -82,6 +83,7 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 	err := sse.sendMultiData(dataArr, opts)
 	if err != nil {
 		sse.hasErrored = true
+		log.Print(err)
 		return err
 	}
 	return nil
