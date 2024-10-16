@@ -7,6 +7,10 @@ import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
+const DEFAULT_SETTLE_TIME = 500
+const DEFAULT_USE_VIEW_TRANSITION = true
+const DEFAULT_MERGE: FragmentMergeOption = 'morph'
+
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = `${DATASTAR_STR}-request`
 const APPLICATION_JSON = 'application/json'
@@ -102,10 +106,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   const loadingTarget = ctx.el as HTMLElement
 
   sendDatastarEvent(
-    'plugin',
-    'backend',
-    'fetch_start',
-    loadingTarget,
+    'plugin', 'backend', 'fetch_start', loadingTarget,
     JSON.stringify({ method, urlExpression, onlyRemote, storeJSON }),
   )
   const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
@@ -157,13 +158,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           const lines = evt.data.trim().split('\n')
           const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'vt']
 
-          let fragment = ''
-          let merge: FragmentMergeOption = 'morph'
-          let exists = false
-          let selector = ''
-          let settleTime = 500
-          let useViewTransition = true
-          let currentDatatype = ''
+          let fragment = '',
+            merge = DEFAULT_MERGE,
+            settleTime = DEFAULT_SETTLE_TIME,
+            useViewTransition = DEFAULT_USE_VIEW_TRANSITION,
+            exists = false,
+            selector = '',
+            currentDatatype = ''
 
           for (let i = 0; i < lines.length; i++) {
             let line = lines[i]
@@ -206,10 +207,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           if (!fragment?.length) fragment = '<div></div>'
           mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
           sendDatastarEvent(
-            'plugin',
-            'backend',
-            'merge',
-            selector,
+            'plugin', 'backend', 'merge', selector,
             JSON.stringify({ fragment, settleTime, useViewTransition }),
           )
 
