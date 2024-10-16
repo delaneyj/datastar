@@ -222,7 +222,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           const signalLines = evt.data.trim().split('\n')
           for (let i = 0; i < signalLines.length; i++) {
             const line = signalLines[i]
-            const [signalType, signalLine] = line.split(' ', 1)
+            const [signalType, ...signalRest] = line.split(' ', 1)
+            const signalLine = signalRest.join(' ')
             switch (signalType) {
               case 'onlyIfMissing':
                 onlyIfMissing = signalLine.trim() === 'true'
@@ -250,7 +251,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           break
 
         case EVENT_DELETE:
-          const deleteSelector = evt.data.trim()
+          const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
+          if (deletePrefix !== 'selector') throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+          const deleteSelector = deleteRest.join(' ')
           const deleteTargets = document.querySelectorAll(deleteSelector)
           deleteTargets.forEach((target) => target.remove())
           break
