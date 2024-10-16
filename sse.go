@@ -70,20 +70,16 @@ func WithSSERetry(retry time.Duration) SSEEventOption {
 }
 
 func (sse *ServerSentEventsHandler) Send(data string, opts ...SSEEventOption) error {
-	return sse.sendMultiData([]string{data}, opts...)
+	return sse.SendMultiData([]string{data}, opts...)
 }
 
 func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEEventOption) error {
-	return sse.sendMultiData(dataArr, opts...)
-}
-
-func (sse *ServerSentEventsHandler) sendMultiData(dataArr []string, opts ...SSEEventOption) error {
 	sse.mu.Lock()
 	defer sse.mu.Unlock()
 	if sse.hasErrored || len(dataArr) == 0 {
 		return fmt.Errorf("cannot send data after error")
 	}
-	err := sse._sendMultiData(dataArr, opts...)
+	err := sse.sendMultiData(dataArr, opts)
 	if err != nil {
 		sse.hasErrored = true
 		return err
@@ -91,7 +87,7 @@ func (sse *ServerSentEventsHandler) sendMultiData(dataArr []string, opts ...SSEE
 	return nil
 }
 
-func (sse *ServerSentEventsHandler) _sendMultiData(dataArr []string, opts ...SSEEventOption) (err error) {
+func (sse *ServerSentEventsHandler) sendMultiData(dataArr []string, opts []SSEEventOption) (err error) {
 	defer func() {
 		// Can happen if the client closes the connection or
 		// other middleware panics during flush (such as compression)
