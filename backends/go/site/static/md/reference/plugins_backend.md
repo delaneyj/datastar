@@ -2,7 +2,7 @@
 
 [Source](https://github.com/delaneyj/datastar/blob/main/packages/library/src/lib/plugins/backend.ts)
 
-A set of plugins that allow for the integration of any backend services that supports SSE with Datastar.
+A set of plugins that allow for the integration of any backend service that supports SSE with Datastar.
 
 ## Attribute Plugins
 
@@ -40,43 +40,67 @@ Addtional `data` lines can be added to the response to override the default beha
   </p>
 </div>
 
-### data-fragment
+### datastar-fragment
 
-| Key                             | Description                                                                                                                                                      | Default |     |
-| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --- |
-| `data: selector #foo`           | Select the target element using a CSS selector. Will be come the target of the `merge` process, otherwise it will use the target of the initiating element's id. |         |
-| `data: merge morph_element`     | Merge the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph).                                                                               | \*      |
-| `data: merge inner_element`     | Replace target's innerHTML with fragment                                                                                                                         |         |
-| `data: merge outer_element`     | Replace target's outerHTML with fragment                                                                                                                         |         |
-| `data: merge prepend_element`   | Prepend fragment to target's children                                                                                                                            |         |
-| `data: merge append_element`    | Append fragment to target's children                                                                                                                             |         |
-| `data: merge before_element`    | Insert fragment before target as sibling                                                                                                                         |         |
-| `data: merge after_element`     | Insert fragment after target as sibling                                                                                                                          |         |
-| `data: merge delete_element`    | Remove target from the DOM                                                                                                                                       |         |
-| `data: merge upsert_attributes` | Merge attributes from fragment into target, useful when wanting to just update a store                                                                           |         |
-| `data: settle 1000`             | Settle the element after 1000ms, useful for transitions. Defaults to `500` if missing                                                                            | \*      |
-| `data: fragment`                | The HTML fragment to merge into the DOM. **_Should only be one per event_**                                                                                      | \*      |
-| `data: redirect /foo`           | Redirect the page to `/foo`. Can be used in place of a `data: fragment` **_Should only be one per event_**                                                       |         |
-| `data: vt false`                | Turn off View-Transitions on Datastar messages. Defaults to true if missing                                                                                      |         |
-| `data: error oh noes`           | Will throw an error with the message `oh noes` and stop the request. Can be used in place of a `data: fragment` **_Should only be one per event_**               |         |
+| Key                             | Description                             |
+| ------------------------------- | --------------------------------------- |
+| `data: selector #foo`           | Selects the target element of the `merge` process using a CSS selector. |
+| `data: selector self`           | Selects the initiating element as the target. |
+| `data: merge morph`             | Merges the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph). This is the default merge strategy. |
+| `data: merge inner`             | Replaces the target's innerHTML with the fragment. |
+| `data: merge outer`             | Replaces the target's outerHTML with the fragment. |
+| `data: merge prepend`           | Prepends the fragment to the target's children. |
+| `data: merge append`            | Appends the fragment to the target's children. |
+| `data: merge before`            | Inserts the fragment before the target as a sibling. |
+| `data: merge after`             | Inserts the fragment after the target as a sibling. |
+| `data: merge delete`            | Removes the target from the DOM. |
+| `data: merge upsert_attributes` | Merges attributes from the fragment into the target – useful for updating a store. |
+| `data: settle 1000`             | Settles the element after 1000ms, useful for transitions. Defaults to `500`. |
+| `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`. |
+| `data: fragment`                | The HTML fragment to merge into the DOM. **_Only one fragment should exist per event._** |
 
 ### datastar-signal
 
 ```go
 event: datastar-signal
-data: {foo: 1234}
+data: ifmissing false
+data: store {foo: 1234}
 ```
 
-The `datastar-signal` event is used to update the store with new values. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-signal` event is used to update the store with new values. The `ifmissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
 
-### datastar-signal-ifmissing
+### datastar-delete
 
 ```go
-event: datastar-signal-ifmissing
-data: {foo: 1234}
+event: datastar-delete
+data: #foo
 ```
 
-The `datastar-signal-ifmissing` event is used to update the store with new values only if the key does not exist. The `data` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-delete` event is used to delete all elements that match the provided selector.
+
+### datastar-redirect
+
+```go
+event: datastar-redirect
+data: /foo
+```
+
+The `datastar-redirect` event is used to redirect the page to the provided URI.
+
+### datastar-console
+
+```go
+event: datastar-console
+data: log This message will be logged to the browser console.
+```
+
+The `datastar-console` event is used to output a message to the browser console. The available console modes are:
+- `log`
+- `warn`
+- `info`
+- `debug`
+- `group`
+- `groupEnd`
 
 ## Attribute Plugins
 
