@@ -36,7 +36,7 @@ func setupExamplesClickToLoad(examplesRouter chi.Router) error {
 					sse,
 					ClickToLoadAgentRow(store.Offset+i),
 					datastar.WithQuerySelectorID("click_to_load_rows"),
-					datastar.WithMergeAppendElement(),
+					datastar.WithMergeAppend(),
 				)
 			}
 		}

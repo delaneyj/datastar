@@ -61,7 +61,7 @@ func setupExamplesQuickPrimerGo(examplesRouter chi.Router) error {
 			datastar.RenderFragmentTempl(
 				sse, QuickPrimerCheckThisOut(),
 				datastar.WithQuerySelector("main"),
-				datastar.WithMergePrependElement(),
+				datastar.WithMergePrepend(),
 			)
 
 		})
