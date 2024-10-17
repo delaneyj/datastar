@@ -254,7 +254,7 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 
 	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
 
-	sse.SendMultiData(
+	sse.MustSendMultiData(
 		dataRows,
 		WithSSEEvent(SSEEventTypeFragment),
 		WithSSERetry(0),
@@ -263,7 +263,7 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 }
 
 func Redirect(sse *ServerSentEventsHandler, url string) {
-	sse.Send(
+	sse.MustSend(
 		fmt.Sprintf("redirect %s", url),
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
@@ -280,7 +280,7 @@ func PatchStore(sse *ServerSentEventsHandler, store any) {
 
 func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string) {
 	lines := strings.Split(storeJSON, "\n")
-	sse.SendMultiData(
+	sse.MustSendMultiData(
 		lines,
 		WithSSEEvent(SSEEventTypeSignal),
 	)
@@ -296,7 +296,7 @@ func PatchStoreIfMissing(sse *ServerSentEventsHandler, store any) {
 
 func PatchStoreIfMissingRaw(sse *ServerSentEventsHandler, storeJSON string) {
 	lines := strings.Split(storeJSON, "\n")
-	sse.SendMultiData(
+	sse.MustSendMultiData(
 		lines,
 		WithSSEEvent(SSEEventTypeSignalIfMissing),
 	)
@@ -307,7 +307,7 @@ func RedirectF(sse *ServerSentEventsHandler, urlFormat string, args ...interface
 }
 
 func Error(sse *ServerSentEventsHandler, err error) {
-	sse.Send(
+	sse.MustSend(
 		fmt.Sprintf("error %s", err.Error()),
 		WithSSEEvent(SSEEventTypeError),
 		WithSSERetry(0),

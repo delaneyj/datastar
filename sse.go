@@ -2,12 +2,15 @@ package datastar
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"sync"
 	"time"
 )
+
+var ErrSendAfterError = fmt.Errorf("cannot send data after error")
 
 type ServerSentEventsHandler struct {
 	ctx             context.Context
@@ -70,6 +73,19 @@ func WithSSERetry(retry time.Duration) SSEEventOption {
 	}
 }
 
+func (sse *ServerSentEventsHandler) MustSendMultiData(dataArr []string, opts ...SSEEventOption) {
+	err := sse.SendMultiData(dataArr, opts...)
+	if err != nil && !errors.Is(err, ErrSendAfterError) {
+		log.Print(err)
+	}
+}
+func (sse *ServerSentEventsHandler) MustSend(data string, opts ...SSEEventOption) {
+	err := sse.Send(data, opts...)
+	if err != nil && !errors.Is(err, ErrSendAfterError) {
+		log.Print(err)
+	}
+}
+
 func (sse *ServerSentEventsHandler) Send(data string, opts ...SSEEventOption) error {
 	return sse.SendMultiData([]string{data}, opts...)
 }
@@ -78,12 +94,11 @@ func (sse *ServerSentEventsHandler) SendMultiData(dataArr []string, opts ...SSEE
 	sse.mu.Lock()
 	defer sse.mu.Unlock()
 	if sse.hasErrored || len(dataArr) == 0 {
-		return fmt.Errorf("cannot send data after error")
+		return ErrSendAfterError
 	}
 	err := sse.sendMultiData(dataArr, opts)
 	if err != nil {
 		sse.hasErrored = true
-		log.Print(err)
 		return err
 	}
 	return nil
@@ -95,7 +110,7 @@ func (sse *ServerSentEventsHandler) sendMultiData(dataArr []string, opts []SSEEv
 		// other middleware panics during flush (such as compression)
 		// Not ideal, but we can't do much about it
 		if r := recover(); r != nil && sse.shouldLogPanics {
-			err = fmt.Errorf("recovered from panic: %v", r)
+			err = fmt.Errorf("recovered from panic sending SSE: %v", r)
 		}
 	}()
 

@@ -82,7 +82,7 @@ func setupRoutes(ctx context.Context, router chi.Router) error {
 	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 		<-r.Context().Done()
-		sse.Send("reload", datastar.WithSSERetry(250))
+		sse.MustSend("reload", datastar.WithSSERetry(250))
 	})
 
 	htmlFormatter := html.New(html.WithClasses(true), html.TabWidth(2))
