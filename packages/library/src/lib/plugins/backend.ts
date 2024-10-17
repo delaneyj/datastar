@@ -35,13 +35,10 @@ const GET = 'get',
 
 const FragmentMergeOptions = {
   MorphElement: 'morph',
-  InnerElement: 'inner',
-  OuterElement: 'outer',
   PrependElement: 'prepend',
   AppendElement: 'append',
   BeforeElement: 'before',
   AfterElement: 'after',
-  UpsertAttributes: 'upsert_attributes',
 } as const
 type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
 
@@ -385,14 +382,6 @@ export function mergeHTMLFragment(
             const first = result[0] as Element
             modifiedTarget = first
             break
-          case FragmentMergeOptions.InnerElement:
-            // Replace the contents of the target element with the response
-            modifiedTarget.innerHTML = frag.innerHTML
-            break
-          case FragmentMergeOptions.OuterElement:
-            // Replace the entire target element with the response
-            modifiedTarget.replaceWith(frag)
-            break
           case FragmentMergeOptions.PrependElement:
             modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
             break
@@ -404,13 +393,6 @@ export function mergeHTMLFragment(
             break
           case FragmentMergeOptions.AfterElement:
             modifiedTarget.after(frag) //  Insert the response after the target element
-            break
-          case FragmentMergeOptions.UpsertAttributes:
-            //  Upsert the attributes of the target element
-            frag.getAttributeNames().forEach((attrName) => {
-              const value = frag.getAttribute(attrName)!
-              modifiedTarget.setAttribute(attrName, value)
-            })
             break
           default:
             throw new Error(`Unknown merge type: ${merge}`)
