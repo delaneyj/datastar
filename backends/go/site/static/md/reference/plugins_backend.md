@@ -51,6 +51,7 @@ Addtional `data` lines can be added to the response to override the default beha
 | `data: merge append`            | Appends the fragment to the target's children. |
 | `data: merge before`            | Inserts the fragment before the target as a sibling. |
 | `data: merge after`             | Inserts the fragment after the target as a sibling. |
+| `data: merge upsert_attributes` | Merges attributes from the fragment into the target – useful for updating a store. |
 | `data: settle 1000`             | Settles the element after 1000ms, useful for transitions. Defaults to `500`. |
 | `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`. |
 | `data: fragment`                | The HTML fragment to merge into the DOM. **_Only one fragment should exist per event._** |

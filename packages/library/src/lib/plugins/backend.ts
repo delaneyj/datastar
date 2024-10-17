@@ -39,6 +39,7 @@ const FragmentMergeOptions = {
   AppendElement: 'append',
   BeforeElement: 'before',
   AfterElement: 'after',
+  UpsertAttributes: 'upsert_attributes',
 } as const
 type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
 
@@ -393,6 +394,13 @@ export function mergeHTMLFragment(
             break
           case FragmentMergeOptions.AfterElement:
             modifiedTarget.after(frag) //  Insert the response after the target element
+            break
+          case FragmentMergeOptions.UpsertAttributes:
+            //  Upsert the attributes of the target element
+            frag.getAttributeNames().forEach((attrName) => {
+              const value = frag.getAttribute(attrName)!
+              modifiedTarget.setAttribute(attrName, value)
+            })
             break
           default:
             throw new Error(`Unknown merge type: ${merge}`)
