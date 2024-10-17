@@ -271,7 +271,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           break
 
         case EVENT_CONSOLE:
-          const [consoleMode, consoleMessage] = evt.data.trim().split(' ')
+          const [consoleMode, ...consoleRest] = evt.data.trim().split(' ')
+          const consoleMessage = consoleRest.join(' ')
           switch (consoleMode) {
             case 'log':
             case 'warn':
