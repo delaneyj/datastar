@@ -276,9 +276,9 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             case 'debug':
             case 'error':
             case 'info':
-            case 'log':
             case 'group':
             case 'groupEnd':
+            case 'log':
             case 'warn':
               console[consoleMode](consoleMessage)
               break
