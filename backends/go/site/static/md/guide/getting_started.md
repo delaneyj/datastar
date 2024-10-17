@@ -185,7 +185,7 @@ For our Datastar example:
 ```
 event: datastar-fragment // \n
 id: 129618219840307262 // \n
-data: merge morph_element // \n
+data: merge morph // \n
 data: fragment <div id="id">...</div> // \n\n
 
 ```
@@ -213,7 +213,7 @@ app.put("/put", (req, res) => {
 });
 ```
 
-So here you see we're setting our headers with `setHeaders`. We modify state that's stored specifically on the backend. This can be anything you want, like a database. Then we construct the response string much like HTMX and include the store attribute. We send the response with the `morph_element` merge type.
+So here you see we're setting our headers with `setHeaders`. We modify state that's stored specifically on the backend. This can be anything you want, like a database. Then we construct the response string much like HTMX and include the store attribute. We send the response with the `morph` merge type.
 
 We need to make some changes now to reflect this.
 
@@ -290,12 +290,12 @@ sendSSE({
   res,
   frag,
   selector: "#main",
-  mergeType: "prepend_element",
+  mergeType: "prepend",
   end: true,
 });
 ```
 
-Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend_element` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastar's event types [here](/reference/plugins_backend).
+Now you'll notice you're sending two events in one call. That's because Datastar uses SSE. So using `prepend` we're able to prepend what we want to a target element. We do this using a `selector` and in our case this is the `<main>` element. Good stuff! You can check out all of Datastar's event types [here](/reference/plugins_backend).
 
 There's one last thing we're going to do. Let's add a simple data feed upon loading the page.
 

@@ -1,9 +1,9 @@
 # Python - FastAPI, Hypermedia
 
-A Python example using Datastar with FastAPI and Hypermedia.  
-Based on the Python example at https://data-star.dev/examples/python  
- 
-Datastar functions:  
+A Python example using Datastar with FastAPI and Hypermedia.
+Based on the Python example at https://data-star.dev/examples/python
+
+Datastar functions:
 FragmentMergeType, DatastarEventMessage, SingleDatastarEventMessage are from a litestar-gist by @avila-gabriel
 
 
@@ -11,8 +11,8 @@ FragmentMergeType, DatastarEventMessage, SingleDatastarEventMessage are from a l
 https://fastapi.tiangolo.com/
 
 ## Hypermedia
-Create `HTML` using python code  
-https://github.com/thomasborgen/hypermedia  
+Create `HTML` using python code
+https://github.com/thomasborgen/hypermedia
 Version >=5.0.0
 
 
@@ -42,14 +42,13 @@ target = "target"
 
 # Datastar utilities
 class FragmentMergeType(str, Enum):
-  MORPH_ELEMENT = "morph_element"
-  INNER_ELEMENT = "inner_element"
-  OUTER_ELEMENT = "outer_element"
-  PREPEND_ELEMENT = "prepend_element"
-  APPEND_ELEMENT = "append_element"
-  BEFORE_ELEMENT = "before_element"
-  AFTER_ELEMENT = "after_element"
-  DELETE_ELEMENT = "delete_element"
+  MORPH = "morph"
+  INNER = "inner"
+  OUTER = "outer"
+  PREPEND = "prepend"
+  APPEND = "append"
+  BEFORE = "before"
+  AFTER = "after"
   UPSERT_ATTRIBUTES = "upsert_attributes"
 
 
@@ -107,7 +106,7 @@ class SingleDatastarEventMessage:
     yield self.event_message.format_sse()
 
 
-# Hypermedia 
+# Hypermedia
 def real_base() -> Element:
     """Create the base page."""
     return ElementList(

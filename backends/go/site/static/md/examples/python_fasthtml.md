@@ -1,9 +1,9 @@
 # Python - FastHTML
 
-A Python example using Datastar with FastHTML.  
-Based on the Python example at https://data-star.dev/examples/python  
- 
-Datastar functions:  
+A Python example using Datastar with FastHTML.
+Based on the Python example at https://data-star.dev/examples/python
+
+Datastar functions:
 FragmentMergeType, DatastarEventMessage, SingleDatastarEventMessage are from a litestar-gist by @avila-gabriel
 
 
@@ -86,14 +86,13 @@ def page(store):
 
 # Datastar utilities
 class FragmentMergeType(str, Enum):
-  MORPH_ELEMENT = "morph_element"
-  INNER_ELEMENT = "inner_element"
-  OUTER_ELEMENT = "outer_element"
-  PREPEND_ELEMENT = "prepend_element"
-  APPEND_ELEMENT = "append_element"
-  BEFORE_ELEMENT = "before_element"
-  AFTER_ELEMENT = "after_element"
-  DELETE_ELEMENT = "delete_element"
+  MORPH = "morph"
+  INNER = "inner"
+  OUTER = "outer"
+  PREPEND = "prepend"
+  APPEND = "append"
+  BEFORE = "before"
+  AFTER = "after"
   UPSERT_ATTRIBUTES = "upsert_attributes"
 
 
