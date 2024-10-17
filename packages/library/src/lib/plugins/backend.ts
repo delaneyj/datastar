@@ -7,15 +7,20 @@ import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
+const DEFAULT_SETTLE_TIME = 500
+const DEFAULT_USE_VIEW_TRANSITION = true
+const DEFAULT_MERGE: FragmentMergeOption = 'morph'
+
 const CONTENT_TYPE = 'Content-Type'
 const DATASTAR_REQUEST = `${DATASTAR_STR}-request`
 const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
-const EVENT_SIGNAL_IFMISSING = `${DATASTAR_CLASS_PREFIX}signal-ifmissing`
-// const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
-// const EVENT_ERROR = `${DATASTAR_CLASS_PREFIX}error`
+const EVENT_DELETE = `${DATASTAR_CLASS_PREFIX}delete`
+const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
+const EVENT_CONSOLE = `${DATASTAR_CLASS_PREFIX}console`
+
 const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
 const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
@@ -28,17 +33,14 @@ const GET = 'get',
   PATCH = 'patch',
   DELETE = 'delete'
 
-const KnowEventTypes = ['selector', 'merge', 'settle', 'fragment', 'redirect', 'error', 'vt']
-
 const FragmentMergeOptions = {
-  MorphElement: 'morph_element',
-  InnerElement: 'inner_element',
-  OuterElement: 'outer_element',
-  PrependElement: 'prepend_element',
-  AppendElement: 'append_element',
-  BeforeElement: 'before_element',
-  AfterElement: 'after_element',
-  DeleteElement: 'delete_element',
+  MorphElement: 'morph',
+  InnerElement: 'inner',
+  OuterElement: 'outer',
+  PrependElement: 'prepend',
+  AppendElement: 'append',
+  BeforeElement: 'before',
+  AfterElement: 'after',
   UpsertAttributes: 'upsert_attributes',
 } as const
 type FragmentMergeOption = (typeof FragmentMergeOptions)[keyof typeof FragmentMergeOptions]
@@ -154,82 +156,57 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         debugger
       }
 
-      if (evt.event === EVENT_SIGNAL || evt.event === EVENT_SIGNAL_IFMISSING) {
-        const fnContents = ` return Object.assign({...ctx.store()}, ${evt.data})`
-        try {
-          const fn = new Function('ctx', fnContents) as ExpressionFunction
-          const possibleMergeStore = fn(ctx)
-          const actualMergeStore = storeFromPossibleContents(
-            ctx.store(),
-            possibleMergeStore,
-            evt.event === EVENT_SIGNAL_IFMISSING,
-          )
-          ctx.mergeStore(actualMergeStore)
-          ctx.applyPlugins(document.body)
-        } catch (e) {
-          console.log(fnContents)
-          console.error(e)
-          debugger
-        }
-      } else {
-        let fragment = '',
-          merge: FragmentMergeOption = 'morph_element',
-          exists = false,
-          selector = '',
-          settleTime = 500,
-          useViewTransition = true
+      switch (evt.event) {
+        case EVENT_FRAGMENT:
+          const lines = evt.data.trim().split('\n')
+          const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'vt']
 
-        const isFragment = evt.event === EVENT_FRAGMENT
+          let fragment = '',
+            merge = DEFAULT_MERGE,
+            settleTime = DEFAULT_SETTLE_TIME,
+            useViewTransition = DEFAULT_USE_VIEW_TRANSITION,
+            exists = false,
+            selector = '',
+            currentDatatype = ''
 
-        const lines = evt.data.trim().split('\n')
-        let currentDatatype = ''
+          for (let i = 0; i < lines.length; i++) {
+            let line = lines[i]
+            if (!line?.length) continue
 
-        for (let i = 0; i < lines.length; i++) {
-          let line = lines[i]
-          if (!line?.length) continue
+            const firstWord = line.split(' ', 1)[0]
+            const isDatatype = knownEventTypes.includes(firstWord)
+            const isNewDatatype = isDatatype && firstWord !== currentDatatype
+            if (isNewDatatype) {
+              currentDatatype = firstWord
+              line = line.slice(firstWord.length + 1)
 
-          const firstWord = line.split(' ', 1)[0]
-          const isDatatype = KnowEventTypes.includes(firstWord)
-          const isNewDatatype = isDatatype && firstWord !== currentDatatype
-          if (isNewDatatype) {
-            currentDatatype = firstWord
-            line = line.slice(firstWord.length + 1)
-
-            switch (currentDatatype) {
-              case 'selector':
-                selector = line
-                break
-              case 'merge':
-                merge = line as FragmentMergeOption
-                exists = Object.values(FragmentMergeOptions).includes(merge)
-                if (!exists) {
-                  throw new Error(`Unknown merge option: ${merge}`)
-                }
-                break
-              case 'settle':
-                settleTime = parseInt(line)
-                break
-              case 'fragment':
-                break
-              case 'redirect':
-                sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', line)
-                window.location.href = line
-                return
-              case 'error':
-                sendDatastarEvent('plugin', 'backend', 'error', 'WINDOW', line)
-                throw new Error(line)
-              case 'vt':
-                useViewTransition = line === 'true'
-                break
-              default:
-                throw new Error(`Unknown data type`)
+              switch (currentDatatype) {
+                case 'selector':
+                  selector = line
+                  break
+                case 'merge':
+                  merge = line as FragmentMergeOption
+                  exists = Object.values(FragmentMergeOptions).includes(merge)
+                  if (!exists) {
+                    throw new Error(`Unknown merge option: ${merge}`)
+                  }
+                  break
+                case 'settle':
+                  settleTime = parseInt(line)
+                  break
+                case 'fragment':
+                  break
+                case 'vt':
+                  useViewTransition = line === 'true'
+                  break
+                default:
+                  throw new Error(`Unknown data type`)
+              }
             }
+
+            if (currentDatatype === 'fragment') fragment += line + '\n'
           }
 
-          if (currentDatatype === 'fragment') fragment += line + '\n'
-        }
-
-        if (isFragment) {
           if (!fragment?.length) fragment = '<div></div>'
           mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
           sendDatastarEvent(
@@ -239,7 +216,74 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             selector,
             JSON.stringify({ fragment, settleTime, useViewTransition }),
           )
-        }
+
+          break
+
+        case EVENT_SIGNAL:
+          let onlyIfMissing = false
+          let storeToMerge = ''
+
+          const signalLines = evt.data.trim().split('\n')
+          for (let i = 0; i < signalLines.length; i++) {
+            const line = signalLines[i]
+            const [signalType, ...signalRest] = line.split(' ')
+            const signalLine = signalRest.join(' ')
+            switch (signalType) {
+              case 'onlyIfMissing':
+                onlyIfMissing = signalLine.trim() === 'true'
+                break
+              case 'store':
+                storeToMerge += `${signalLine}\n`
+                break
+              default:
+                throw new Error(`Unknown signal type: ${signalType}`)
+            }
+          }
+
+          const fnContents = ` return Object.assign({...ctx.store()}, ${storeToMerge})`
+          try {
+            const fn = new Function('ctx', fnContents) as ExpressionFunction
+            const possibleMergeStore = fn(ctx)
+            const actualMergeStore = storeFromPossibleContents(ctx.store(), possibleMergeStore, onlyIfMissing)
+            ctx.mergeStore(actualMergeStore)
+            ctx.applyPlugins(document.body)
+          } catch (e) {
+            console.log(fnContents)
+            console.error(e)
+            debugger
+          }
+          break
+
+        case EVENT_DELETE:
+          const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
+          if (deletePrefix !== 'selector') throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+          const deleteSelector = deleteRest.join(' ')
+          const deleteTargets = document.querySelectorAll(deleteSelector)
+          deleteTargets.forEach((target) => target.remove())
+          break
+
+        case EVENT_REDIRECT:
+          const [redirectSelector, redirectTarget] = evt.data.trim()
+          if (redirectSelector !== 'selector') throw new Error(`Unknown redirect selector: ${redirectSelector}`)
+
+          sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', redirectTarget)
+          window.location.href = redirectTarget
+          break
+
+        case EVENT_CONSOLE:
+          const [consoleMode, consoleMessage] = evt.data.trim()
+          switch (consoleMode) {
+            case 'log':
+            case 'warn':
+            case 'info':
+            case 'debug':
+            case 'group':
+            case 'groupEnd':
+              console[consoleMode](consoleMessage)
+              break
+            default:
+              throw new Error(`Unknown console mode: '${consoleMode}', message: '${consoleMessage}'`)
+          }
       }
     },
     onerror: (evt) => {
@@ -308,114 +352,111 @@ export function mergeHTMLFragment(
   ctx: AttributeContext,
   selector: string,
   merge: FragmentMergeOption,
-  fragment: string,
+  fragmentsRaw: string,
   settleTime: number,
   useViewTransition: boolean,
 ) {
   const { el } = ctx
 
-  fragContainer.innerHTML = fragment.trim()
-  const frag = fragContainer.content.firstChild
-  if (!(frag instanceof Element)) {
-    throw new Error(`No fragment found`)
-  }
-
-  const useElAsTarget = selector === SELECTOR_SELF_SELECTOR
-
-  let targets: Iterable<Element>
-  if (useElAsTarget) {
-    targets = [el]
-  } else {
-    const selectorOrID = selector || `#${frag.getAttribute('id')}`
-    targets = document.querySelectorAll(selectorOrID) || []
-    if (!!!targets) {
-      throw new Error(`No targets found for ${selectorOrID}`)
+  fragContainer.innerHTML = fragmentsRaw.trim()
+  const frags = [...fragContainer.content.children]
+  frags.forEach((frag) => {
+    if (!(frag instanceof Element)) {
+      throw new Error(`No fragment found`)
     }
-  }
-  const allTargets = [...targets]
-  if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
-
-  const applyToTargets = (capturedTargets: Element[]) => {
-    for (const initialTarget of capturedTargets) {
-      initialTarget.classList.add(SWAPPING_CLASS)
-      const originalHTML = initialTarget.outerHTML
-      let modifiedTarget = initialTarget
-      switch (merge) {
-        case FragmentMergeOptions.MorphElement:
-          const result = idiomorph(modifiedTarget, frag, {
-            callbacks: {
-              beforeNodeRemoved: (oldNode: Element, _: Element) => {
-                ctx.cleanupElementRemovals(oldNode)
-                return true
+    const applyToTargets = (capturedTargets: Element[]) => {
+      for (const initialTarget of capturedTargets) {
+        initialTarget.classList.add(SWAPPING_CLASS)
+        const originalHTML = initialTarget.outerHTML
+        let modifiedTarget = initialTarget
+        switch (merge) {
+          case FragmentMergeOptions.MorphElement:
+            const result = idiomorph(modifiedTarget, frag, {
+              callbacks: {
+                beforeNodeRemoved: (oldNode: Element, _: Element) => {
+                  ctx.cleanupElementRemovals(oldNode)
+                  return true
+                },
               },
-            },
-          })
-          if (!result?.length) {
-            throw new Error(`No morph result`)
-          }
-          const first = result[0] as Element
-          modifiedTarget = first
-          break
-        case FragmentMergeOptions.InnerElement:
-          // Replace the contents of the target element with the response
-          modifiedTarget.innerHTML = frag.innerHTML
-          break
-        case FragmentMergeOptions.OuterElement:
-          // Replace the entire target element with the response
-          modifiedTarget.replaceWith(frag)
-          break
-        case FragmentMergeOptions.PrependElement:
-          modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
-          break
-        case FragmentMergeOptions.AppendElement:
-          modifiedTarget.append(frag) //  Insert the response after the last child of the target element
-          break
-        case FragmentMergeOptions.BeforeElement:
-          modifiedTarget.before(frag) //  Insert the response before the target element
-          break
-        case FragmentMergeOptions.AfterElement:
-          modifiedTarget.after(frag) //  Insert the response after the target element
-          break
-        case FragmentMergeOptions.DeleteElement:
-          //  Deletes the target element regardless of the response
-          setTimeout(() => modifiedTarget.remove(), settleTime)
-          break
-        case FragmentMergeOptions.UpsertAttributes:
-          //  Upsert the attributes of the target element
-          frag.getAttributeNames().forEach((attrName) => {
-            const value = frag.getAttribute(attrName)!
-            modifiedTarget.setAttribute(attrName, value)
-          })
-          break
-        default:
-          throw new Error(`Unknown merge type: ${merge}`)
-      }
-      ctx.cleanupElementRemovals(modifiedTarget)
-      modifiedTarget.classList.add(SWAPPING_CLASS)
+            })
+            if (!result?.length) {
+              throw new Error(`No morph result`)
+            }
+            const first = result[0] as Element
+            modifiedTarget = first
+            break
+          case FragmentMergeOptions.InnerElement:
+            // Replace the contents of the target element with the response
+            modifiedTarget.innerHTML = frag.innerHTML
+            break
+          case FragmentMergeOptions.OuterElement:
+            // Replace the entire target element with the response
+            modifiedTarget.replaceWith(frag)
+            break
+          case FragmentMergeOptions.PrependElement:
+            modifiedTarget.prepend(frag) //  Insert the response before the first child of the target element
+            break
+          case FragmentMergeOptions.AppendElement:
+            modifiedTarget.append(frag) //  Insert the response after the last child of the target element
+            break
+          case FragmentMergeOptions.BeforeElement:
+            modifiedTarget.before(frag) //  Insert the response before the target element
+            break
+          case FragmentMergeOptions.AfterElement:
+            modifiedTarget.after(frag) //  Insert the response after the target element
+            break
+          case FragmentMergeOptions.UpsertAttributes:
+            //  Upsert the attributes of the target element
+            frag.getAttributeNames().forEach((attrName) => {
+              const value = frag.getAttribute(attrName)!
+              modifiedTarget.setAttribute(attrName, value)
+            })
+            break
+          default:
+            throw new Error(`Unknown merge type: ${merge}`)
+        }
+        ctx.cleanupElementRemovals(modifiedTarget)
+        modifiedTarget.classList.add(SWAPPING_CLASS)
 
-      ctx.applyPlugins(document.body)
+        ctx.applyPlugins(document.body)
 
-      setTimeout(() => {
-        initialTarget.classList.remove(SWAPPING_CLASS)
-        modifiedTarget.classList.remove(SWAPPING_CLASS)
-      }, settleTime)
-
-      const revisedHTML = modifiedTarget.outerHTML
-
-      if (originalHTML !== revisedHTML) {
-        modifiedTarget.classList.add(SETTLING_CLASS)
         setTimeout(() => {
-          modifiedTarget.classList.remove(SETTLING_CLASS)
+          initialTarget.classList.remove(SWAPPING_CLASS)
+          modifiedTarget.classList.remove(SWAPPING_CLASS)
         }, settleTime)
+
+        const revisedHTML = modifiedTarget.outerHTML
+
+        if (originalHTML !== revisedHTML) {
+          modifiedTarget.classList.add(SETTLING_CLASS)
+          setTimeout(() => {
+            modifiedTarget.classList.remove(SETTLING_CLASS)
+          }, settleTime)
+        }
       }
     }
-  }
 
-  if (supportsViewTransitions && useViewTransition) {
-    docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
-  } else {
-    applyToTargets(allTargets)
-  }
+    const useElAsTarget = selector === SELECTOR_SELF_SELECTOR
+
+    let targets: Iterable<Element>
+    if (useElAsTarget) {
+      targets = [el]
+    } else {
+      const selectorOrID = selector || `#${frag.getAttribute('id')}`
+      targets = document.querySelectorAll(selectorOrID) || []
+      if (!!!targets) {
+        throw new Error(`No targets found for ${selectorOrID}`)
+      }
+    }
+    const allTargets = [...targets]
+    if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
+
+    if (supportsViewTransitions && useViewTransition) {
+      docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
+    } else {
+      applyToTargets(allTargets)
+    }
+  })
 }
 
 export const BackendActions: Actions = [GET, POST, PUT, PATCH, DELETE].reduce(

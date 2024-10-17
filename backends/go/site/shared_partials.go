@@ -60,6 +60,10 @@ func markdownRenders(staticMdPath string) (mdElementRenderers map[string]string,
 			return nil, nil, fmt.Errorf("error reading doc %s: %w", de.Name(), err)
 		}
 
+		// Package version
+		b = bytes.ReplaceAll(b, []byte("PACKAGE_VERSION"), []byte(packageJSON.Version))
+
+		// Get all anchors
 		anchors := []string{}
 		lines := strings.Split(string(b), "\n")
 		for _, line := range lines {

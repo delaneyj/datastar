@@ -41,14 +41,14 @@ On the backend (Go in this case) we return a set of render fragments in the form
 event: datastar-fragment
 id: 129618219840307262
 data: selector
-data: merge morph_element
+data: merge morph
 data: settle 0
 data: fragment <div ...>...</div>
 
 
 ```
 
-The `selector` is the CSS selector that the fragment will be inserted into. The `merge` decides how the element is added to the page. `morph_element` uses [idiomorph](https://github.com/bigskysoftware/idiomorph) to merge into the page intelligently. The `settle` is the time in milliseconds that the fragment will be inserted. The `fragment` is the HTML that will be inserted into the page. If you are familiar with HTMX and the the structure of SSE messages this should look quite familiar. Nice thing is most of these are optional (except for `fragment`) and can be optionally added to the response. In the case of the Go implementation it includes all for the sake of completeness.
+The `selector` is the CSS selector that the fragment will be inserted into. The `merge` decides how the element is added to the page. `morph` uses [idiomorph](https://github.com/bigskysoftware/idiomorph) to merge into the page intelligently. The `settle` is the time in milliseconds that the fragment will be inserted. The `fragment` is the HTML that will be inserted into the page. If you are familiar with HTMX and the the structure of SSE messages this should look quite familiar. Nice thing is most of these are optional (except for `fragment`) and can be optionally added to the response. In the case of the Go implementation it includes all for the sake of completeness.
 
 This is still a lot to explore but the main point is that we can have a reactive page without having to write any Javascript. This is the power of declarative code. I'd suggest you check out the [examples](/examples) to see how this all fits together. Then when you have a specific question check out the [reference](/reference) for more details.
 

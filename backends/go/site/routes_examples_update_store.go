@@ -1,11 +1,12 @@
 package site
 
 import (
+	"fmt"
+	"math/rand"
 	"net/http"
 	"time"
 
 	"github.com/delaneyj/datastar"
-	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 )
 
@@ -19,7 +20,7 @@ func setupExamplesUpdateStore(examplesRouter chi.Router) error {
 				return
 			}
 
-			randKey := toolbelt.NextEncodedID()
+			randKey := fmt.Sprintf("%d", rand.Intn(2<<16))
 			store[randKey] = time.Now().Format(time.RFC3339Nano)
 
 			sse := datastar.NewSSE(w, r)
