@@ -275,7 +275,7 @@ export const EventPlugin: AttributePlugin = {
       case 'load':
         callback()
         delete ctx.el.dataset.onLoad
-        return () => { }
+        return () => {}
 
       case 'raf':
         let rafId: number | undefined
@@ -374,7 +374,7 @@ export function argsToMs(args: string[] | undefined) {
 
     try {
       return parseFloat(arg)
-    } catch (e) { }
+    } catch (e) {}
   }
 
   return 0
