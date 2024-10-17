@@ -273,12 +273,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
         case EVENT_CONSOLE:
           const [consoleMode, consoleMessage] = evt.data.trim()
           switch (consoleMode) {
-            case 'log':
-            case 'warn':
-            case 'info':
             case 'debug':
+            case 'error':
+            case 'info':
+            case 'log':
             case 'group':
             case 'groupEnd':
+            case 'warn':
               console[consoleMode](consoleMessage)
               break
             default:
