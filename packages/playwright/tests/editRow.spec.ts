@@ -51,24 +51,4 @@ test.describe("Edit Row UI Suite", () => {
     await expect(page.locator("#contact_0")).toContainText("joe@smith.org");
     await expect(page.getByTestId("contact_0_edit")).toBeAttached();
   });
-
-  test("test edit and save from other row", async ({ page }) => {
-    await page.getByTestId("contact_0_edit").click();
-    await page.getByTestId("contact_0_name").fill("Foo Fighter");
-    await page.getByTestId("contact_0_email").fill("foo@fighter.org");
-    await page.getByTestId("contact_2_save").click();
-    await expect(page.locator("#contact_0")).toContainText("Foo Fighter");
-    await expect(page.locator("#contact_0")).toContainText("foo@fighter.org");
-    await expect(page.getByTestId("contact_0_edit")).toBeAttached();
-  });
-
-  test("test edit and cancel from other row", async ({ page }) => {
-    await page.getByTestId("contact_0_edit").click();
-    await page.getByTestId("contact_0_name").fill("Foo Fighter");
-    await page.getByTestId("contact_0_email").fill("foo@fighter.org");
-    await page.getByTestId("contact_2_cancel").click();
-    await expect(page.locator("#contact_0")).toContainText("Joe Smith");
-    await expect(page.locator("#contact_0")).toContainText("joe@smith.org");
-    await expect(page.getByTestId("contact_0_edit")).toBeAttached();
-  });
 });

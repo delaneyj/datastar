@@ -66,37 +66,35 @@ func DELETE(urlFormat string, args ...any) string {
 type FragmentMergeType string
 
 const (
-	FragmentMergeMorphElement     FragmentMergeType = "morph_element"
-	FragmentMergeInnerElement     FragmentMergeType = "inner_element"
-	FragmentMergeOuterElement     FragmentMergeType = "outer_element"
-	FragmentMergePrependElement   FragmentMergeType = "prepend_element"
-	FragmentMergeAppendElement    FragmentMergeType = "append_element"
-	FragmentMergeBeforeElement    FragmentMergeType = "before_element"
-	FragmentMergeAfterElement     FragmentMergeType = "after_element"
-	FragmentMergeDeleteElement    FragmentMergeType = "delete_element"
-	FragmentMergeUpsertAttributes FragmentMergeType = "upsert_attributes"
+	FragmentMergeMorph   FragmentMergeType = "morph"
+	FragmentMergeInner   FragmentMergeType = "inner"
+	FragmentMergeOuter   FragmentMergeType = "outer"
+	FragmentMergePrepend FragmentMergeType = "prepend"
+	FragmentMergeAppend  FragmentMergeType = "append"
+	FragmentMergeBefore  FragmentMergeType = "before"
+	FragmentMergeAfter   FragmentMergeType = "after"
+	FragmentMergeUpsert  FragmentMergeType = "upsert_attributes"
 )
 
 var ValidFragmentMergeTypes = []FragmentMergeType{
-	FragmentMergeMorphElement,
-	FragmentMergeInnerElement,
-	FragmentMergeOuterElement,
-	FragmentMergePrependElement,
-	FragmentMergeAppendElement,
-	FragmentMergeBeforeElement,
-	FragmentMergeAfterElement,
-	FragmentMergeDeleteElement,
-	FragmentMergeUpsertAttributes,
+	FragmentMergeMorph,
+	FragmentMergeInner,
+	FragmentMergeOuter,
+	FragmentMergePrepend,
+	FragmentMergeAppend,
+	FragmentMergeBefore,
+	FragmentMergeAfter,
+	FragmentMergeUpsert,
 }
 
 const (
-	FragmentSelectorSelf        = "self"
-	FragmentSelectorUseID       = ""
-	SSEEventTypeFragment        = "datastar-fragment"
-	SSEEventTypeSignal          = "datastar-signal"
-	SSEEventTypeSignalIfMissing = "datastar-signal-ifmissing"
-	SSEEventTypeRedirect        = "datastar-redirect"
-	SSEEventTypeError           = "datastar-error"
+	FragmentSelectorSelf  = "self"
+	FragmentSelectorUseID = ""
+	SSEEventTypeFragment  = "datastar-fragment"
+	SSEEventTypeSignal    = "datastar-signal"
+	SSEEventTypeDelete    = "datastar-delete"
+	SSEEventTypeRedirect  = "datastar-redirect"
+	SSEEventTypeConsole   = "datastar-console"
 )
 
 type RenderFragmentOptions struct {
@@ -119,36 +117,28 @@ func WithMergeType(merge FragmentMergeType) RenderFragmentOption {
 	}
 }
 
-func WithMergeInnerElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeInnerElement)
+func WithMergeMorph() RenderFragmentOption {
+	return WithMergeType(FragmentMergeMorph)
 }
 
-func WithMergeOuterElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeOuterElement)
+func WithMergePrepend() RenderFragmentOption {
+	return WithMergeType(FragmentMergePrepend)
 }
 
-func WithMergePrependElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergePrependElement)
+func WithMergeAppend() RenderFragmentOption {
+	return WithMergeType(FragmentMergeAppend)
 }
 
-func WithMergeAppendElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeAppendElement)
+func WithMergeBefore() RenderFragmentOption {
+	return WithMergeType(FragmentMergeBefore)
 }
 
-func WithMergeBeforeElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeBeforeElement)
-}
-
-func WithMergeAfterElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeAfterElement)
-}
-
-func WithMergeDeleteElement() RenderFragmentOption {
-	return WithMergeType(FragmentMergeDeleteElement)
+func WithMergeAfter() RenderFragmentOption {
+	return WithMergeType(FragmentMergeAfter)
 }
 
 func WithMergeUpsertAttributes() RenderFragmentOption {
-	return WithMergeType(FragmentMergeUpsertAttributes)
+	return WithMergeType(FragmentMergeUpsert)
 }
 
 func WithSettleDuration(d time.Duration) RenderFragmentOption {
@@ -188,15 +178,14 @@ func WithoutViewTransitions() RenderFragmentOption {
 }
 
 func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
-	opts = append([]RenderFragmentOption{
-		WithMergeDeleteElement(),
-		WithQuerySelector(selector),
-	}, opts...)
-	RenderFragmentString(
-		sse,
-		"",
-		opts...,
-	)
+
+	if selector == "" {
+		panic("missing selector")
+	}
+
+	dataRows := []string{fmt.Sprintf("selector %s", selector)}
+
+	sse.SendMultiData(dataRows, WithSSEEvent(SSEEventTypeDelete))
 }
 
 func RenderFragmentTempl(sse *ServerSentEventsHandler, c templ.Component, opts ...RenderFragmentOption) error {
@@ -225,18 +214,18 @@ const defaultSettleDuration = 500 * time.Millisecond
 func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
 		QuerySelector:  FragmentSelectorUseID,
-		Merge:          FragmentMergeMorphElement,
+		Merge:          FragmentMergeMorph,
 		SettleDuration: defaultSettleDuration,
 	}
 	for _, opt := range opts {
 		opt(options)
 	}
 
-	dataRows := []string{}
+	dataRows := make([]string, 0, 4)
 	if options.QuerySelector != FragmentSelectorUseID {
 		dataRows = append(dataRows, fmt.Sprintf("selector %s", options.QuerySelector))
 	}
-	if options.Merge != FragmentMergeMorphElement {
+	if options.Merge != FragmentMergeMorph {
 		dataRows = append(dataRows, fmt.Sprintf("merge %s", options.Merge))
 	}
 	if options.SettleDuration > 0 && options.SettleDuration != defaultSettleDuration {
@@ -278,10 +267,37 @@ func PatchStore(sse *ServerSentEventsHandler, store any) {
 	PatchStoreRaw(sse, string(b))
 }
 
-func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string) {
+type PatchStoreOptions struct {
+	OnlyIfMissing bool
+}
+
+type PatchStoreOption func(*PatchStoreOptions)
+
+func WithIfMissing() PatchStoreOption {
+	return func(o *PatchStoreOptions) {
+		o.OnlyIfMissing = true
+	}
+}
+
+func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string, opts ...PatchStoreOption) {
+	options := &PatchStoreOptions{
+		OnlyIfMissing: false,
+	}
+	for _, opt := range opts {
+		opt(options)
+	}
+
+	dataRows := make([]string, 0, 32)
+	if options.OnlyIfMissing {
+		dataRows = append(dataRows, fmt.Sprintf("onlyIfMissing %t", options.OnlyIfMissing))
+	}
 	lines := strings.Split(storeJSON, "\n")
+	for _, line := range lines {
+		dataRows = append(dataRows, fmt.Sprintf("store %s", line))
+	}
+
 	sse.SendMultiData(
-		lines,
+		dataRows,
 		WithSSEEvent(SSEEventTypeSignal),
 	)
 }
@@ -295,25 +311,64 @@ func PatchStoreIfMissing(sse *ServerSentEventsHandler, store any) {
 }
 
 func PatchStoreIfMissingRaw(sse *ServerSentEventsHandler, storeJSON string) {
-	lines := strings.Split(storeJSON, "\n")
-	sse.SendMultiData(
-		lines,
-		WithSSEEvent(SSEEventTypeSignalIfMissing),
-	)
+	PatchStoreRaw(sse, storeJSON, WithIfMissing())
 }
 
 func RedirectF(sse *ServerSentEventsHandler, urlFormat string, args ...interface{}) {
 	Redirect(sse, fmt.Sprintf(urlFormat, args...))
 }
 
-func Error(sse *ServerSentEventsHandler, err error) {
+type ConsoleLogMode string
+
+const (
+	ConsoleLogModeLog      ConsoleLogMode = "log"
+	ConsoleLogModeError    ConsoleLogMode = "error"
+	ConsoleLogModeWarn     ConsoleLogMode = "warn"
+	ConsoleLogModeInfo     ConsoleLogMode = "info"
+	ConsoleLogModeDebug    ConsoleLogMode = "debug"
+	ConsoleLogModeGroup    ConsoleLogMode = "group"
+	ConsoleLogModeGroupEnd ConsoleLogMode = "groupEnd"
+)
+
+func Console(sse *ServerSentEventsHandler, Mode ConsoleLogMode, message string) {
 	sse.Send(
-		fmt.Sprintf("error %s", err.Error()),
-		WithSSEEvent(SSEEventTypeError),
-		WithSSERetry(0),
+		fmt.Sprintf("%s %s", Mode, message),
+		WithSSEEvent(SSEEventTypeConsole),
 	)
 }
 
-func ErrorF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
-	Error(sse, fmt.Errorf(format, args...))
+func ConsoleF(sse *ServerSentEventsHandler, Mode ConsoleLogMode, format string, args ...interface{}) {
+	Console(sse, Mode, fmt.Sprintf(format, args...))
+}
+
+func Error(sse *ServerSentEventsHandler, err error) {
+	Console(sse, ConsoleLogModeError, err.Error())
+}
+
+func ConsoleLogF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
+	ConsoleF(sse, ConsoleLogModeLog, format, args...)
+}
+
+func ConsoleErrorF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
+	ConsoleF(sse, ConsoleLogModeError, format, args...)
+}
+
+func ConsoleWarnF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
+	ConsoleF(sse, ConsoleLogModeWarn, format, args...)
+}
+
+func ConsoleInfoF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
+	ConsoleF(sse, ConsoleLogModeInfo, format, args...)
+}
+
+func ConsoleDebugF(sse *ServerSentEventsHandler, format string, args ...interface{}) {
+	ConsoleF(sse, ConsoleLogModeDebug, format, args...)
+}
+
+func ConsoleGroup(sse *ServerSentEventsHandler, label string) {
+	Console(sse, ConsoleLogModeGroup, label)
+}
+
+func ConsoleGroupEnd(sse *ServerSentEventsHandler) {
+	Console(sse, ConsoleLogModeGroupEnd, "")
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"sync"
 
 	"github.com/delaneyj/datastar"
 	"github.com/go-chi/chi/v5"
@@ -13,15 +14,20 @@ import (
 func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 
 	contacts := starterActiveContacts()
+	mu := &sync.RWMutex{}
 
 	examplesRouter.Route("/delete_row/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
+			mu.RLock()
+			defer mu.RUnlock()
 			datastar.RenderFragmentTempl(sse, deleteRowContacts(contacts))
 		})
 
 		dataRouter.Get("/reset", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
+			mu.Lock()
+			defer mu.Unlock()
 			contacts = starterActiveContacts()
 			datastar.RenderFragmentTempl(sse, deleteRowContacts(contacts))
 		})
@@ -35,6 +41,8 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 				return
 			}
 
+			mu.Lock()
+			defer mu.Unlock()
 			contacts = lo.Filter(contacts, func(cs *ContactActive, i int) bool {
 				return cs.ID != id
 			})

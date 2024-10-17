@@ -46,7 +46,6 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       },
     ],
   },
-  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   // bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx
@@ -58,16 +57,10 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     }
 
     const isInput = tnl.includes('input')
-    const isSelect = tnl.includes('select')
-    const isTextarea = tnl.includes('textarea')
     const type = el.getAttribute('type')
     const isCheckbox = tnl.includes('checkbox') || (isInput && type === 'checkbox')
     const isRadio = tnl.includes('radio') || (isInput && type === 'radio')
     const isFile = isInput && type === 'file'
-
-    if (!isInput && !isSelect && !isTextarea && !isCheckbox && !isRadio) {
-      throw new Error('Element must be input, select, textarea, checkbox or radio')
-    }
 
     const signalName = expression.replaceAll('ctx.store().', '')
     if (isRadio) {

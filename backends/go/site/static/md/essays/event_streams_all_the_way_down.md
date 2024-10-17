@@ -9,7 +9,7 @@
 This means every data fragment is an OOB in HTMX terms.
 
 ```html
-event: datastar-fragment id: 92680296792588350 data: merge morph_element data:
+event: datastar-fragment id: 92680296792588350 data: merge morph data:
 settle 0 data: fragment
 <div id="lazy_tabs">
   <div class="tabs tabs-bordered">

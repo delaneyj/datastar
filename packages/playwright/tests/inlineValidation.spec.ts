@@ -21,10 +21,10 @@ test.describe("Inline Validation UI Suite", () => {
       "Email '' is already taken or is invalid. Please enter another email."
     );
     await expect(page.getByTestId("validation_firstName")).toHaveText(
-      "First name must be at least 8 characters."
+      "First name must be at least 2 characters."
     );
     await expect(page.getByTestId("validation_lastName")).toHaveText(
-      "Last name must be at least 8 characters."
+      "Last name must be at least 2 characters."
     );
     //
     await expect(page.getByTestId("submit_button")).toBeAttached();
@@ -48,13 +48,13 @@ test.describe("Inline Validation UI Suite", () => {
     await page.getByTestId("input_firstName").type("Alexander");
     await expect(page.getByTestId("input_firstName")).toHaveValue("Alexander");
     await expect(page.locator("div#inline_validation")).not.toContainText(
-      "First name must be at least 8 characters.",
+      "First name must be at least 2 characters.",
     );
     await page.getByTestId("input_firstName").fill("");
-    await page.getByTestId("input_firstName").type("test");
-    await expect(page.getByTestId("input_firstName")).toHaveValue("test");
+    await page.getByTestId("input_firstName").type("t");
+    await expect(page.getByTestId("input_firstName")).toHaveValue("t");
     await expect(page.locator("div#inline_validation")).toContainText(
-      "First name must be at least 8 characters.",
+      "First name must be at least 2 characters.",
     );
   });
 
@@ -62,13 +62,13 @@ test.describe("Inline Validation UI Suite", () => {
     await page.getByTestId("input_lastName").type("Alexander");
     await expect(page.getByTestId("input_lastName")).toHaveValue("Alexander");
     await expect(page.locator("div#inline_validation")).not.toContainText(
-      "Last name must be at least 8 characters.",
+      "Last name must be at least 2 characters.",
     );
     await page.getByTestId("input_lastName").fill("");
     await page.getByTestId("input_lastName").type("test");
     await expect(page.getByTestId("input_lastName")).toHaveValue("test");
     await expect(page.locator("div#inline_validation")).toContainText(
-      "First name must be at least 8 characters.",
+      "First name must be at least 2 characters.",
     );
   });
 
@@ -82,13 +82,13 @@ test.describe("Inline Validation UI Suite", () => {
     await page.getByTestId("input_firstName").type("Alexander");
     await expect(page.getByTestId("input_firstName")).toHaveValue("Alexander");
     await expect(page.locator("div#inline_validation")).not.toContainText(
-      "First name must be at least 8 characters.",
+      "First name must be at least 2 characters.",
     );
     //
     await page.getByTestId("input_lastName").type("Alexander");
     await expect(page.getByTestId("input_lastName")).toHaveValue("Alexander");
     await expect(page.locator("div#inline_validation")).not.toContainText(
-      "Last name must be at least 8 characters.",
+      "Last name must be at least 2 characters.",
     );
     await page.getByTestId('submit_button').click();
     await expect(page.locator('#inline_validation')).toContainText('Thank you for signing up!');
