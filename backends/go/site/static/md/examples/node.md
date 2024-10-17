@@ -70,7 +70,7 @@ app.put("/put", (req, res) => {
     frag,
     selector: null,
     merge: true,
-    mergeType: "morph_element",
+    mergeType: "morph",
     end: true,
   });
 });
@@ -86,7 +86,7 @@ app.get("/get", (req, res) => {
     frag,
     selector: null,
     merge: true,
-    mergeType: "morph_element",
+    mergeType: "morph",
     end: false,
   });
   frag = `<div id="output3">Check this out!</div>;`;
@@ -95,7 +95,7 @@ app.get("/get", (req, res) => {
     frag,
     selector: "#main",
     merge: true,
-    mergeType: "prepend_element",
+    mergeType: "prepend",
     end: true,
   });
 });

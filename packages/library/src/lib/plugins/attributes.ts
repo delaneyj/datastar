@@ -46,7 +46,6 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       },
     ],
   },
-  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   // bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx

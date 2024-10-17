@@ -1,7 +1,8 @@
-debug_bin*
+*debug_bin*
 node_modules
 
 site_bin
 .task
 *_templ.go
 *.png~
+test-results
