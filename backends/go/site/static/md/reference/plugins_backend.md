@@ -94,12 +94,13 @@ data: log This message will be logged to the browser console.
 ```
 
 The `datastar-console` event is used to output a message to the browser console. The available console modes are:
-- `log`
-- `warn`
-- `info`
 - `debug`
+- `error`
+- `info`
+- `log`
 - `group`
 - `groupEnd`
+- `warn`
 
 ## Attribute Plugins
 
