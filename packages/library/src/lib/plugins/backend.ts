@@ -106,7 +106,10 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
   const loadingTarget = ctx.el as HTMLElement
 
   sendDatastarEvent(
-    'plugin', 'backend', 'fetch_start', loadingTarget,
+    'plugin',
+    'backend',
+    'fetch_start',
+    loadingTarget,
     JSON.stringify({ method, urlExpression, onlyRemote, storeJSON }),
   )
   const indicatorElements: HTMLElement[] = store?._dsPlugins?.fetch?.indicatorElements
@@ -207,7 +210,10 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           if (!fragment?.length) fragment = '<div></div>'
           mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
           sendDatastarEvent(
-            'plugin', 'backend', 'merge', selector,
+            'plugin',
+            'backend',
+            'merge',
+            selector,
             JSON.stringify({ fragment, settleTime, useViewTransition }),
           )
 
