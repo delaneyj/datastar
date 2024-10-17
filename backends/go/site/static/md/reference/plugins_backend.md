@@ -97,9 +97,9 @@ The `datastar-console` event is used to output a message to the browser console.
 - `debug`
 - `error`
 - `info`
-- `log`
 - `group`
 - `groupEnd`
+- `log`
 - `warn`
 
 ## Attribute Plugins
