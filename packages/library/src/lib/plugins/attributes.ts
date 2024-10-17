@@ -46,7 +46,6 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       },
     ],
   },
-  allowedTagRegexps: new Set(['input', 'textarea', 'select', 'checkbox', 'radio']),
   // bypassExpressionFunctionCreation: () => true,
   onLoad: (ctx: AttributeContext) => {
     const { el, expression } = ctx
@@ -282,7 +281,7 @@ export const EventPlugin: AttributePlugin = {
       case 'load':
         callback()
         delete ctx.el.dataset.onLoad
-        return () => {}
+        return () => { }
 
       case 'raf':
         let rafId: number | undefined
@@ -381,7 +380,7 @@ export function argsToMs(args: string[] | undefined) {
 
     try {
       return parseFloat(arg)
-    } catch (e) {}
+    } catch (e) { }
   }
 
   return 0
