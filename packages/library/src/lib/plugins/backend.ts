@@ -226,7 +226,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           const signalLines = evt.data.trim().split('\n')
           for (let i = 0; i < signalLines.length; i++) {
             const line = signalLines[i]
-            const [signalType, ...signalRest] = line.split(' ', 1)
+            const [signalType, ...signalRest] = line.split(' ')
             const signalLine = signalRest.join(' ')
             switch (signalType) {
               case 'onlyIfMissing':
