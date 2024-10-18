@@ -43,8 +43,8 @@ Latest Minified</a>
 
 Though if you want version with source maps use
 
-[Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.0/dist/datastar.js)
-[Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.0/dist/datastar.js.map)
+[Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.3/dist/datastar.js)
+[Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.3/dist/datastar.js.map)
 
 ## A Quick Primer
 
