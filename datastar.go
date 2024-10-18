@@ -243,7 +243,7 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 
 	// log.Printf("datastar: %s", strings.Join(dataRows, "\n"))
 
-	sse.SendMultiData(
+	sse.MustSendMultiData(
 		dataRows,
 		WithSSEEvent(SSEEventTypeFragment),
 		WithSSERetry(0),
@@ -252,7 +252,7 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 }
 
 func Redirect(sse *ServerSentEventsHandler, url string) {
-	sse.Send(
+	sse.MustSend(
 		fmt.Sprintf("redirect %s", url),
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
@@ -296,7 +296,7 @@ func PatchStoreRaw(sse *ServerSentEventsHandler, storeJSON string, opts ...Patch
 		dataRows = append(dataRows, fmt.Sprintf("store %s", line))
 	}
 
-	sse.SendMultiData(
+	sse.MustSendMultiData(
 		dataRows,
 		WithSSEEvent(SSEEventTypeSignal),
 	)
@@ -331,7 +331,7 @@ const (
 )
 
 func Console(sse *ServerSentEventsHandler, Mode ConsoleLogMode, message string) {
-	sse.Send(
+	sse.MustSend(
 		fmt.Sprintf("%s %s", Mode, message),
 		WithSSEEvent(SSEEventTypeConsole),
 	)
