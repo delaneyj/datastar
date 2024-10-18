@@ -32,7 +32,7 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 			datastar.RenderFragmentTempl(sse, deleteRowContacts(contacts))
 		})
 
-		dataRouter.Delete("/{id}", func(w http.ResponseWriter, r *http.Request) {
+		dataRouter.Remove("/{id}", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
 			idStr := chi.URLParam(r, "id")
 			id, err := strconv.Atoi(idStr)
@@ -46,7 +46,7 @@ func setupExamplesDeleteRow(examplesRouter chi.Router) error {
 			contacts = lo.Filter(contacts, func(cs *ContactActive, i int) bool {
 				return cs.ID != id
 			})
-			datastar.Delete(sse, "#contact_"+idStr)
+			datastar.Remove(sse, "#contact_"+idStr)
 		})
 	})
 
