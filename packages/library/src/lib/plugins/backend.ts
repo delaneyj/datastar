@@ -17,7 +17,7 @@ const APPLICATION_JSON = 'application/json'
 const TRUE_STRING = 'true'
 const EVENT_FRAGMENT = `${DATASTAR_CLASS_PREFIX}fragment`
 const EVENT_SIGNAL = `${DATASTAR_CLASS_PREFIX}signal`
-const EVENT_DELETE = `${DATASTAR_CLASS_PREFIX}delete`
+const EVENT_REMOVE = `${DATASTAR_CLASS_PREFIX}remove`
 const EVENT_REDIRECT = `${DATASTAR_CLASS_PREFIX}redirect`
 const EVENT_CONSOLE = `${DATASTAR_CLASS_PREFIX}console`
 
@@ -254,12 +254,12 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           }
           break
 
-        case EVENT_DELETE:
-          const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
-          if (deletePrefix !== 'selector') throw new Error(`Unknown delete prefix: ${deletePrefix}`)
-          const deleteSelector = deleteRest.join(' ')
-          const deleteTargets = document.querySelectorAll(deleteSelector)
-          deleteTargets.forEach((target) => target.remove())
+        case EVENT_REMOVE:
+          const [removePrefix, ...removeRest] = evt.data.trim().split(' ')
+          if (removePrefix !== 'selector') throw new Error(`Unknown remove prefix: ${removePrefix}`)
+          const removeSelector = removeRest.join(' ')
+          const removeTargets = document.querySelectorAll(removeSelector)
+          removeTargets.forEach((target) => target.remove())
           break
 
         case EVENT_REDIRECT:

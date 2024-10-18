@@ -68,14 +68,14 @@ data: store {foo: 1234}
 
 The `datastar-signal` event is used to update the store with new values. The `ifmissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
 
-### datastar-delete
+### datastar-remove
 
 ```go
-event: datastar-delete
+event: datastar-remove
 data: selector #foo
 ```
 
-The `datastar-delete` event is used to delete all elements that match the provided selector.
+The `datastar-remove` event is used to remove all elements that match the provided selector.
 
 ### datastar-redirect
 
