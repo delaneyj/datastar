@@ -134,21 +134,21 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       }
 
       const current = signal.value
-      const input = el as HTMLInputElement
+      const input = (el as HTMLInputElement) || (el as HTMLElement)
 
       if (typeof current === 'number') {
-        signal.value = Number(input.value)
+        signal.value = Number(input.value || input.getAttribute('value'))
       } else if (typeof current === 'string') {
-        signal.value = input.value
+        signal.value = input.value || input.getAttribute('value') || ''
       } else if (typeof current === 'boolean') {
         if (isCheckbox) {
-          signal.value = input.checked
+          signal.value = input.checked || input.getAttribute('checked') === 'true'
         } else {
-          signal.value = Boolean(input.value)
+          signal.value = Boolean(input.value || input.getAttribute('value'))
         }
       } else if (typeof current === 'undefined') {
       } else if (typeof current === 'bigint') {
-        signal.value = BigInt(input.value)
+        signal.value = BigInt(input.value || input.getAttribute('value') || '0')
       } else {
         console.log(typeof current)
         throw new Error('Unsupported type')
