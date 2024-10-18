@@ -92,7 +92,7 @@ const (
 	FragmentSelectorUseID = ""
 	SSEEventTypeFragment  = "datastar-fragment"
 	SSEEventTypeSignal    = "datastar-signal"
-	SSEEventTypeDelete    = "datastar-delete"
+	SSEEventTypeRemove    = "datastar-remove"
 	SSEEventTypeRedirect  = "datastar-redirect"
 	SSEEventTypeConsole   = "datastar-console"
 )
@@ -177,7 +177,7 @@ func WithoutViewTransitions() RenderFragmentOption {
 	}
 }
 
-func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
+func Remove(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
 
 	if selector == "" {
 		panic("missing selector")
@@ -185,7 +185,7 @@ func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmen
 
 	dataRows := []string{fmt.Sprintf("selector %s", selector)}
 
-	sse.SendMultiData(dataRows, WithSSEEvent(SSEEventTypeDelete))
+	sse.SendMultiData(dataRows, WithSSEEvent(SSEEventTypeRemove))
 }
 
 func RenderFragmentTempl(sse *ServerSentEventsHandler, c templ.Component, opts ...RenderFragmentOption) error {
