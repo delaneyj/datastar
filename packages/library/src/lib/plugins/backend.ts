@@ -176,7 +176,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             currentDatatype = ''
 
           for (let i = 0; i < lines.length; i++) {
-            let line = lines[i]knownEventTypes
+            let line = lines[i]
             if (!line?.length) continue
 
             const firstWord = line.split(' ', 1)[0]
