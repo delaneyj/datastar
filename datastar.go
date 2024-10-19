@@ -253,7 +253,7 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 
 func Redirect(sse *ServerSentEventsHandler, url string) {
 	sse.Send(
-		fmt.Sprintf("redirect %s", url),
+		fmt.Sprintf("url %s", url),
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
 	)
