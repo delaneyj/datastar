@@ -39,12 +39,7 @@ npm i @sudodevnull/datastar
 **Copy locally**
 
 <a href="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.min.js">
-Latest Minified</a>
-
-Though if you want version with source maps use
-
-[Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.3/dist/datastar.js)
-[Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.3/dist/datastar.js.map)
+Minified</a> though if you want version with source maps use [Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.js) and the [Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.js.map).
 
 ## A Quick Primer
 
