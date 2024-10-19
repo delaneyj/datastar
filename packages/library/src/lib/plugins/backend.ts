@@ -439,7 +439,7 @@ export function mergeHTMLFragment(
 
         const revisedHTML = modifiedTarget.outerHTML
 
-        if (originalHTML !== revisedHTML) {
+        if (originalHTML !== revisedHTML && settleTime > 0) {
           modifiedTarget.classList.add(SETTLING_CLASS)
           setTimeout(() => {
             modifiedTarget.classList.remove(SETTLING_CLASS)
