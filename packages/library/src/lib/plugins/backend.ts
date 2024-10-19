@@ -136,7 +136,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } else {
         indicator.classList.remove(INDICATOR_CLASS)
         indicator.classList.add(INDICATOR_LOADING_CLASS)
-        indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
+        indicatorsVisible.value = [
+          ...indicatorsVisible.value,
+          {
+            el: indicator,
+            count: 1,
+          },
+        ]
       }
     })
   }
@@ -256,16 +262,20 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         case EVENT_DELETE:
           const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
-          if (deletePrefix !== 'selector') throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+          if (deletePrefix !== 'selector') {
+            throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+          }
           const deleteSelector = deleteRest.join(' ')
           const deleteTargets = document.querySelectorAll(deleteSelector)
           deleteTargets.forEach((target) => target.remove())
           break
 
         case EVENT_REDIRECT:
-          const [redirectSelector, redirectTarget] = evt.data.trim()
-          if (redirectSelector !== 'selector') throw new Error(`Unknown redirect selector: ${redirectSelector}`)
-
+          const [redirectSelector, ...redirectRest] = evt.data.trim().split(' ')
+          if (redirectSelector !== 'url') {
+            throw new Error(`Unknown redirect selector: ${redirectSelector}`)
+          }
+          const redirectTarget = redirectRest.join(' ')
           sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', redirectTarget)
           window.location.href = redirectTarget
           break
