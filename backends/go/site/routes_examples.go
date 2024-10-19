@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
@@ -19,10 +20,16 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(ctx context.Context, router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, searchIndex bleve.Index, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) (err error) {
 	mdElementRenderers, _, err := markdownRenders("examples")
 	if err != nil {
 		return err
+	}
+	for name, renderer := range mdElementRenderers {
+		url := fmt.Sprintf("/examples/%s", name)
+		if err := searchIndex.Index(url, renderer); err != nil {
+			return fmt.Errorf("error indexing %s: %w", url, err)
+		}
 	}
 
 	sanitizer, err = sanitize.New()

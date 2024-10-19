@@ -16,6 +16,7 @@ import (
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/benbjohnson/hashfs"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-chi/chi/v5"
@@ -60,7 +61,13 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 			// toolbelt.CompressMiddleware(),
 		)
 
-		setupRoutes(ctx, router)
+		mapping := bleve.NewIndexMapping()
+		searchIndex, err := bleve.NewMemOnly(mapping)
+		if err != nil {
+			return fmt.Errorf("error creating bleve index: %w", err)
+		}
+
+		setupRoutes(ctx, router, searchIndex)
 
 		srv := &http.Server{
 			Addr:    fmt.Sprintf(":%d", port),
@@ -77,7 +84,7 @@ func RunBlocking(port int) toolbelt.CtxErrFunc {
 	}
 }
 
-func setupRoutes(ctx context.Context, router chi.Router) error {
+func setupRoutes(ctx context.Context, router chi.Router, searchIndex bleve.Index) error {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
@@ -154,12 +161,12 @@ func setupRoutes(ctx context.Context, router chi.Router) error {
 	sessionStore.MaxAge(int(24 * time.Hour / time.Second))
 
 	if err := errors.Join(
-		setupHome(router, sessionStore, ns),
-		setupGuide(router),
-		setupReferenceRoutes(router),
-		setupExamples(ctx, router, sessionStore, ns),
-		setupEssays(router),
-		setupMemes(router),
+		setupHome(router, searchIndex, sessionStore, ns),
+		setupGuide(router, searchIndex),
+		setupReferenceRoutes(router, searchIndex),
+		setupExamples(ctx, router, searchIndex, sessionStore, ns),
+		setupEssays(router, searchIndex),
+		setupMemes(router, searchIndex),
 	); err != nil {
 		return fmt.Errorf("error setting up routes: %w", err)
 	}

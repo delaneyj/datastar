@@ -4,10 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/blevesearch/bleve/v2"
 	"github.com/go-chi/chi/v5"
 )
 
-func setupMemes(router chi.Router) error {
+func setupMemes(router chi.Router, searchIndex bleve.Index) error {
 	memeDir := "static/images/memes"
 	entries, err := staticFS.ReadDir(memeDir)
 	if err != nil {
@@ -18,7 +19,15 @@ func setupMemes(router chi.Router) error {
 		if entry.IsDir() {
 			continue
 		}
-		memes = append(memes, staticPath("images/memes/"+entry.Name()))
+
+		name := entry.Name()
+		url := staticPath("images/memes/" + name)
+		memes = append(memes, url)
+
+		if err := searchIndex.Index(url, name); err != nil {
+			return fmt.Errorf("error indexing %s: %w", url, err)
+		}
+
 	}
 
 	router.Route("/memes", func(memesRouter chi.Router) {

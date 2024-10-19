@@ -1,18 +1,26 @@
 package site
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 )
 
-func setupGuide(router chi.Router) error {
+func setupGuide(router chi.Router, searchIndex bleve.Index) error {
 	mdElementRenderers, _, err := markdownRenders("guide")
 	if err != nil {
 		return err
+	}
+	for name, renderer := range mdElementRenderers {
+		url := fmt.Sprintf("/guide/%s", name)
+		if err := searchIndex.Index(url, renderer); err != nil {
+			return err
+		}
 	}
 
 	sidebarGroups := []*SidebarGroup{

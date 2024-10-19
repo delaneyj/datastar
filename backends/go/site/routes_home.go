@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/blevesearch/bleve/v2"
 	"github.com/delaneyj/datastar"
 	"github.com/delaneyj/toolbelt"
 	"github.com/dustin/go-humanize"
@@ -16,11 +17,12 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/nats-io/nats.go/jetstream"
 	"github.com/samber/lo"
+	"github.com/valyala/bytebufferpool"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
+func setupHome(router chi.Router, searchIndex bleve.Index, store sessions.Store, ns *toolbelt.EmbeddedNATsServer) error {
 
 	nc, err := ns.Client()
 	if err != nil {
@@ -88,8 +90,18 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 		return sessionID, mvc, nil
 	}
 
+	homeBuf := bytebufferpool.Get()
+	defer bytebufferpool.Put(homeBuf)
+	if err := Home().Render(context.Background(), homeBuf); err != nil {
+		return fmt.Errorf("error rendering home: %w", err)
+	}
+	homeContent := homeBuf.Bytes()
+
+	searchIndex.Index("/", string(homeContent))
+
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		Home().Render(r.Context(), w)
+		w.Header().Set("Content-Type", "text/html")
+		w.Write(homeContent)
 	})
 
 	chartWidth := 475

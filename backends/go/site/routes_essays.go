@@ -1,19 +1,27 @@
 package site
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/samber/lo"
 )
 
-func setupEssays(router chi.Router) error {
+func setupEssays(router chi.Router, searchIndex bleve.Index) error {
 
 	mdElementRenderers, _, err := markdownRenders("essays")
 	if err != nil {
 		return err
+	}
+	for key, value := range mdElementRenderers {
+		url := fmt.Sprintf("/essays/%s", key)
+		if err := searchIndex.Index(url, value); err != nil {
+			return fmt.Errorf("error indexing %s: %w", url, err)
+		}
 	}
 
 	sidebarGroups := []*SidebarGroup{
@@ -63,6 +71,7 @@ func setupEssays(router chi.Router) error {
 		})
 
 		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+			ctx := r.Context()
 			name := chi.URLParam(r, "name")
 			contents, ok := mdElementRenderers[name]
 			if !ok {
@@ -80,7 +89,7 @@ func setupEssays(router chi.Router) error {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, contents).Render(ctx, w)
 		})
 	})
 
