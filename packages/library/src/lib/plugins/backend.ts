@@ -262,12 +262,20 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         case EVENT_DELETE:
           const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
-          if (deletePrefix !== 'selector') {
-            throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+
+          switch (deletePrefix) {
+            case 'selector':
+              const deleteSelector = deleteRest.join(' ')
+              const deleteTargets = document.querySelectorAll(deleteSelector)
+              deleteTargets.forEach((target) => target.remove())
+              break
+            case 'paths':
+              const paths = deleteRest.join(' ').split(' ')
+              ctx.removeFromStore(...paths)
+              break
+            default:
+              throw new Error(`Unknown delete prefix: ${deletePrefix}`)
           }
-          const deleteSelector = deleteRest.join(' ')
-          const deleteTargets = document.querySelectorAll(deleteSelector)
-          deleteTargets.forEach((target) => target.remove())
           break
 
         case EVENT_REDIRECT:
