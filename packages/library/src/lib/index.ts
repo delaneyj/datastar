@@ -17,6 +17,12 @@ import { HelperActions } from './plugins/helpers'
 import { elemToSelector } from './plugins/core'
 import { Actions, AttributePlugin, DatastarEvent, datastarEventName, SendDatastarEvent } from './types'
 
+declare global {
+  interface Window {
+    ds: Datastar
+  }
+}
+
 export { apply } from './external/ts-merge-patch'
 
 export function runDatastarWith(actions: Actions = {}, ...plugins: AttributePlugin[]) {
@@ -44,8 +50,6 @@ const datastarDefaultEventOptions: CustomEventInit = {
   composed: true,
 }
 
-const winAny = window as any
-
 export const sendDatastarEvent = ((
   category: 'core' | 'plugin',
   subcategory: string,
@@ -54,7 +58,7 @@ export const sendDatastarEvent = ((
   message: string,
   opts: CustomEventInit = datastarDefaultEventOptions,
 ) => {
-  winAny.dispatchEvent(
+  globalThis.dispatchEvent(
     new CustomEvent<DatastarEvent>(
       datastarEventName,
       Object.assign(
@@ -74,13 +78,13 @@ export const sendDatastarEvent = ((
   )
 }) satisfies SendDatastarEvent
 
-// Timeeout allows inspector to attach to all elements before sending the event
-if (!winAny.ds) {
+export function runForInspector(fn: () => Datastar) {
+  // Timeeout allows inspector to attach to all elements before sending the event
   setTimeout(() => {
     sendDatastarEvent('core', 'init', 'start', document.body, `Datastar v${version} loading`)
 
     const start = performance.now()
-    winAny.ds = runDatastarWithAllPlugins()
+    window.ds = fn()
     const end = performance.now()
 
     sendDatastarEvent(
