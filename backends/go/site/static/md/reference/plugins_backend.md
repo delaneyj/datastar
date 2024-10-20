@@ -47,8 +47,6 @@ Addtional `data` lines can be added to the response to override the default beha
 | `data: selector #foo`           | Selects the target element of the `merge` process using a CSS selector. |
 | `data: selector self`           | Selects the initiating element as the target. |
 | `data: merge morph`             | Merges the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph). This is the default merge strategy. |
-| `data: merge inner`             | Replaces the target's innerHTML with the fragment. |
-| `data: merge outer`             | Replaces the target's outerHTML with the fragment. |
 | `data: merge prepend`           | Prepends the fragment to the target's children. |
 | `data: merge append`            | Appends the fragment to the target's children. |
 | `data: merge before`            | Inserts the fragment before the target as a sibling. |
