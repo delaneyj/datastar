@@ -54,7 +54,7 @@ Addtional `data` lines can be added to the response to override the default beha
 | `data: merge upsert_attributes` | Merges attributes from the fragment into the target – useful for updating a store. |
 | `data: settle 1000`             | Settles the element after 1000ms, useful for transitions. Defaults to `500`. |
 | `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`. |
-| `data: fragment`                | The HTML fragment to merge into the DOM. **_Only one fragment should exist per event._** |
+| `data: fragment`                | The HTML fragment to merge into the DOM. |
 
 ### datastar-signal
 
@@ -75,11 +75,18 @@ data: selector #foo
 
 The `datastar-delete` event is used to delete all elements that match the provided selector.
 
+```go
+event: datastar-delete
+data: paths foo.bar 1234 abc
+```
+
+Using `paths` you are able to delete from the store directly.  If you have fragments relying on these signals you should delete them first.
+
 ### datastar-redirect
 
 ```go
 event: datastar-redirect
-data: /foo
+data: url /foo
 ```
 
 The `datastar-redirect` event is used to redirect the page to the provided URI.
@@ -92,12 +99,13 @@ data: log This message will be logged to the browser console.
 ```
 
 The `datastar-console` event is used to output a message to the browser console. The available console modes are:
-- `log`
-- `warn`
-- `info`
 - `debug`
+- `error`
+- `info`
 - `group`
 - `groupEnd`
+- `log`
+- `warn`
 
 ## Attribute Plugins
 
@@ -115,4 +123,3 @@ The `datastar-console` event is used to output a message to the browser console.
 Show a spinner when the request is in flight. The `data-fetch-indicator` attribute should be a CSS selector to the element(s). When the attribute is present, the element will be hidden when requests are not in flight and shown when they are.
 
 The `$$isFetching` action returns a computed value that allows you to easily react to the state of the indicator.
-

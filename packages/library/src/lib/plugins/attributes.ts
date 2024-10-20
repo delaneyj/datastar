@@ -59,6 +59,7 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
     const isInput = tnl.includes('input')
     const type = el.getAttribute('type')
     const isCheckbox = tnl.includes('checkbox') || (isInput && type === 'checkbox')
+    const isSelect = tnl.includes('select')
     const isRadio = tnl.includes('radio') || (isInput && type === 'radio')
     const isFile = isInput && type === 'file'
 
@@ -87,6 +88,17 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
         }
       } else if (isFile) {
         // File input reading from a signal is not supported yet
+      } else if (isSelect) {
+        const select = el as HTMLSelectElement
+        if (select.multiple) {
+          const v = signal.value
+          Array.from(select.options).forEach((opt) => {
+            if (opt?.disabled) return
+            opt.selected = v.includes(opt.value)
+          })
+        } else {
+          select.value = `${v}`
+        }
       } else if (hasValue) {
         el.value = `${v}`
       } else {
@@ -107,9 +119,13 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
             return new Promise<void>((resolve) => {
               const reader = new FileReader()
               reader.onload = () => {
-                if (typeof reader.result !== 'string') throw new Error(`Invalid result type: ${typeof reader.result}`)
+                if (typeof reader.result !== 'string') {
+                  throw new Error(`Invalid result type: ${typeof reader.result}`)
+                }
                 const match = reader.result.match(dataURIRegex)
-                if (!match?.groups) throw new Error(`Invalid data URI: ${reader.result}`)
+                if (!match?.groups) {
+                  throw new Error(`Invalid data URI: ${reader.result}`)
+                }
                 allContents.push(match.groups.contents)
                 allMimes.push(match.groups.mime)
                 allNames.push(f.name)
@@ -134,24 +150,35 @@ export const TwoWayBindingModelPlugin: AttributePlugin = {
       }
 
       const current = signal.value
-      const input = el as HTMLInputElement
+      const input = (el as HTMLInputElement) || (el as HTMLElement)
 
       if (typeof current === 'number') {
-        signal.value = Number(input.value)
+        signal.value = Number(input.value || input.getAttribute('value'))
       } else if (typeof current === 'string') {
-        signal.value = input.value
+        signal.value = input.value || input.getAttribute('value') || ''
       } else if (typeof current === 'boolean') {
         if (isCheckbox) {
-          signal.value = input.checked
+          signal.value = input.checked || input.getAttribute('checked') === 'true'
         } else {
-          signal.value = Boolean(input.value)
+          signal.value = Boolean(input.value || input.getAttribute('value'))
         }
       } else if (typeof current === 'undefined') {
       } else if (typeof current === 'bigint') {
-        signal.value = BigInt(input.value)
+        signal.value = BigInt(input.value || input.getAttribute('value') || '0')
+      } else if (Array.isArray(current)) {
+        // check if the input is a select element
+        if (isSelect) {
+          const select = el as HTMLSelectElement
+          const selectedOptions = [...select.selectedOptions]
+          const selectedValues = selectedOptions.map((opt) => opt.value)
+          signal.value = selectedValues
+        } else {
+          signal.value = JSON.parse(input.value).split(',')
+        }
+        console.log(input.value)
       } else {
         console.log(typeof current)
-        throw new Error('Unsupported type')
+        throw new Error(`Unsupported type ${typeof current} for signal ${signalName}`)
       }
     }
 

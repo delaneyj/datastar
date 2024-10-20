@@ -249,10 +249,19 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 
 func Redirect(sse *ServerSentEventsHandler, url string) {
 	sse.Send(
-		fmt.Sprintf("redirect %s", url),
+		fmt.Sprintf("url %s", url),
 		WithSSEEvent(SSEEventTypeRedirect),
 		WithSSERetry(0),
 	)
+}
+
+func DeleteFromStore(sse *ServerSentEventsHandler, paths ...string) {
+	if len(paths) == 0 {
+		return
+	}
+
+	dataRow := fmt.Sprintf("paths %s", strings.Join(paths, " "))
+	sse.Send(dataRow, WithSSEEvent(SSEEventTypeDelete))
 }
 
 func PatchStore(sse *ServerSentEventsHandler, store any) {
