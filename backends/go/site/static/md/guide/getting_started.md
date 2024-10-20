@@ -22,9 +22,8 @@ You can include it directly into your html using a script tag:
 ```html
 <script
   type="module"
-  defer
   src="https://cdn.jsdelivr.net/npm/@sudodevnull/PACKAGE_VERSION/dist/datastar.min.js"
-"></script>
+  defer
 ></script>
 ```
 
