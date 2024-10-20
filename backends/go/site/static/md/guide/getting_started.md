@@ -22,7 +22,7 @@ You can include it directly into your html using a script tag:
 ```html
 <script
   type="module"
-  src="https://cdn.jsdelivr.net/npm/@sudodevnull/PACKAGE_VERSION/dist/datastar.min.js"
+  src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.min.js"
   defer
 ></script>
 ```
