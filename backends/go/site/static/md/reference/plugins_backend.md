@@ -77,6 +77,13 @@ data: selector #foo
 
 The `datastar-delete` event is used to delete all elements that match the provided selector.
 
+```go
+event: datastar-delete
+data: paths foo.bar 1234 abc
+```
+
+Using `paths` you are able to delete from the store directly.  If you have fragments relying on these signals you should delete them first.
+
 ### datastar-redirect
 
 ```go
