@@ -43,8 +43,6 @@ target = "target"
 # Datastar utilities
 class FragmentMergeType(str, Enum):
   MORPH = "morph"
-  INNER = "inner"
-  OUTER = "outer"
   PREPEND = "prepend"
   APPEND = "append"
   BEFORE = "before"
