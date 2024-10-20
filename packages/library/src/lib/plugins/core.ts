@@ -42,7 +42,7 @@ const ActionProcessor: Preprocessor = {
   },
 }
 
-// Replacing ~foo with ctx.refs.foo
+// Replacing ~foo with ctx.refs.(foo)
 const RefProcessor: Preprocessor = {
   regexp: wholePrefixSuffix('~', 'ref', ''),
   replacer({ ref }: RegexpGroups) {
