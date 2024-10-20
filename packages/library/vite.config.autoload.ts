@@ -1,0 +1,34 @@
+import { resolve } from 'path'
+import { visualizer } from 'rollup-plugin-visualizer'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import dts from 'vite-plugin-dts'
+
+export default defineConfig({
+  plugins: [
+    dts({ rollupTypes: true }),
+
+    // compress({
+    // algorithm: 'brotliCompress',
+    // }),
+    visualizer({
+      brotliSize: true,
+      // gzipSize: true,
+      template: 'treemap',
+      // open: true,
+    }),
+    splitVendorChunkPlugin(),
+  ],
+  build: {
+    target: 'esnext',
+    minify: 'esbuild',
+    copyPublicDir: false,
+    reportCompressedSize: true,
+    sourcemap: true,
+    lib: {
+      entry: resolve(__dirname, 'src/autoload/index.ts'),
+      name: 'Datastar',
+      fileName: 'datastar.autoload',
+      formats: ['es', 'umd', 'iife'],
+    },
+  },
+})
