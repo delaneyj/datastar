@@ -165,7 +165,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       switch (evt.event) {
         case EVENT_FRAGMENT:
           const lines = evt.data.trim().split('\n')
-          const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'vt']
+          const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'view-transition']
 
           let fragment = '',
             merge = DEFAULT_MERGE,
@@ -202,8 +202,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
                   break
                 case 'fragment':
                   break
-                case 'vt':
-                  useViewTransition = line === 'true'
+                case 'view-transition':
+                  viewTransitionTime = parseInt(line)
                   break
                 default:
                   throw new Error(`Unknown data type`)
@@ -214,13 +214,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           }
 
           if (!fragment?.length) fragment = '<div></div>'
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, viewTransitionTime)
           sendDatastarEvent(
             'plugin',
             'backend',
             'merge',
             selector,
-            JSON.stringify({ fragment, settleTime, useViewTransition }),
+            JSON.stringify({ fragment, settleTime, viewTransitionTime }),
           )
 
           break
@@ -374,7 +374,7 @@ export function mergeHTMLFragment(
   merge: FragmentMergeOption,
   fragmentsRaw: string,
   settleTime: number,
-  useViewTransition: boolean,
+  viewTransitionTime: number,
 ) {
   const { el } = ctx
 
@@ -447,7 +447,7 @@ export function mergeHTMLFragment(
 
         const revisedHTML = modifiedTarget.outerHTML
 
-        if (originalHTML !== revisedHTML) {
+        if (originalHTML !== revisedHTML && settleTime > 0) {
           modifiedTarget.classList.add(SETTLING_CLASS)
           setTimeout(() => {
             modifiedTarget.classList.remove(SETTLING_CLASS)
@@ -471,7 +471,7 @@ export function mergeHTMLFragment(
     const allTargets = [...targets]
     if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
 
-    if (supportsViewTransitions && useViewTransition) {
+    if (supportsViewTransitions && viewTransitionTime) {
       docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
     } else {
       applyToTargets(allTargets)
