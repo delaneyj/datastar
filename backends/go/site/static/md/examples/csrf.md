@@ -14,7 +14,7 @@ Sometimes a backend framework need to set a header.  Normally you should be usin
 </div>
 ```
 
-**_Note:_** Unlink most Datastar plugins the header value is a string, not an expression.  Nothing a user does should be able to effect the headers sent if you backend is where your state lives.
+**_Note:_** Unlike most Datastar plugins the header value is a string, not an expression.  Nothing a user does should be able to effect the headers sent if you backend is where your state lives.
 
 ## Demo
 
