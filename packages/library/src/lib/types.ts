@@ -16,6 +16,7 @@ export type AttributeContext = {
   store: () => any
   mergeStore: (store: DeepState) => void
   upsertIfMissingFromStore: (path: string, value: any) => void
+  removeFromStore: (...paths: string[]) => void
   applyPlugins: (target: Element) => void
   walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void
   cleanupElementRemovals: (el: Element) => void

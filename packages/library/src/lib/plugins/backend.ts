@@ -136,7 +136,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } else {
         indicator.classList.remove(INDICATOR_CLASS)
         indicator.classList.add(INDICATOR_LOADING_CLASS)
-        indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
+        indicatorsVisible.value = [
+          ...indicatorsVisible.value,
+          {
+            el: indicator,
+            count: 1,
+          },
+        ]
       }
     })
   }
@@ -256,16 +262,27 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         case EVENT_REMOVE:
           const [removePrefix, ...removeRest] = evt.data.trim().split(' ')
-          if (removePrefix !== 'selector') throw new Error(`Unknown remove prefix: ${removePrefix}`)
-          const removeSelector = removeRest.join(' ')
-          const removeTargets = document.querySelectorAll(removeSelector)
-          removeTargets.forEach((target) => target.remove())
+          switch (deletePrefix) {
+            case 'selector':
+              const removeSelector = removeRest.join(' ')
+              const removeTargets = document.querySelectorAll(removeSelector)
+              removeTargets.forEach((target) => target.remove())
+              break
+            case 'paths':
+              const paths = removeRest.join(' ').split(' ')
+              ctx.removeFromStore(...paths)
+              break
+            default:
+              throw new Error(`Unknown remove prefix: ${removePrefix}`)
+          }
           break
 
         case EVENT_REDIRECT:
-          const [redirectSelector, redirectTarget] = evt.data.trim()
-          if (redirectSelector !== 'selector') throw new Error(`Unknown redirect selector: ${redirectSelector}`)
-
+          const [redirectSelector, ...redirectRest] = evt.data.trim().split(' ')
+          if (redirectSelector !== 'url') {
+            throw new Error(`Unknown redirect selector: ${redirectSelector}`)
+          }
+          const redirectTarget = redirectRest.join(' ')
           sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', redirectTarget)
           window.location.href = redirectTarget
           break
