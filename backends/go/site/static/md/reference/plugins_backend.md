@@ -125,3 +125,13 @@ The `datastar-console` event is used to output a message to the browser console.
 Show a spinner when the request is in flight. The `data-fetch-indicator` attribute should be a CSS selector to the element(s). When the attribute is present, the element will be hidden when requests are not in flight and shown when they are.
 
 The `$$isFetching` action returns a computed value that allows you to easily react to the state of the indicator.
+
+
+### Headers
+
+```html
+<div
+		data-header-x-csrf-token="JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg=="></div>
+```
+
+Can be added anywhere on the page and will be included on SSE fetches.  In general you should lean to Cookies unless your backend framework demand it.

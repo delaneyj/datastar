@@ -3,7 +3,7 @@ import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
-import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
+import { Actions, AttributeContext, AttributePlugin, ExpressionFunction, RegexpGroups } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
@@ -90,7 +90,33 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [FetchIndicatorPlugin]
+export const HeadersPlugin: AttributePlugin = {
+  prefix: 'header',
+  mustNotEmptyKey: true,
+  mustNotEmptyExpression: true,
+  preprocessors: {
+    post: [
+      {
+        regexp: /(?<whole>.+)/g,
+        replacer: (groups: RegexpGroups) => {
+          const { whole } = groups
+          return `'${whole}'`
+        },
+      },
+    ],
+  },
+  onLoad: (ctx) => {
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.headers', {})
+    const key = ctx.key.replace(/([a-z](?=[A-Z]))/g, '$1-').toUpperCase()
+    const value = ctx.expressionFn(ctx)
+    ctx.store()._dsPlugins.fetch.headers[key] = value
+    return () => {
+      delete ctx.store()._dsPlugins.fetch.headers[key]
+    }
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [FetchIndicatorPlugin, HeadersPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote = true) {
   const store = ctx.store()
@@ -362,6 +388,14 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     url.search = queryParams.toString()
   } else {
     req.body = storeJSON
+  }
+
+  const headers = store?._dsPlugins?.fetch?.headers || {}
+  if (req.headers) {
+    for (const [key, value] of Object.entries(headers)) {
+      if (key.startsWith('_')) continue
+      req.headers[key] = `${value}`
+    }
   }
 
   fetchEventSource(url, req)
