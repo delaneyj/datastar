@@ -12,8 +12,7 @@ It's just normal [HTML data attributes](https://developer.mozilla.org/en-US/docs
 
 ## Community
 
-Lives as a channel in the EventGraph Discord server. Feel free to join and ask questions.
-[![](https://dcbadge.vercel.app/api/server/CHvPMrAp6F)](https://discord.gg/CHvPMrAp6F) #datastar channel
+Has it's on Discord server. Feel free to join and ask questions. [![](https://dcbadge.vercel.app/api/server/bnRNgZjgPh)](https://discord.gg/bnRNgZjgPh)
 
 ## Features
 
