@@ -94,6 +94,33 @@ export const ShowPlugin: AttributePlugin = {
   },
 }
 
+const CLASS = 'class'
+
+// Adds/removes a class on the element
+export const ClassPlugin: AttributePlugin = {
+  prefix: CLASS,
+  mustNotEmptyKey: true,
+  mustNotEmptyExpression: true,
+
+  onLoad: (ctx: AttributeContext) => {
+    return ctx.reactivity.effect(async () => {
+      const key = kebabize(ctx.key)
+      const value = ctx.expressionFn(ctx)
+      let v: string
+      if (typeof value === 'string') {
+        v = value
+      } else {
+        v = JSON.stringify(value)
+      }
+      if (!v || v === 'false' || v === 'null' || v === 'undefined') {
+        ctx.el.classList.remove(key)
+      } else {
+        ctx.el.classList.add(key)
+      }
+    })
+  },
+}
+
 const INTERSECTS = 'intersects'
 const ONCE = 'once'
 const HALF = 'half'
