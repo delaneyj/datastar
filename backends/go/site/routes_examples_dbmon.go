@@ -63,7 +63,7 @@ func setupExamplesDbmon(examplesRouter chi.Router) error {
 			renderTime := 0 * time.Second
 			renderCount := time.Duration(0)
 			renderTimer := time.NewTicker(time.Second)
-			noVT := datastar.WithoutViewTransitions()
+			noVT := datastar.ViewTransitionDuration(0)
 
 			for {
 				select {

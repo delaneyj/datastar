@@ -8,7 +8,8 @@ import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const DEFAULT_SETTLE_TIME = 500
-const DEFAULT_USE_VIEW_TRANSITION = true
+// https://developer.mozilla.org/en-US/docs/Web/CSS/::view-transition-group
+const DEFAULT_VIEW_TRANSITION_TIME = 250
 const DEFAULT_MERGE: FragmentMergeOption = 'morph'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -25,6 +26,7 @@ const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
 const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
 const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
+const VIEW_TRANSITION_CLASS = `${DATASTAR_CLASS_PREFIX}view-transition`
 const SELECTOR_SELF_SELECTOR = 'self'
 
 const GET = 'get',
@@ -191,12 +193,12 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       switch (evt.event) {
         case EVENT_FRAGMENT:
           const lines = evt.data.trim().split('\n')
-          const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'vt']
+          const knownEventTypes = ['selector', 'merge', 'settle', 'fragment', 'view-transition']
 
           let fragment = '',
             merge = DEFAULT_MERGE,
             settleTime = DEFAULT_SETTLE_TIME,
-            useViewTransition = DEFAULT_USE_VIEW_TRANSITION,
+            viewTransitionTime = DEFAULT_VIEW_TRANSITION_TIME,
             exists = false,
             selector = '',
             currentDatatype = ''
@@ -228,8 +230,8 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
                   break
                 case 'fragment':
                   break
-                case 'vt':
-                  useViewTransition = line === 'true'
+                case 'view-transition':
+                  viewTransitionTime = parseInt(line)
                   break
                 default:
                   throw new Error(`Unknown data type`)
@@ -240,13 +242,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           }
 
           if (!fragment?.length) fragment = '<div></div>'
-          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, useViewTransition)
+          mergeHTMLFragment(ctx, selector, merge, fragment, settleTime, viewTransitionTime)
           sendDatastarEvent(
             'plugin',
             'backend',
             'merge',
             selector,
-            JSON.stringify({ fragment, settleTime, useViewTransition }),
+            JSON.stringify({ fragment, settleTime, viewTransitionTime }),
           )
 
           break
@@ -408,9 +410,20 @@ export function mergeHTMLFragment(
   merge: FragmentMergeOption,
   fragmentsRaw: string,
   settleTime: number,
-  useViewTransition: boolean,
+  viewTransitionTime: number,
 ) {
   const { el } = ctx
+
+  let viewTransitionClass = ''
+  if (supportsViewTransitions && viewTransitionTime > 0) {
+    viewTransitionClass = `${VIEW_TRANSITION_CLASS}-${Math.random().toString(36).substring(7)}`
+    const style = document.createElement('style')
+    style.innerHTML = `
+.${viewTransitionClass} { view-transition-name: ${viewTransitionClass}; }
+::view-transition-group(${viewTransitionClass}) { animation-duration: ${viewTransitionTime}ms; }
+`
+    document.head.appendChild(style)
+  }
 
   fragContainer.innerHTML = fragmentsRaw.trim()
   const frags = [...fragContainer.content.children]
@@ -482,10 +495,18 @@ export function mergeHTMLFragment(
         const revisedHTML = modifiedTarget.outerHTML
 
         if (originalHTML !== revisedHTML) {
-          modifiedTarget.classList.add(SETTLING_CLASS)
-          setTimeout(() => {
-            modifiedTarget.classList.remove(SETTLING_CLASS)
-          }, settleTime)
+          if (settleTime > 0) {
+            modifiedTarget.classList.add(SETTLING_CLASS)
+            setTimeout(() => {
+                modifiedTarget.classList.remove(SETTLING_CLASS)
+            }, settleTime)
+          }
+          if (viewTransitionClass) {
+            modifiedTarget.classList.add(viewTransitionClass)
+            setTimeout(() => {
+              modifiedTarget.classList.remove(viewTransitionClass)
+            }, viewTransitionTime)
+          }
         }
       }
     }
@@ -505,7 +526,7 @@ export function mergeHTMLFragment(
     const allTargets = [...targets]
     if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
 
-    if (supportsViewTransitions && useViewTransition) {
+    if (supportsViewTransitions && viewTransitionTime > 0) {
       docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
     } else {
       applyToTargets(allTargets)
