@@ -381,6 +381,7 @@ export function mergeHTMLFragment(
 `
     document.head.appendChild(style)
   }
+
   fragContainer.innerHTML = fragmentsRaw.trim()
   const frags = [...fragContainer.content.children]
   frags.forEach((frag) => {
@@ -390,7 +391,6 @@ export function mergeHTMLFragment(
     const applyToTargets = (capturedTargets: Element[]) => {
       for (const initialTarget of capturedTargets) {
         initialTarget.classList.add(SWAPPING_CLASS)
-        initialTarget.classList.add(viewTransitionClass)
         const originalHTML = initialTarget.outerHTML
         let modifiedTarget = initialTarget
         switch (merge) {
@@ -451,11 +451,19 @@ export function mergeHTMLFragment(
 
         const revisedHTML = modifiedTarget.outerHTML
 
-        if (originalHTML !== revisedHTML && settleTime > 0) {
-          modifiedTarget.classList.add(SETTLING_CLASS)
-          setTimeout(() => {
-            modifiedTarget.classList.remove(SETTLING_CLASS)
-          }, settleTime)
+        if (originalHTML !== revisedHTML) {
+          if (settleTime > 0) {
+            modifiedTarget.classList.add(SETTLING_CLASS)
+            setTimeout(() => {
+                modifiedTarget.classList.remove(SETTLING_CLASS)
+            }, settleTime)
+          }
+          if (viewTransitionClass) {
+            modifiedTarget.classList.add(viewTransitionClass)
+            setTimeout(() => {
+              modifiedTarget.classList.remove(viewTransitionClass)
+            }, viewTransitionTime)
+          }
         }
       }
     }
