@@ -8,7 +8,7 @@ import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const DEFAULT_SETTLE_TIME = 500
-const DEFAULT_USE_VIEW_TRANSITION = true
+const DEFAULT_VIEW_TRANSITION_TIME = 500
 const DEFAULT_MERGE: FragmentMergeOption = 'morph'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -25,6 +25,7 @@ const INDICATOR_CLASS = `${DATASTAR_CLASS_PREFIX}indicator`
 const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`
 const SETTLING_CLASS = `${DATASTAR_CLASS_PREFIX}settling`
 const SWAPPING_CLASS = `${DATASTAR_CLASS_PREFIX}swapping`
+const VIEW_TRANSITION_CLASS = `${DATASTAR_CLASS_PREFIX}view-transition`
 const SELECTOR_SELF_SELECTOR = 'self'
 
 const GET = 'get',
@@ -170,7 +171,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
           let fragment = '',
             merge = DEFAULT_MERGE,
             settleTime = DEFAULT_SETTLE_TIME,
-            useViewTransition = DEFAULT_USE_VIEW_TRANSITION,
+            viewTransitionTime = DEFAULT_VIEW_TRANSITION_TIME,
             exists = false,
             selector = '',
             currentDatatype = ''
@@ -370,6 +371,16 @@ export function mergeHTMLFragment(
 ) {
   const { el } = ctx
 
+  let viewTransitionClass = ''
+  if (supportsViewTransitions && viewTransitionTime > 0) {
+    viewTransitionClass = `${VIEW_TRANSITION_CLASS}-${Math.random().toString(36).substring(7)}`
+    const style = document.createElement('style')
+    style.innerHTML = `
+.${viewTransitionClass} { view-transition-name: ${viewTransitionClass}; }
+::view-transition-group(${viewTransitionClass}) { animation-duration: ${viewTransitionTime}; }
+`
+    document.head.appendChild(style)
+  }
   fragContainer.innerHTML = fragmentsRaw.trim()
   const frags = [...fragContainer.content.children]
   frags.forEach((frag) => {
@@ -379,6 +390,7 @@ export function mergeHTMLFragment(
     const applyToTargets = (capturedTargets: Element[]) => {
       for (const initialTarget of capturedTargets) {
         initialTarget.classList.add(SWAPPING_CLASS)
+        initialTarget.classList.add(viewTransitionClass)
         const originalHTML = initialTarget.outerHTML
         let modifiedTarget = initialTarget
         switch (merge) {
@@ -463,7 +475,7 @@ export function mergeHTMLFragment(
     const allTargets = [...targets]
     if (!allTargets.length) throw new Error(`No targets found for ${selector}`)
 
-    if (supportsViewTransitions && viewTransitionTime) {
+    if (supportsViewTransitions && viewTransitionTime > 0) {
       docWithViewTransitionAPI.startViewTransition(() => applyToTargets(allTargets))
     } else {
       applyToTargets(allTargets)
