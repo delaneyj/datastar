@@ -59,7 +59,7 @@ class DatastarEventMessage:
     merge: FragmentMergeType | None = None,
     query_selector: str | None = None,
     settle_duration: int | None = None,
-    use_view_transitions: bool | None = None
+    view_transition_duration: int | None = None,
   ):
     data_lines: list[str] = []
 
@@ -72,8 +72,8 @@ class DatastarEventMessage:
     if settle_duration:
       data_lines.append(f"settle {settle_duration}")
 
-    if use_view_transitions is not None:
-      data_lines.append(f"vt {str(use_view_transitions).lower()}")
+    if view_transition_duration:
+      data_lines.append(f"view-transition {view_transition_duration}")
 
     data_lines.append(f"fragment {fragment}")
 
@@ -91,14 +91,14 @@ class SingleDatastarEventMessage:
     merge: FragmentMergeType | None = None,
     query_selector: str | None = None,
     settle_duration: int | None = None,
-    use_view_transitions: bool | None = None
+    view_transition_duration: int | None = None,
   ):
     event_message = DatastarEventMessage(
       fragment=fragment,
       merge=merge,
       query_selector=query_selector,
       settle_duration=settle_duration,
-      use_view_transitions=use_view_transitions
+      view_transition_duration=view_transition_duration
     )
     self.event_message = event_message
 
