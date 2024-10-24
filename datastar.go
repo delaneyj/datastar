@@ -67,8 +67,6 @@ type FragmentMergeType string
 
 const (
 	FragmentMergeMorph   FragmentMergeType = "morph"
-	FragmentMergeInner   FragmentMergeType = "inner"
-	FragmentMergeOuter   FragmentMergeType = "outer"
 	FragmentMergePrepend FragmentMergeType = "prepend"
 	FragmentMergeAppend  FragmentMergeType = "append"
 	FragmentMergeBefore  FragmentMergeType = "before"
@@ -78,8 +76,6 @@ const (
 
 var ValidFragmentMergeTypes = []FragmentMergeType{
 	FragmentMergeMorph,
-	FragmentMergeInner,
-	FragmentMergeOuter,
 	FragmentMergePrepend,
 	FragmentMergeAppend,
 	FragmentMergeBefore,
