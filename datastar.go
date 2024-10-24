@@ -98,10 +98,10 @@ const (
 )
 
 type RenderFragmentOptions struct {
-	QuerySelector      string
-	Merge              FragmentMergeType
-	SettleDuration     time.Duration
-	UseViewTransitions *bool
+	QuerySelector          string
+	Merge                  FragmentMergeType
+	SettleDuration         time.Duration
+	ViewTransitionDuration time.Duration
 }
 type RenderFragmentOption func(*RenderFragmentOptions)
 
@@ -147,6 +147,12 @@ func WithSettleDuration(d time.Duration) RenderFragmentOption {
 	}
 }
 
+func WithViewTransitionDuration(d time.Duration) RenderFragmentOption {
+	return func(o *RenderFragmentOptions) {
+		o.ViewTransitionDuration = d
+	}
+}
+
 func WithQuerySelectorF(format string, args ...any) RenderFragmentOption {
 	return WithQuerySelector(fmt.Sprintf(format, args...))
 }
@@ -161,20 +167,6 @@ func WithQuerySelectorSelf() RenderFragmentOption {
 
 func WithQuerySelectorUseID() RenderFragmentOption {
 	return WithQuerySelector(FragmentSelectorUseID)
-}
-
-func WithViewTransitions() RenderFragmentOption {
-	return func(o *RenderFragmentOptions) {
-		var b = true
-		o.UseViewTransitions = &b
-	}
-}
-
-func WithoutViewTransitions() RenderFragmentOption {
-	return func(o *RenderFragmentOptions) {
-		var b = false
-		o.UseViewTransitions = &b
-	}
 }
 
 func Delete(sse *ServerSentEventsHandler, selector string, opts ...RenderFragmentOption) {
@@ -210,12 +202,14 @@ func RenderFragmentGostar(sse *ServerSentEventsHandler, child elements.ElementRe
 }
 
 const defaultSettleDuration = 500 * time.Millisecond
+const defaultViewTransitionDuration = 250 * time.Millisecond
 
 func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ...RenderFragmentOption) error {
 	options := &RenderFragmentOptions{
-		QuerySelector:  FragmentSelectorUseID,
-		Merge:          FragmentMergeMorph,
-		SettleDuration: defaultSettleDuration,
+		QuerySelector:          FragmentSelectorUseID,
+		Merge:                  FragmentMergeMorph,
+		SettleDuration:         defaultSettleDuration,
+		ViewTransitionDuration: defaultViewTransitionDuration,
 	}
 	for _, opt := range opts {
 		opt(options)
@@ -231,8 +225,8 @@ func RenderFragmentString(sse *ServerSentEventsHandler, fragment string, opts ..
 	if options.SettleDuration > 0 && options.SettleDuration != defaultSettleDuration {
 		dataRows = append(dataRows, fmt.Sprintf("settle %d", options.SettleDuration.Milliseconds()))
 	}
-	if options.UseViewTransitions != nil {
-		dataRows = append(dataRows, fmt.Sprintf("vt %t", *options.UseViewTransitions))
+	if options.ViewTransitionDuration > 0 && options.ViewTransitionDuration != defaultViewTransitionDuration {
+		dataRows = append(dataRows, fmt.Sprintf("view-transition %d", *options.ViewTransitionDuration.Milliseconds()))
 	}
 
 	if fragment != "" {
