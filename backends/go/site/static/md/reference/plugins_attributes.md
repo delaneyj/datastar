@@ -64,3 +64,11 @@ If any signal in the expression changes, the event listener will be updated to r
   - `_noTrail` - Throttle without trailing edge
 
 \*only works currently on native events
+
+### Class
+
+```html
+<div data-class="{'text-primary':$primary,'font-bold':$bold}"></div>
+```
+
+Adds or removes each of the keys in the set of key-value pairs to the element’s class list, depending on whether the values evaluate to true or false, respectively.
