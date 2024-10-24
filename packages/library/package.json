@@ -18,7 +18,7 @@
     }
   },
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && vite build --config=vite.config.autoload.ts --emptyOutDir=false",
     "preview": "vite preview",
     "prepublishOnly": "npm run build"
   },
