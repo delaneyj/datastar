@@ -37,9 +37,9 @@ data: store { HYAAA4BK7IFQE: "2024-05-23T10:33:14.167189214-07:00", stuffAlready
 It will accept anything that is also accepted by the `data-store` attribute.
 
 
-The deletion event looks like
+The removal event looks like
 ```text/event-stream
-event: datastar-delete,
+event: datastar-remove,
 data: paths 12768 stuffAlreadyInStore
 ```
-Where the paths are `.` deliminated paths within the store.  For a nested store it might look like `foo.bar.baz`.  Using the Go helpers for example this looks like `datastar.DeleteFromStore(sse, keysToDelete...)`
+Where the paths are `.` deliminated paths within the store.  For a nested store it might look like `foo.bar.baz`.  Using the Go helpers for example this looks like `datastar.RemoveFromStore(sse, keysToRemove...)`

@@ -65,7 +65,7 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 			sse := datastar.NewSSE(w, r)
 			datastar.RenderFragmentTempl(sse, animationsFadeOutSwap(true))
 			time.Sleep(2 * time.Second)
-			datastar.Delete(sse, "#fade_out_swap")
+			datastar.Remove(sse, "#fade_out_swap")
 		})
 
 		dataRouter.Get("/fade_me_in", func(w http.ResponseWriter, r *http.Request) {
