@@ -8,9 +8,11 @@ import {
   RegexpGroups,
 } from '../types'
 
-const validNestedJSIdentifier = `[a-zA-Z_$]+[0-9a-zA-Z_$.]*`
-function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
-  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
+const validJSIdentifier = `[a-zA-Z_$]+`
+const validNestedJSIdentifier = validJSIdentifier + `[0-9a-zA-Z_$.]*`
+function wholePrefixSuffix(rune: string, prefix: string, suffix: string, nestable: bool = true) {
+  const identifier = nestable ? validNestedJSIdentifier : validJSIdentifier;
+  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${identifier})${suffix})`, `g`)
 }
 
 // Replacing $signal with ctx.store.signal.value`
@@ -42,9 +44,9 @@ const ActionProcessor: Preprocessor = {
   },
 }
 
-// Replacing #foo with ctx.refs.foo
+// Replacing ~foo with ctx.refs.foo
 const RefProcessor: Preprocessor = {
-  regexp: wholePrefixSuffix('~', 'ref', ''),
+  regexp: wholePrefixSuffix('~', 'ref', '', false),
   replacer({ ref }: RegexpGroups) {
     return `document.querySelector(ctx.store()._dsPlugins.refs.${ref})`
   },
