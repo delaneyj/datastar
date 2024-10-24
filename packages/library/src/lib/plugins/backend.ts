@@ -8,7 +8,8 @@ import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
 const DEFAULT_SETTLE_TIME = 500
-const DEFAULT_VIEW_TRANSITION_TIME = 500
+// https://developer.mozilla.org/en-US/docs/Web/CSS/::view-transition-group
+const DEFAULT_VIEW_TRANSITION_TIME = 250
 const DEFAULT_MERGE: FragmentMergeOption = 'morph'
 
 const CONTENT_TYPE = 'Content-Type'
@@ -377,7 +378,7 @@ export function mergeHTMLFragment(
     const style = document.createElement('style')
     style.innerHTML = `
 .${viewTransitionClass} { view-transition-name: ${viewTransitionClass}; }
-::view-transition-group(${viewTransitionClass}) { animation-duration: ${viewTransitionTime}; }
+::view-transition-group(${viewTransitionClass}) { animation-duration: ${viewTransitionTime}ms; }
 `
     document.head.appendChild(style)
   }
