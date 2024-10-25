@@ -8,7 +8,7 @@ Beyond that I want the backend to be the _source of truth_ when it comes to stat
 
 ## Background
 
-I love what [Caleb Porzio](https://calebporzio.com/) has done with [Alpine.js](https://alpinejs.dev/) and likewise with [Carson Gross](https://bigsky.software/cv/) with [HTMX](https://htmx.org/). However after trying to make extensions in both I got disappointed with the limitations. Both are pure Javascript which is fine but leads to having to either keep the whole state in your head and or be prepared for lots of runtime errors. Personally I think the best way to do this is to use Typescript and have the build step and compiler catch as many errors as possible. Plus it makes it easier to extend and create optimized builds.
+I love what [Caleb Porzio](https://calebporzio.com/) has done with [Alpine.js](https://alpinejs.dev/) and what [Carson Gross](https://bigsky.software/cv/) has done with [HTMX](https://htmx.org/). However, after trying to make extensions in both I became disappointed with the limitations. Both are pure Javascript, which is fine but leads to either having to keep the whole state in your head and/or being prepared for lots of runtime errors. Personally I think the best way to do this is to use Typescript and have the build step and compiler catch as many errors as possible. Plus it makes it easier to extend and create optimized builds.
 
 ### Why not just use Vue/React/Svelte?
 
