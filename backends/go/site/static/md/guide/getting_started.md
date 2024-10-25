@@ -5,7 +5,7 @@
 If you are familiar with libraries like [HTMX](https://htmx.org/) or [AlpineJs](https://alpinejs.dev/); Datastar brings them together. This breaks down essentially to:
 
 1. Send the current UI from your backend via HTML fragments like HTMX.
-2. Manage client side state that wouldn't make sense to be managed by your backend like AlpineJS.
+2. Manage client side state that wouldn't make sense to be managed by your backend (like AlpineJS).
 
 I've had [thoughts](/essays/why_another_framework) on both of these in the past. TLDR; While both libraries are great, I wanted to go in a different direction.
 
