@@ -10,8 +10,8 @@ import {
 
 const validJSIdentifier = `[a-zA-Z_$]+`
 const validNestedJSIdentifier = validJSIdentifier + `[0-9a-zA-Z_$.]*`
-function wholePrefixSuffix(rune: string, prefix: string, suffix: string, nestable: bool = true) {
-  const identifier = nestable ? validNestedJSIdentifier : validJSIdentifier;
+function wholePrefixSuffix(rune: string, prefix: string, suffix: string, nestable = true) {
+  const identifier = nestable ? validNestedJSIdentifier : validJSIdentifier
   return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${identifier})${suffix})`, `g`)
 }
 
