@@ -62,6 +62,7 @@ If any signal in the expression changes, the event listener will be updated to r
   - `_1s` - Throttle for 1s
   - `_noLead` - Throttle without leading edge
   - `_noTrail` - Throttle without trailing edge
+- `.window` - Adds the event listener to the `window` element
 
 \*only works currently on native events
 
