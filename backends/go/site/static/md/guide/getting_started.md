@@ -22,9 +22,8 @@ You can include it directly into your html using a script tag:
 ```html
 <script
   type="module"
+  src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.min.js"
   defer
-  src="https://cdn.jsdelivr.net/npm/@sudodevnull/PACKAGE_VERSION/dist/datastar.min.js"
-"></script>
 ></script>
 ```
 
@@ -36,15 +35,11 @@ For npm-style build systems, you can install Datastar via npm and then import th
 npm i @sudodevnull/datastar
 ```
 
-**Copy locally**
+**Copy Locally**
 
+Here is a
 <a href="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.min.js">
-Latest Minified</a>
-
-Though if you want version with source maps use
-
-[Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.0/dist/datastar.js)
-[Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@0.19.0/dist/datastar.js.map)
+minified</a> version of the library. If you want a version with source maps use [Module](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.js) and the [Source Map](https://cdn.jsdelivr.net/npm/@sudodevnull/datastar@PACKAGE_VERSION/dist/datastar.js.map).
 
 ## A Quick Primer
 

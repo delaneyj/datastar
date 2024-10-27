@@ -3,7 +3,7 @@ import { DATASTAR_CLASS_PREFIX, DATASTAR_STR } from '../engine'
 import { fetchEventSource, FetchEventSourceInit } from '../external/fetch-event-source'
 import { idiomorph } from '../external/idiomorph'
 import { Signal } from '../external/preact-core'
-import { Actions, AttributeContext, AttributePlugin, ExpressionFunction } from '../types'
+import { Actions, AttributeContext, AttributePlugin, ExpressionFunction, RegexpGroups } from '../types'
 import { remoteSignals } from './attributes'
 import { docWithViewTransitionAPI, supportsViewTransitions } from './visibility'
 
@@ -90,7 +90,33 @@ export const FetchIndicatorPlugin: AttributePlugin = {
   },
 }
 
-export const BackendPlugins: AttributePlugin[] = [FetchIndicatorPlugin]
+export const HeadersPlugin: AttributePlugin = {
+  prefix: 'header',
+  mustNotEmptyKey: true,
+  mustNotEmptyExpression: true,
+  preprocessors: {
+    post: [
+      {
+        regexp: /(?<whole>.+)/g,
+        replacer: (groups: RegexpGroups) => {
+          const { whole } = groups
+          return `'${whole}'`
+        },
+      },
+    ],
+  },
+  onLoad: (ctx) => {
+    ctx.upsertIfMissingFromStore('_dsPlugins.fetch.headers', {})
+    const key = ctx.key.replace(/([a-z](?=[A-Z]))/g, '$1-').toUpperCase()
+    const value = ctx.expressionFn(ctx)
+    ctx.store()._dsPlugins.fetch.headers[key] = value
+    return () => {
+      delete ctx.store()._dsPlugins.fetch.headers[key]
+    }
+  },
+}
+
+export const BackendPlugins: AttributePlugin[] = [FetchIndicatorPlugin, HeadersPlugin]
 
 async function fetcher(method: string, urlExpression: string, ctx: AttributeContext, onlyRemote = true) {
   const store = ctx.store()
@@ -136,7 +162,13 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
       } else {
         indicator.classList.remove(INDICATOR_CLASS)
         indicator.classList.add(INDICATOR_LOADING_CLASS)
-        indicatorsVisible.value = [...indicatorsVisible.value, { el: indicator, count: 1 }]
+        indicatorsVisible.value = [
+          ...indicatorsVisible.value,
+          {
+            el: indicator,
+            count: 1,
+          },
+        ]
       }
     })
   }
@@ -256,29 +288,43 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
 
         case EVENT_DELETE:
           const [deletePrefix, ...deleteRest] = evt.data.trim().split(' ')
-          if (deletePrefix !== 'selector') throw new Error(`Unknown delete prefix: ${deletePrefix}`)
-          const deleteSelector = deleteRest.join(' ')
-          const deleteTargets = document.querySelectorAll(deleteSelector)
-          deleteTargets.forEach((target) => target.remove())
+
+          switch (deletePrefix) {
+            case 'selector':
+              const deleteSelector = deleteRest.join(' ')
+              const deleteTargets = document.querySelectorAll(deleteSelector)
+              deleteTargets.forEach((target) => target.remove())
+              break
+            case 'paths':
+              const paths = deleteRest.join(' ').split(' ')
+              ctx.removeFromStore(...paths)
+              break
+            default:
+              throw new Error(`Unknown delete prefix: ${deletePrefix}`)
+          }
           break
 
         case EVENT_REDIRECT:
-          const [redirectSelector, redirectTarget] = evt.data.trim()
-          if (redirectSelector !== 'selector') throw new Error(`Unknown redirect selector: ${redirectSelector}`)
-
+          const [redirectSelector, ...redirectRest] = evt.data.trim().split(' ')
+          if (redirectSelector !== 'url') {
+            throw new Error(`Unknown redirect selector: ${redirectSelector}`)
+          }
+          const redirectTarget = redirectRest.join(' ')
           sendDatastarEvent('plugin', 'backend', 'redirect', 'WINDOW', redirectTarget)
           window.location.href = redirectTarget
           break
 
         case EVENT_CONSOLE:
-          const [consoleMode, consoleMessage] = evt.data.trim()
+          const [consoleMode, ...consoleRest] = evt.data.trim().split(' ')
+          const consoleMessage = consoleRest.join(' ')
           switch (consoleMode) {
-            case 'log':
-            case 'warn':
-            case 'info':
             case 'debug':
+            case 'error':
+            case 'info':
             case 'group':
             case 'groupEnd':
+            case 'log':
+            case 'warn':
               console[consoleMode](consoleMessage)
               break
             default:
@@ -342,6 +388,14 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
     url.search = queryParams.toString()
   } else {
     req.body = storeJSON
+  }
+
+  const headers = store?._dsPlugins?.fetch?.headers || {}
+  if (req.headers) {
+    for (const [key, value] of Object.entries(headers)) {
+      if (key.startsWith('_')) continue
+      req.headers[key] = `${value}`
+    }
   }
 
   fetchEventSource(url, req)

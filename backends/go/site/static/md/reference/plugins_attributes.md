@@ -49,8 +49,8 @@ If any signal in the expression changes, the event listener will be updated to r
 3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
-- `.once`\* - Only trigger the event once
-- `.passive`\* - Do not call `preventDefault` on the event
+- `.once`\* - Only trigger the event listener once
+- `.passive`\* - Do not call `preventDefault` on the event listener
 - `.capture`\* - Use a capture event listener
 - `.debounce` - Debounce the event listener
   - `_1000ms` - Debounce for 1000ms
@@ -62,5 +62,14 @@ If any signal in the expression changes, the event listener will be updated to r
   - `_1s` - Throttle for 1s
   - `_noLead` - Throttle without leading edge
   - `_noTrail` - Throttle without trailing edge
+- `.window` - Attaches the event listener to the `window` element
 
 \*only works currently on native events
+
+### Class
+
+```html
+<div data-class="{'text-primary':$primary,'font-bold':$bold}"></div>
+```
+
+Adds or removes each of the keys in the set of key-value pairs to the element’s class list, depending on whether the values evaluate to true or false, respectively.
