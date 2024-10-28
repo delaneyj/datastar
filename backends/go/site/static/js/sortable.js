@@ -6,9 +6,7 @@ new Sortable(sortContainer, {
     animation: 150,
     ghostClass: 'opacity-25',
     onEnd: (evt) => {
-        if (!window.ds) throw new Error('Datastar is not defined')
-        const orderInfo = ds.signalByName('orderInfo')
-        orderInfo.value = `Moved from ${evt.oldIndex} to ${evt.newIndex}`
+        sortContainer.dispatchEvent(new CustomEvent('reordered', {detail: {orderInfo: `Moved from ${evt.oldIndex} to ${evt.newIndex}`}}));
     }
 })
 
