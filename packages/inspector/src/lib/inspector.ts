@@ -5,12 +5,13 @@ import {
   remoteSignals,
 } from "@sudodevnull/datastar";
 import { diffJson, diffLines } from "diff";
-import { LitElement, PropertyValueMap, html } from "lit";
+import { LitElement, PropertyValueMap, html, nothing } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import { rehype } from "rehype";
 import rehypeFormat from "rehype-format";
 import styles from "./tailwind.css";
 import { sendDatastarInspectorEvent } from "./utils.ts";
+import {query} from 'lit/decorators/query.js';
 
 interface VersionedStore {
   time: Date;
@@ -84,6 +85,9 @@ export class DatastarInspectorElement extends LitElement {
   rootElementId?: `#${string}` = undefined;
 
   versionOffset = 0;
+
+  @query('#inspectorModal')
+  _modal;
 
   @state()
   stores: VersionedStore[] = [
@@ -425,11 +429,13 @@ export class DatastarInspectorElement extends LitElement {
 
     return html`
       <div data-theme="datastar">
-        <details class="bg-base-100 collapse  collapse-arrow">
-          <summary class="collapse-title text-xl font-medium">
+      <button class="btn" @click="${() => this._modal.showModal()}">Inspector</button>
+      <dialog class="modal" id="inspectorModal">
+        <div class="modal-box w-full">
+          <h1>
             Inspector
-          </summary>
-          <details class="bg-base-100 collapse  collapse-arrow  " open>
+          </h1>
+          <details class="bg-base-100 collapse  collapse-arrow" open>
             <summary class="collapse-title text-xl font-medium">Store</summary>
             <div class="collapse-content flex gap-4 max-h-[40vh]">
               <ul
@@ -528,7 +534,11 @@ export class DatastarInspectorElement extends LitElement {
               </div>
             </div>
           </details>
-        </details>
+        </div>
+          <form method="dialog" class="modal-backdrop">
+    <button>close</button>
+  </form>
+      </dialog>
       </div>
     `;
   }
