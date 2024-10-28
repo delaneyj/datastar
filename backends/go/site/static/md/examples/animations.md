@@ -32,7 +32,7 @@ Consider this div:
 </div>
 ```
 
-With SSE we just update the style every second:
+With SSE, we just update the style every second:
 
 ### Smooth Progress Bar
 
@@ -42,7 +42,7 @@ The [Progress Bar](/examples/progress_bar) demo uses this basic CSS animation te
 
 <div id="view_transition">View Transition Demo</div>
 
-This button swap is happening in the backend.  Each click is causing a transition of state.  The animated opacity animation is provided automatically by the View Transition API.  Doesn't matter if the targetted elements are different types, it will still "do the right thing".
+This button swap is happening in the backend.  Each click is causing a transition of state.  The animated opacity animation is provided automatically by the View Transition API.  Doesn't matter if the targeted elements are different types, it will still "do the right thing".
 
 ## Swap Transitions
 
@@ -50,7 +50,7 @@ This button swap is happening in the backend.  Each click is causing a transitio
 
 <div id="fade_out_swap">Fade out swap Demo</div>
 
-If you want to fade out an element that is going to be removed when the request ends, just send a SSE event with the opacity set to 0 and set a transition duration. This will fade out the element before it is removed.
+If you want to fade out an element that is going to be removed when the request ends, just send an SSE event with the opacity set to 0 and set a transition duration. This will fade out the element before it is removed.
 
 ## Settling Transitions
 

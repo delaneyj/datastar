@@ -147,7 +147,7 @@ Anyhow, we haven't really even scratched the surface. Let's keep going.
 
 ## Backend Plumbing
 
-Now, let's send some data. To do this there's a few things we must understand but it's all fun and easy and you'll want to know it if you do not already!
+Now, let's send some data. To do this there's a few things we must understand, but it's all fun and easy, and you'll want to know it if you do not already!
 
 Datastar uses [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) or SSE. To use SSE, we have to set our backend up for it. Luckily it's extremely simple and [provides us with many advantages](/essays/event_streams_all_the_way_down).
 
@@ -247,7 +247,7 @@ Add this to your `<main>` element:
 
 ...and give ourselves a place to show our new state on the client.
 
-Voila! Now if you check out what you've done, you'll find you're able to send data to your `/put` endpoint and respond with HTML updating the output `div`. Neato!
+Voilà! Now if you check out what you've done, you'll find you're able to send data to your `/put` endpoint and respond with HTML updating the output `div`. Neato!
 
 Let's retrieve the backend data we're now storing.
 
@@ -343,7 +343,7 @@ If you're still here I imagine you want to know more. Let's define things a litt
 
 ## A Better View
 
-To be more precise, think of Datastar as an extension to HTML's [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also setup events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
+To be more precise, think of Datastar as an extension to HTML's [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes). Using attributes, you can introduce state to your frontend, then access it anywhere in your DOM, or a backend of your choice. You can also set up events that trigger endpoints, then respond with HTML that targets fragments of your DOM.
 
 - Declare global state: `data-store="{foo: ''}"`
 - Link-up HTML elements to state slots: `data-model="foo"`

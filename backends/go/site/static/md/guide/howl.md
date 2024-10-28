@@ -12,4 +12,4 @@ Browsers don't care about your application, they care about the rendering hyperm
 
 ## Hypermedia on whatever you Like (HOWL)
 
-[Carson Gross](https://hypermedia.systems/) coined the term [HOWL stack](https://htmx.org/essays/hypermedia-on-whatever-youd-like/) which is really just getting back to the roots of the web.  People make fun of HTML not being a real language but its a wonderful way of exchanging interconnect assets.  The HOWL stack is about leveraging the web's capabilities and with just a thin set of shims make it as powerful as any SPA framework.  This is the basis of Datastar.
+[Carson Gross](https://hypermedia.systems/) coined the term [HOWL stack](https://htmx.org/essays/hypermedia-on-whatever-youd-like/) which is really just getting back to the roots of the web.  People make fun of HTML not being a real language, but it’s a wonderful way of exchanging interconnect assets.  The HOWL stack is about leveraging the web's capabilities and with just a thin set of shims make it as powerful as any SPA framework.  This is the basis of Datastar.

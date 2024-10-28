@@ -1,8 +1,8 @@
-## CRSF
+## CSRF
 
-## Explaination
+## Explanation
 
-Sometimes a backend framework need to set a header.  Normally you should be using cookies to be more secure but it depends on your backend.
+Sometimes a backend framework need to set a header.  Normally you should be using cookies to be more secure, but it depends on your backend.
 
 ```html
 <div data-header-x-csrf-token="/Svi7DzhybrN+mDfI0zpReDj31ZZpp7GFp5KC6yMvGKer5OmslH1fpYDtAfsTwmfH+yLy7ghTAVHiRcjDz8XAQ==">
@@ -14,7 +14,7 @@ Sometimes a backend framework need to set a header.  Normally you should be usin
 </div>
 ```
 
-**_Note:_** Unlike most Datastar plugins the header value is a string, not an expression.  Nothing a user does should be able to effect the headers sent if you backend is where your state lives.
+**_Note:_** Unlike most Datastar plugins the header value is a string, not an expression.  Nothing a user does should be able to effect the headers sent if your backend is where your state lives.
 
 ## Demo
 

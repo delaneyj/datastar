@@ -2,7 +2,7 @@
 
 ## In response to the HTMX essay [No Build Step](https://htmx.org/essays/no-build-step/)
 
-This is making the counter argument that a build step are extremely valuable when building a frontend framework. Lack of builds might be the right choice for HTMX but in my eyes its a self full-filling prophecy. The author concurrently wary of progress yet works on a library about extending the HTML spec to do more than it was designed for. The essay is written by a core contributor and not the author of HTMX. In general, its filled with so many fallacies but the real culprit is the _false dilemma fallacy_.
+This is making the counter-argument that a build step is extremely valuable when building a frontend framework. Lack of builds might be the right choice for HTMX but in my eyes it’s a self-fulfilling prophecy. The author is concurrently wary of progress yet works on a library about extending the HTML spec to do more than it was designed for. The essay is written by a core contributor and not the author of HTMX. In general, it’s filled with so many fallacies but the real culprit is the _false dilemma fallacy_.
 
 > This common fallacy misleads by presenting complex issues in terms of two inherently opposed sides. Instead of acknowledging that most (if not all) issues can be thought of on a spectrum of possibilities and stances, the false dilemma fallacy asserts that there are only two mutually exclusive outcomes.
 > This fallacy is particularly problematic because it can lend false credence to extreme stances, ignoring opportunities for compromise or chances to re-frame the issue in a new way.

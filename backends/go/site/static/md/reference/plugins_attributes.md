@@ -12,7 +12,7 @@ Primarily used to help hook up the store and the DOM.
 <div data-bind-disabled="$iShouldBeDisabled"></div>
 ```
 
-Allows any valid attribute to be bound to an expression. This is useful for making elements reactive. Also can be used as a fallback for any attribute that is not supported by a plugin currently.
+Allows any valid attribute to be bound to an expression. This is useful for making elements reactive. Also, can be used as a fallback for any attribute that is not supported by a plugin currently.
 
 ### Model
 
