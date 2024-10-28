@@ -2,7 +2,7 @@
 
 ## In response to the HTMX essay [No Build Step](https://htmx.org/essays/no-build-step/)
 
-This is making the counter-argument that a build step is extremely valuable when building a frontend framework. Lack of builds might be the right choice for HTMX but in my eyes it’s a self-fulfilling prophecy. The author is concurrently wary of progress yet works on a library about extending the HTML spec to do more than it was designed for. The essay is written by a core contributor and not the author of HTMX. In general, it’s filled with so many fallacies but the real culprit is the _false dilemma fallacy_.
+This is making the counter-argument that a build step is extremely valuable when building a frontend framework. Lack of builds might be the right choice for HTMX but in my eyes it's a self-fulfilling prophecy. The author is concurrently wary of progress yet works on a library about extending the HTML spec to do more than it was designed for. The essay is written by a core contributor and not the author of HTMX. In general, it's filled with so many fallacies but the real culprit is the _false dilemma fallacy_.
 
 > This common fallacy misleads by presenting complex issues in terms of two inherently opposed sides. Instead of acknowledging that most (if not all) issues can be thought of on a spectrum of possibilities and stances, the false dilemma fallacy asserts that there are only two mutually exclusive outcomes.
 > This fallacy is particularly problematic because it can lend false credence to extreme stances, ignoring opportunities for compromise or chances to re-frame the issue in a new way.
@@ -69,7 +69,7 @@ The declaration (.d.ts) he point do are not accurate and aren't maintained last 
 
 This is certainly a choice and have seems as a hot button debate in the HTMX discord channel. If you had a build step, let alone used Typescript, you could target both **with the same codebase**. The false dilemma fallacy.
 
-> This point is obvious, but it’s worth re-stating: the htmx source would be a lot tidier if it could be split it into modules. There are other factors that affect code quality besides tidiness, but to the extent that the htmx source is high-quality, it is not because it is tidy.
+> This point is obvious, but it's worth re-stating: the htmx source would be a lot tidier if it could be split it into modules. There are other factors that affect code quality besides tidiness, but to the extent that the htmx source is high-quality, it is not because it is tidy.
 
 This is just a weird argument. You can split it into modules and still have tidiness. You can still split up into extensions, I know because I did it. To be clear, this isn't a declaration of minimal code sizes, but it _should_ be broken up into at least a per module/extension basis.
 

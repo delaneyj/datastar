@@ -16,7 +16,7 @@ None of these are deal-breakers but starting from first principles we can do bet
 
 ## SSE
 
-If you aren't familiar with SSE it’s a way to create a chunked response to the browser. The browser will automatically reconnect if the connection is lost. The server can also send a `retry` header to tell the browser how often to reconnect. The browser will also automatically reconnect if the connection is lost. The nice part of having a chunked response is you can send multiple updates or a single update and the browser will handle it. Any modern backend HTTP server framework should allow for easy SSE support (it's just a few headers and a specific text format for content).
+If you aren't familiar with SSE it's a way to create a chunked response to the browser. The browser will automatically reconnect if the connection is lost. The server can also send a `retry` header to tell the browser how often to reconnect. The browser will also automatically reconnect if the connection is lost. The nice part of having a chunked response is you can send multiple updates or a single update and the browser will handle it. Any modern backend HTTP server framework should allow for easy SSE support (it's just a few headers and a specific text format for content).
 
 ## SSE backend, fetch on the frontend
 
