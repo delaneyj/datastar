@@ -36,7 +36,8 @@ The website should be available on http://localhost:8080 with hot-reloading enab
 ## End to end tests
 
 Once you have the website running, you should be able to run the
-[playwright](https://playwright.dev) tests. (that is, if playwright supports your operating system.
+[playwright](https://playwright.dev) tests. (that is, if playwright
+[supports your operating system](https://playwright.dev/docs/intro#system-requirements).)
 
 ```
 $ task test
