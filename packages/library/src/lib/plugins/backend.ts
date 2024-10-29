@@ -261,7 +261,7 @@ async function fetcher(method: string, urlExpression: string, ctx: AttributeCont
             const [signalType, ...signalRest] = line.split(' ')
             const signalLine = signalRest.join(' ')
             switch (signalType) {
-              case 'onlyIfMissing':
+              case 'ifmissing':
                 onlyIfMissing = signalLine.trim() === 'true'
                 break
               case 'store':
