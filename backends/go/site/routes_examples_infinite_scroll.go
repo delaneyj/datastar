@@ -24,14 +24,18 @@ func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 		if store.Offset == 0 {
 			datastar.RenderFragmentTempl(sse, infiniteScrollAgents(store))
 		} else {
-			datastar.RenderFragmentTempl(sse, infiniteScrollMore(store))
-			for i := 0; i < store.Limit; i++ {
+			if store.Offset < 100 {
+				datastar.RenderFragmentTempl(sse, infiniteScrollMore(store))
+				for i := 0; i < store.Limit; i++ {
 
-				datastar.RenderFragmentTempl(
-					sse, infiniteScrollAgent(store.Offset+i),
-					datastar.WithQuerySelectorID("click_to_load_rows"),
-					datastar.WithMergeAppend(),
-				)
+					datastar.RenderFragmentTempl(
+						sse, infiniteScrollAgent(store.Offset+i),
+						datastar.WithQuerySelectorID("click_to_load_rows"),
+						datastar.WithMergeAppend(),
+					)
+				}
+			} else {
+				datastar.RenderFragmentTempl(sse, infiniteScrollRickroll())
 			}
 		}
 	})

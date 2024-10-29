@@ -3,14 +3,16 @@ import {
   AttributeContext,
   AttributePlugin,
   DatastarEvent,
+  datastarEventName,
   Preprocessor,
   RegexpGroups,
-  datastarEventName,
 } from '../types'
 
-const validNestedJSIdentifier = `[a-zA-Z_$]+[0-9a-zA-Z_$.]*`
-function wholePrefixSuffix(rune: string, prefix: string, suffix: string) {
-  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${validNestedJSIdentifier})${suffix})`, `g`)
+const validJSIdentifier = `[a-zA-Z_$]+`
+const validNestedJSIdentifier = validJSIdentifier + `[0-9a-zA-Z_$.]*`
+function wholePrefixSuffix(rune: string, prefix: string, suffix: string, nestable = true) {
+  const identifier = nestable ? validNestedJSIdentifier : validJSIdentifier
+  return new RegExp(`(?<whole>\\${rune}(?<${prefix}>${identifier})${suffix})`, `g`)
 }
 
 // Replacing $signal with ctx.store.signal.value`
@@ -42,9 +44,9 @@ const ActionProcessor: Preprocessor = {
   },
 }
 
-// Replacing #foo with ctx.refs.foo
+// Replacing ~foo with ctx.refs.foo
 const RefProcessor: Preprocessor = {
-  regexp: wholePrefixSuffix('~', 'ref', ''),
+  regexp: wholePrefixSuffix('~', 'ref', '', false),
   replacer({ ref }: RegexpGroups) {
     return `document.querySelector(ctx.store()._dsPlugins.refs.${ref})`
   },
@@ -118,6 +120,22 @@ const StoreAttributePlugin: AttributePlugin = {
   },
 }
 
+const ComputedPlugin: AttributePlugin = {
+  prefix: 'computed',
+  mustNotEmptyKey: true,
+  onLoad: (ctx: AttributeContext) => {
+    const store = ctx.store()
+    store[ctx.key] = ctx.reactivity.computed(() => {
+      return ctx.expressionFn(ctx)
+    })
+
+    return () => {
+      const store = ctx.store()
+      delete store[ctx.key]
+    }
+  },
+}
+
 // Sets the value of the element
 const RefPlugin: AttributePlugin = {
   prefix: 'ref',
@@ -148,7 +166,7 @@ const RefPlugin: AttributePlugin = {
   },
 }
 
-export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, RefPlugin]
+export const CorePlugins: AttributePlugin[] = [StoreAttributePlugin, ComputedPlugin, RefPlugin]
 export function elemToSelector(elm: Element | Window | Document | string | null) {
   if (!elm) return 'null'
   if (typeof elm === 'string') return elm

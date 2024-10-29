@@ -259,6 +259,15 @@ func Redirect(sse *ServerSentEventsHandler, url string) {
 	)
 }
 
+func DeleteFromStore(sse *ServerSentEventsHandler, paths ...string) {
+	if len(paths) == 0 {
+		return
+	}
+
+	dataRow := fmt.Sprintf("paths %s", strings.Join(paths, " "))
+	sse.Send(dataRow, WithSSEEvent(SSEEventTypeDelete))
+}
+
 func PatchStore(sse *ServerSentEventsHandler, store any) {
 	b, err := json.Marshal(store)
 	if err != nil {

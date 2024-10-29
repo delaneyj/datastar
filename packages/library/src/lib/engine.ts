@@ -1,7 +1,7 @@
 import { sendDatastarEvent } from '.'
 import { toHTMLorSVGElement } from './dom'
-import { DeepSignal, DeepState, deepSignal } from './external/deepsignal'
-import { Signal, computed, effect, signal } from './external/preact-core'
+import { DeepSignal, deepSignal, DeepState } from './external/deepsignal'
+import { computed, effect, Signal, signal } from './external/preact-core'
 import { apply } from './external/ts-merge-patch'
 import { CorePlugins, CorePreprocessors } from './plugins/core'
 import {
@@ -59,7 +59,11 @@ export class Datastar {
     })
 
     // Start observing the target node for configured mutations
-    observer.observe(document.body, { attributes: true, childList: true, subtree: true })
+    observer.observe(document.body, {
+      attributes: true,
+      childList: true,
+      subtree: true,
+    })
 
     this.plugins.forEach((p) => {
       if (p.onGlobalInit) {
@@ -97,6 +101,26 @@ export class Datastar {
         sendDatastarEvent('core', 'store', 'merged', 'STORE', JSON.stringify(this.store.value))
       }),
     )
+  }
+
+  private removeFromStore(...keys: string[]) {
+    const revisedStore = { ...this.store.value }
+    for (const key of keys) {
+      const parts = key.split('.')
+      let currentID = parts[0]
+      let subStore = revisedStore
+      for (let i = 1; i < parts.length; i++) {
+        const part = parts[i]
+        if (!subStore[currentID]) {
+          subStore[currentID] = {}
+        }
+        subStore = subStore[currentID]
+        currentID = part
+      }
+      delete subStore[currentID]
+    }
+    this.store = deepSignal(revisedStore)
+    this.applyPlugins(document.body)
   }
 
   private upsertIfMissingFromStore(path: string, value: any) {
@@ -225,6 +249,7 @@ export class Datastar {
             store: () => this.store,
             mergeStore: this.mergeStore.bind(this),
             upsertIfMissingFromStore: this.upsertIfMissingFromStore.bind(this),
+            removeFromStore: this.removeFromStore.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanupElementRemovals: this.cleanupElementRemovals.bind(this),
             walkSignals: this.walkSignals.bind(this),
