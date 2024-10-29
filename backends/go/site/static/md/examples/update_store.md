@@ -28,7 +28,7 @@
 
 ## Explanation
 
-This example demonstrates how to update the store directly from the frontend. This is using a SSE event
+This example demonstrates how to update the store directly from the frontend. This is using an SSE event
 
 ```text/event-stream
 event: datastar-signal,
@@ -42,4 +42,4 @@ The deletion event looks like
 event: datastar-delete,
 data: paths 12768 stuffAlreadyInStore
 ```
-Where the paths are `.` deliminated paths within the store.  For a nested store it might look like `foo.bar.baz`.  Using the Go helpers for example this looks like `datastar.DeleteFromStore(sse, keysToDelete...)`
+Where the paths are `.` delimited paths within the store.  For a nested store it might look like `foo.bar.baz`.  Using the Go helpers for example this looks like `datastar.DeleteFromStore(sse, keysToDelete...)`

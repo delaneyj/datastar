@@ -43,7 +43,7 @@ In the original example you had to hook into HTMX's events.  With Datastar you a
 </div>
 ```
 
-The HTML looks pretty straightforward.  Create an `orderInfo` signal and when it has has data fire off an event.
+The HTML looks pretty straightforward.  Create an `orderInfo` signal and when it has data fire off an event.
 
 I've separate out the js content to avoid Markdown escaping in this example
 ```js

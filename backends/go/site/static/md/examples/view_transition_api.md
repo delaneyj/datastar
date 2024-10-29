@@ -50,7 +50,7 @@ animation-duration: 0.5s;
 
 ## Explanation
 
-This comes from an [issue](https://github.com/delaneyj/datastar/issues/19) on how to use the `data-view-transition`. This lead to simplifing the API.
+This comes from an [issue](https://github.com/delaneyj/datastar/issues/19) on how to use the `data-view-transition`. This lead to simplifying the API.
 
 ## Full page transitions
 
@@ -58,7 +58,7 @@ Datastar automatically adds the proper `<meta/>` tags to properly transition ful
 
 ## Inter-page transitions
 
-By default if `docuument.startViewTransition` exists each SSE fragment update will be wrapped in a `startViewTransition` async call. This will automatically fade in/out. If you want custom animation, such as
+By default, if `docuument.startViewTransition` exists each SSE fragment update will be wrapped in a `startViewTransition` async call. This will automatically fade in/out. If you want custom animation, such as
 
 ```html
 <style>

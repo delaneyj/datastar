@@ -40,4 +40,4 @@ Takes a `$$fn('foo','bar',1234)` and converts into a `ctx.actions.fn('foo','bar'
 
 ### RefProcessor
 
-Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svlete components.
+Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svelte components.

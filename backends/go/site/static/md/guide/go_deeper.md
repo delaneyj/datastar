@@ -30,7 +30,7 @@ ORDER BY time DESC
 LIMIT 10
 ```
 
-This is SQL. As a user you don't have to know how the query will get executed, its up to the engine used. Sure you can read the query plan or introspect indexes but you can start at a high level and drill down only when necessary.
+This is SQL. As a user you don't have to know how the query will get executed, it's up to the engine used. Sure you can read the query plan or introspect indexes, but you can start at a high level and drill down only when necessary.
 
 HTML work in a similar fashion. You don't have to worry about how a `<div>Hello</div>` turned into pixels nor how the page uses resources when you tab away. This is wonderful for the majority of cases but at least in modern HTML is a bit limiting.
 
@@ -48,7 +48,7 @@ if you want to use the result of changing the input to modify the label you have
 
 ## Custom data attributes
 
-Luckily HTML5 has the concept of [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) which allows anyone to add thier own attributes and still be valid HTML. The only real requirement is they be kebab-cased and start with `data-*`. Data star... that'd be a clever name... oh I get it!
+Luckily HTML5 has the concept of [data attributes](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) which allows anyone to add their own attributes and still be valid HTML. The only real requirement is they be kebab-cased and start with `data-*`. Data star... that'd be a clever name... oh I get it!
 
 Before we can actually use the `data-*` we need a quick aside about signals.
 
@@ -84,13 +84,13 @@ Ok so back to our hypothetical framework let's have a way to declare stuff that 
 <div data-store="{value:'hello world'}"></div>
 ```
 
-The contents is just a set of data that can evaluated
+The contents are just a set of data that can evaluated
 
 1. into a valid Javascript Object
 2. converted into a tree of signals
-3. merge into a store that tracks all of the reactivity on the page.
+3. merge into a store that tracks all the reactivity on the page.
 
-In this case we want there to be a a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-store` attribute and think declaratively.
+In this case we want there to be a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-store` attribute and think declaratively.
 
 ## Models
 
@@ -118,7 +118,7 @@ Now we want to update the label relationship.
 
 Here we've added another attribute `data-text` but the content has a `$` prefix. Remember that `data-*` attributes _are just strings_, which means we can give any semantics we want as long as it's consistent. It this case we are designating the use of a signal by adding a `$` prefix. Now went the `value` signal updates, so will the `innerHTML` of the label. Pretty neat.
 
-However it doesn't yet match the original intent, which was to make it uppercase, so let's make a quick adjustment.
+However, it doesn't yet match the original intent, which was to make it uppercase, so let's make a quick adjustment.
 
 ```html
 <div data-store="{value:'hello world'}">
@@ -127,7 +127,7 @@ However it doesn't yet match the original intent, which was to make it uppercase
 </div>
 ```
 
-So with this change and in a declarative nature you'd be able extend HTML and focus on relationships.
+So with this change and in a declarative nature you'd be able to extend HTML and focus on relationships.
 
 Our HTML looks pretty neat but what would it take to make it actually work? Well just add:
 
@@ -135,6 +135,6 @@ Our HTML looks pretty neat but what would it take to make it actually work? Well
 <script src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
 ```
 
-somewhere on your page and it should **_just work_**. If you look at the dev tools of your browser you'll also see its tiny compared to any other full framework and we haven't scratched the surface of what's included.
+somewhere on your page and it should **_just work_**. If you look at the dev tools of your browser you'll also see its tiny compared to any other full framework, and we haven't scratched the surface of what's included.
 
 So far looking a lot like [Alpine.js](https://alpinejs.dev/) which is great, but as we add more features will diverge.

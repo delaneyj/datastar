@@ -13,7 +13,7 @@
     </div>
 </div>
 
-## Explaination
+## Explanation
 
 ```html
 <div
