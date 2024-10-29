@@ -62,11 +62,11 @@ Addtional `data` lines can be added to the response to override the default beha
 
 ```go
 event: datastar-signal
-data: ifmissing false
+data: onlyIfMissing false
 data: store {foo: 1234}
 ```
 
-The `datastar-signal` event is used to update the store with new values. The `ifmissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-signal` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
 
 ### datastar-delete
 
