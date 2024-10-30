@@ -58,7 +58,7 @@ Additional `data` lines can be added to the response to override the default beh
 | `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`.                                                    |
 | `data: fragment`                | The HTML fragment to merge into the DOM.                                                                                |
 
-Note that `script` tags are not executed by the browser when merged into the DOM in this way. You should use signals and event listeners to instead.
+**Note:** `script` tags are not executed by the browser when merged into the DOM in this way. You should use signals and event listeners to instead.
 
 ### datastar-signal
 
