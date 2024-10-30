@@ -7,7 +7,7 @@ A discussion on the [HTMX Discord](https://discord.com/channels/7257896995279339
 3. You are using [HOWL](https://htmx.org/essays/hypermedia-on-whatever-youd-like/)
 4. Have complete control over the backend
 
-Then you should should only **_ever_** be usings either the 2xx or 3xx series of status codes. The 4xx and 5xx series are for machines and should never be seen by humans. The 4xx series is for client errors and the 5xx series is for server errors. If you are using HTTP as your UI interface then you should be handling all errors on the client side. If you are using a 4xx or 5xx series code then you are doing something wrong.
+Then you should only **_ever_** be usings either the 2xx or 3xx series of status codes. The 4xx and 5xx series are for machines and should never be seen by humans. The 4xx series is for client errors and the 5xx series is for server errors. If you are using HTTP as your UI interface then you should be handling all errors on the client side. If you are using a 4xx or 5xx series code then you are doing something wrong.
 
 [This](https://discord.com/channels/725789699527933952/1156332851093065788/1156377394530242622) section is the most relevant:
 
@@ -25,7 +25,7 @@ Then you should should only **_ever_** be usings either the 2xx or 3xx series of
 >
 > **@alex** — Great solution, no notes
 
-It might be a little tongue and cheek but the point is valid. If you are using HTTP as your UI interface then you should be using the 2xx and 3xx series of status codes. If you are using the 4xx or 5xx series then you are doing something wrong.
+It might be a little tongue in cheek but the point is valid. If you are using HTTP as your UI interface then you should be using the 2xx and 3xx series of status codes. If you are using the 4xx or 5xx series then you are doing something wrong.
 
 ## Hypermedia is for humans
 
@@ -33,6 +33,6 @@ The whole point of [HOWL](https://htmx.org/essays/hypermedia-on-whatever-youd-li
 
 ## What does Datastar do?
 
-If its a 3xx we redirect, 2xx we merge the HTML fragment, and anything else throws an error. I'm considering even forcing a `window.alert` on top of throwing the error. If you get at client error or server error **_when you control both sides_** then its a bug and you should be fixing it.
+If it's a 3xx we redirect, 2xx we merge the HTML fragment, and anything else throws an error. I'm considering even forcing a `window.alert` on top of throwing the error. If you get at client error or server error **_when you control both sides_** then it's a bug, and you should be fixing it.
 
 ![Full Stack Error Handling](/static/images/essays/fullstack.jpg)

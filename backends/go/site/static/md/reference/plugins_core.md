@@ -20,6 +20,14 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 - `.session` - Save the store to sessionStorage and load it on page refresh
 - `.ifmissing` - Only set the store if the key does not exist. This is useful for setting defaults without overwriting existing values.
 
+### Computed
+
+```html
+<div data-computed-blinker="$count % 2 === 0"></div>
+```
+
+Allows you to define a computed store value that automatically updates its value based on an expression. This can be used to drive other reactive behaviors, such as updating classes or text content in the DOM. 
+
 ### Ref
 
 ```html
@@ -40,4 +48,4 @@ Takes a `$$fn('foo','bar',1234)` and converts into a `ctx.actions.fn('foo','bar'
 
 ### RefProcessor
 
-Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svlete components.
+Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svelte components.

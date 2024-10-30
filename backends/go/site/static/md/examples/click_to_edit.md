@@ -70,8 +70,8 @@ This returns a form that can be used to edit the contact
 
 ### There is no form
 
-If you compare to HTMX you'll notice there is no form, you can use one but its unnecessary. This is because you are already using signals and when you use a `PUT` to `/contact/1/edit`, the body is the entire contents of the store and its available to handle errors and validation holistically. There is also a profanity filter on the normal rendering of the contact that is not applied to the edit form. Controlling the rendering complete on the server allows you to have a single source of truth for the data and the rendering.
+If you compare to HTMX you'll notice there is no form, you can use one, but it's unnecessary. This is because you are already using signals and when you use a `PUT` to `/contact/1/edit`, the body is the entire contents of the store, and it's available to handle errors and validation holistically. There is also a profanity filter on the normal rendering of the contact that is not applied to the edit form. Controlling the rendering complete on the server allows you to have a single source of truth for the data and the rendering.
 
 ### There is no client validation
 
-On the backend we've also added a quick santizer on the input to avoid bad actors (to some degree). You already have to deal with the data on the server so you might as well do the validation there. In this case its just modifying how the text is rendered when not editing. This is a simple example but you can see how you can extend it to more complex forms.
+On the backend we've also added a quick sanitizer on the input to avoid bad actors (to some degree). You already have to deal with the data on the server so you might as well do the validation there. In this case its just modifying how the text is rendered when not editing. This is a simple example, but you can see how you can extend it to more complex forms.

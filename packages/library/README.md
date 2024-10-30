@@ -49,12 +49,4 @@ I think HTMX is great and I will continue to recommend it for splashes of conten
 
 ## Building
 
-The library itself can be built with https://pnpm.io/ by doing a `pnpm i` and `pnpm build` in the `packages/library` folder.
-
-To run the examples website you will need the following:
-
-- [Go](https://go.dev/)
-- [Taskfile](https://taskfile.dev/)
-- [Git-LFS](https://git-lfs.com/)
-
-Start with a `git lfs checkout` in the datastar root folder then run `task tools` followed by `task -w hot`.
+See [HACKING](HACKING.md)

@@ -1,11 +1,14 @@
 ## Cloak
 
 ## Demo
-<style>
-  cloak { display: none; }
-</style>
-<div class="cloak" data-class="{cloak:false}" data-show="true">
-  Cloaked text
+
+<div>
+  <style>
+    cloak { display: none; }
+  </style>
+  <div class="cloak" data-class="{cloak:false}" data-show="true">
+    Cloaked text
+  </div>
 </div>
 
 ## Explanation

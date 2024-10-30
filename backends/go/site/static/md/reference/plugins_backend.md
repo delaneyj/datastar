@@ -29,7 +29,7 @@ event: datastar-fragment
 data: fragment <div id="foo">Hello!</div>
 ```
 
-Addtional `data` lines can be added to the response to override the default behavior.
+Additional `data` lines can be added to the response to override the default behavior.
 
 <div class="alert alert-warning">
   <iconify-icon icon="material-symbols:warning-rounded"></iconify-icon>
@@ -42,31 +42,31 @@ Addtional `data` lines can be added to the response to override the default beha
 
 ### datastar-fragment
 
-| Key                             | Description                             |
-| ------------------------------- | --------------------------------------- |
-| `data: selector #foo`           | Selects the target element of the `merge` process using a CSS selector. |
-| `data: selector self`           | Selects the initiating element as the target. |
+| Key                             | Description                                                                                                             |
+|---------------------------------|-------------------------------------------------------------------------------------------------------------------------|
+| `data: selector #foo`           | Selects the target element of the `merge` process using a CSS selector.                                                 |
+| `data: selector self`           | Selects the initiating element as the target.                                                                           |
 | `data: merge morph`             | Merges the fragment using [Idiomorph](https://github.com/bigskysoftware/idiomorph). This is the default merge strategy. |
-| `data: merge inner`             | Replaces the target's innerHTML with the fragment. |
-| `data: merge outer`             | Replaces the target's outerHTML with the fragment. |
-| `data: merge prepend`           | Prepends the fragment to the target's children. |
-| `data: merge append`            | Appends the fragment to the target's children. |
-| `data: merge before`            | Inserts the fragment before the target as a sibling. |
-| `data: merge after`             | Inserts the fragment after the target as a sibling. |
-| `data: merge upsert_attributes` | Merges attributes from the fragment into the target – useful for updating a store. |
-| `data: settle 1000`             | Settles the element after 1000ms, useful for transitions. Defaults to `500`. |
-| `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`. |
-| `data: fragment`                | The HTML fragment to merge into the DOM. |
+| `data: merge inner`             | Replaces the target's innerHTML with the fragment.                                                                      |
+| `data: merge outer`             | Replaces the target's outerHTML with the fragment.                                                                      |
+| `data: merge prepend`           | Prepends the fragment to the target's children.                                                                         |
+| `data: merge append`            | Appends the fragment to the target's children.                                                                          |
+| `data: merge before`            | Inserts the fragment before the target as a sibling.                                                                    |
+| `data: merge after`             | Inserts the fragment after the target as a sibling.                                                                     |
+| `data: merge upsert_attributes` | Merges attributes from the fragment into the target – useful for updating a store.                                      |
+| `data: settle 1000`             | Settles the element after 1000ms, useful for transitions. Defaults to `500`.                                            |
+| `data: vt false`                | Turns off View-Transitions on Datastar messages. Defaults to `true`.                                                    |
+| `data: fragment`                | The HTML fragment to merge into the DOM.                                                                                |
 
 ### datastar-signal
 
 ```go
 event: datastar-signal
-data: ifmissing false
+data: onlyIfMissing false
 data: store {foo: 1234}
 ```
 
-The `datastar-signal` event is used to update the store with new values. The `ifmissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-signal` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `store` line should be a valid `data-store` attribute. This will get merged into the store.
 
 ### datastar-delete
 
@@ -134,4 +134,4 @@ The `$$isFetching` action returns a computed value that allows you to easily rea
 		data-header-x-csrf-token="JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg=="></div>
 ```
 
-Can be added anywhere on the page and will be included on SSE fetches.  In general you should lean to Cookies unless your backend framework demand it.
+Can be added anywhere on the page and will be included on SSE fetches.  In general, you should lean to Cookies unless your backend framework demand it.

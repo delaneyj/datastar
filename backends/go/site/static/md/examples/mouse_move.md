@@ -78,4 +78,4 @@ templ cursorSVG( cursors map[string]MouseXY){
 }
 ```
 
-On page load we create the whole page and when there are updates the `cursorSVG` is run.  This is writing to a KV store, so every update is getting marshalled to JSON for all cursors and then unmarshalled per viewer.  Also this is only happening when a user moves the mouse.  In a real game/app you would send a steady stream of data but this is showing you can key of different events depending on your situation of SLA.
+On page load we create the whole page and when there are updates the `cursorSVG` is run.  This is writing to a KV store, so every update is getting marshalled to JSON for all cursors and then unmarshalled per viewer.  Also, this is only happening when a user moves the mouse.  In a real game/app you would send a steady stream of data but this is showing you can key of different events depending on your situation of SLA.

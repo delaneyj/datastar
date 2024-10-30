@@ -28,7 +28,7 @@ Copies the text to the clipboard. This is useful for copying text to the clipboa
 
 ## `$$fit(v: number, oldMin:number, oldMax:number, newMin, newMax)`
 
-Make a value linear interpolate from an origial range to new one.
+Make a value linear interpolate from an original range to new one.
 
 
 ## `$$fitInt(v: number, oldMin:number, oldMax:number, newMin, newMax)`
