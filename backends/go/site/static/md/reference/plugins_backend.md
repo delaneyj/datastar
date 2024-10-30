@@ -20,6 +20,8 @@ Makes an HTML_VERB request to the server and merges the response with the curren
 
 Every request will be sent with a `{datastar: *}` object containing the current store. When using `$$get` the store will be sent as a query parameter, otherwise it will be sent as a JSON body.
 
+Note that any store keys beginning with an underscore (`_`) will _not_ be sent to the server.
+
 ## Datastar SSE Event
 
 An example of a minimal valid response would be:
