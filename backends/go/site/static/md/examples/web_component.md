@@ -8,8 +8,8 @@
         <span data-text="$reversed"></span>
     </div>
     <reverse-component data-bind-name="$name" data-on-reverse="$reversed = event.detail.value"></reverse-component>
+    <script type="module" src="/static/js/web_component.js"></script>
 </div>
-<script type="module" src="/static/js/web_component.js"></script>
 
 ### Explanation
 
