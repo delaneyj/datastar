@@ -22,4 +22,4 @@
 </div>
 ```
 
-The `.local` attribute is used to dump the store to a `datastar` key in localStorage. Similiar thing happens with `.session` but gets saved to sessionStorage. Any updates will be saved and reload on page refresh. To fully work this needs a service worker like [workbox](https://developers.google.com/web/tools/workbox/) to be installed. To test it go to the network tab of your browser's dev tools and toggle Online/Offline.
+The `.local` attribute is used to dump the store to a `datastar` key in localStorage. A similar thing happens with `.session` but gets saved to sessionStorage. Any updates will be saved and reload on page refresh. To fully work this needs a service worker like [workbox](https://developers.google.com/web/tools/workbox/) to be installed. To test it go to the network tab of your browser's dev tools and toggle Online/Offline.

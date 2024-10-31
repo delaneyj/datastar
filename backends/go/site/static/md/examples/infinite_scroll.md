@@ -17,7 +17,7 @@ Let’s focus on the final row (or the last element of your content):
 </div>
 ```
 
-This last element contains a listener which, when scrolled into view, will trigger a request. The result is then appended after it. The last element of the results will itself contain the listener to load the next page of results, and so on. `data-intersects` is a custom attribute that triggers a request when the element is scrolled into view. The `$offset` and `$limit` parameters are used to control the pagination of the results. The server sents back a new `more_btn` element with a new offset and the results to be appended.
+This last element contains a listener which, when scrolled into view, will trigger a request. The result is then appended after it. The last element of the results will itself contain the listener to load the next page of results, and so on. `data-intersects` is a custom attribute that triggers a request when the element is scrolled into view. The `$offset` and `$limit` parameters are used to control the pagination of the results. The server sends back a new `more_btn` element with a new offset and the results to be appended.
 
 ```bash
 event: datastar-fragment
@@ -36,6 +36,8 @@ data: fragment <<tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</
 ```
 
 ## Demo
+
+Don't scroll too far, there are consequences
 
 <div>
 <div

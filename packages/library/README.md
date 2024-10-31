@@ -12,8 +12,7 @@ It's just normal [HTML data attributes](https://developer.mozilla.org/en-US/docs
 
 ## Community
 
-Lives as a channel in the EventGraph Discord server. Feel free to join and ask questions.
-[![](https://dcbadge.vercel.app/api/server/CHvPMrAp6F)](https://discord.gg/CHvPMrAp6F) #datastar channel
+Has it's on Discord server. Feel free to join and ask questions. [![](https://dcbadge.vercel.app/api/server/bnRNgZjgPh)](https://discord.gg/bnRNgZjgPh)
 
 ## Features
 
@@ -37,7 +36,7 @@ Lives as a channel in the EventGraph Discord server. Feel free to join and ask q
 - **No progressive enhancement**, you need Javascript enabled. Datastar is for making realtime web apps like dashboards, admin panels, etc. If you need progressive enhancement use [Alpine-Ajax](https://alpine-ajax.js.org/) or [HTMX](https://htmx.org/) and stick to just `<a/>` and `<form/>` tags. Scripting is a first class citizen in hypermedia systems.
 - Modern browsers only (no IE11 support)
 - Have to use custom attributes (data-\*) so slightly more verbose but spec compliant always
-- Have to use SSE if you use the defaults. I little more upfront but allows for faster updates and less code.
+- Have to use SSE if you use the defaults. It's a little more code upfront but allows for faster updates and less code.
 - [No book](https://hypermedia.systems/), but most of hypermedia concepts will port directly over.
 
 ### Why not just use Vue/React/Svelte?
@@ -50,12 +49,4 @@ I think HTMX is great and I will continue to recommend it for splashes of conten
 
 ## Building
 
-The library itself can be built with https://pnpm.io/ by doing a `pnpm i` and `pnpm build` in the `packages/library` folder.
-
-To run the examples website you will need the following:
-
-- [Go](https://go.dev/)
-- [Taskfile](https://taskfile.dev/)
-- [Git-LFS](https://git-lfs.com/)
-
-Start with a `git lfs checkout` in the datastar root folder then run `task tools` followed by `task -w hot`.
+See [HACKING](HACKING.md)

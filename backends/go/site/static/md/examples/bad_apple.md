@@ -29,7 +29,7 @@
 
 ## Explanation
 
-Per a conversation on the HTMX meme discord channel there was a [off hand remark](https://discordapp.com/channels/725789699527933952/996832027083026563/1276380165613813894) about adding the [Bad Apple music video](https://www.youtube.com/watch?v=FtutLA63Cp8) as a benchmark. Thought it'd be fun to do so.
+Per a conversation on the HTMX meme discord channel there was an [offhand remark](https://discordapp.com/channels/725789699527933952/996832027083026563/1276380165613813894) about adding the [Bad Apple Music video](https://www.youtube.com/watch?v=FtutLA63Cp8) as a benchmark. Thought it'd be fun to do so.
 
 We take the [already converted](https://github.com/trung-kieen/bad-apple-ascii) frames of video and turn them into a ZSTD compressed Gob file that's embedded in the server binary. This makes the whole animation about 1.9MB. We then stream the frames to the client and update the contents of a pre tag with the frames. The percentage is updated with the current frame number.
 

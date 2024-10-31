@@ -94,7 +94,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *toolbelt.EmbeddedNAT
 
 	chartWidth := 475
 	graph := chart.BarChart{
-		Title:  "File Size (Hello World) first load",
+		Title:  "File Size (Hello World) First Load",
 		Width:  chartWidth,
 		Height: chartWidth,
 		Background: chart.Style{

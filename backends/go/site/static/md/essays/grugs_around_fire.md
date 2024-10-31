@@ -2,7 +2,7 @@
 
 ## You probably don't need to care
 
-Datastar started as an attempt to move HTMX to Typescript (for internal development). Both HTMX and Datastar are just a single CDN include for end users. Unless you want to get into contributing of this may seem like bike shedding around tools and language. I personally think it matters cause it's been pretty clear from internal use the end user can have smaller, faster and easier tools while the framework developer can have a more robust and maintainable codebase.
+Datastar started as an attempt to move HTMX to Typescript (for internal development). Both HTMX and Datastar are just a single CDN include for end users. Unless you want to get into contributing of this may seem like bike shedding around tools and language. I personally think it matters because it's been pretty clear from internal use the end user can have smaller, faster and easier tools while the framework developer can have a more robust and maintainable codebase.
 
 ## Wise words
 
