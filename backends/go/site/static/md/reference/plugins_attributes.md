@@ -42,6 +42,8 @@ Sets up an event listener on an element. The event listener will trigger the act
 
 If any signal in the expression changes, the event listener will be updated to reflect the new value of the signal automatically.
 
+An `evt` variable is available in the expression which represents the event object.
+
 **Note:** the `data-on-*` matches DOM events, however there are currently a few special cases for custom events.
 
 1.  `data-on-load` which is triggered when the element is loaded into the DOM.
