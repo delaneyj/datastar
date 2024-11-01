@@ -22,7 +22,7 @@ Allows any valid attribute to be bound to an expression. This is useful for maki
 
 Sets up two-way data-binding on an element.
 
-**Note:** Always binds to a signal and therefore should exclude the `$` prefix from the signal name. Only allowed on `input`,`textarea`, `select`, `checkbox` and `radio` elements.
+**Note:** Always binds to a signal and therefore should exclude the `$` prefix from the signal name. Event listeners are added for `change`, `input` and `keydown` events on `input`,`textarea`, `select`, `checkbox` and `radio` elements.
 
 ### Text
 
