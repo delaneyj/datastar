@@ -31,4 +31,13 @@ export default defineConfig({
       formats: ['es', 'umd', 'iife'],
     },
   },
+  server: {
+    fs: {
+      strict: false
+    },
+    host: '0.0.0.0',
+    origin: 'http://localhost:' + process.env.VITE_PORT,
+    port: parseInt(process.env.VITE_PORT),
+    strictPort: true,
+  },
 })
