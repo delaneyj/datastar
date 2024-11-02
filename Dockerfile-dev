@@ -4,6 +4,8 @@ FROM golang:$TAG
 
 WORKDIR /app
 
+COPY Taskfile.yml .
+
 # Install packages
 RUN set -eux; \
     # Packages to install
@@ -24,6 +26,8 @@ RUN set -eux; \
     && \
     npm install -g \
         pnpm \
-        npm@^10.0.0
+        npm@^10.0.0 \
+    && \
+    task tools
 
 ENTRYPOINT ["/bin/sh"]
