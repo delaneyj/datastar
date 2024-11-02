@@ -4,7 +4,8 @@ FROM golang:$TAG
 
 WORKDIR /app
 
-COPY Taskfile.yml .
+COPY Taskfile.yml go.mod *.go ./
+ADD backends/go ./backends/go
 
 # Install packages
 RUN set -eux; \
@@ -28,6 +29,8 @@ RUN set -eux; \
         pnpm \
         npm@^10.0.0 \
     && \
-    task tools
+    task tools \
+    && \
+    task build-backend
 
 ENTRYPOINT ["/bin/sh"]

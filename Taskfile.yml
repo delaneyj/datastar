@@ -102,6 +102,16 @@ tasks:
       - pnpm i
       - pnpm playwright
 
+  build-backend:
+    desc: Build the backend
+    dir: backends/go
+    sources:
+      - "**/*.go"
+      - "**/*.md"
+    cmds:
+      - go mod tidy
+      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
+
   library-hot:
     env:
       ENV: dev
@@ -122,10 +132,9 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
-
+    deps:
+      - build-backend
     cmds:
-      - go mod tidy
-      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
       - ./{{.BIN_NAME}}
 
   hot:
@@ -136,7 +145,6 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
-
     deps:
       - kill
       - templ
