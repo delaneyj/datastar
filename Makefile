@@ -11,10 +11,11 @@ DOCKER_RUN=docker container run --rm -it -v "${CURDIR}":/app
 # Perform a dist build via npm run build
 build: image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} build
-# Remove node_modules/ & package-lock.json
+# Remove node_modules/ & pnpm-lock.yaml
 clean:
-	rm -rf node_modules/
-	rm -f package-lock.json
+	rm -rf .pnpm-store/
+	rm -rf packages/library/node_modules/
+	rm -f packages/library/pnpm-lock.yaml
 # Run the development server via npm run dev
 dev: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} -e VITE_PORT="${VITE_PORT}" -p ${VITE_PORT}:${VITE_PORT} ${IMAGE_NAME} -c 'task -w hot'
