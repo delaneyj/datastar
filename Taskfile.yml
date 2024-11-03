@@ -102,6 +102,41 @@ tasks:
       - pnpm i
       - pnpm playwright
 
+  build-backend:
+    desc: Build the backend
+    dir: backends/go
+    sources:
+      - "**/*.go"
+      - "**/*.md"
+    cmds:
+      - go mod tidy
+      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
+
+  library-hot:
+    env:
+      ENV: dev
+      VITE_PORT: 5173
+    dir: packages/library
+    method: none
+    sources:
+      - "package.json"
+    cmds:
+      - pnpm i
+      - pnpm dev
+
+  serve-hot:
+    desc: Server hot reload
+    dir: backends/go
+    env:
+      ENV: dev
+    sources:
+      - "**/*.go"
+      - "**/*.md"
+    deps:
+      - build-backend
+    cmds:
+      - ./{{.BIN_NAME}}
+
   hot:
     desc: Server hot reload
     dir: backends/go
@@ -110,18 +145,13 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
-      - "{{.NAME}}/static/**/*"
     deps:
-      - library
       - kill
       - templ
+      - library-hot
+      - serve-hot
       # - inspector
       # - css
-
-    cmds:
-      - go mod tidy
-      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
-      - ./{{.BIN_NAME}}
 
   test:
     dir: packages/playwright
