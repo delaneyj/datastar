@@ -23,6 +23,9 @@ dev: --image-check
 image-build:
 	docker build -f Dockerfile-dev . -t ${IMAGE_NAME} --build-arg TAG=${TAG} --no-cache
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} -c 'git lfs fetch --all && git lfs pull && git lfs checkout'
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} -c 'task tools'
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} -c 'task library'
+	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} -c 'task build-backend'
 # Run the passed in task command
 task: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} -c 'task $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)'
