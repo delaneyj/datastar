@@ -24,6 +24,8 @@ RUN set -eux; \
     && \
     npm install -g \
         pnpm \
-        npm@^10.0.0
+        npm@^10.0.0 \
+    && \
+    go install github.com/a-h/templ/cmd/templ@latest
 
 ENTRYPOINT ["/bin/sh"]
