@@ -133,6 +133,7 @@ tasks:
       - "**/*.go"
       - "**/*.md"
     deps:
+      - library
       - build-backend
     cmds:
       - ./{{.BIN_NAME}}
@@ -145,6 +146,7 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
+      - "{{.NAME}}/static/**/*"
     deps:
       - kill
       - templ
