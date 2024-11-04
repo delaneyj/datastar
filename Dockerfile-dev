@@ -4,10 +4,6 @@ FROM golang:$TAG
 
 WORKDIR /app
 
-COPY Taskfile.yml go.mod *.go ./
-COPY packages/library/package.json ./packages/library/package.json
-ADD backends/go ./backends/go
-
 # Install packages
 RUN set -eux; \
     # Packages to install
@@ -30,8 +26,6 @@ RUN set -eux; \
         pnpm \
         npm@^10.0.0 \
     && \
-    task tools \
-    && \
-    task build-backend
+    go install github.com/a-h/templ/cmd/templ@latest
 
 ENTRYPOINT ["/bin/sh"]

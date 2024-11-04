@@ -108,6 +108,8 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
+    deps:
+      - templ
     cmds:
       - go mod tidy
       - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
@@ -127,6 +129,7 @@ tasks:
   serve-hot:
     desc: Server hot reload
     dir: backends/go
+    method: none
     env:
       ENV: dev
     sources:
@@ -145,6 +148,7 @@ tasks:
     sources:
       - "**/*.go"
       - "**/*.md"
+      - "{{.NAME}}/static/**/*"
     deps:
       - kill
       - templ
