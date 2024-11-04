@@ -129,13 +129,13 @@ tasks:
   serve-hot:
     desc: Server hot reload
     dir: backends/go
+    method: none
     env:
       ENV: dev
     sources:
       - "**/*.go"
       - "**/*.md"
     deps:
-      - library
       - build-backend
     cmds:
       - ./{{.BIN_NAME}}
