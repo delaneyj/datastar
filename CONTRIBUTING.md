@@ -18,4 +18,4 @@ Datastar’s documentation is under active development. All the markdown files l
 
 ## Pull Requests
 
-If you’re unsure about whether a pull request is within the scope of Datastar, please open an issue to discuss your idea first. Pull requests should have a descriptive title and clearly describe the problem and solution. If the pull request adds or changes behaviour, documentation should be updated accordingly.
+If you’re unsure about whether a pull request is within the scope of Datastar, please open an issue to discuss your idea first. Pull requests should have a descriptive title and clearly describe the problem and solution. If the pull request adds or changes behaviour, documentation and examples should be updated accordingly.
