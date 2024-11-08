@@ -14,6 +14,8 @@ These are the only plugins that are required in order to have a working system. 
 
 Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It then merges the contents into the store. This can be used anywhere as the store is a global singleton. All keys are converted into signals, works with nested objects.
 
+Note that `value` and `peek` are reserved words (imposed by the signals library) and cannot be used as store names.
+
 #### Modifiers
 
 - `.local` - Save the store to localStorage and load it on page refresh
