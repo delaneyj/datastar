@@ -387,7 +387,10 @@ func bundlePlugins(tmpDir string, manifest PluginManifest) (results *BundleResul
 	}
 
 	for _, file := range buildResult.OutputFiles {
-		relPath := strings.TrimPrefix(file.Path, distDir)
+		relPath, err := filepath.Rel(distDir, file.Path)
+		if err != nil {
+			return nil, fmt.Errorf("error getting relative path: %w", err)
+		}
 		w, err := zipWriter.Create(relPath)
 		if err != nil {
 			return nil, fmt.Errorf("error creating zip file: %w", err)
