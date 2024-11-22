@@ -1,7 +1,7 @@
 {
   "name": "@starfederation/datastar",
   "author": "Delaney Gillilan",
-  "description": "Hypermedia first SPA replacement framework",
+  "description": "A real-time hypermedia framework.",
   "version": "0.20.0",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
