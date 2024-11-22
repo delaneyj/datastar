@@ -1,4 +1,4 @@
-ARG TAG=1.23.1-alpine
+ARG TAG=1.23-alpine
 
 FROM golang:$TAG
 
@@ -8,24 +8,23 @@ WORKDIR /app
 RUN set -eux; \
     # Packages to install
     apk add --no-cache \
-        g++ \
-        go-task-task \
-        git \
-        git-lfs \
-        jq \
-        make \
-        nodejs \
-        npm \
-        python3 \
-        rsync \
+    g++ \
+    go-task-task \
+    git \
+    git-lfs \
+    jq \
+    make \
+    rsync \
     && \
     # Clean out directories that don't need to be part of the image
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && \
-    npm install -g \
-        pnpm \
-        npm@^10.0.0 \
+    # Install needed Go tooling
+    go install github.com/a-h/templ/cmd/templ@latest \
     && \
-    go install github.com/a-h/templ/cmd/templ@latest
+    go install github.com/valyala/quicktemplate/qtc@latest \
+    && \
+    # Make this a safe .git directory
+    git config --global --add safe.directory /app
 
 ENTRYPOINT ["/bin/sh"]

@@ -1,0 +1,13 @@
+{% func bundlerContent(manifest PluginManifest) %}
+
+import { Datastar } from "../engine";
+{%- for _, p := range manifest.Plugins -%}
+import { {%s p.Name %} } from "{%s p.Path %}";
+{%- endfor -%}
+
+Datastar.load(
+{%- for _, p := range manifest.Plugins -%}
+    {%s p.Name %},
+{%- endfor -%}
+);
+{% endfunc %}

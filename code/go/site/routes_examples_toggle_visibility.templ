@@ -1,0 +1,23 @@
+package site
+
+type ShowStore struct {
+	BindBool bool `json:"bindBool"`
+}
+
+templ ToggleVisibilityView(store *ShowStore) {
+	<div
+		id="container"
+		class="flex flex-col gap-4"
+		data-store={ templ.JSONString(store) }
+	>
+		<button
+			class="btn btn-primary"
+			data-on-click="$bindBool=!$bindBool"
+		>
+			Toggle
+		</button>
+		<div data-show="$bindBool">
+			Hello!
+		</div>
+	</div>
+}

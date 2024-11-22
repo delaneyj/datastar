@@ -1,0 +1,76 @@
+package site
+
+import (
+	"fmt"
+	"github.com/delaneyj/toolbelt"
+)
+
+type infiniteScrollStore struct {
+	Limit  int `json:"limit"`
+	Offset int `json:"offset"`
+}
+
+templ infiniteScrollMore(store *infiniteScrollStore) {
+	<div
+		id="loading_message"
+		class="alert alert-info"
+		data-intersects={ fmt.Sprintf(
+			"$offset=%d;$limit=%d;$get('/examples/infinite_scroll/data')",
+			store.Offset+store.Limit,
+			store.Limit,
+		) }
+	>
+		@icon("svg-spinners:blocks-wave")
+		Loading...
+	</div>
+}
+
+templ infiniteScrollAgent(i int) {
+	<tr id={ fmt.Sprintf("agent_%d", i) }>
+		<td>Agent Smith { fmt.Sprint(i) }</td>
+		<td>{ fmt.Sprintf("void%d@null.org", i+1) }</td>
+		<td class="uppercase">{ fmt.Sprintf("%x", toolbelt.AliasHash(fmt.Sprint(i))) }</td>
+	</tr>
+}
+
+templ infiniteScrollAgents(store *infiniteScrollStore) {
+	<div
+		id="infinite_scroll"
+		data-store={ templ.JSONString(store) }
+		class="flex flex-col gap-2"
+	>
+		<table class="table w-full table-zebra">
+			<caption>Agents</caption>
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Email</th>
+					<th>ID</th>
+				</tr>
+			</thead>
+			<tbody id="click_to_load_rows">
+				for i := 0; i < store.Limit; i++ {
+					@infiniteScrollAgent(store.Offset + i)
+				}
+			</tbody>
+		</table>
+		@infiniteScrollMore(store)
+	</div>
+}
+
+templ infiniteScrollRickroll() {
+	<div id="infinite_scroll">
+		That's enough scrolling for you today.
+		<iframe
+			id="infinite_scroll"
+			width="560"
+			height="315"
+			src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=Flaiw-OADzippqDg"
+			title="YouTube video player"
+			frameborder="0"
+			allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+			referrerpolicy="strict-origin-when-cross-origin"
+			allowfullscreen
+		></iframe>
+	</div>
+}

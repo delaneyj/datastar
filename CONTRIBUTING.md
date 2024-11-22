@@ -10,11 +10,11 @@ Anything outside of this scope may not be accepted. If you have a need for a fea
 
 ## Bug Reports & Feature Requests
 
-Before submitting bug reports and feature requests, please search the [open issues](https://github.com/delaneyj/datastar/issues) and the _#help_ channel in the [Discord server](https://discord.gg/bnRNgZjgPh) to see if it has already been addressed. When submitting a [new issue](https://github.com/delaneyj/datastar/issues/new), please use a descriptive title and include a clear description and as much relevant information as possible.
+Before submitting bug reports and feature requests, please search the [open issues](https://github.com/starfederation/datastar/issues) and the _#help_ channel in the [Discord server](https://discord.gg/bnRNgZjgPh) to see if it has already been addressed. When submitting a [new issue](https://github.com/starfederation/datastar/issues/new), please use a descriptive title and include a clear description and as much relevant information as possible.
 
 ## Documentation 
 
-Datastar’s documentation is under active development. All the markdown files live in [this folder](https://github.com/delaneyj/datastar/tree/main/backends/go/site/static/md). Improvements to them can be submitted via pull requests.
+Datastar’s documentation is under active development. All the markdown files live in [this folder](https://github.com/starfederation/datastar/tree/main/code/go/site/static/md). Improvements to them can be submitted via pull requests.
 
 ## Pull Requests
 

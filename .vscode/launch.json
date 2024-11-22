@@ -9,14 +9,23 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/backends/go/cmd/site/main.go"
+            "program": "${workspaceFolder}/code/go/cmd/site/main.go",
+            "preLaunchTask": "build datastar"
         },
         {
-            "name": "Go test example",
+            "name": "Smoke Test",
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceFolder}/backends/example/go/main.go"
+            "program": "${workspaceFolder}/code/go/cmd/sitesmoketests/main.go"
+        },
+        {
+            "name": "Build Library",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/code/go/cmd/tsbuild/main.go",
+            "cwd": "${workspaceFolder}"
         }
     ]
 }

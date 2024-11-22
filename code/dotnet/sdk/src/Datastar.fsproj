@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>Datastar</AssemblyName>
+        <Version>0.20.0</Version>
+        <RootNamespace>StarFederation.Datastar</RootNamespace>
+
+        <!-- General info -->
+        <Description>SDK for ServerSentEvents and convenience methods for Datastar</Description>
+        <Authors>Greg Holden and contributors</Authors>
+        <NeutralLanguage>en-CA</NeutralLanguage>
+
+        <!-- Build config -->
+        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <DebugType>embedded</DebugType>
+        <OutputType>Library</OutputType>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+        <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+
+        <!-- NuGet config -->
+        <PackageId>Datastar</PackageId>
+        <PackageTags>datastar;datastar-sharp;fsharp;functional;asp.net core;asp.net;.net core;routing;web;csharp</PackageTags>
+        <PackageProjectUrl>https://github.com/starfederation/datastar</PackageProjectUrl>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>datastar_icon.svg</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/starfederation/datastar</RepositoryUrl>
+
+        <!-- SourceLink settings -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <IncludeSymbols>true</IncludeSymbols>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Utility.fs" />
+        <Compile Include="Consts.fs" />
+        <Compile Include="ServerSentEvent.fs" />
+        <Compile Include="ServerSentEventGenerator.fs" />
+        <Compile Include="DependencyInjection\HttpServices.fs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="../../../go/site/static/images/datastar_icon.svg">
+            <Pack>true</Pack>
+            <PackagePath>$(PackageIconUrl)</PackagePath>
+        </None>
+        <None Include="../../README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
+
+</Project>

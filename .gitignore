@@ -1,8 +1,8 @@
-*debug_bin*
-node_modules
-
-site_bin
+tailwindcli
+datastar_site
+data
 .task
-*_templ.go
-*.png~
-test-results
+.idea
+node_modules
+datastar-website
+*_bin*

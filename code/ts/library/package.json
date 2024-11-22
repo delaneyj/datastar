@@ -1,0 +1,19 @@
+{
+  "name": "@starfederation/datastar",
+  "version": "0.20.0-beta-3",
+  "description": "A real-time hypermedia framework",
+  "main": "src/engine/index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starfederation/datastar.git"
+  },
+  "author": "Delaney Gillilan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/starfederation/datastar/issues"
+  },
+  "homepage": "https://github.com/starfederation/datastar#readme"
+}
