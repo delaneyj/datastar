@@ -1,5 +1,5 @@
-import { Computed } from "../plugins/official/attributes/core/computed";
 import { Star } from "../plugins/official/attributes/core/star";
+import { Computed } from "../plugins/official/attributes/core/computed";
 import { Store } from "../plugins/official/attributes/core/store";
 import { ActionsProcessor } from "../plugins/official/preprocessors/core/actions";
 import { SignalsProcessor } from "../plugins/official/preprocessors/core/signals";
