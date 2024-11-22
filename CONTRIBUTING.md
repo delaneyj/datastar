@@ -6,7 +6,7 @@ Thanks for thinking about contributing to Datastar 🚀
 
 Before you contribute, please consider that Datastar is a lightweight JavaScript framework that aims to simplify real-time, interactive web apps by using a minimalist, attribute-based approach for state management and event handling directly in HTML.
 
-Anything outside of this scope may not be accepted. If you have a need for a feature that is not within the scope of Datastar, consider using a Web Component or writing your own Datastar plugin [needs further explanation].
+Anything outside of this scope may not be accepted. If you have a need for a feature that is not within the scope of Datastar, consider using a Web Component or writing your own Datastar plugin.
 
 ## Bug Reports & Feature Requests
 
@@ -14,7 +14,7 @@ Before submitting bug reports and feature requests, please search the [open issu
 
 ## Documentation 
 
-Datastar’s documentation is under active development. All the markdown files live in [this folder](https://github.com/starfederation/datastar/tree/main/code/go/site/static/md). Improvements to them can be submitted via pull requests.
+Datastar’s documentation is under active development. All the markdown files live in [this folder](https://github.com/starfederation/datastar/tree/develop/code/go/site/static/md). Improvements to them can be submitted via pull requests.
 
 ## Pull Requests
 
