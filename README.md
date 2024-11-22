@@ -27,7 +27,11 @@ Join the [Discord Server »](https://discord.com/channels/1296224603642925098/12
 
 Read the [Getting Started Guide »](https://data-star.dev/guide/getting_started)
 
-### Custom Plugins
+## Contributing
+
+Read the [Contribution Guidelines »](CONTRIBUTING.md)
+
+## Custom Plugins
 
 You can manually add your own plugins to the core:
 
@@ -35,7 +39,7 @@ You can manually add your own plugins to the core:
 <script type="importmap">
 {
     "imports": {
-      "datastar": "https://cdn.jsdelivr.net/gh/starfederation/datastar/datastar/bundles/datastar-core.js"
+      "datastar": "https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar-core.js"
     }
 }
 </script>
@@ -47,7 +51,3 @@ Datastar.load(
 )
 </script>
 ```
-
-## Contributing
-
-Read the [Contribution Guidelines »](CONTRIBUTING.md)
