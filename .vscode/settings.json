@@ -6,5 +6,6 @@
         "-test.parallel",
         "4"
     ],
-    "editor.foldingStrategy": "indentation"
+    "editor.foldingStrategy": "indentation",
+    "makefile.configureOnOpen": false
 }

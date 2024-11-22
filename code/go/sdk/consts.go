@@ -8,7 +8,7 @@ const (
     DatastarKey = "datastar"
     Version                   = "0.20.0-beta-3"
     VersionClientByteSize     = 36058
-    VersionClientByteSizeGzip = 12673
+    VersionClientByteSizeGzip = 12671
 
     //region Default durations
 

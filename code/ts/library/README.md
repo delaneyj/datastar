@@ -27,6 +27,10 @@ Visit the [Datastar Website »](https://data-star.dev/)
 
 ## Getting Started
 
+### Installation
+
+#### CDN
+
 Include Datastar with a single 14 KiB file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs (available for Go, PHP, TypeScript and .NET) to get up and running even faster.
 
 ```html
@@ -35,7 +39,7 @@ Include Datastar with a single 14 KiB file and start adding reactivity to your f
 
 Read the [Getting Started Guide »](https://data-star.dev/guide/getting_started)
 
-## Custom Bundles
+#### Custom Bundles
 
 You can build a custom bundle using the [Bundler »](https://data-star.dev/bundler)
 
@@ -57,6 +61,14 @@ Datastar.load(
 )
 </script>
 ```
+
+#### NPM
+
+```bash
+npm install @starfederation/datastar
+```
+
+[!IMPORTANT] Only use the NPM package if you are using a bundler like Vite or it's part of a legacy project.
 
 ## Contributing
 

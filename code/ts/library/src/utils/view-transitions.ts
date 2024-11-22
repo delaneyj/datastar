@@ -1,10 +1,10 @@
 export interface DocumentSupportingViewTransitionAPI {
     startViewTransition(
         updateCallback: () => Promise<void> | void,
-    ): ViewTransition;
+    ): IViewTransition;
 }
 
-export interface ViewTransition {
+export interface IViewTransition {
     finished: Promise<void>;
     ready: Promise<void>;
     updateCallbackDone: Promise<void>;

@@ -14,18 +14,20 @@ export interface DatastarSSEEvent {
 export interface CustomEventMap {
     "datastar-sse": CustomEvent<DatastarSSEEvent>;
 }
-
-export type WatcherFn = (this: Document, ev: CustomEventMap[K]) => void;
+export type WatcherFn<K extends keyof CustomEventMap> = (
+    this: Document,
+    ev: CustomEventMap[K],
+) => void;
 
 declare global {
     interface Document { //adds definition to Document, but you can do the same with HTMLElement
         addEventListener<K extends keyof CustomEventMap>(
             type: K,
-            listener: WatcherFn,
+            listener: WatcherFn<K>,
         ): void;
         removeEventListener<K extends keyof CustomEventMap>(
             type: K,
-            listener: WatcherFn,
+            listener: WatcherFn<K>,
         ): void;
         dispatchEvent<K extends keyof CustomEventMap>(
             ev: CustomEventMap[K],
