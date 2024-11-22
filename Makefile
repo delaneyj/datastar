@@ -11,6 +11,10 @@ ARCH=$(shell uname -m)
 # Perform a dist build
 build: image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} build
+# Clean up all build artifacts to start from scratch
+clean:
+	docker image rm ${IMAGE_NAME}
+	docker volume rm go-modules
 # Run the development server
 dev: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} ${IMAGE_NAME} -c 'task -w'
