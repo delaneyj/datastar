@@ -6,7 +6,7 @@ IMAGE_NAME=${CONTAINER}:${TAG}
 DOCKER_RUN=docker container run --rm -it -v "${CURDIR}":/app -v go-modules:/go/pkg/mod
 ARCH=$(shell uname -m)
 
-.PHONY: build dev image-build image-check ssh
+.PHONY: build clean dev image-build task test ssh
 
 # Perform a dist build
 build: image-check
