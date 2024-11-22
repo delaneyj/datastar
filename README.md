@@ -29,7 +29,7 @@ Join the [Discord Server »](https://discord.com/channels/1296224603642925098/12
 
 #### CDN
 
-Include Datastar with a single ***12.35 KiB*** file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs ( currently available for Go/PHP ) to get up and running even faster.  Now your can learn one API and transfer your knowledge to any language!
+Include Datastar with a single ***12.35 KiB*** file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs (currently available for Go/PHP) to get up and running even faster.  Now your can learn one API and transfer your knowledge to any language!
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/datastar/bundles/datastar.js"></script>
