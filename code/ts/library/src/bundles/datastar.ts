@@ -1,5 +1,4 @@
 import { Datastar } from "../engine";
-import { RemoteSignals } from "../plugins/official/actions/backend/remote";
 import { DeleteSSE } from "../plugins/official/actions/backend/sseDelete";
 import { GetSSE } from "../plugins/official/actions/backend/sseGet";
 import { PatchSSE } from "../plugins/official/actions/backend/ssePatch";
@@ -47,7 +46,6 @@ Datastar.load(
     Show,
     ViewTransition,
     // actions
-    RemoteSignals,
     DeleteSSE,
     GetSSE,
     PatchSSE,
