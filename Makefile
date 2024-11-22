@@ -8,13 +8,13 @@ ARCH=$(shell uname -m)
 
 .PHONY: build dev image-build image-check ssh
 
-# Perform a dist build via npm run build
+# Perform a dist build
 build: image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ ${IMAGE_NAME} build
-# Run the development server via npm run dev
+# Run the development server
 dev: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} ${IMAGE_NAME} -c 'task -w'
-# Build the Docker image & run npm install
+# Build the Docker image
 image-build:
 	docker build -f Dockerfile-dev . -t ${IMAGE_NAME} --build-arg TAG=${TAG} --no-cache
 ifeq ($(ARCH),arm64)
@@ -25,6 +25,9 @@ endif
 # Run the passed in task command
 task: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} ${IMAGE_NAME} ${IMAGE_NAME} -c 'task $(filter-out $@,$(MAKECMDGOALS)) $(MAKEFLAGS)'
+# Run the test suite
+test: --image-check
+	${DOCKER_RUN} --name ${CONTAINER}-$@ -e DEV_PORT="${DEV_PORT}" -p ${DEV_PORT}:${DEV_PORT} ${IMAGE_NAME} -c 'task test'
 # Open a shell inside of the container
 ssh: --image-check
 	${DOCKER_RUN} --name ${CONTAINER}-$@ --entrypoint=/bin/sh ${IMAGE_NAME}
