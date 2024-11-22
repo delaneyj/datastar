@@ -31,9 +31,7 @@ If you prefer to host the file yourself, download your own bundle using the [bun
 ```
 
 ### Using NPM
-
-You can alternatively install Datastar via [npm](https://www.npmjs.com/package/@starfederation/datastar).
-
+You can alternatively install Datastar via [npm](https://www.npmjs.com/package/@starfederation/datastar).  We don't recommend this for most use-cases, as it requires a build step but it can be useful for legacy frontend projects.
 ```bash
 npm install @sudodevnull/datastar
 ```
@@ -57,6 +55,7 @@ This creates a new signal called `input`, and binds it to the element's value. I
 ### `data-text`
 
 To see this in action, we can use the [`data-text`](/reference/plugins_attributes#text) attribute.
+
 ```html
 <div data-text="$input">
     I will get replaced with the contents of the input signal
