@@ -1,0 +1,11 @@
+{
+    "go.testTimeout": "200s",
+    "go.coverOnSingleTestFile": true,
+    "go.coverOnSingleTest": true,
+    "go.testFlags": [
+        "-test.parallel",
+        "4"
+    ],
+    "editor.foldingStrategy": "indentation",
+    "makefile.configureOnOpen": false
+}

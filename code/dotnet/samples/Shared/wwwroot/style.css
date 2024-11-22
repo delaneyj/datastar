@@ -1,0 +1,76 @@
+
+/* https://getcssscan.com/css-buttons-examples */
+.button-69 {
+    background-color: initial;
+    background-image: linear-gradient(#8614f8 0, #760be0 100%);
+    border-radius: 5px;
+    border-style: none;
+    box-shadow: rgba(245, 244, 247, .25) 0 1px 1px inset;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-family: Inter, sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    height: 60px;
+    line-height: 60px;
+    margin-left: -4px;
+    outline: 0;
+    text-align: center;
+    transition: all .3s cubic-bezier(.05, .03, .35, 1);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: bottom;
+    width: 190px;
+}
+
+.button-69:hover {
+    opacity: .7;
+}
+
+@media screen and (max-width: 1000px) {
+    .button-69 {
+        font-size: 14px;
+        height: 55px;
+        line-height: 55px;
+        width: 150px;
+    }
+}
+
+.item1 { grid-area: header; }
+.item2 { grid-area: menu; }
+.item3 { grid-area: main; }
+.item4 { grid-area: right; }
+.item5 { grid-area: footer; }
+
+.grid-container {
+    display: grid;
+    grid-template-areas:
+            'header header header header header'
+            'menu main main right right';
+    gap: 10px;
+    padding: 10px;
+    background-image: linear-gradient(#8614f8 0, #760be0 100%);
+}
+
+.grid-container > div {
+    background-color: white;
+    text-align: center;
+    padding: 20px 0;
+    font-size: 20px;
+}
+
+.grid-container > div.item2 {
+    background-color: white;
+    text-align: center;
+    padding: 0px 0;
+    font-size: 20px;
+    word-wrap: normal;
+}
+.grid-container > div.item4 {
+    background-color: white;
+    text-align: left;
+    padding: 0 0 0 5px;
+    font-size: 20px;
+}

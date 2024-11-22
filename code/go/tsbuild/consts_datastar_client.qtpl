@@ -1,0 +1,84 @@
+{%- func datastarClientConsts(data *ConstTemplateData) -%}
+// {%s data.DoNotEdit %}
+
+export const DATASTAR = "{%s data.DatastarKey %}";
+export const DATASTAR_EVENT = "{%s data.DatastarKey %}-event";
+export const DATASTAR_REQUEST = "{%s data.DatastarKey %}-request";
+export const VERSION = "{%s data.Version %}";
+
+// #region Defaults
+
+// #region Default durations
+
+{%- for _, d := range data.DefaultDurations -%}
+// {%s= d.Description %}
+export const Default{%s d.Name.Pascal %}Ms = {%d durationToMs(d.Duration) %};
+{%- endfor -%}
+
+// #endregion
+
+
+// #region Default strings
+
+{%- for _, s := range data.DefaultStrings -%}
+// {%s= s.Description %}
+export const Default{%s s.Name.Pascal %} = "{%s s.Value %}";
+{%- endfor -%}
+
+// #endregion
+
+
+// #region Default booleans
+
+{%- for _, b := range data.DefaultBools -%}
+// {%s= b.Description %}
+export const Default{%s b.Name.Pascal %} = {%v b.Value %};
+
+{%- endfor -%}
+// #endregion
+
+
+// #region Enums
+
+{%- for _, enum := range data.Enums -%}
+// {%s= enum.Description %}
+export const {%s enum.Name.Pascal %}s = {
+{%- for _, entry := range enum.Values -%}
+    // {%s= entry.Description %}
+    {%s entry.Name.Pascal %}: "{%s entry.Value %}",
+{%- endfor -%}
+} as const;
+{%- if enum.Default != nil -%}
+
+// Default value for {%s enum.Name.Pascal %}
+export const Default{%s enum.Name.Pascal %} = {%s enum.Name.Pascal %}s.{%s enum.Default.Name.Pascal %};
+
+{%- endif -%}
+{%- endfor -%}
+// #endregion
+
+// #endregion
+{%- endfunc -%}
+
+{%- func datastarClientPackageJSON(data *ConstTemplateData) -%}
+{
+  "name": "@starfederation/datastar",
+  "author": "Delaney Gillilan",
+  "description": "Hypermedia first SPA replacement framework",
+  "version": "{%s data.Version %}",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starfederation/datastar.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/starfederation/datastar/issues"
+  },
+  "homepage": "https://data-star.dev"
+}
+{%- endfunc -%}

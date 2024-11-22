@@ -1,0 +1,26 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+h2 a,
+h3 a,
+h4 a,
+h5 a,
+h6 a {
+    @apply pl-2 no-underline hover:opacity-80 !important;
+    color: var(--tw-prose-headings) !important;
+    font-size: inherit !important;
+}
+
+pre code {
+    @apply text-base !important;
+}
+
+.output {
+    @apply input input-bordered bg-transparent flex flex-grow items-center max-w-64 overflow-hidden;
+}
+
+.pixelated {
+    image-rendering: pixelated;
+}
+

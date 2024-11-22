@@ -1,0 +1,43 @@
+name: Sync Monorepo
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Every hour
+  workflow_dispatch: {}
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current repository
+        uses: actions/checkout@v4
+
+      - name: Add monorepo remote
+        run: git remote add monorepo https://github.com/starfederation/datastar.git
+
+      - name: Fetch monorepo
+        run: git fetch monorepo
+
+      - name: Checkout `code/php/sdk` from `monorepo/main`
+        run: git checkout monorepo/main -- code/php/sdk
+
+      - name: Remove directories
+        run: |
+          rm -rf ./src
+          rm -rf ./tests
+
+      - name: Copy files and clean up
+        run: |
+          cp -rT code/php/sdk ./ || exit 1
+          rm -rf code/php/sdk
+
+      - name: Set up Git user
+        run: |
+          git config --global user.email "bencroker@users.noreply.github.com"
+          git config --global user.name "Ben Croker"
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Sync monorepo"
+          git push https://${{ secrets.PAT_TOKEN }}@github.com/starfederation/datastar-php.git main

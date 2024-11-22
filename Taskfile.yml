@@ -5,82 +5,77 @@ version: "3"
 interval: 100ms
 
 vars:
-  NAME: "site"
-  BIN_NAME: "{{.NAME}}_bin"
   VERSION:
-    sh: cat packages/library/package.json| jq -r .version
+    sh: cat VERSION
 
 tasks:
   tools:
     cmds:
       - go install github.com/go-task/task/v3/cmd/task@latest
       - go install github.com/a-h/templ/cmd/templ@latest
+      # Replace `linux-x64` with `macos-x64` or `macos-arm64` for macOS.
+      - test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
+      - chmod +x code/go/site/tailwindcli
+      - go install github.com/valyala/quicktemplate/qtc@latest
 
   version:
     cmds:
       - echo {{.VERSION}}
 
-  libpub:
-    dir: packages/library
+  qtc:
+    sources:
+      - "**/*.qtpl"
+    generates:
+      - "**/*.qtpl.go"
+    cmds:
+      - qtc
+
+  tsbuild:
     deps:
-      - library
+      - qtc
+    sources:
+      - VERSION
+      - "**/*.qtpl"
+      - "**/package.json"
+      - "**/*.ts"
+    generates:
+      - "bundles/**/*"
+    cmds:
+      - go run code/go/cmd/tsbuild/main.go
+      - cp -r bundles/* code/go/site/static/js/
+      - mkdir -p code/ts/library/dist/
+      - cp -r bundles/* code/ts/library/dist/
+      - mkdir -p code/go/site/static/librarySource
+      - rm -rf code/go/site/static/librarySource/*
+      - cp -r code/ts/library/src/* code/go/site/static/librarySource/
+
+  libpub:
+    dir: code/ts/library
+    requires:
+      vars: [VERSION]
+    deps:
+      - tsbuild
     cmds:
       - git push origin
       - git tag v{{.VERSION}}
       - git push origin --tags
+      - pnpm build
       - npm publish --access public
       - git push --tags
-      - GOPROXY=proxy.golang.org go list -m github.com/delaneyj/datastar@v{{.VERSION}}
-      - task: deploy
-
-  library:
-    vars:
-      BACKEND_STATIC_DIR: "../../backends/go/{{.NAME}}/static/library"
-    dir: packages/library
-    generates:
-      - "dist/**/*"
-    sources:
-      - "src/**/*.ts"
-      - "package.json"
-    cmds:
-      # - echo "{{.BACKEND_STATIC_DIR}}"
-      - pnpm i
-      # - pnpm vitest --watch=false
-      - pnpm prettier -w .
-      - pnpm build
-      - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
-      - rsync -av package.json {{.BACKEND_STATIC_DIR}}
-
-  inspector:
-    library:
-    vars:
-      BACKEND_STATIC_DIR: "../../backends/go/{{.NAME}}/static/inspector"
-    dir: packages/inspector
-    generates:
-      - "dist/**/*"
-    sources:
-      - "src/**/*.ts"
-      - "package.json"
-    cmds:
-      # - echo "{{.BACKEND_STATIC_DIR}}"
-      - pnpm i
-      # - pnpm vitest --watch=false
-      - pnpm prettier -w . --log-level silent
-      - pnpm build
-      - rsync -av dist/ {{.BACKEND_STATIC_DIR}}
-      - rsync -av package.json {{.BACKEND_STATIC_DIR}}
+      - GOPROXY=proxy.golang.org go list -m github.com/starfederation/datastar@v{{.VERSION}}
+      # - task: deploy
 
   css:
-    dir: backends/go/site/css
-    generates:
-      - "../static/css/site.css"
+    dir: code/go/site
     sources:
-      - "../**/*.md"
-      # - "../**/*.go"
-      - "../**/*.templ"
+      - "**/*.templ"
+      - "**/*.md"
+      - "**/*.go"
+    generates:
+      - "static/css/site.css"
+
     cmds:
-      - pnpm i
-      - pnpm tailwindcss build -o ../static/css/site.css -w
+      - ./tailwindcli build -i src/css/site.css -o static/css/site.css
 
   templ:
     env:
@@ -93,87 +88,47 @@ tasks:
       - templ generate .
 
   kill:
-    cmds:
-      - killall -q {{.BIN_NAME}}  || echo "Process was not running."
-
-  tests:
-    dir: playwright
-    cmds:
-      - pnpm i
-      - pnpm playwright
-
-  build-backend:
-    desc: Build the backend
-    dir: backends/go
-    sources:
-      - "**/*.go"
-      - "**/*.md"
-    deps:
-      - templ
-    cmds:
-      - go mod tidy
-      - go build -o ./{{.BIN_NAME}} cmd/{{.NAME}}/main.go
-
-  library-hot:
-    env:
-      ENV: dev
-      VITE_PORT: 5173
-    dir: packages/library
     method: none
-    sources:
-      - "package.json"
     cmds:
-      - pnpm i
-      - pnpm dev
+      - fuser -k 8080/tcp > /dev/null 2>&1 || true
 
-  serve-hot:
-    desc: Server hot reload
-    dir: backends/go
-    method: none
-    env:
-      ENV: dev
+  support:
     sources:
-      - "**/*.go"
-      - "**/*.md"
-    deps:
-      - build-backend
-    cmds:
-      - ./{{.BIN_NAME}}
-
-  hot:
-    desc: Server hot reload
-    dir: backends/go
-    env:
-      ENV: dev
-    sources:
-      - "**/*.go"
-      - "**/*.md"
-      - "{{.NAME}}/static/**/*"
+      - code/go/**/*.templ
+      - code/go/**/*.go
+      - code/go/**/*.md
+      - code/go/site/static/**/*
+    generates:
+      - ./datastar-website
     deps:
       - kill
+      - tsbuild
       - templ
-      - library-hot
-      - serve-hot
-      # - inspector
-      # - css
+      - css
 
-  test:
-    dir: packages/playwright
+  site:
+    method: none
+    desc: build and run site
+    deps:
+      - support
     cmds:
-      - curl -o - -I http://localhost:8080
-      - pnpm i
-      - pnpm playwright install
-      - pnpm playwright test --ui
+      - go mod tidy
+      - go build -o ./datastar-website code/go/cmd/site/main.go
 
   deploy:
+    method: none
     deps:
-      - library
     cmds:
-      - task: inspector
-      - task: library
       - fly deploy --local-only
 
-  default:
+  test:
+    dir: code/go/site/smoketests
     deps:
-      - hot
-    silent: true
+      - support
+    cmds:
+      - go test -v
+
+  default:
+    cmds:
+      - task: site
+      - ./datastar-website
