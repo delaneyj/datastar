@@ -19,29 +19,17 @@ Here’s what frontend reactivity looks like using Datastar:
 <button data-on-click="$post('/endpoint')">Save</button>
 ```
 
-Visit the [Datastar Website »](https://data-star.dev/)  
+Visit the [Datastar Website »](https://data-star.dev/)
 
 Join the [Discord Server »](https://discord.com/channels/1296224603642925098/1296224603642925102)
 
 ## Getting Started
 
-### Installation
-
-#### CDN
-
-Include Datastar with a single ***12.35 KiB*** file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs (currently available for Go/PHP) to get up and running even faster.  Now your can learn one API and transfer your knowledge to any language!
-
-```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/datastar/bundles/datastar.js"></script>
-```
-
 Read the [Getting Started Guide »](https://data-star.dev/guide/getting_started)
 
-#### Custom Bundles
+### Custom Plugins
 
-You can build a custom bundle using the [Bundler »](https://data-star.dev/bundler)
-
-Or manually add your own plugins to the core:
+You can manually add your own plugins to the core:
 
 ```html
 <script type="importmap">
@@ -60,19 +48,6 @@ Datastar.load(
 </script>
 ```
 
-#### NPM
-
-```bash
-npm install @starfederation/datastar
-```
-
-> [!IMPORTANT] 
-> Only use the NPM package if you are using a bundler like Vite or if it’s part of a legacy project.
-
 ## Contributing
 
 Read the [Contribution Guidelines »](CONTRIBUTING.md)
-
-## Development
-
-Read the [Development Guidelines »](DEVELOPMENT.md)
