@@ -2,32 +2,64 @@
 
 Real-time Hypermedia first Library and Framework for dotnet
 
-# HTML Setup
+# HTML Frontend
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
+<html lang="en">
+<head>
+    <script type="module" defer src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
+    <title>D* Demo</title>
+</head>
+<body>
+<main class="container" id="main" data-signals="{'input':'','output':''}">
+    <button data-on-click="$get('/displayDate')">Display Date</button>
+    <div id="target"></div>
+    <input type="text" placeholder="input:" data-model="input"/><br>
+    <span data-model="output"></span>
+    <button data-on-click="$post('/changeOutput')">Change Output</button>
+</main>
+</body>
+</html>
 ```
 
-# C# Usage
+# C# Backend
 ```csharp
 using StarFederation.Datastar;
 using StarFederation.Datastar.DependencyInjection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 ...
+// define your signals store
+public record DatastarSignalsStore : IDatastarSignalsStore
+{
+    [JsonPropertyName("input")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Input { get; init; } = null;
 
+    [JsonPropertyName("output")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Output { get; init; } = null;
+
+    public string Serialize() => JsonSerializer.Serialize(this);
+}
+...
 // add as an ASP Service
 //  allows injection of IServerSentEventGenerator, to respond to a request with a Datastar friendly ServerSentEvent
-//                  and IDatastarStore, to read what is in the data-store of the client
-builder.Services.AddDatastarGenerator<DataStore>();  // DataStore is a POCO with the IDatastarStore identifier interface
+//                  and IDatastarSignalsStore, to read what is in the data-signals of the client
+builder.Services.AddDatastarGenerator<DatastarSignalsStore>();
 ...
+// add endpoints
+app.UseStaticFiles();
 
-// add as an endpoint
-app.MapGet("/get", async (IServerSentEventGenerator sse, IDatastarStore dsStore) =>
+app.MapGet("/displayDate", async (IServerSentEventGenerator sse) =>
 {
-    // read back the DataStore
-    DataStore store = (dsStore as DataStore) ?? throw new InvalidCastException("Unknown Datastore passed");
-    DataStore newDataStore = store with { Output = $"Your Input: {store.Input}" };
-    await sse.MergeFragments(
-        $"<main class='container' id='main' data-store='{newDataStore.SerializeToJson()}'></main>",
-        new MergeFragmentOpts() { MergeMode = FragmentMergeMode.UpsertAttributes }
-        );
+    string today = DateTime.Now.ToString("%y-%M-%d %h:%m:%s");
+    await sse.MergeFragments($"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="$get('/removeDate')">Remove</button></span></div>""");
+});
+app.MapGet("/removeDate", async (IServerSentEventGenerator sse) => { await sse.RemoveFragments("#date"); });
+app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignalsStore dsStore) =>
+{
+    DatastarSignalsStore signalStore = (dsStore as DatastarSignalsStore) ?? throw new InvalidCastException("Unknown IDatastarSignalsStore passed");
+    DatastarSignalsStore newSignalsStore = new() { Output = $"Your Input: {signalStore.Input}" };
+    await sse.MergeSignals(newSignalsStore);
 });
 ```

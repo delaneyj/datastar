@@ -11,7 +11,12 @@ let unionCaseFromString<'a> (str:string) args =
 let lowerFirstCharacter item =
     String.Concat(Char.ToLowerInvariant($"%A{item}"[0]), $"%A{item}".Substring(1))
 
-let inline toLower item = item.ToString().ToLower()
+let splitLine (line:string) = line.Split( [| "\r\n"; "\n"; "\r" |], StringSplitOptions.None)
+
+let tryDeserialize<'T> (deserializer:string -> 'T) (str:string) =
+    try
+        Ok (deserializer str)
+    with ex -> Error ex
 
 module ValueOption =
     let inline fromNullable thing =
