@@ -37,7 +37,7 @@ type EventType =
 
 module Consts =
     let [<Literal>] DatastarKey               = "datastar"
-    let [<Literal>] Version                   = "0.20.0-beta4"
+    let [<Literal>] Version                   = "0.20.0-beta5"
     let [<Literal>] VersionClientByteSize     = 35976
     let [<Literal>] VersionClientByteSizeGzip = 12652
 

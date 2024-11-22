@@ -10,7 +10,7 @@ use starfederation\datastar\enums\FragmentMergeMode;
 class Consts
 {
     public const DATASTAR_KEY = 'datastar';
-    public const VERSION = '0.20.0-beta4';
+    public const VERSION = '0.20.0-beta5';
     public const VERSION_CLIENT_BYTE_SIZE = 35976;
     public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12652;
 

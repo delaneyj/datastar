@@ -128,6 +128,7 @@ func writeOutConsts(version string) error {
 
 	templates := map[string]func(data *ConstTemplateData) string{
 		"README.md":                                    datastarREADME,
+		"code/ts/library/README.md":                    datastarREADME,
 		"code/ts/library/src/engine/consts.ts":         datastarClientConsts,
 		"code/ts/library/package.json":                 datastarClientPackageJSON,
 		"code/go/sdk/consts.go":                        goConsts,
