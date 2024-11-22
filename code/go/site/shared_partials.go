@@ -174,7 +174,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 					continue
 				}
 
-				ext := filepath.Ext(name)[1:] // remove the dot
+				ext := strings.TrimSuffix(filepath.Ext(name), "snippet")[1:] // remove the dot
 
 				codeSnippetRaw, err := staticFS.ReadFile(fileFullPath)
 				if err != nil {
@@ -189,9 +189,20 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 					return nil, nil, fmt.Errorf("error highlighting code snippet %s: %w", fileFullPath, err)
 				}
 
+				icon := ""
+				for _, lang := range tsbuild.Consts.SDKLanguages {
+					if lang.FileExtension == ext {
+						icon = lang.Icon
+						break
+					}
+				}
+				if icon == "" {
+					icon = "vscode-icons:file-type-text"
+				}
+
 				snippet := CodeSnippet{
 					Extension:          ext,
-					Icon:               tsbuild.SDKIcons[ext],
+					Icon:               icon,
 					Content:            codeSnippet,
 					ContentHighlighted: buf.String(),
 				}

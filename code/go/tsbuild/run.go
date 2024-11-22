@@ -88,13 +88,13 @@ func createBundles() error {
 func writeOutConsts(version string) error {
 	log.Print("Extracting version...")
 
-	ConstsData.Version = version
+	Consts.Version = version
 
 	build, err := os.ReadFile("bundles/datastar.js")
 	if err != nil {
 		return fmt.Errorf("error reading datastar.js: %w", err)
 	}
-	ConstsData.VersionClientByteSize = len(build)
+	Consts.VersionClientByteSize = len(build)
 
 	buf := bytebufferpool.Get()
 	defer bytebufferpool.Put(buf)
@@ -107,11 +107,11 @@ func writeOutConsts(version string) error {
 		panic(err)
 	}
 	w.Close()
-	ConstsData.VersionClientByteSizeGzip = buf.Len()
+	Consts.VersionClientByteSizeGzip = buf.Len()
 
 	var zeroCased toolbelt.CasedString
 	// Make sure all enums are set up.
-	for _, enum := range ConstsData.Enums {
+	for _, enum := range Consts.Enums {
 		for _, value := range enum.Values {
 			if value.Name == zeroCased {
 				value.Name = toolbelt.ToCasedString(value.Value)
@@ -122,15 +122,7 @@ func writeOutConsts(version string) error {
 		}
 	}
 
-	ConstsData.SDKLanguages = make([]Language, len(SDKsAvailable))
-	for i, sdk := range SDKsAvailable {
-		ConstsData.SDKLanguages[i] = Language{
-			FileExtension: sdk,
-			Name:          SDKLanguageNames[sdk],
-			Icon:          SDKIcons[sdk],
-		}
-	}
-	slices.SortFunc(ConstsData.SDKLanguages, func(a, b Language) int {
+	slices.SortFunc(Consts.SDKLanguages, func(a, b Language) int {
 		return strings.Compare(a.Name, b.Name)
 	})
 
@@ -147,7 +139,7 @@ func writeOutConsts(version string) error {
 
 	for path, tmplFn := range templates {
 		log.Printf("Writing %s...", path)
-		contents := strings.TrimSpace(tmplFn(ConstsData))
+		contents := strings.TrimSpace(tmplFn(Consts))
 		if err := os.WriteFile(path, []byte(contents), 0644); err != nil {
 			return fmt.Errorf("error writing version file: %w", err)
 		}

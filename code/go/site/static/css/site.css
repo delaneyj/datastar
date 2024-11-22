@@ -4753,10 +4753,6 @@ html:has(.drawer-toggle:checked) {
   width: 8rem;
 }
 
-.w-64 {
-  width: 16rem;
-}
-
 .w-80 {
   width: 20rem;
 }

@@ -273,7 +273,9 @@ See if you can follow the code below _before_ trying the demo.
         You answered “<span data-text="$response"></span>”.
         <span data-show="$correct">That is correct ✅</span>
         <span data-show="!$correct">
-            The correct answer is “<span data-text="$answer"></span>” 🤷
+            The correct answer is “
+                <span data-text="$answer"></span>
+            ” 🤷
         </span>
     </div>
 </div>
