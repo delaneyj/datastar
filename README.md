@@ -7,8 +7,6 @@
 
 # Datastar
 
-[https://data-star.dev](https://data-star.dev)
-
 ### A real-time hypermedia framework.
 
 Datastar helps you build real-time web applications with the simplicity of server-side rendering and the power of a full-stack SPA framework.
@@ -20,8 +18,10 @@ Here’s what frontend reactivity looks like using Datastar:
 <div data-text="$input.toUpperCase()"></div>
 <button data-on-click="$post('/endpoint')">Save</button>
 ```
-https://discord.com/channels/1296224603642925098/1296224603642925102
-Visit the [Datastar Website »](https://data-star.dev/)
+
+Visit the [Datastar Website »](https://data-star.dev/)  
+
+Join the [Discord Server »](https://discord.com/channels/1296224603642925098/1296224603642925102)
 
 ## Getting Started
 
@@ -66,7 +66,8 @@ Datastar.load(
 npm install @starfederation/datastar
 ```
 
-[!IMPORTANT] Only use the NPM package if you are using a bundler like Vite or it's part of a legacy project.
+> [!IMPORTANT] 
+> Only use the NPM package if you are using a bundler like Vite or if it’s part of a legacy project.
 
 ## Contributing
 
