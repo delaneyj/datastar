@@ -79,6 +79,9 @@ export const Default{%s enum.Name.Pascal %} = {%s enum.Name.Pascal %}s.{%s enum.
   "bugs": {
     "url": "https://github.com/starfederation/datastar/issues"
   },
-  "homepage": "https://data-star.dev"
+  "homepage": "https://data-star.dev",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
 }
 {%- endfunc -%}

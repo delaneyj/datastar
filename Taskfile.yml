@@ -59,6 +59,7 @@ tasks:
       - git push origin
       - git tag v{{.VERSION}}
       - git push origin --tags
+      - pnpm i
       - pnpm build
       - npm publish --access public
       - git push --tags

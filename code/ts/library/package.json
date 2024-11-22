@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/starfederation/datastar/issues"
   },
-  "homepage": "https://data-star.dev"
+  "homepage": "https://data-star.dev",
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
 }
