@@ -21,22 +21,6 @@ templ Page() {
 			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet"/>
 			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 			<script type="module" src={ staticPath("js/datastar.js") }></script>
-			<script defer>
-// console.log(`Hot reload initializing @ ${hotReloadPath}`)
-const hotReloadPath = `/hotreload`
-if (typeof(EventSource) !== "undefined") {
-	const es = new EventSource(hotReloadPath);
-	es.onmessage = function(event) {
-		location.reload();
-	}
-	es.onerror = function(err) {
-		console.log("lost connection to server, reloading");
-		setTimeout(() => {
-		location.reload();
-		}, 500);
-	};
-}
-			</script>
 			<style>
 .indicator {
 	opacity:0;

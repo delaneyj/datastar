@@ -16,7 +16,6 @@ import (
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/gorilla/sessions"
 	natsserver "github.com/nats-io/nats-server/v2/server"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
 //go:embed static/*
@@ -63,10 +62,6 @@ func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 
 func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, err error) {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
-	defer router.Get("/hotreload", func(w http.ResponseWriter, r *http.Request) {
-		datastar.NewSSE(w, r)
-		<-r.Context().Done()
-	})
 
 	natsPort, err := toolbelt.FreePort()
 	if err != nil {
