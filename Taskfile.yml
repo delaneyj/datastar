@@ -6,7 +6,7 @@ interval: 100ms
 
 vars:
   VERSION:
-    sh: cat code/ts/library/package.json | jq -r .version
+    sh: cat VERSION
 
 tasks:
   tools:

@@ -1,4 +1,4 @@
-{%- func datastarClienConsts(data *ConstTemplateData) -%}
+{%- func datastarClientConsts(data *ConstTemplateData) -%}
 // {%s data.DoNotEdit %}
 
 export const DATASTAR = "{%s data.DatastarKey %}";
@@ -58,4 +58,27 @@ export const Default{%s enum.Name.Pascal %} = {%s enum.Name.Pascal %}s.{%s enum.
 // #endregion
 
 // #endregion
+{%- endfunc -%}
+
+{%- func datastarClientPackageJSON(data *ConstTemplateData) -%}
+{
+  "name": "@starfederation/datastar",
+  "author": "Delaney Gillilan",
+  "description": "Hypermedia first SPA replacement framework",
+  "version": "{%s data.Version %}",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starfederation/datastar.git"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/starfederation/datastar/issues"
+  },
+  "homepage": "https://data-star.dev"
+}
 {%- endfunc -%}

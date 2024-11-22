@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"slices"
 	"strings"
 	"time"
 
 	"github.com/delaneyj/toolbelt"
 	"github.com/evanw/esbuild/pkg/api"
-	"github.com/goccy/go-json"
 	"github.com/valyala/bytebufferpool"
 )
 
@@ -33,26 +33,18 @@ func Build() error {
 }
 
 func extractVersion() (string, error) {
-	packageJSONPath := "code/ts/library/package.json"
-	packageJSON, err := os.ReadFile(packageJSONPath)
+	versionFilepath := "VERSION"
+	versionBytes, err := os.ReadFile(versionFilepath)
 	if err != nil {
 		return "", fmt.Errorf("error reading package.json: %w", err)
 	}
 
-	type PackageJSON struct {
-		Version string `json:"version"`
-	}
-	pj := &PackageJSON{}
-	if err := json.Unmarshal(packageJSON, pj); err != nil {
-		return "", fmt.Errorf("error unmarshalling package.json: %w", err)
-	}
-
-	version := pj.Version
+	version := strings.TrimSpace(string(versionBytes))
 
 	// Write out the version to the version file.
 	versionPath := "code/ts/library/src/engine/version.ts"
-	versionContens := fmt.Sprintf("export const VERSION = '%s';\n", version)
-	if err := os.WriteFile(versionPath, []byte(versionContens), 0644); err != nil {
+	versionContents := fmt.Sprintf("export const VERSION = '%s';\n", version)
+	if err := os.WriteFile(versionPath, []byte(versionContents), 0644); err != nil {
 		return "", fmt.Errorf("error writing version file: %w", err)
 	}
 
@@ -130,8 +122,22 @@ func writeOutConsts(version string) error {
 		}
 	}
 
+	ConstsData.SDKLanguages = make([]Language, len(SDKsAvailable))
+	for i, sdk := range SDKsAvailable {
+		ConstsData.SDKLanguages[i] = Language{
+			FileExtension: sdk,
+			Name:          SDKLanguageNames[sdk],
+			Icon:          SDKIcons[sdk],
+		}
+	}
+	slices.SortFunc(ConstsData.SDKLanguages, func(a, b Language) int {
+		return strings.Compare(a.Name, b.Name)
+	})
+
 	templates := map[string]func(data *ConstTemplateData) string{
-		"code/ts/library/src/engine/consts.ts":         datastarClienConsts,
+		"README.md":                                    datastarREADME,
+		"code/ts/library/src/engine/consts.ts":         datastarClientConsts,
+		"code/ts/library/package.json":                 datastarClientPackageJSON,
 		"code/go/sdk/consts.go":                        goConsts,
 		"code/dotnet/sdk/src/Consts.fs":                dotnetConsts,
 		"code/php/sdk/src/Consts.php":                  phpConsts,

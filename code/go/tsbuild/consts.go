@@ -6,6 +6,25 @@ import (
 	"github.com/delaneyj/toolbelt"
 )
 
+var (
+	SDKIcons = map[string]string{
+		"go": "vscode-icons:file-type-go-gopher",
+		// "fs":      "vscode-icons:file-type-fsharp",
+		// "cs":      "vscode-icons:file-type-csharp2",
+		"php": "vscode-icons:file-type-php2",
+		// "ts":  "vscode-icons:file-type-typescript-official",
+		// "js":      "vscode-icons:file-type-js-official",
+		// "haskell": "vscode-icons:file-type-haskell",
+		// "java":    "vscode-icons:file-type-java",
+	}
+	SDKLanguageNames = map[string]string{
+		"go":  "Go",
+		"php": "PHP",
+		// "ts":  "TypeScript",
+	}
+	SDKsAvailable = []string{"go", "php"}
+)
+
 type EnumValueDefinition struct {
 	Name        toolbelt.CasedString
 	Description string
@@ -38,6 +57,12 @@ type DefaultString struct {
 	Value       string
 }
 
+type Language struct {
+	FileExtension string
+	Name          string
+	Icon          string
+}
+
 type ConstTemplateData struct {
 	DoNotEdit                 string
 	Version                   string
@@ -49,6 +74,7 @@ type ConstTemplateData struct {
 	DefaultDurations          []*DefaultDuration
 	DefaultStrings            []*DefaultString
 	Enums                     []*EnumDefinition
+	SDKLanguages              []Language
 }
 
 var ConstsData = &ConstTemplateData{

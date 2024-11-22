@@ -24,6 +24,7 @@ import (
 	mdhtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
 	datastar "github.com/starfederation/datastar/code/go/sdk"
+	"github.com/starfederation/datastar/code/go/tsbuild"
 	"github.com/valyala/bytebufferpool"
 )
 
@@ -44,23 +45,6 @@ type CodeSnippetBlock struct {
 	BasePath toolbelt.CasedString
 	Snippets []CodeSnippet
 }
-
-var sdkIcons = map[string]string{
-	"go": "vscode-icons:file-type-go-gopher",
-	// "fs":      "vscode-icons:file-type-fsharp",
-	// "cs":      "vscode-icons:file-type-csharp2",
-	"php": "vscode-icons:file-type-php2",
-	"ts":  "vscode-icons:file-type-typescript-official",
-	// "js":      "vscode-icons:file-type-js-official",
-	// "haskell": "vscode-icons:file-type-haskell",
-	// "java":    "vscode-icons:file-type-java",
-}
-var sdkLanguageNames = map[string]string{
-	"go":  "Go",
-	"php": "PHP",
-	"ts":  "TypeScript",
-}
-var sdksAvailable = []string{"go", "php", "ts"}
 
 func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRenderers map[string]string, mdAnchors map[string][]string, err error) {
 	if mdRenderer == nil {
@@ -207,7 +191,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 
 				snippet := CodeSnippet{
 					Extension:          ext,
-					Icon:               sdkIcons[ext],
+					Icon:               tsbuild.SDKIcons[ext],
 					Content:            codeSnippet,
 					ContentHighlighted: buf.String(),
 				}

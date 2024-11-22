@@ -1,3 +1,12 @@
+{% import "strings" %}
+
+{%- func datastarREADME(data *ConstTemplateData) -%}
+{% code
+ languageNames := make([]string, len(data.SDKLanguages))
+ for i, l := range data.SDKLanguages {
+     languageNames[i] = l.Name
+ }
+%}
 ![Version](https://img.shields.io/npm/v/@starfederation/datastar)
 ![npm bundle size](https://img.shields.io/bundlephobia/minzip/%40starfederation%2Fdatastar)
 ![GitHub](https://img.shields.io/github/license/starfederation/datastar)
@@ -29,7 +38,7 @@ Visit the [Datastar Website »](https://data-star.dev/)
 
 #### CDN
 
-Include Datastar with a single ***12.37 KiB*** file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs ( currently available for Go/PHP ) to get up and running even faster.  Now your can learn one API and transfer your knowledge to any language!
+Include Datastar with a single ***{%f.2 float64(data.VersionClientByteSizeGzip) / 1024.0  %} KiB*** file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice, and use the helper SDKs ( currently available for {%s strings.Join(languageNames, "/")%} ) to get up and running even faster.  Now your can learn one API and transfer your knowledge to any language!
 
 ```html
 <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/datastar/bundles/datastar.js"></script>
@@ -41,7 +50,7 @@ Read the [Getting Started Guide »](https://data-star.dev/guide/getting_started)
 
 You can build a custom bundle using the [Bundler »](https://data-star.dev/bundler)
 
-Or manually add your own plugins to the core and have total flexibility:
+Or manually add your own plugins to the core:
 
 ```html
 <script type="importmap">
@@ -75,3 +84,5 @@ Read the [Contribution Guidelines »](CONTRIBUTING.md)
 ## Development
 
 Read the [Development Guidelines »](DEVELOPMENT.md)
+
+{%- endfunc -%}
