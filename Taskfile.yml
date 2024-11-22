@@ -62,9 +62,9 @@ tasks:
       - pnpm i
       - pnpm build
       - npm publish --access public
-      - git push --tags
+      - curl https://purge.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js
       - GOPROXY=proxy.golang.org go list -m github.com/starfederation/datastar@v{{.VERSION}}
-      # - task: deploy
+      - task: deploy
 
   css:
     dir: code/go/site
