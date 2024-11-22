@@ -1,6 +1,6 @@
-# Datastar Docker Development
+# Building Datastar using Docker
 
-Datastar comes with a development environment for developing [Datastar](https://github.com/delaneyj/datastar) via a Docker container.
+Datastar comes with a development environment for developing Datastar via a Docker container.
 
 It takes care of the setup listed in the for you in a Dockerized environment, which allows you to get it up and running quickly & easily.
 

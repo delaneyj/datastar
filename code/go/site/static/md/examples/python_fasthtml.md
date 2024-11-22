@@ -74,7 +74,7 @@ def page(store):
         Meta(charset="UTF-8"),
         Meta(name="viewport", content="width=device-width, initial-scale=1.0"),
         Link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"),
-        Script(type="module", src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar")
+        Script(type="module", src="https://cdn.jsdelivr.net/npm/@starfederation/datastar")
       ),
     Body(
         page_header(),

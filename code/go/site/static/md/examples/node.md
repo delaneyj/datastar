@@ -16,7 +16,7 @@ function indexPage() {
     <!doctype html><html>
       <head>
         <title>Node/Express + Datastar Example</title>
-        <script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script></head>
+        <script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script></head>
       <body>
         <h2>Node/Express + Datastar Example</h2>
         <main class="container" id="main" data-store='{ input: "", show: false }'>

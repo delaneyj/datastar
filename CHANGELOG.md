@@ -1,6 +1,6 @@
 # Release Notes for Datastar
 
-## 0.20.0 - Unreleased
+## 0.20.0 - 2024-11-22
 
 > [!WARNING]
 > This update contains breaking changes to attributes, actions and SSE events.
@@ -39,6 +39,7 @@
 - Removed the `data-teleport` attribute. 
 - Removed the `data-header` attribute.  Use the `headers` option in SSE actions instead.
 - Removed the `$$isFetching` action and the `data-fetch-indicator` attribute. Use `data-indicator` instead.
+- Removed the `$$remote` action.
 - Removed the `datastar-delete` SSE event. Use the new `datastar-remove-fragments` and `datastar-remove-signals` SSE events instead.
 - Removed the `datastar-redirect` and `datastar-console` SSE events. Use the new `datastar-execute-script` SSE event instead.
 - Removed `sendDatastarEvent` from ctx.  We have to rethink how to expose events for a better try at the inspector.

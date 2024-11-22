@@ -132,7 +132,7 @@ So with this change and in a declarative nature you'd be able to extend HTML and
 Our HTML looks pretty neat but what would it take to make it actually work? Well just add:
 
 ```html
-<script type="module" defer src="https://cdn.jsdelivr.net/npm/@sudodevnull/datastar"></script>
+<script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script>
 ```
 
 somewhere on your page and it should **_just work_**. If you look at the dev tools of your browser you'll also see its tiny compared to any other full framework, and we haven't scratched the surface of what's included.
