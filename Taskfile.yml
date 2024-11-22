@@ -114,12 +114,10 @@ tasks:
     cmds:
       - go mod tidy
       - go build -o ./datastar-website code/go/cmd/site/main.go
-      - ./datastar-website
 
   deploy:
     method: none
     deps:
-      - site
     cmds:
       - fly deploy --local-only
 
@@ -133,3 +131,4 @@ tasks:
   default:
     cmds:
       - task: site
+      - ./datastar-website
