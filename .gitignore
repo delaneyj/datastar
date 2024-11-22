@@ -5,4 +5,4 @@ data
 .idea
 node_modules
 datastar-website
-*_bin*
+*_bin
