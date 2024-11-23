@@ -1,4 +1,4 @@
-TAG?=1.23-alpine
+TAG?=1.23
 CONTAINER?=$(shell basename $(CURDIR))-dev
 DEV_PORT?=8080
 IMAGE_INFO=$(shell docker image inspect $(CONTAINER):$(TAG))
