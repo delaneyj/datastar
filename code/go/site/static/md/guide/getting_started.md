@@ -244,14 +244,14 @@ This results in the `$input` signal being set to an empty string when the button
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input6" class="input input-bordered">
+            <input data-model="input7" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input6" class="output"></div>
+            <div data-text="$input7" class="output"></div>
         </div>
     </div>
-    <button data-on-click="$input6 = ''" class="btn btn-secondary">
+    <button data-on-click="$input7 = ''" class="btn btn-secondary">
         Reset
     </button>
 </div>
@@ -362,6 +362,20 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
         BUZZ
     </button>
 </div>
+
+### `data-indicator`
+
+The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator.
+
+```html
+<div id="question"></div>
+<div data-class="{loading: $fetching}" class="indicator"></div>
+<button data-on-click="$get('/actions/quiz')"
+    data-indicator="fetching"
+>
+    Fetch a question
+</button>
+```
 
 We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using `$get()`, `$post()`, `$put()`, `$patch()` and `$delete()` respectively.
 
