@@ -121,18 +121,20 @@ class ServerSentEventGenerator
             $eventType,
             $dataLines,
             $options['eventId'] ?? null,
-            $options['retryDuration'] ?? null,
+            $options['retryDuration'] ?? Consts::DEFAULT_SSE_RETRY_DURATION,
         );
 
         foreach ($options as $key => $value) {
             $eventData->$key = $value;
         }
 
-        $output = [
-            'event: ' . $eventData->eventType->value,
-            'id: ' . $eventData->eventId,
-            'retry: ' . $eventData->retryDuration,
-        ];
+        $output = ['event: ' . $eventData->eventType->value];
+
+        if ($eventData->eventId !== null) {
+            $output[] = 'id: ' . $eventData->eventId;
+        }
+
+        $output[] = 'retry: ' . $eventData->retryDuration;
 
         foreach ($eventData->data as $line) {
             $output[] = 'data: ' . $line;
