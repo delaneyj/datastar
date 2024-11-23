@@ -1,7 +1,9 @@
+# `Build.ps1 Pack Build` to create the nugets
+
 [CmdletBinding()]
 param (
     [Parameter(HelpMessage="The action to execute.")]
-    [ValidateSet("Build", "Pack" )]  # "Test"
+    [ValidateSet("Build", "Pack" )]  # ,"Test"
     [string] $Action = "Build",
 
     [Parameter(HelpMessage="The msbuild configuration to use.")]

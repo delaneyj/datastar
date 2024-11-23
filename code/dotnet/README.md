@@ -47,9 +47,9 @@ public record DatastarSignalsStore : IDatastarSignalsStore
 //                  and IDatastarSignalsStore, to read what is in the data-signals of the client
 builder.Services.AddDatastarGenerator<DatastarSignalsStore>();
 ...
-// add endpoints
 app.UseStaticFiles();
 
+// add endpoints
 app.MapGet("/displayDate", async (IServerSentEventGenerator sse) =>
 {
     string today = DateTime.Now.ToString("%y-%M-%d %h:%m:%s");

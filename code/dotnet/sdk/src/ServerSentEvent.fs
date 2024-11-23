@@ -42,7 +42,6 @@ module DatastarSignalStore =
     }
     let readSignals<'T when 'T :> IDatastarSignalsStore> env = readSignalsWithDeserialize (tryDeserialize JsonSerializer.Deserialize<'T>) env
 
-
 type DataSignalPath = string
 module DataSignalPath =
     let value = id

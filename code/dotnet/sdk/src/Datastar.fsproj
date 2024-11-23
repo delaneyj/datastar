@@ -22,7 +22,7 @@
         <PackageTags>datastar;datastar-sharp;fsharp;functional;asp.net core;asp.net;.net core;routing;web;csharp</PackageTags>
         <PackageProjectUrl>https://github.com/starfederation/datastar</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>datastar_icon.svg</PackageIcon>
+        <PackageIcon>datastar_icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <RepositoryType>git</RepositoryType>
@@ -39,10 +39,10 @@
     </ItemGroup>
 
     <ItemGroup>
-        <None Include="..\..\..\go\site\static\images\datastar_icon.svg">
+        <None Include="..\..\assets\datastar_icon.png">
           <Pack>true</Pack>
-          <PackagePath></PackagePath>
-          <Link>datastar_icon.svg</Link>
+          <Link>datastar_icon.png</Link>
+          <PackagePath>$(PackageIconUrl)</PackagePath>
         </None>
         <None Include="..\..\README.md">
           <Pack>true</Pack>
