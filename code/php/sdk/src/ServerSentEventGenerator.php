@@ -137,7 +137,7 @@ class ServerSentEventGenerator
         $output[] = 'retry: ' . $eventData->retryDuration;
 
         foreach ($eventData->data as $line) {
-            $output[] = 'data: ' . $line;
+            $output[] = $line;
         }
 
         echo implode("\n", $output) . "\n\n";
