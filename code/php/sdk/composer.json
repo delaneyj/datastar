@@ -29,6 +29,13 @@
       "pestphp/pest-plugin": true
     }
   },
+  "authors": [
+    {
+      "name": "Ben Croker",
+      "homepage": "https://putyourlightson.com/",
+      "role": "Author"
+    }
+  ],
   "support": {
     "docs": "https://github.com/starfederation/datastar-php",
     "source": "https://github.com/starfederation/datastar-php",
