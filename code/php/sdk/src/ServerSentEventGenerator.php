@@ -62,9 +62,9 @@ class ServerSentEventGenerator
     /**
      * Removes signal paths from the store.
      */
-    public function removeSignals(array $paths): void
+    public function removeSignals(array $paths, array $options = []): void
     {
-        $this->sendEvent(new RemoveSignals(paths: $paths));
+        $this->sendEvent(new RemoveSignals($paths, $options));
     }
 
     /**
