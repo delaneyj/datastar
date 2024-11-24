@@ -338,10 +338,8 @@ export class Engine {
                         statements[statements.length - 1] = `return ${
                             statements[statements.length - 1]
                         }`;
-                        const j = statements.map((s) => `  ${s}`).join(
-                            ";\n",
-                        );
-                        const fnContent = `try{return()=>{${j}}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j}\n\nError: ${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim();debugger}`;
+                        const j = statements.map((s) => `  ${s}`).join(";\n");
+                        const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll("`", "\\`")}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
                         try {
                             const argumentNames = p.argumentNames || [];
                             const fn = new Function(
