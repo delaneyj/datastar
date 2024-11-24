@@ -33,9 +33,9 @@ class ServerSentEventGenerator
      *     retryDuration?: int|null,
      * } $options
      */
-    public function mergeFragments(string $data, array $options = []): void
+    public function mergeFragments(string $fragments, array $options = []): void
     {
-        $this->sendEvent(new MergeFragments($data, $options));
+        $this->sendEvent(new MergeFragments($fragments, $options));
     }
 
     /**
@@ -54,17 +54,17 @@ class ServerSentEventGenerator
     /**
      * Merges signals into the store.
      */
-    public function mergeSignals(string $data, array $options = []): void
+    public function mergeSignals(array|string $signals, array $options = []): void
     {
-        $this->sendEvent(new MergeSignals($data, $options));
+        $this->sendEvent(new MergeSignals($signals, $options));
     }
 
     /**
      * Removes signal paths from the store.
      */
-    public function removeSignals(array $paths): void
+    public function removeSignals(array $paths, array $options = []): void
     {
-        $this->sendEvent(new RemoveSignals(paths: $paths));
+        $this->sendEvent(new RemoveSignals($paths, $options));
     }
 
     /**

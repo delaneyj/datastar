@@ -44,10 +44,22 @@ class ExecuteScript implements EventInterface
             $dataLines[] = $this->getDataLine(Consts::AUTO_REMOVE_DATALINE_LITERAL, $this->getBooleanAsString($this->autoRemove));
         }
 
-        $attributesJoined = join("\n", $this->attributes);
+        // Convert key-value pairs to space-separated values.
+        $attributes = [];
+        foreach ($this->attributes as $key => $value) {
+            // If attribute value is a boolean, skip or set to `true`.
+            if (is_bool($value)) {
+                if ($value === false) {
+                    continue;
+                }
+                $value = '';
+            }
+            $attributes[] = is_numeric($key) ? $value : $key . ' ' . $value;
+        }
+        $attributesJoined = join("\n", $attributes);
         if ($attributesJoined !== Consts::DEFAULT_EXECUTE_SCRIPT_ATTRIBUTES) {
-            foreach ($this->attributes as $attributes) {
-                $dataLines[] = $this->getDataLine(Consts::ATTRIBUTES_DATALINE_LITERAL, $attributes);
+            foreach ($attributes as $attributeLine) {
+                $dataLines[] = $this->getDataLine(Consts::ATTRIBUTES_DATALINE_LITERAL, $attributeLine);
             }
         }
 
