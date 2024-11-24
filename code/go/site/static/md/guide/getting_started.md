@@ -316,7 +316,7 @@ The `mergeFragments()` method merges the provided HTML fragment into the DOM, re
 
 The `mergeSignals()` method merges the `response` and `answer` signals into the frontend store.
 
-With our backend in place, we can now use the `data-on-click` attribute to send a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
+With our backend in place, we can now use the `data-on-click` attribute to trigger the `$get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked. 
 
 ```html
 <div
@@ -365,19 +365,34 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
 
 ### `data-indicator`
 
-The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator.
+The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator, which may be desirable for slower responses.
+
+Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute. 
 
 ```html
 <div id="question"></div>
 <div data-class="{loading: $fetching}" class="indicator"></div>
-<button data-on-click="$get('/actions/quiz')"
+<button id="fetch-a-question"
+    data-on-click="$get('/actions/quiz')"
     data-indicator="fetching"
 >
     Fetch a question
 </button>
 ```
 
-We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using `$get()`, `$post()`, `$put()`, `$patch()` and `$delete()` respectively.
+<div class="alert flex justify-between items-start gap-4 p-8">
+    <div class="space-y-3 pb-3">
+        <div id="question3"></div>
+        <div class="flex items-center gap-2">
+            <button id="fetch-a-question" data-on-click="$get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
+                Fetch a question
+            </button>
+            <div data-class="{loading: $fetching}" class="indicator"></div>
+        </div>
+    </div>
+</div>
+
+We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `$get()`, `$post()`, `$put()`, `$patch()` and `$delete()` actions, respectively.
 
 Here's how we could send an answer to the server for processing, using a `POST` request.
 
@@ -390,6 +405,74 @@ Here's how we could send an answer to the server for processing, using a `POST` 
 One of the benefits of using SSE is that we can send multiple events (HTML fragments, signal updates, etc.) in a single response.
 
 !!!CODE_SNIPPET:getting_started/multiple_events!!!
+
+## Actions
+
+Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `$get` action above. Here are a few other common actions.
+
+### `$setAll()`
+
+The `$setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
+
+```html
+<button data-on-click="$setAll('form_', true)"></button>
+```
+
+This sets the values of all signals containing `form_` to `true`, which could be useful for enabling input fields in a form.
+
+```html
+<input type="checkbox" data-model="checkbox_1"> Checkbox 1
+<input type="checkbox" data-model="checkbox_2"> Checkbox 2
+<input type="checkbox" data-model="checkbox_3"> Checkbox 3
+<button data-on-click="$setAll('checkbox_', true)">Check All</button>
+```
+
+<div class="alert flex flex-col items-start gap-2 p-8">
+    <div>
+        <input type="checkbox" data-model="checkbox_1_1"> Checkbox 1
+    </div>
+    <div>
+        <input type="checkbox" data-model="checkbox_1_2"> Checkbox 2
+    </div>
+    <div>
+        <input type="checkbox" data-model="checkbox_1_3"> Checkbox 3
+    </div>
+    <button data-on-click="$setAll('checkbox_1_', true)" class="btn btn-secondary mt-4">
+        Check All
+    </button>
+</div>
+
+### `$toggleAll()`
+
+The `$toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
+
+```html
+<button data-on-click="$toggleAll('form_')"></button>
+```
+
+This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
+
+```html
+<input type="checkbox" data-model="checkbox_1"> Checkbox 1
+<input type="checkbox" data-model="checkbox_2"> Checkbox 2
+<input type="checkbox" data-model="checkbox_3"> Checkbox 3
+<button data-on-click="$toggleAll('checkbox_')">Toggle All</button>
+```
+
+<div class="alert flex flex-col items-start gap-2 p-8">
+    <div>
+        <input type="checkbox" data-model="checkbox_2_1"> Checkbox 1
+    </div>
+    <div>
+        <input type="checkbox" data-model="checkbox_2_2"> Checkbox 2
+    </div>
+    <div>
+        <input type="checkbox" data-model="checkbox_2_3"> Checkbox 3
+    </div>
+    <button data-on-click="$toggleAll('checkbox_2_')" class="btn btn-secondary mt-4">
+        Toggle All
+    </button>
+</div>
 
 ## A Quick Overview
 
