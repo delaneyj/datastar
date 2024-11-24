@@ -136,6 +136,9 @@ func writeOutConsts(version string) error {
 		"code/php/sdk/src/Consts.php":                  phpConsts,
 		"code/php/sdk/src/enums/EventType.php":         phpEventType,
 		"code/php/sdk/src/enums/FragmentMergeMode.php": phpFragmentMergeMode,
+		"code/java/sdk/src/Consts.java":                  javaConsts,
+        "code/java/sdk/src/enums/EventType.java":         javaEventType,
+        "code/java/sdk/src/enums/FragmentMergeMode.java": javaFragmentMergeMode,
 	}
 
 	for path, tmplFn := range templates {
