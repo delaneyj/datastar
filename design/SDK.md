@@ -246,12 +246,12 @@ ServerSentEventGenerator.ExecuteScript(
 ##### Options
 
 * `autoRemove` Whether to remove the script after execution, if not provided the Datastar client side ***will*** default to `true`.
-* `attributes` A line separated list of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `type module`. Each item in the array should be a string in the format `key value`, or the array can be a set of key-value pairs. 
+* `attributes` A an array of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `['type module']`. Each item in the array should be a string in the format `key value`, or the array can be a set of key-value pairs. 
 
 #### Logic
 1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-execute-script` event type.
 2. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
-3. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
+3. If `attributes` is provided, the function ***must*** include the attributes in line-separated format in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `['type module']`. If the attributes array is a set of key-value pairs, a value of `false` will exclude the attribute, a value of `true` will set the value to an empty string, and any other value will be output as is.
 4. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
 
 ## `ReadSignals(r *http.Request, store any) error`
