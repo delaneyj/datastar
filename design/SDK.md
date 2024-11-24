@@ -95,7 +95,7 @@ When called the function ***must*** write to the response buffer the following i
 
 ```
 ServerSentEventGenerator.MergeFragments(
-    data: string,
+    fragments: string,
     options?: {
         selector?: string,
         mergeMode?: FragmentMergeMode,
@@ -134,12 +134,12 @@ Valid values should match the [FragmentMergeMode](#FragmentMergeMode) and curren
 * `useViewTransition` Whether to use view transitions, if not provided the Datastar client side ***will*** default to `false`.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-merge-fragments` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-fragments` event type.
 1. If `selector` is provided, the function ***must*** include the selector in the event data in the format `selector SELECTOR\n`, ***unless*** the selector is empty.
 2. If `mergeMode` is provided, the function ***must*** include the merge mode in the event data in the format `merge MERGE_MODE\n`, ***unless*** the value is the default of `morph`.
 3. If `settleDuration` is provided, the function ***must*** include the settle duration in the event data in the format `settleDuration SETTLE_DURATION\n`, ***unless*** the value is the default of `300` milliseconds.
 4. If `useViewTransition` is provided, the function ***must*** include the view transition in the event data in the format `useViewTransition USE_VIEW_TRANSITION\n`, ***unless*** the value is the default of `false`.  `USE_VIEW_TRANSITION` should be `true` or `false` (string), depending on the value of the `useViewTransition` option.
-5. The function ***must*** include the fragment content in the event data, with each line prefixed with `fragments `. This ***should*** be output after all other event data.
+5. The function ***must*** include the fragments in the event data, with each line prefixed with `fragments `. This ***should*** be output after all other event data.
 
 ### `ServerSentEventGenerator.RemoveFragments`
 
@@ -167,7 +167,7 @@ ServerSentEventGenerator.RemoveFragments(
 * `useViewTransition` Whether to use view transitions, if not provided the Datastar client side ***will*** default to `false`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-remove-fragments` event type.
+1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-fragments` event type.
 2. The function ***must*** include the selector in the event data in the format `selector SELECTOR\n`.
 3. If `settleDuration` is provided, the function ***must*** include the settle duration in the event data in the format `settleDuration SETTLE_DURATION\n`, ***unless*** the value is the default of `300` milliseconds.
 4. If `useViewTransition` is provided, the function ***must*** include the view transition in the event data in the format `useViewTransition USE_VIEW_TRANSITION\n`, ***unless*** the value is the default of `false`.  `USE_VIEW_TRANSITION` should be `true` or `false` (string), depending on the value of the `useViewTransition` option.
@@ -177,7 +177,7 @@ ServerSentEventGenerator.RemoveFragments(
 
 ```
 ServerSentEventGenerator.MergeSignals(
-    data: string,
+    signals: string,
     options ?: {
         onlyIfMissing?: boolean,
         eventId?: string,
@@ -197,7 +197,7 @@ Data is a JavaScript object or JSON string that will be sent to the browser to u
 * `onlyIfMissing` (boolean) If `true`, the SDK ***should*** send the signal only if the data is not already in the store.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the store.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-merge-signals` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-signals` event type.
 
 1. If `onlyIfMissing` is provided, the function ***must*** include the onlyIfMissing in the event data in the format `onlyIfMissing ONLY_IF_MISSING\n`, ***unless*** the value is the default of `false`.  `ONLY_IF_MISSING` should be `true` or `false` (string), depending on the value of the `onlyIfMissing` option.
 2. The function ***must*** include the signals in the event data, with each line prefixed with `signals `.  This ***should*** be output after all other event data.
@@ -221,7 +221,7 @@ ServerSentEventGenerator.RemoveSignals(
 `paths` is a list of strings that represent the path to the signals to be removed from the store.  The paths ***must*** be valid `.` delimited paths to signals within the store.  The Datastar client side will use these paths to remove the data from the store.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-remove-signals` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-signals` event type.
 
 1. The function ***must*** include the paths in the event data in the format `paths PATHS\n` where `PATHS` is a space separated list of the provided paths.
 
@@ -249,7 +249,7 @@ ServerSentEventGenerator.ExecuteScript(
 * `attributes` A line separated list of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `type module`. Each item in the array should be a string in the format `key value`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-execute-script` event type.
+1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
 2. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
 3. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
 4. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
