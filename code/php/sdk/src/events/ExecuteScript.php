@@ -52,7 +52,7 @@ class ExecuteScript implements EventInterface
                 if ($value === false) {
                     continue;
                 }
-                $value = 'true';
+                $value = '';
             }
             $attributes[] = is_numeric($key) ? $value : $key . ' ' . $value;
         }
