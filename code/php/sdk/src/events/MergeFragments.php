@@ -13,15 +13,15 @@ class MergeFragments implements EventInterface
 {
     use EventTrait;
 
-    public string $data;
+    public string $fragments;
     public string $selector = '';
     public FragmentMergeMode $mergeMode = Consts::DEFAULT_FRAGMENT_MERGE_MODE;
     public int $settleDuration = Consts::DEFAULT_SETTLE_DURATION;
     public bool $useViewTransition = Consts::DEFAULT_FRAGMENTS_USE_VIEW_TRANSITIONS;
 
-    public function __construct(string $data, array $options = [])
+    public function __construct(string $fragments, array $options = [])
     {
-        $this->data = $data;
+        $this->fragments = $fragments;
 
         foreach ($options as $key => $value) {
             $this->$key = $value;
@@ -61,7 +61,7 @@ class MergeFragments implements EventInterface
 
         return array_merge(
             $dataLines,
-            $this->getMultiDataLines(Consts::FRAGMENTS_DATALINE_LITERAL, $this->data),
+            $this->getMultiDataLines(Consts::FRAGMENTS_DATALINE_LITERAL, $this->fragments),
         );
     }
 }
