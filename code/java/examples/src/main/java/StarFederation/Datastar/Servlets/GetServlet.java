@@ -1,8 +1,8 @@
 package StarFederation.Datastar.Servlets;
 
 import StarFederation.Datastar.ServerSentEventGenerator;
-import StarFederation.Datastar.adapters.AbstractResponseAdapter;
-import StarFederation.Datastar.adapters.HttpServletResponseAdapter;
+import StarFederation.Datastar.adapters.response.AbstractResponseAdapter;
+import StarFederation.Datastar.adapters.response.HttpServletResponseAdapter;
 import StarFederation.Datastar.enums.FragmentMergeMode;
 import StarFederation.Datastar.events.DataStore;
 import StarFederation.Datastar.events.MergeFragments;
@@ -33,10 +33,9 @@ public class GetServlet extends HttpServlet {
 
             String jsonData = newDataStore.toJson();
             String fragment = String.format(
-                    "<main class='container' id='main' data-store='%s'></main>",
+                    "<main id='main' data-store='%s' class='mx-auto'>",
                     jsonData
             );
-
             MergeFragmentsOptions mergeFragmentsOptions = MergeFragmentsOptions.create()
                     .withMergeMode(FragmentMergeMode.UpsertAttributes);
             MergeFragments mergeFragments = new MergeFragments(fragment, mergeFragmentsOptions);

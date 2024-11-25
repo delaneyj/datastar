@@ -1,8 +1,10 @@
 package StarFederation.Datastar.Servlets;
 
 import StarFederation.Datastar.ServerSentEventGenerator;
-import StarFederation.Datastar.adapters.AbstractResponseAdapter;
-import StarFederation.Datastar.adapters.HttpServletResponseAdapter;
+import StarFederation.Datastar.adapters.request.HttpServletRequestAdapter;
+import StarFederation.Datastar.adapters.request.RequestAdapter;
+import StarFederation.Datastar.adapters.response.AbstractResponseAdapter;
+import StarFederation.Datastar.adapters.response.HttpServletResponseAdapter;
 import StarFederation.Datastar.events.DataStore;
 import StarFederation.Datastar.events.MergeSignals;
 import StarFederation.Datastar.events.MergeSignalsOptions;
@@ -23,8 +25,11 @@ public class PatchServlet extends HttpServlet {
             AsyncContext asyncContext = request.startAsync();
             asyncContext.setTimeout(0);
 
+            RequestAdapter adapter = new HttpServletRequestAdapter(request);
+
             DataStore store = new DataStore();
-            SignalReader.readSignals(request, store.getStore());
+            SignalReader.readSignals(adapter, store.getStore());
+
             String input = store.get("input", String.class);
             if (input == null || input.isBlank()) {
                 asyncContext.complete();

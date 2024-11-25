@@ -1,8 +1,8 @@
 package StarFederation.Datastar.Servlets;
 
 import StarFederation.Datastar.ServerSentEventGenerator;
-import StarFederation.Datastar.adapters.AbstractResponseAdapter;
-import StarFederation.Datastar.adapters.HttpServletResponseAdapter;
+import StarFederation.Datastar.adapters.response.AbstractResponseAdapter;
+import StarFederation.Datastar.adapters.response.HttpServletResponseAdapter;
 import StarFederation.Datastar.events.MergeFragments;
 import StarFederation.Datastar.events.MergeFragmentsOptions;
 import jakarta.servlet.annotation.WebServlet;

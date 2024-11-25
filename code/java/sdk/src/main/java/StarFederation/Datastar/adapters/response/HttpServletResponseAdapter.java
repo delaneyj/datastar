@@ -1,4 +1,4 @@
-package StarFederation.Datastar.adapters;
+package StarFederation.Datastar.adapters.response;
 
 import jakarta.servlet.http.HttpServletResponse;
 

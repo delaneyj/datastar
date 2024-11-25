@@ -1,6 +1,6 @@
 package StarFederation.Datastar;
 
-import StarFederation.Datastar.adapters.AbstractResponseAdapter;
+import StarFederation.Datastar.adapters.response.AbstractResponseAdapter;
 import StarFederation.Datastar.enums.EventType;
 import StarFederation.Datastar.events.*;
 
@@ -65,8 +65,6 @@ public class ServerSentEventGenerator {
         }
 
         output.append("\n");
-
-        System.out.print(output);
 
         writer.print(output);
         writer.flush();
