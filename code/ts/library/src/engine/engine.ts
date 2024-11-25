@@ -338,30 +338,8 @@ export class Engine {
                         statements[statements.length - 1] = `return ${
                             statements[statements.length - 1]
                         }`;
-                        const joined = statements.map((s) => `  ${s}`).join(
-                            ";\n",
-                        );
-                        const fnContent = `
-  try {
-    const _datastarExpression = () => {
-  ${joined}
-    }
-    const _datastarReturnVal = _datastarExpression()
-    return _datastarReturnVal
-  } catch (e) {
-   const msg = \`
-  Error evaluating Datastar expression:
-  ${joined.replaceAll("`", "\\`")}
-
-  Error: \${e.message}
-
-  Check if the expression is valid before raising an issue.
-  \`.trim()
-   console.error(msg)
-   debugger
-  }
-              `;
-
+                        const j = statements.map((s) => `  ${s}`).join(";\n");
+                        const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll("`", "\\`")}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
                         try {
                             const argumentNames = p.argumentNames || [];
                             const fn = new Function(
