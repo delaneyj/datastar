@@ -16,12 +16,12 @@ Provide an SDK in a language agnostic way, to that end
 - [x] Create a document (this) to allow any one to make a spec compliant SDK for any language or framework
 - [x] Provide a [reference implementation](../code/go/sdk) in Go
 - [ ] Provide SDKs for
-  - [ ] JS/TS
-  - [x] PHP
-  - [ ] .NET
-  - [ ] Python
-  - [ ] Java
-  - [ ] Haskell?
+    - [ ] JS/TS
+    - [x] PHP
+    - [ ] .NET
+    - [ ] Python
+    - [ ] Java
+    - [ ] Haskell?
 
 ## Details
 
@@ -41,13 +41,13 @@ The core mechanics of Datastar's SSE support is
 ***There must*** be a `ServerSentEventGenerator` namespace.  In Go this is implemented as a struct, but could be a class or even namespace in languages such as C.
 
 ### Construction / Initialization
-   1. ***There must*** be a way to create a new instance of this object based on the incoming `HTTP` Request and Response objects.
-   2. The `ServerSentEventGenerator` ***must*** default to a flusher interface that has the following response headers set by default
-      1. `Cache-Control = nocache`
-      2. `Connection = keep-alive`
-      3. `Content-Type = text/event-stream`
-   3. Then the created response ***should*** `flush` immediately to avoid timeouts while 0-♾️ events are created
-   4. Multiple calls using `ServerSentEventGenerator` should be single threaded to guarantee order.  The Go implementation use a mutex to facilitate this behavior but might not be need in a some environments
+1. ***There must*** be a way to create a new instance of this object based on the incoming `HTTP` Request and Response objects.
+2. The `ServerSentEventGenerator` ***must*** default to a flusher interface that has the following response headers set by default
+    1. `Cache-Control = nocache`
+    2. `Connection = keep-alive`
+    3. `Content-Type = text/event-stream`
+3. Then the created response ***should*** `flush` immediately to avoid timeouts while 0-♾️ events are created
+4. Multiple calls using `ServerSentEventGenerator` should be single threaded to guarantee order.  The Go implementation use a mutex to facilitate this behavior but might not be need in a some environments
 
 ### `ServerSentEventGenerator.send`
 
@@ -95,7 +95,7 @@ When called the function ***must*** write to the response buffer the following i
 
 ```
 ServerSentEventGenerator.MergeFragments(
-    fragments: string,
+    data: string,
     options?: {
         selector?: string,
         mergeMode?: FragmentMergeMode,
@@ -105,18 +105,6 @@ ServerSentEventGenerator.MergeFragments(
         retryDuration?: durationInMilliseconds
      }
  )
-
- 
-Example Output:
- 
-event: datastar-merge-fragments
-retryDuration: 5000
-id: 305778f7-eaa5-4f67-9727-f1ee0f8f08c9
-data: selector #feed
-data: mergeMode append
-data: useViewTransition true
-data: fragments <span id='feed'>73</span>
-
 ```
 
 `MergeFragments` is a helper function to send HTML fragments to the browser to be merged into the DOM.
@@ -146,12 +134,12 @@ Valid values should match the [FragmentMergeMode](#FragmentMergeMode) and curren
 * `useViewTransition` Whether to use view transitions, if not provided the Datastar client side ***will*** default to `false`.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-fragments` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-merge-fragments` event type.
 1. If `selector` is provided, the function ***must*** include the selector in the event data in the format `selector SELECTOR\n`, ***unless*** the selector is empty.
 2. If `mergeMode` is provided, the function ***must*** include the merge mode in the event data in the format `merge MERGE_MODE\n`, ***unless*** the value is the default of `morph`.
 3. If `settleDuration` is provided, the function ***must*** include the settle duration in the event data in the format `settleDuration SETTLE_DURATION\n`, ***unless*** the value is the default of `300` milliseconds.
 4. If `useViewTransition` is provided, the function ***must*** include the view transition in the event data in the format `useViewTransition USE_VIEW_TRANSITION\n`, ***unless*** the value is the default of `false`.  `USE_VIEW_TRANSITION` should be `true` or `false` (string), depending on the value of the `useViewTransition` option.
-5. The function ***must*** include the fragments in the event data, with each line prefixed with `fragments `. This ***should*** be output after all other event data.
+5. The function ***must*** include the fragment content in the event data, with each line prefixed with `fragments `. This ***should*** be output after all other event data.
 
 ### `ServerSentEventGenerator.RemoveFragments`
 
@@ -165,14 +153,6 @@ ServerSentEventGenerator.RemoveFragments(
         retryDuration?: durationInMilliseconds
     }
 )
-
-Example Output:
-
-event: datastar-remove-fragments
-id: 190a61c9-6420-4bd4-ad5f-429a6aeecd61
-data: selector #target
-data: settleDuration 20
-data: useViewTransition true
 ```
 
 `RemoveFragments` is a helper function to send a selector to the browser to remove HTML fragments from the DOM.
@@ -187,7 +167,7 @@ data: useViewTransition true
 * `useViewTransition` Whether to use view transitions, if not provided the Datastar client side ***will*** default to `false`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-fragments` event type.
+1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-remove-fragments` event type.
 2. The function ***must*** include the selector in the event data in the format `selector SELECTOR\n`.
 3. If `settleDuration` is provided, the function ***must*** include the settle duration in the event data in the format `settleDuration SETTLE_DURATION\n`, ***unless*** the value is the default of `300` milliseconds.
 4. If `useViewTransition` is provided, the function ***must*** include the view transition in the event data in the format `useViewTransition USE_VIEW_TRANSITION\n`, ***unless*** the value is the default of `false`.  `USE_VIEW_TRANSITION` should be `true` or `false` (string), depending on the value of the `useViewTransition` option.
@@ -197,20 +177,13 @@ data: useViewTransition true
 
 ```
 ServerSentEventGenerator.MergeSignals(
-    signals: string,
+    data: string,
     options ?: {
         onlyIfMissing?: boolean,
         eventId?: string,
         retryDuration?: durationInMilliseconds
      }
  )
- 
-Example Output:
-
-event: datastar-merge-signals
-id: 1b5b796d-8713-4351-af2b-779c1a36ad4a
-data: onlyIfMissing true
-data: signals {"output":"","show":true,"input":"d","user":{"name":"","email":""}}
 ```
 
 `MergeSignals` is a helper function to send one or more signals to the browser to be merged into the store.
@@ -224,7 +197,7 @@ Data is a JavaScript object or JSON string that will be sent to the browser to u
 * `onlyIfMissing` (boolean) If `true`, the SDK ***should*** send the signal only if the data is not already in the store.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the store.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-signals` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-merge-signals` event type.
 
 1. If `onlyIfMissing` is provided, the function ***must*** include the onlyIfMissing in the event data in the format `onlyIfMissing ONLY_IF_MISSING\n`, ***unless*** the value is the default of `false`.  `ONLY_IF_MISSING` should be `true` or `false` (string), depending on the value of the `onlyIfMissing` option.
 2. The function ***must*** include the signals in the event data, with each line prefixed with `signals `.  This ***should*** be output after all other event data.
@@ -248,7 +221,7 @@ ServerSentEventGenerator.RemoveSignals(
 `paths` is a list of strings that represent the path to the signals to be removed from the store.  The paths ***must*** be valid `.` delimited paths to signals within the store.  The Datastar client side will use these paths to remove the data from the store.
 
 #### Logic
-When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-signals` event type.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-remove-signals` event type.
 
 1. The function ***must*** include the paths in the event data in the format `paths PATHS\n` where `PATHS` is a space separated list of the provided paths.
 
@@ -264,14 +237,6 @@ ServerSentEventGenerator.ExecuteScript(
         retryDuration?: durationInMilliseconds
     }
 )
-
-Example Output:
-
-event: datastar-execute-script
-retryDuration: 5000
-id: e1fafc05-c8c1-4f96-85c7-b9dda9d16342
-data: autoRemove false
-data: script window.location = "https://datastar.fly.dev"
 ```
 
 #### Args
@@ -284,7 +249,7 @@ data: script window.location = "https://datastar.fly.dev"
 * `attributes` A line separated list of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `type module`. Each item in the array should be a string in the format `key value`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
+1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `data` and `datastar-execute-script` event type.
 2. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
 3. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
 4. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
@@ -301,6 +266,6 @@ data: script window.location = "https://datastar.fly.dev"
 #### Logic
 
 1. The function ***must*** parse the incoming HTTP request
-   1. If the incoming method is `GET`, the function ***must*** parse the query string's `datastar` key and treat it as a URL encoded JSON string.
-   2. Otherwise, the function ***must*** parse the body of the request as a JSON encoded string.
-   3. If the incoming data is not valid JSON, the function ***must*** return an error.
+    1. If the incoming method is `GET`, the function ***must*** parse the query string's `datastar` key and treat it as a URL encoded JSON string.
+    2. Otherwise, the function ***must*** parse the body of the request as a JSON encoded string.
+    3. If the incoming data is not valid JSON, the function ***must*** return an error.
