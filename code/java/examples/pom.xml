@@ -6,20 +6,21 @@
     <parent>
         <groupId>StarFederation.Datastar</groupId>
         <artifactId>java-sdk</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>examples</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
-        <!-- Dependency on the SDK module -->
+        <!-- Depend on the SDK -->
         <dependency>
             <groupId>StarFederation.Datastar</groupId>
-            <artifactId>sdk</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <artifactId>datastar-java</artifactId>
+            <version>1.0.0</version>
         </dependency>
 
-        <!-- Jetty for server capabilities -->
+        <!-- Jetty dependencies -->
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
@@ -28,8 +29,21 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-servlet</artifactId>
-            <version>11.0.24</version>
-            <scope>compile</scope>
+            <version>${jetty.version}</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
