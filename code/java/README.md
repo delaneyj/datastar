@@ -1,5 +1,3 @@
-Here is a comprehensive **README.md** for your `datastar-java` SDK:
-
 ---
 
 # Datastar Java SDK
