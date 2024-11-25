@@ -58,13 +58,13 @@ func WithSelectorID(id string) MergeFragmentOption {
 
 func WithViewTransitions() MergeFragmentOption {
 	return func(o *MergeFragmentOptions) {
-		o.UseViewTransitions = false
+		o.UseViewTransitions = true
 	}
 }
 
 func WithoutViewTransitions() MergeFragmentOption {
 	return func(o *MergeFragmentOptions) {
-		o.UseViewTransitions = true
+		o.UseViewTransitions = false
 	}
 }
 
