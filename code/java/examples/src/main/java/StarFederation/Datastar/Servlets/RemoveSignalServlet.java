@@ -1,0 +1,35 @@
+package StarFederation.Datastar.Servlets;
+
+import StarFederation.Datastar.ServerSentEventGenerator;
+import StarFederation.Datastar.adapters.AbstractResponseAdapter;
+import StarFederation.Datastar.adapters.HttpServletResponseAdapter;
+import StarFederation.Datastar.events.RemoveSignals;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
+import java.util.UUID;
+
+@WebServlet(name = "RemoveSignalServlet", urlPatterns = "/removeSignal", asyncSupported = true)
+public class RemoveSignalServlet extends HttpServlet {
+
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            AbstractResponseAdapter responseAdapter = new HttpServletResponseAdapter(response);
+            ServerSentEventGenerator sse = new ServerSentEventGenerator(responseAdapter);
+
+            List<String> paths = List.of("user");
+            RemoveSignals removeSignals = new RemoveSignals(paths);
+            removeSignals.setEventId(UUID.randomUUID().toString());
+            sse.RemoveSignals(removeSignals);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+}
+
