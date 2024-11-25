@@ -43,8 +43,8 @@ export function sendSSERequest(
         const { onlyRemoteSignals, headers } = Object.assign({
             onlyRemoteSignals: true,
             headers: {
-                CONTENT_TYPE: "application/json",
-                DATASTAR_REQUEST: "true",
+                "Content-Type": "application/json",
+                "Datastar-Request": "true",
             },
         }, args);
         const currentStore = ctx.store().value;
