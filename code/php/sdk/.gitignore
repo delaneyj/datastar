@@ -1,4 +1,5 @@
 .DS_Store
+.idea
 composer.lock
 /.ddev
 /vendor
