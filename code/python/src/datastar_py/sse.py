@@ -91,7 +91,7 @@ class ServerSentEventGenerator:
 
     def merge_signals(
         self,
-        data: list[str],
+        signals: list[str],
         event_id: Optional[int] = None,
         only_if_missing: bool = False,
         retry_duration: int = consts.DefaultSseRetryDuration,
@@ -100,7 +100,9 @@ class ServerSentEventGenerator:
         if only_if_missing:
             data_lines.append(f"data: {consts.OnlyIfMissingDatalineLiteral} true")
 
-        data_lines.append(f"data: {consts.SignalsDatalineLiteral} {' '.join(data)}")
+        data_lines.extend(
+            f"data: {consts.SignalsDatalineLiteral} {signal}" for signal in signals
+        )
 
         return self._send(
             consts.EventType.EventTypeMergeSignals, data_lines, event_id, retry_duration
