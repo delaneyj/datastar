@@ -316,7 +316,7 @@ The `mergeFragments()` method merges the provided HTML fragment into the DOM, re
 
 The `mergeSignals()` method merges the `response` and `answer` signals into the frontend store.
 
-With our backend in place, we can now use the `data-on-click` attribute to trigger the `$get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked. 
+With our backend in place, we can now use the `data-on-click` attribute to trigger the `$get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
 
 ```html
 <div
@@ -367,7 +367,7 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
 
 The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator, which may be desirable for slower responses.
 
-Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute. 
+Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute.
 
 ```html
 <div id="question"></div>
@@ -428,14 +428,23 @@ This sets the values of all signals containing `form_` to `true`, which could be
 ```
 
 <div class="alert flex flex-col items-start gap-2 p-8">
-    <div>
-        <input type="checkbox" data-model="checkbox_1_1"> Checkbox 1
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 1</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_1_1"/>
+        </label>
     </div>
-    <div>
-        <input type="checkbox" data-model="checkbox_1_2"> Checkbox 2
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 2</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_1_2"/>
+        </label>
     </div>
-    <div>
-        <input type="checkbox" data-model="checkbox_1_3"> Checkbox 3
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 3</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_1_3"/>
+        </label>
     </div>
     <button data-on-click="$setAll('checkbox_1_', true)" class="btn btn-secondary mt-4">
         Check All
@@ -460,14 +469,23 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 ```
 
 <div class="alert flex flex-col items-start gap-2 p-8">
-    <div>
-        <input type="checkbox" data-model="checkbox_2_1"> Checkbox 1
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 1</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_2_1"/>
+        </label>
     </div>
-    <div>
-        <input type="checkbox" data-model="checkbox_2_2"> Checkbox 2
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 2</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_2_2"/>
+        </label>
     </div>
-    <div>
-        <input type="checkbox" data-model="checkbox_2_3"> Checkbox 3
+    <div class="form-control">
+        <label class="label cursor-pointer gap-2">
+            <span class="label-text">Checkbox 3</span>
+            <input type="checkbox" class="toggle" data-model="checkbox_2_3"/>
+        </label>
     </div>
     <button data-on-click="$toggleAll('checkbox_2_')" class="btn btn-secondary mt-4">
         Toggle All
