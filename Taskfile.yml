@@ -10,11 +10,18 @@ vars:
 
 tasks:
   tools:
+    platforms: [windows, linux, darwin/arm64, darwin/amd64]
     cmds:
       - go install github.com/go-task/task/v3/cmd/task@latest
       - go install github.com/a-h/templ/cmd/templ@latest
-      # Replace `linux-x64` with `macos-x64` or `macos-arm64` for macOS.
-      - test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
+      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
+        platforms: [linux]
+      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
+        platforms: [darwin/arm64]
+      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-x64
+        platforms: [darwin/amd64]
+      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
+        platforms: [windows]
       - chmod +x code/go/site/tailwindcli
       - go install github.com/valyala/quicktemplate/qtc@latest
 
