@@ -43,7 +43,7 @@ trait EventTrait
      */
     public function getDataLine(string $datalineLiteral, string|int ...$parts): string
     {
-        return 'data: ' . $datalineLiteral. implode(' ', $parts);
+        return 'data: ' . $datalineLiteral . implode(' ', $parts);
     }
 
     /**

@@ -1,25 +1,40 @@
-ARG TAG=1.23-alpine
+ARG TAG=1.23
 
 FROM golang:$TAG
 
 WORKDIR /app
 
 # Install packages
-RUN set -eux; \
+RUN apt update && sudo apt upgrade \
+    && \
+    set -eux; \
     # Packages to install
-    apk add --no-cache \
-    g++ \
-    go-task-task \
+    apt install -y \
     git \
     git-lfs \
     jq \
-    make \
     rsync \
+    # Needed for headless chrome/tests
+    libglib2.0-dev \
+    libnss3-dev \
+    libdbus-1-dev \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libxcomposite-dev \
+    libxdamage1 \
+    libxrandr2 \
+    libgbm-dev \
+    libxkbcommon-x11-0 \
+    libpangocairo-1.0-0 \
+    libasound2 \
     && \
     # Clean out directories that don't need to be part of the image
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && \
-    # Install needed Go tooling
+    # Install needed Go tooling \
+    go install github.com/go-task/task/v3/cmd/task@latest \
+    && \
     go install github.com/a-h/templ/cmd/templ@latest \
     && \
     go install github.com/valyala/quicktemplate/qtc@latest \

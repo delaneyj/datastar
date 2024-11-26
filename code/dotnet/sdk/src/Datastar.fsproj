@@ -10,7 +10,7 @@
         <NeutralLanguage>en-CA</NeutralLanguage>
 
         <!-- Build config -->
-        <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0;net8.0;net9.0</TargetFrameworks>
         <DebugType>embedded</DebugType>
         <OutputType>Library</OutputType>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -22,7 +22,7 @@
         <PackageTags>datastar;datastar-sharp;fsharp;functional;asp.net core;asp.net;.net core;routing;web;csharp</PackageTags>
         <PackageProjectUrl>https://github.com/starfederation/datastar</PackageProjectUrl>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageIcon>datastar_icon.svg</PackageIcon>
+        <PackageIcon>datastar_icon.png</PackageIcon>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
         <RepositoryType>git</RepositoryType>
@@ -39,19 +39,26 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="..\..\assets\datastar_icon.png">
+          <Pack>true</Pack>
+          <Link>datastar_icon.png</Link>
+          <PackagePath>$(PackageIconUrl)</PackagePath>
+        </None>
+        <None Include="..\..\README.md">
+          <Pack>true</Pack>
+          <PackagePath>/</PackagePath>
+          <Link>README.md</Link>
+        </None>
         <Compile Include="Utility.fs" />
         <Compile Include="Consts.fs" />
         <Compile Include="ServerSentEvent.fs" />
         <Compile Include="ServerSentEventGenerator.fs" />
-        <Compile Include="DependencyInjection\HttpServices.fs" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Include="../../../go/site/static/images/datastar_icon.svg">
-            <Pack>true</Pack>
-            <PackagePath>$(PackageIconUrl)</PackagePath>
-        </None>
-        <None Include="../../README.md" Pack="true" PackagePath="\"/>
+        <Compile Include="ServerSentEventHttpHandler.fs" />
+        <Compile Include="DependencyInjection\ServerSentEventService.fs" />
+        <Compile Include="DependencyInjection\ServerSentEventServices.fs" />
+        <Compile Include="Scripts\ServerSentEventExtensions.fs" />
+        <Compile Include="Scripts\ServerSentEventGeneratorExtensions.fs" />
+        <Compile Include="Falco\Response.fs" />
     </ItemGroup>
 
 </Project>

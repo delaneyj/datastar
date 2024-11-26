@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
     <title>dotnet Example</title>
     <script type="module" defer src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
@@ -9,10 +9,10 @@
 
 <main class="container" id="main" data-store="{'input':'','output':'','show':true}">
     <div class="grid-container">
-        <div class="item1"><h2><span id="language" data-on-load="$get('/language/C%23')">X&#35;</span> + <span data-on-click="$get('/redirect')" style="text-decoration: underline;">D*</span> Example</h2></div>
+        <div class="item1"><h2><span id="language" data-on-load="$get('/language/dotnet')">___</span> + D* Example</h2></div>
         <div class="item2">
             <div data-show="$show">
-                <span data-on-click="$get('/clickRocket')" style="font-size: 9em">
+                <span  style="font-size: 9em">
                    &#x1F680;
                 </span>
                 <hr>
@@ -24,7 +24,6 @@
         <div class="item3">
             <input type="text" placeholder="input:" data-model="input"/><br>
             <br>
-            <button class="button-69" data-on-click="$get('/get')">Send State</button><br>
             <button class="button-69" data-on-click="$get('/patch')">Patch State</button><br>
             <button class="button-69" data-on-click="$get('/target')">Target HTML Element</button><br>
             <button class="button-69" data-on-click="$show=!$show">Toggle Rocket</button><br>

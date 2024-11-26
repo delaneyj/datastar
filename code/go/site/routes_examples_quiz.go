@@ -43,8 +43,8 @@ func setupExamplesQuiz(examplesRouter chi.Router, store sessions.Store) error {
 			return
 		}
 
-		// Get the current question ID from the session
-		lastQuestionId, ok := session.Values["lastQuestionId"].(int)
+		// Get the last question ID from the session
+		lastQuestionId, ok := session.Values["lastQuestionId1"].(int)
 		if !ok {
 			lastQuestionId = -1
 		}
@@ -56,7 +56,7 @@ func setupExamplesQuiz(examplesRouter chi.Router, store sessions.Store) error {
 		sse.MarshalAndMergeSignals(map[string]any{
 			"response2":      "",
 			"answer2":        QA.Answer,
-			"lastQuestionId": questionID,
+			"lastQuestionId1": questionID,
 		})
 	})
 

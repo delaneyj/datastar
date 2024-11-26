@@ -33,9 +33,9 @@ class ServerSentEventGenerator
      *     retryDuration?: int|null,
      * } $options
      */
-    public function mergeFragments(string $data, array $options = []): void
+    public function mergeFragments(string $fragments, array $options = []): void
     {
-        $this->sendEvent(new MergeFragments($data, $options));
+        $this->sendEvent(new MergeFragments($fragments, $options));
     }
 
     /**
@@ -54,17 +54,17 @@ class ServerSentEventGenerator
     /**
      * Merges signals into the store.
      */
-    public function mergeSignals(string $data, array $options = []): void
+    public function mergeSignals(array|string $signals, array $options = []): void
     {
-        $this->sendEvent(new MergeSignals($data, $options));
+        $this->sendEvent(new MergeSignals($signals, $options));
     }
 
     /**
      * Removes signal paths from the store.
      */
-    public function removeSignals(array $paths): void
+    public function removeSignals(array $paths, array $options = []): void
     {
-        $this->sendEvent(new RemoveSignals(paths: $paths));
+        $this->sendEvent(new RemoveSignals($paths, $options));
     }
 
     /**
@@ -121,21 +121,23 @@ class ServerSentEventGenerator
             $eventType,
             $dataLines,
             $options['eventId'] ?? null,
-            $options['retryDuration'] ?? null,
+            $options['retryDuration'] ?? Consts::DEFAULT_SSE_RETRY_DURATION,
         );
 
         foreach ($options as $key => $value) {
             $eventData->$key = $value;
         }
 
-        $output = [
-            'event: ' . $eventData->eventType->value,
-            'id: ' . $eventData->eventId,
-            'retry: ' . $eventData->retryDuration,
-        ];
+        $output = ['event: ' . $eventData->eventType->value];
+
+        if ($eventData->eventId !== null) {
+            $output[] = 'id: ' . $eventData->eventId;
+        }
+
+        $output[] = 'retry: ' . $eventData->retryDuration;
 
         foreach ($eventData->data as $line) {
-            $output[] = 'data: ' . $line;
+            $output[] = $line;
         }
 
         echo implode("\n", $output) . "\n\n";

@@ -41,7 +41,7 @@ $sse->mergeFragments('<div></div>', [
 $sse->removeFragments('#my-div');
 
 // Merges signals into the store.
-$sse->mergeSignals(['foo' => 123], [
+$sse->mergeSignals('{foo: 123}', [
     'onlyIfMissing' => true,
 ]);
 

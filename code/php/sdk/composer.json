@@ -1,7 +1,7 @@
 {
   "name": "starfederation/datastar-php",
   "description": "A PHP SDK for working with Datastar.",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.2",
   "type": "library",
   "license": "mit",
   "require": {
@@ -29,6 +29,13 @@
       "pestphp/pest-plugin": true
     }
   },
+  "authors": [
+    {
+      "name": "Ben Croker",
+      "homepage": "https://putyourlightson.com/",
+      "role": "Author"
+    }
+  ],
   "support": {
     "docs": "https://github.com/starfederation/datastar-php",
     "source": "https://github.com/starfederation/datastar-php",

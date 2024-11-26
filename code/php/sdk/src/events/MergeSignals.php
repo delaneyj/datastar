@@ -12,12 +12,12 @@ class MergeSignals implements EventInterface
 {
     use EventTrait;
 
-    public string $data;
+    public array|string $signals;
     public bool $onlyIfMissing = Consts::DEFAULT_MERGE_SIGNALS_ONLY_IF_MISSING;
 
-    public function __construct(string $data, array $options = [])
+    public function __construct(array|string $signals, array $options = [])
     {
-        $this->data = $data;
+        $this->signals = $signals;
 
         foreach ($options as $key => $value) {
             $this->$key = $value;
@@ -43,9 +43,11 @@ class MergeSignals implements EventInterface
             $dataLines[] = $this->getDataLine(Consts::ONLY_IF_MISSING_DATALINE_LITERAL, $this->getBooleanAsString($this->onlyIfMissing));
         }
 
+        $data = is_array($this->signals) ? json_encode($this->signals) : $this->signals;
+
         return array_merge(
             $dataLines,
-            $this->getMultiDataLines(Consts::SIGNALS_DATALINE_LITERAL, $this->data),
+            $this->getMultiDataLines(Consts::SIGNALS_DATALINE_LITERAL, $data),
         );
     }
 }

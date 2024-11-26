@@ -36,9 +36,9 @@ export const ExecuteScript: WatcherPlugin = {
                 const scriptEl = document.createElement("script");
                 attributesRaw.split("\n").forEach((attr) => {
                     const pivot = attr.indexOf(" ");
-                    const key = attr.slice(0, pivot).trim();
-                    const value = attr.slice(pivot).trim();
-                    scriptEl.setAttribute(key, value);
+                    const key = pivot ? attr.slice(0, pivot) : attr;
+                    const value = pivot ? attr.slice(pivot) : '';
+                    scriptEl.setAttribute(key.trim(), value.trim());
                 });
                 scriptEl.text = script;
                 document.head.appendChild(scriptEl);

@@ -21,22 +21,6 @@ templ Page() {
 			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet"/>
 			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 			<script type="module" src={ staticPath("js/datastar.js") }></script>
-			<script defer>
-// console.log(`Hot reload initializing @ ${hotReloadPath}`)
-const hotReloadPath = `/hotreload`
-if (typeof(EventSource) !== "undefined") {
-	const es = new EventSource(hotReloadPath);
-	es.onmessage = function(event) {
-		location.reload();
-	}
-	es.onerror = function(err) {
-		console.log("lost connection to server, reloading");
-		setTimeout(() => {
-		location.reload();
-		}, 500);
-	};
-}
-			</script>
 			<style>
 .indicator {
 	opacity:0;
@@ -48,7 +32,12 @@ if (typeof(EventSource) !== "undefined") {
 }
 			</style>
 		</head>
-		<body class="flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent">
+		// data-on-pageshow.window is to combat Safari's aggressive caching
+		// https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
+		<body
+			data-on-pageshow.window="evt?.persisted && window.location.reload()"
+			class="flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent"
+		>
 			{ children... }
 		</body>
 	</html>
@@ -79,7 +68,7 @@ templ headerTopLevelLink(r *http.Request, text string) {
 
 templ headerExternalLinks() {
 	@headerIconLink("simple-icons:discord", "https://discord.gg/bnRNgZjgPh")
-	@headerIconLink("simple-icons:github", "https://github.com/starfederation/datastar/tree/main/code/ts/library/src")
+	@headerIconLink("simple-icons:github", "https://github.com/starfederation/datastar/tree/develop/code/ts/library")
 	@headerIconLink("simple-icons:npm", "https://www.npmjs.com/package/@starfederation/datastar")
 	@headerIconLink("simple-icons:twitter", "https://x.com/DelaneyGillilan")
 	@headerIconLink("simple-icons:reddit", "https://www.reddit.com/r/datastardev/")

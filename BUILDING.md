@@ -43,9 +43,11 @@ The make tool is available for just about every platform you can imagine, and is
 Below are details and options available in each of the provided `make` commands:
 
 * `make dev` - starts up the Go website server for the backend with hot reloading as you make changes
+* `make test` - run the project tests inside the Docker container
 * `make task xxx` - runs the specified task from the `Taskfile.yml` inside of the Docker container
 * `make ssh` - gives you a shell inside of the Docker container
 * `make image-build` - rebuilds the Docker image from scratch (you will probably never need this)
+* `make clean` - removes all build artifacts, including the Docker image & volumes, to start from scratch
 
 ### CLI Arguments
 

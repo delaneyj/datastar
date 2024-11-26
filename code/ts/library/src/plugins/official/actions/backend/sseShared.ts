@@ -1,5 +1,5 @@
 import { ActionMethod } from "../../../../engine";
-import { DATASTAR } from "../../../../engine/consts";
+import { DATASTAR, DATASTAR_REQUEST } from "../../../../engine/consts";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 import { remoteSignals } from "../../../../utils/signals";
 import {
@@ -43,8 +43,8 @@ export function sendSSERequest(
         const { onlyRemoteSignals, headers } = Object.assign({
             onlyRemoteSignals: true,
             headers: {
-                CONTENT_TYPE: "application/json",
-                DATASTAR_REQUEST: "true",
+                "Content-Type": "application/json",
+                [DATASTAR_REQUEST]: true,
             },
         }, args);
         const currentStore = ctx.store().value;

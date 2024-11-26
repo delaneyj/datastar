@@ -34,3 +34,12 @@ test('Multi-line content is correctly output', function() {
             'data: signals {x: 1}',
         ]);
 });
+
+test('Signals can be passed in as an array', function() {
+    $signals = ['x' => 1];
+    $event = new MergeSignals($signals);
+    expect($event->getDataLines())
+        ->toBe([
+            'data: signals ' . json_encode($signals),
+        ]);
+});

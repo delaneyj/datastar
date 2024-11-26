@@ -38,3 +38,16 @@ test('Multi-line content is correctly output', function() {
             'data: script ' . $content,
         ]);
 });
+
+test('Attributes can be passed in as array', function() {
+    $content = 'console.log("Hello, world!")';
+    $event = new ExecuteScript($content, [
+        'attributes' => ['type' => 'module', 'defer' => true, 'x' => false],
+    ]);
+    expect($event->getDataLines())
+        ->toBe([
+            'data: attributes type module',
+            'data: attributes defer ',
+            'data: script ' . $content,
+        ]);
+});
