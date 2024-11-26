@@ -1,7 +1,14 @@
+import json
 from itertools import chain
 from typing import Optional
 
 import datastar_py.consts as consts
+
+SSE_HEADERS = {
+    "Cache-Control": "no-cache",
+    "Connection": "keep-alive",
+    "Content-Type": "text/event-stream",
+}
 
 
 class ServerSentEventGenerator:
@@ -91,7 +98,7 @@ class ServerSentEventGenerator:
 
     def merge_signals(
         self,
-        signals: list[str],
+        signals: dict,
         event_id: Optional[int] = None,
         only_if_missing: bool = False,
         retry_duration: int = consts.DefaultSseRetryDuration,
@@ -101,7 +108,8 @@ class ServerSentEventGenerator:
             data_lines.append(f"data: {consts.OnlyIfMissingDatalineLiteral} true")
 
         data_lines.extend(
-            f"data: {consts.SignalsDatalineLiteral} {signal}" for signal in signals
+            f"data: {consts.SignalsDatalineLiteral} {signalLine}"
+            for signalLine in json.dumps(signals, indent=2).splitlines()
         )
 
         return self._send(
