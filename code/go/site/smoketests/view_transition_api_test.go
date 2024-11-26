@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleRafUpdate(t *testing.T) {
+func TestExampleViewTransitionApi(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/raf_update")
+	page := g.page("examples/view_transition_api")
 	assert.NotNil(t, page)
 }

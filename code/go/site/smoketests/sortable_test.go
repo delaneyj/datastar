@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleRafUpdate(t *testing.T) {
+func TestExampleSortable(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/raf_update")
+	page := g.page("examples/sortable")
 	assert.NotNil(t, page)
 }

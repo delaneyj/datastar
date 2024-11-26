@@ -6,9 +6,9 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleRafUpdate(t *testing.T) {
+func TestExampleQuickPrimerGo(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/raf_update")
+	page := g.page("examples/quick_primer_go")
 	assert.NotNil(t, page)
 }
