@@ -1,0 +1,27 @@
+using StarFederation.Datastar;
+using StarFederation.Datastar.DependencyInjection;
+
+// create a JSON-friendly record type that implements IDatastarSignalsStore
+public record DatastarSignalsStore : IDatastarSignalsStore
+{
+    [JsonPropertyName("input")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Input { get; init; } = null;
+
+    [JsonPropertyName("output")]
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+    public string? Output { get; init; } = null;
+
+    public string Serialize() => JsonSerializer.Serialize(this);
+}
+
+// add as a service
+builder.Services.AddDatastar<DatastarSignalsStore>();
+
+// service offers IServerSentEventGenerator and IDatastarSignalsStore
+app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignalsStore dsStore) =>
+{
+    var signalStore = (dsStore as DatastarSignalsStore);
+    DatastarSignalsStore newSignalsStore = new() { Output = $"Your Input: {signalStore.Input}" };
+    await sse.MergeSignals(newSignalsStore);
+});
