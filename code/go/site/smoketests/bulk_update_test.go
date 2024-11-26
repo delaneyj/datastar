@@ -9,10 +9,10 @@ import (
 func TestExampleBulkUpdate(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/bulk_update")
-	assert.NotNil(t, page)
-
 	t.Run("bulk update active", func(t *testing.T) {
+		page := g.page("examples/bulk_update")
+		assert.NotNil(t, page)
+
 		selectAllInput := page.MustElement("#bulk_update > table > thead > tr > th > input")
 		selectAllInput.MustClick()
 
@@ -33,6 +33,9 @@ func TestExampleBulkUpdate(t *testing.T) {
 	})
 
 	t.Run("bulk update inactive", func(t *testing.T) {
+		page := g.page("examples/bulk_update")
+		assert.NotNil(t, page)
+
 		selectAllInput := page.MustElement("#bulk_update > table > thead > tr > th > input")
 		selectAllInput.MustClick()
 

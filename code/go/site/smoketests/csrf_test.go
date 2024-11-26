@@ -1,22 +1,11 @@
 package smoketests
 
 import (
-	"encoding/json"
 	"testing"
 
 	"github.com/go-rod/rod/lib/proto"
-	"github.com/go-rod/rod/lib/utils"
 	"github.com/stretchr/testify/assert"
 )
-
-type csrfHeaders struct {
-	AcceptLanguage string `json:"Accept-Language"`
-	ContentType    string `json:"Content-Type"`
-	Referer        string `json:"Referer"`
-	UserAgent      string `json:"User-Agent"`
-	XCsrfToken     string `json:"X-CSRF-Token"`
-	Accept         string `json:"accept"`
-}
 
 func TestExampleCsrf(t *testing.T) {
 	g := setup(t)
@@ -31,20 +20,14 @@ func TestExampleCsrf(t *testing.T) {
 			return document.querySelector("#update_me > button").dataset["onClick"].match(regex)[0]
 		}`).Str()
 
-		var e proto.NetworkRequestWillBeSent
+		e := proto.NetworkRequestWillBeSent{}
 		wait := page.WaitEvent(&e)
 
-		btn.MustClick()
+		go btn.MustClick()
 		wait()
 
-		headers := utils.Dump(e.Request.Headers)
+		actual := e.Request.Headers["X-CSRF-Token"].Str()
 
-		var result csrfHeaders
-		err := json.Unmarshal([]byte(headers), &result)
-		if err != nil {
-			t.Error("error unmarshalling", err)
-		}
-
-		assert.Equal(t, expected, result.XCsrfToken)
+		assert.Equal(t, expected, actual)
 	})
 }

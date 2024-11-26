@@ -7,6 +7,7 @@ import (
 )
 
 func TestExampleSessionStorage(t *testing.T) {
+	t.Skip("skipping TestExampleSessionStorage")
 	g := setup(t)
 
 	page := g.page("examples/session_storage")

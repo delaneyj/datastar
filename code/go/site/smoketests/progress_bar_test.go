@@ -11,4 +11,17 @@ func TestExampleProgressBar(t *testing.T) {
 
 	page := g.page("examples/progress_bar")
 	assert.NotNil(t, page)
+
+	t.Run("observe progress bar", func(t *testing.T) {
+		selector := "#progress_bar"
+		svg := page.MustElement(selector)
+
+		initial := svg.MustHTML()
+
+		page.MustWaitStable()
+
+		result := page.MustElement(selector).MustHTML()
+
+		assert.NotEqual(t, initial, result)
+	})
 }

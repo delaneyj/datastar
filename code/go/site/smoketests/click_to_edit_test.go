@@ -13,7 +13,7 @@ func TestExampleClickToEdit(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("click to edit", func(t *testing.T) {
-		editBtn := page.MustElement("#contact_1 > div > button")
+		editBtn := page.MustElement("#contact_1 > div > button:nth-of-type(1)")
 		editBtn.MustClick()
 
 		firstNameInput := page.MustElement("#contact_1 > label > input")
@@ -28,7 +28,8 @@ func TestExampleClickToEdit(t *testing.T) {
 		emailInput.MustSelectAllText().MustInput("")
 		emailInput.MustInput("Test")
 
-		saveBtn := page.MustElement("#contact_1 > div > button")
+		// todo: this is not clicking save correctly, which causes the rest of the test to fail
+		saveBtn := page.MustElement("#contact_1 > div > button:nth-of-type(1)")
 		saveBtn.MustClick()
 
 		firstNameLabel := page.MustElement("#contact_1 > label:nth-child(1)")

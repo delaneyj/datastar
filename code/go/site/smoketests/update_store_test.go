@@ -11,4 +11,24 @@ func TestExampleUpdateStore(t *testing.T) {
 
 	page := g.page("examples/update_store")
 	assert.NotNil(t, page)
+
+	t.Run("apply random signal patch", func(t *testing.T) {
+		initial := page.MustElement("pre").MustHTML()
+
+		page.MustElementR("button", "Apply random signal patch").MustClick()
+
+		result := page.MustElement("pre").MustHTML()
+
+		assert.NotEqual(t, initial, result)
+	})
+
+	t.Run("remove 2 random", func(t *testing.T) {
+		initial := page.MustElement("pre").MustHTML()
+
+		page.MustElementR("button", "Remove 2 random").MustClick()
+
+		result := page.MustElement("pre").MustHTML()
+
+		assert.NotEqual(t, initial, result)
+	})
 }
