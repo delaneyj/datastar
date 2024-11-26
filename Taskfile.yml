@@ -14,7 +14,6 @@ tasks:
     cmds:
       - go install github.com/go-task/task/v3/cmd/task@latest
       - go install github.com/a-h/templ/cmd/templ@latest
-      # Replace `linux-x64` with `macos-x64` or `macos-arm64` for macOS.
       - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
         platforms: [linux]
       - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
