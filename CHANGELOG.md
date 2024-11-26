@@ -1,9 +1,6 @@
 # Release Notes for Datastar
 
-## 0.20.0 - 2024-11-22
-
-> [!WARNING]
-> This update contains breaking changes to attributes, actions and SSE events.
+## 0.20.1 - 2025-11-25
 
 ### Added
 
@@ -36,7 +33,7 @@
 
 - Removed the `~ref` syntax. Use the signal created by `data-ref` directly instead.
 - Removed the `local` and `session` modifiers from `data-store`. Use the new `data-persist` attribute instead.
-- Removed the `data-teleport` attribute. 
+- Removed the `data-teleport` attribute.
 - Removed the `data-header` attribute.  Use the `headers` option in SSE actions instead.
 - Removed the `$$isFetching` action and the `data-fetch-indicator` attribute. Use `data-indicator` instead.
 - Removed the `$$remote` action.
