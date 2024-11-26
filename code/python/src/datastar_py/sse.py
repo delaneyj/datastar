@@ -1,16 +1,16 @@
 from itertools import chain
 from typing import Optional
 
-from .consts import EventType, FragmentMergeMode
+import datastar_py.consts as consts
 
 
 class ServerSentEventGenerator:
     def _send(
         self,
-        event_type: EventType,
+        event_type: consts.EventType,
         data_lines: list[str],
         event_id: Optional[int] = None,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ) -> str:
         prefix = []
         if event_id:
@@ -29,32 +29,37 @@ class ServerSentEventGenerator:
         self,
         fragments: list[str],
         selector: Optional[str] = None,
-        merge_mode: FragmentMergeMode = None,
+        merge_mode: Optional[consts.FragmentMergeMode] = None,
         settle_duration: Optional[int] = None,
         use_view_transition: bool = True,
         event_id: Optional[int] = None,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ):
         data_lines = []
         if merge_mode:
-            data_lines.append(f"data: merge {merge_mode}")
+            data_lines.append(f"data: {consts.MergeModeDatalineLiteral} {merge_mode}")
         if selector:
-            data_lines.append(f"data: selector {selector}")
+            data_lines.append(f"data: {consts.SelectorDatalineLiteral} {selector}")
         if use_view_transition:
-            data_lines.append("data: useViewTransition true")
+            data_lines.append(f"data: {consts.UseViewTransitionDatalineLiteral} true")
         else:
-            data_lines.append("data: useViewTransition false")
+            data_lines.append(f"data: {consts.UseViewTransitionDatalineLiteral} false")
         if settle_duration:
-            data_lines.append(f"data: settleDuration {settle_duration}")
+            data_lines.append(
+                f"data: {consts.SettleDurationDatalineLiteral} {settle_duration}"
+            )
 
         data_lines.extend(
-            f"data: fragments {x}"
+            f"data: {consts.FragmentsDatalineLiteral} {x}"
             for fragment in fragments
             for x in fragment.splitlines()
         )
 
         return self._send(
-            EventType.MERGE_FRAGMENTS, data_lines, event_id, retry_duration
+            consts.EventType.EventTypeMergeFragments,
+            data_lines,
+            event_id,
+            retry_duration,
         )
 
     def remove_fragments(
@@ -63,20 +68,25 @@ class ServerSentEventGenerator:
         settle_duration: Optional[int] = None,
         use_view_transition: bool = True,
         event_id: Optional[int] = None,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ):
         data_lines = []
         if selector:
-            data_lines.append(f"data: selector {selector}")
+            data_lines.append(f"data: {consts.SelectorDatalineLiteral} {selector}")
         if use_view_transition:
-            data_lines.append("data: useViewTransition true")
+            data_lines.append(f"data: {consts.UseViewTransitionDatalineLiteral} true")
         else:
-            data_lines.append("data: useViewTransition false")
+            data_lines.append(f"data: {consts.UseViewTransitionDatalineLiteral} false")
         if settle_duration:
-            data_lines.append(f"data: settleDuration {settle_duration}")
+            data_lines.append(
+                f"data: {consts.SettleDurationDatalineLiteral} {settle_duration}"
+            )
 
         return self._send(
-            EventType.REMOVE_FRAGMENTS, data_lines, event_id, retry_duration
+            consts.EventType.EventTypeRemoveFragments,
+            data_lines,
+            event_id,
+            retry_duration,
         )
 
     def merge_signals(
@@ -84,28 +94,35 @@ class ServerSentEventGenerator:
         data: list[str],
         event_id: Optional[int] = None,
         only_if_missing: bool = False,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ):
         data_lines = []
         if only_if_missing:
-            data_lines.append("data: onlyIfMissing true")
+            data_lines.append(f"data: {consts.OnlyIfMissingDatalineLiteral} true")
 
-        data_lines.append(f"data: signals {' '.join(data)}")
+        data_lines.append(f"data: {consts.SignalsDatalineLiteral} {' '.join(data)}")
 
-        return self._send(EventType.MERGE_SIGNALS, data_lines, event_id, retry_duration)
+        return self._send(
+            consts.EventType.EventTypeMergeSignals, data_lines, event_id, retry_duration
+        )
 
     def remove_signals(
         self,
         paths: list[str],
         event_id: Optional[int] = None,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ):
         data_lines = []
 
-        data_lines.append(f"data: paths {' '.join(path for path in paths)}")
+        data_lines.append(
+            f"data: {consts.PathsDatalineLiteral} {' '.join(path for path in paths)}"
+        )
 
         return self._send(
-            EventType.REMOVE_SIGNALS, data_lines, event_id, retry_duration
+            consts.EventType.EventTypeRemoveSignals,
+            data_lines,
+            event_id,
+            retry_duration,
         )
 
     def execute_script(
@@ -114,22 +131,26 @@ class ServerSentEventGenerator:
         auto_remove: bool = True,
         attributes: Optional[list[str]] = None,
         event_id: Optional[int] = None,
-        retry_duration: int = 1_000,
+        retry_duration: int = consts.DefaultSseRetryDuration,
     ):
         data_lines = []
-        data_lines.append(f"data: autoRemove {auto_remove}")
+        data_lines.append(f"data: {consts.AutoRemoveDatalineLiteral} {auto_remove}")
 
         if attributes:
             data_lines.extend(
-                f"data: attributes {attribute}"
+                f"data: {consts.AttributesDatalineLiteral} {attribute}"
                 for attribute in attributes
-                if attribute.strip() != "type module"
+                if attribute.strip() != consts.DefaultExecuteScriptAttributes
             )
 
         data_lines.extend(
-            f"data: script {script_line}" for script_line in script.splitlines()
+            f"data: {consts.ScriptDatalineLiteral} {script_line}"
+            for script_line in script.splitlines()
         )
 
         return self._send(
-            EventType.EXECUTE_SCRIPT, data_lines, event_id, retry_duration
+            consts.EventType.EventTypeExecuteScript,
+            data_lines,
+            event_id,
+            retry_duration,
         )
