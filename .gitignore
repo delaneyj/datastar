@@ -7,4 +7,5 @@ data
 node_modules
 datastar-website
 *_bin
-.DS_Store
+*.pyc
+__pycache__
