@@ -13,6 +13,13 @@
 		<module>examples</module>
 	</modules>
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<url>https://maven.pkg.github.com/starfederation/datastar</url>
+		</repository>
+	</distributionManagement>
+
 	<properties>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>

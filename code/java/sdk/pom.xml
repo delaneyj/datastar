@@ -12,13 +12,6 @@
     <artifactId>datastar-java</artifactId>
     <packaging>jar</packaging>
 
-    <distributionManagement>
-        <repository>
-            <id>github</id>
-            <url>https://maven.pkg.github.com/starfederation/datastar</url>
-        </repository>
-    </distributionManagement>
-
     <dependencies>
         <!-- Jackson for JSON processing -->
         <dependency>
