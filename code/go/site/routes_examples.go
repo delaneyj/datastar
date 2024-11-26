@@ -160,7 +160,7 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 
 		if err := errors.Join(
 			setupExamplesQuiz(examplesRouter, store),
-			setupExamplesQuizSlow(examplesRouter),
+			setupExamplesQuizSlow(examplesRouter, store),
 			setupExamplesClickToEdit(examplesRouter),
 			setupExamplesBulkUpdate(examplesRouter),
 			setupExamplesClickToLoad(examplesRouter),
