@@ -2,22 +2,23 @@ package smoketests
 
 import (
 	"testing"
-	"time"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExamplesRafUpdate(t *testing.T) {
-	page := testExamplesPage(t, "raf_update")
+func TestExampleRafUpdate(t *testing.T) {
+	g := setup(t)
 
-	timeEl := page.MustElement("#time")
-	last := ""
-	for i := 0; i < 3; i++ {
-		current, err := timeEl.Text()
-		assert.NoError(t, err)
+	page := g.page("examples/raf_update")
+	assert.NotNil(t, page)
 
-		assert.NotEqual(t, last, current)
-		last = current
-		time.Sleep(1001 * time.Millisecond)
-	}
+	t.Run("observe raf", func(t *testing.T) {
+		initial := page.MustElement("pre").MustText()
+
+		page.MustWait("() => document.querySelector(`pre`).innerText !== `" + initial + "`")
+
+		result := page.MustElement("pre").MustText()
+
+		assert.NotEqual(t, initial, result)
+	})
 }
