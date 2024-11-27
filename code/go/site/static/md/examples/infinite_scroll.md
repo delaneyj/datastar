@@ -29,7 +29,7 @@ data: fragments <div data-intersects="$offset=10;$limit=10;$get('/examples/infin
 event: datastar-merge-fragments
 data: selector #click_to_load_rows
 data: mergeMode append
-data: settle: 500
+data: settleDuration 500
 data: fragments <tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</td><td class=\"uppercase\">39b02fcf39c047c5</td></tr>"
 
 ....More rows to be appended
