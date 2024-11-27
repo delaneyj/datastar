@@ -40,13 +40,11 @@ export function sendSSERequest(
     ) => {
         if (!!!url?.length) throw ERR_BAD_ARGS;
 
-        const { onlyRemoteSignals, headers } = Object.assign({
-            onlyRemoteSignals: true,
-            headers: {
-                "Content-Type": "application/json",
-                [DATASTAR_REQUEST]: true,
-            },
-        }, args);
+        const onlyRemoteSignals = args?.onlyRemoteSignals ?? true;
+        const headers = Object.assign({
+            "Content-Type": "application/json",
+            [DATASTAR_REQUEST]: true,
+        }, args?.headers);
         const currentStore = ctx.store().value;
         let store = Object.assign({}, currentStore);
         if (onlyRemoteSignals) {
