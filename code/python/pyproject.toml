@@ -1,6 +1,5 @@
 [project]
 name = "datastar-py"
-version = "0.1.0"
 description = "Helper functions and classes for the Datastar library (https://data-star.dev/)"
 readme = "README.md"
 authors = [
@@ -8,6 +7,7 @@ authors = [
 ]
 requires-python = ">=3.9"
 dependencies = []
+dynamic=["version"]
 
 [build-system]
 requires = ["hatchling"]
@@ -23,6 +23,12 @@ dev = [
     "uvicorn>=0.32.1",
 ]
 
+[tool.hatch.version]
+path = "src/datastar_py/__about__.py"
+
+[[tool.bumpversion.files]]
+filename = "src/datastar_py/__about__.py"
+
 [tool.bumpversion]
 current_version = "0.2.0"
 parse = "(?P<major>\\d+)\\.(?P<minor>\\d+)\\.(?P<patch>\\d+)"
@@ -32,7 +38,7 @@ replace = "{new_version}"
 regex = false
 ignore_missing_version = false
 ignore_missing_files = false
-tag = true
+tag = false
 sign_tags = false
 tag_name = "v{new_version}"
 tag_message = "Bump version: {current_version} → {new_version}"
