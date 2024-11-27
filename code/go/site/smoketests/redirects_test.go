@@ -20,7 +20,7 @@ func TestExampleRedirects(t *testing.T) {
 		btn := page.MustElementR("button", "Redirect")
 		btn.MustClick()
 
-		waitForURLToContain(t, page, "grugs_around_fire")
+		waitForURLToContain(page, "grugs_around_fire")
 
 		url := page.MustInfo().URL
 		assert.Contains(t, url, "grugs_around_fire")

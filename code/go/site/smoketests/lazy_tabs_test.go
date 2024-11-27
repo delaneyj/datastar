@@ -13,13 +13,21 @@ func TestExampleLazyTabs(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("click through lazy tabs", func(t *testing.T) {
-		tabs := page.MustElement(".tabs.tabs-bordered").MustElements("button")
-		initial := page.MustElement("#tab_content").MustText()
+		tabContents := page.MustElement("#tab_content")
+		initial := tabContents.MustText()
 
-		for _, btn := range tabs {
+		tabs := page.MustElement("#tabButtons")
+		tabButtons := tabs.MustElements("button")
+
+		currentText := initial
+		for _, btn := range tabButtons {
 			btn.MustClick()
+			waitForSelectorToNotHaveInnerTextEqual(page, "#tabButtons", initial)
+
 			result := page.MustElement("#tab_content").MustText()
-			assert.NotEqual(t, initial, result)
+			assert.NotEqual(t, currentText, result)
+
+			currentText = result
 		}
 	})
 }

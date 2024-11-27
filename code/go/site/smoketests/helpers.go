@@ -2,6 +2,7 @@ package smoketests
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/go-rod/rod"
@@ -32,9 +33,18 @@ func waitForElementWithIDToStartWith(t *testing.T, page *rod.Page, el *rod.Eleme
 	page.MustWait(js)
 }
 
-func waitForURLToContain(t *testing.T, page *rod.Page, text string) {
+func waitForURLToContain(page *rod.Page, text string) {
 	js := fmt.Sprintf(`() => {
 		return window.location.href.includes('%s')
 	}`, text)
+	page.MustWait(js)
+}
+
+func waitForSelectorToNotHaveInnerTextEqual(page *rod.Page, selector, text string) {
+	text = strings.ReplaceAll(text, "\n", "\\n")
+	js := fmt.Sprintf(`() => {
+		const q = document.querySelector('%s')
+		return q.innerText != '%s'
+	}`, selector, text)
 	page.MustWait(js)
 }

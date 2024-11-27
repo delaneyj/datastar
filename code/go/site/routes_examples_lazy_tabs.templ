@@ -19,9 +19,10 @@ type LazyTabsStore struct {
 
 templ setupExamplesLazyTabsComponent(tabCount int, contents templ.Component, store *LazyTabsStore) {
 	<div id="lazy_tabs" data-store={ templ.JSONString(store) } class="flex flex-col">
-		<div role="tablist" class="tabs tabs-bordered">
+		<div id="tabButtons" role="tablist" class="tabs tabs-bordered">
 			for i := 0; i < tabCount; i++ {
 				<button
+					id={ fmt.Sprintf("tabBtn%d", i) }
 					role="tab"
 					class={ "tab", templ.KV("tab-active", i == store.TabID) }
 					data-on-click={ fmt.Sprintf("$tabId=%d;$get('/examples/lazy_tabs/data')", i) }
