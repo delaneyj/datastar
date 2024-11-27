@@ -31,3 +31,10 @@ func waitForElementWithIDToStartWith(t *testing.T, page *rod.Page, el *rod.Eleme
 	}`, *id, text)
 	page.MustWait(js)
 }
+
+func waitForURLToContain(t *testing.T, page *rod.Page, text string) {
+	js := fmt.Sprintf(`() => {
+		return window.location.href.includes('%s')
+	}`, text)
+	page.MustWait(js)
+}
