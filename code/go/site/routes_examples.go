@@ -53,12 +53,6 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 				{ID: "sortable"},
 			},
 		},
-		// {
-		// 	Label: "Web Components Examples",
-		// 	Links: []*SidebarLink{
-		// 		{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
-		// 	},
-		// },
 		{
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
@@ -97,6 +91,7 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 				{ID: "replace_url_from_backend"},
 				{ID: "replace_url_from_signals"},
 				{ID: "prefetch"},
+				{ID: "debounce_and_throttle"},
 				// {ID: "snake"},
 			},
 		},
