@@ -1,18 +1,17 @@
 import asyncio
 from datetime import datetime
 
-from sanic import Sanic
-from sanic.response import html
+from quart import Quart, make_response
 
 from datastar_py import SSE_HEADERS, ServerSentEventGenerator
 
-app = Sanic("DataStarApp")
+app = Quart(__name__)
 
 HTML = """\
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			<title>DATASTAR on Sanic</title>
+			<title>DATASTAR on Quart</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
             <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
 			<style>
@@ -44,24 +43,26 @@ HTML = """\
 """
 
 
-@app.get("/")
-async def hello_world(request):
-    return html(HTML.replace("CURRENT_TIME", f"{datetime.isoformat(datetime.now())}"))
-
-
-@app.get("/updates")
-async def updates(request):
-    response = await request.respond(headers=SSE_HEADERS)
-
-    sse = ServerSentEventGenerator()
-    while True:
-        await response.send(
-            sse.merge_fragments(
+@app.route("/updates")
+async def updates():
+    async def time_updates():
+        sse = ServerSentEventGenerator()
+        while True:
+            yield sse.merge_fragments(
                 [f"""<span id="currentTime">{datetime.now().isoformat()}"""]
             )
-        )
-        await asyncio.sleep(10)
-        await response.send(
-            sse.merge_signals({"currentTime": f"{datetime.now().isoformat()}"})
-        )
-        await asyncio.sleep(10)
+            await asyncio.sleep(1)
+            yield sse.merge_signals({"currentTime": f"{datetime.now().isoformat()}"})
+            await asyncio.sleep(1)
+
+    response = await make_response(time_updates(), SSE_HEADERS)
+    response.timeout = None
+    return response
+
+
+@app.route("/")
+async def hello():
+    return HTML.replace("CURRENT_TIME", f"{datetime.isoformat(datetime.now())}")
+
+
+# app.run()

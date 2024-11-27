@@ -13,35 +13,36 @@ HTML = """\
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			<title>DATASTAR</title>
+			<title>DATASTAR on FastAPI</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<!-- <link rel="icon" href={ staticPath("images/datastar_icon.svg") }/> -->
-			<!-- <link href={ staticPath("css/site.css") } rel="stylesheet" type="text/css"/> -->
-			<link rel="preconnect" href="https://fonts.googleapis.com"/>
-			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet"/>
-			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
             <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
-            <link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
->
 			<style>
-            body, div {
-            margin-top: 2rem;
-            }
+            html, body { height: 100%; width: 100%; }
+            body { background-image: linear-gradient(to right bottom, oklch(0.424958 0.052808 253.972015), oklch(0.189627 0.038744 264.832977)); }
+            .container { display: grid; place-content: center; }
+            .time { padding: 2rem; border-radius: 8px; margin-top: 3rem; font-family: monospace, sans-serif; background-color: oklch(0.916374 0.034554 90.5157); color: oklch(0.265104 0.006243 0.522862 / 0.6); font-weight: 600; }
 			</style>
 		</head>
 		<body
             data-store="{currentTime: 'CURRENT_TIME'}"
 			data-on-pageshow.window="evt?.persisted && window.location.reload()"
-			class="container flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent"
 		>
-        <div data-on-load="$get('/updates')">Current time from fragment: <span id="currentTime">CURRENT_TIME</span></div>
-        <div>Current time from signal: <span data-text="$currentTime">CURRENT_TIME</span></div>
+        <div class="container">
+            <div
+            class="time"
+            data-on-load="$get('/updates')"
+            >
+            Current time from fragment: <span id="currentTime">CURRENT_TIME</span>
+            </div>
+            <div
+            class="time"
+            >
+            Current time from signal: <span data-text="$currentTime">CURRENT_TIME</span>
+            </div>
+        </div>
 		</body>
 	</html>
-    """
+"""
 
 
 @app.get("/")
