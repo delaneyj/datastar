@@ -53,12 +53,6 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 				{ID: "sortable"},
 			},
 		},
-		// {
-		// 	Label: "Web Components Examples",
-		// 	Links: []*SidebarLink{
-		// 		{ID: "shoelace_kitchensink", ShouldIncludeInspector: true},
-		// 	},
-		// },
 		{
 			Label: "Reactive Examples",
 			Links: []*SidebarLink{
