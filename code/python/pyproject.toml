@@ -15,7 +15,7 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
-    "fastapi>=0.115.4",
+    "fastapi[standard]>=0.115.4",
     "flask[async]>=3.0.3",
     "sanic>=24.6.0",
 ]
