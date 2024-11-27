@@ -30,7 +30,7 @@ event: datastar-merge-fragments
 data: selector #click_to_load_rows
 data: mergeMode append
 data: settle: 500
-data: fragments <<tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</td><td class=\"uppercase\">39b02fcf39c047c5</td></tr>"
+data: fragments <tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</td><td class=\"uppercase\">39b02fcf39c047c5</td></tr>"
 
 ....More rows to be appended
 ```
