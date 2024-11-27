@@ -3,13 +3,12 @@ package smoketests
 import (
 	"fmt"
 	"strings"
-	"testing"
 
 	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
-func waitForElementWithIDToHaveInnerText(t *testing.T, page *rod.Page, el *rod.Element) {
+func waitForElementWithIDToHaveInnerText(t assert.TestingT, page *rod.Page, el *rod.Element) {
 	id, err := el.Attribute("id")
 	assert.NoError(t, err)
 	assert.NotNil(t, id)
@@ -21,7 +20,7 @@ func waitForElementWithIDToHaveInnerText(t *testing.T, page *rod.Page, el *rod.E
 	page.MustWait(js)
 }
 
-func waitForElementWithIDToStartWith(t *testing.T, page *rod.Page, el *rod.Element, text string) {
+func waitForElementWithIDToStartWith(t assert.TestingT, page *rod.Page, el *rod.Element, text string) {
 	id, err := el.Attribute("id")
 	assert.NoError(t, err)
 	assert.NotNil(t, id)

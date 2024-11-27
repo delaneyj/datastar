@@ -2,6 +2,7 @@ package smoketests
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -14,12 +15,16 @@ func TestExampleDialogsBrowser(t *testing.T) {
 
 	t.Run("launch dialog", func(t *testing.T) {
 		btn := page.MustElement("#dialogs")
-
-		waitForElementWithIDToHaveInnerText(t, page, btn)
+		page.MustWaitIdle()
 
 		wait, handle := page.MustHandleDialog()
 		go btn.MustClick()
+
+		// This is a workaround for the dialog not being available after wiat
+		time.Sleep(1 * time.Second)
+
 		wait()
+
 		handle(true, "test")
 		handle(true, "")
 
