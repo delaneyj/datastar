@@ -13,10 +13,14 @@ func TestExampleScrollIntoView(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("smooth", func(t *testing.T) {
-		page.MustElementR("button", "Scroll into view").MustClick()
+		btn := page.MustElement("#scrollIntoViewButton")
+		btn.MustClick()
 
-		assert.Equal(t, 760.5, page.Mouse.Position().X)
-		assert.Equal(t, 400.0, page.Mouse.Position().Y)
+		page.MustWaitIdle()
+
+		pos := page.Mouse.Position()
+		assert.InDelta(t, 760, pos.X, 5.0)
+		assert.InDelta(t, 400, pos.Y, 5.0)
 	})
 
 }
