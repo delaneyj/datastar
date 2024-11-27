@@ -8,7 +8,6 @@ import (
 
 func TestExampleClickToLoad(t *testing.T) {
 	g := setup(t)
-
 	page := g.page("examples/click_to_load")
 	assert.NotNil(t, page)
 
@@ -20,11 +19,9 @@ func TestExampleClickToLoad(t *testing.T) {
 
 		btn := page.MustElement("#more_btn")
 		btn.MustClick()
-
 		page.MustWaitStable()
 
 		updatedRows := table.MustElements("tr")
-
-		assert.Equal(t, updatedRows, 21)
+		assert.Len(t, updatedRows, 21)
 	})
 }
