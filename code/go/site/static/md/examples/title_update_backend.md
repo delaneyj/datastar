@@ -13,7 +13,7 @@ A user [in the Discord channel](https://discord.com/channels/725789699527933952/
 ```
 event: datastar-merge-fragments
 data: selector title
-data: fragment <title>08:30:36 from server</title>
+data: fragments <title>08:30:36 from server</title>
 ```
 
 In a similar fashion you can append, prepend directly to the HEAD element using [Merge Options](/examples/merge_options)

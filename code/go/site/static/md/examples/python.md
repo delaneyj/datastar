@@ -37,7 +37,7 @@ def send_event(frag, merge=False):
     yield 'event: datastar-merge-fragments\n'
     if merge:
         yield 'data: mergeMode upsertAttributes\n'
-    yield f'data: fragment {frag}\n\n'
+    yield f'data: fragments {frag}\n\n'
 
 def send_stream():
     while True:

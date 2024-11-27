@@ -24,13 +24,13 @@ event: datastar-merge-fragments
 data: selector #more_btn
 data: mergeMode morph
 data: settleDuration 500
-data: fragment <div data-intersects="$offset=10;$limit=10;$get('/examples/infinite_scroll/data')" id="more_btn"><div>Loading...</div></div>
+data: fragments <div data-intersects="$offset=10;$limit=10;$get('/examples/infinite_scroll/data')" id="more_btn"><div>Loading...</div></div>
 
 event: datastar-merge-fragments
 data: selector #click_to_load_rows
 data: mergeMode append
 data: settle: 500
-data: fragment <<tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</td><td class=\"uppercase\">39b02fcf39c047c5</td></tr>"
+data: fragments <<tr id=\"agent_60\"><td>Agent Smith 3c</td><td>void61@null.org</td><td class=\"uppercase\">39b02fcf39c047c5</td></tr>"
 
 ....More rows to be appended
 ```

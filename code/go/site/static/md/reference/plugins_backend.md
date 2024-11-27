@@ -26,7 +26,7 @@ An example of a minimal valid response would be:
 
 ```go
 event: datastar-merge-fragments
-data: fragment <div id="foo">Hello!</div>
+data: fragments <div id="foo">Hello!</div>
 ```
 
 Additional `data` lines can be added to the response to override the default behavior.
