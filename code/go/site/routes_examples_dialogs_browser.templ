@@ -21,7 +21,7 @@ templ DialogBrowserSure(store *DialogBrowserStore) {
 	<div id="dialogs" class="flex flex-col gap-4">
 		if store.Confirm {
 			<div>
-				You clicked the button and confirmed with prompt of <span class="font-bold text-accent">{ store.Prompt }</span>!
+				You clicked the button and confirmed with prompt of <span id="confirmation" class="font-bold text-accent">{ store.Prompt }</span>!
 			</div>
 			<button class="flex items-center gap-2 btn btn-accent" data-on-click="$get('/examples/dialogs_browser/data')">
 				@icon("material-symbols:arrow-back")

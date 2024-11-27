@@ -3,112 +3,131 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
+	datastar "github.com/starfederation/datastar/code/go/sdk"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleMergeOptions(t *testing.T) {
 	g := setup(t)
 
-	t.Run("morph", func(t *testing.T) {
+	getTarget := func(page *rod.Page) *rod.Element {
+		target := page.MustElement("#imTheTarget")
+		assert.NotNil(t, target)
+		return target
+	}
+
+	setupMergeModeTest := func(
+		t *testing.T, mergeMode datastar.FragmentMergeMode,
+		fn func(t *testing.T, page *rod.Page),
+	) {
+		mmStr := string(mergeMode)
 		page := g.page("examples/merge_options")
 		assert.NotNil(t, page)
 
-		initial, _ := page.MustElement("#target").Attribute("style")
+		initial, _ := getTarget(page).Attribute("style")
 		assert.Nil(t, initial)
 
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(1)").MustClick()
+		mergeModeBtn := page.MustElement("#" + mmStr)
+		mergeModeBtn.MustClick()
+		page.MustWaitIdle()
 
-		result := page.MustElement("#target").MustAttribute("style")
-		assert.Equal(t, "background-color:#a6cee3;color:black;", *result)
+		fn(t, page)
+	}
+
+	t.Run("morph", func(t *testing.T) {
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeMorph,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				waitForElementWithIDToStartWith(t, page, target, "Update")
+				result := target.MustAttribute("style")
+				assert.Contains(t, *result, "background-color:#a6cee3")
+			},
+		)
 	})
 
 	t.Run("inner", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		initial := page.MustElement("#target").MustText()
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(2)").MustClick()
-
-		result := page.MustElement("#target").MustText()
-		assert.NotEqual(t, initial, result)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeInner,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				waitForElementWithIDToStartWith(t, page, target, "Update")
+				result := target.MustText()
+				assert.Contains(t, result, "Update")
+			},
+		)
 	})
 
 	t.Run("outer", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		initial, _ := page.MustElement("#target").Attribute("style")
-		assert.Nil(t, initial)
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(3)").MustClick()
-
-		result := page.MustElement("#target").MustAttribute("style")
-		assert.Equal(t, "background-color:#b2df8a;color:black;", *result)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeOuter,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				result := target.MustText()
+				assert.Contains(t, result, "Update")
+			},
+		)
 	})
 
 	t.Run("prepend", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		initial := page.MustElement("#target").MustHTML()
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(4)").MustClick()
-
-		result := page.MustElement("#target").MustHTML()
-
-		assert.NotEqual(t, initial, result)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModePrepend,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				actualTarget := target.MustElements("div")[0]
+				result := actualTarget.MustHTML()
+				assert.Contains(t, result, "background-color:#33a02c")
+			},
+		)
 	})
 
 	t.Run("append", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		initial := page.MustElement("#target").MustHTML()
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(5)").MustClick()
-
-		result := page.MustElement("#target").MustHTML()
-
-		assert.NotEqual(t, initial, result)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeAppend,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				actualTarget := target.MustElement("div")
+				result := actualTarget.MustHTML()
+				assert.Contains(t, result, "background-color:#fb9a99")
+			},
+		)
 	})
 
 	t.Run("before", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		contents := page.MustElement("#contents").MustElements("div")
-		assert.Len(t, contents, 2)
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(6)").MustClick()
-
-		updated := page.MustElement("#contents").MustElements("div")
-		assert.Len(t, updated, 3)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeBefore,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				actualTarget := target.MustParent().MustElement("div")
+				result := actualTarget.MustHTML()
+				assert.Contains(t, result, "background-color:#e31a1c")
+			},
+		)
 	})
 
 	t.Run("after", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		contents := page.MustElement("#contents").MustElements("div")
-		assert.Len(t, contents, 2)
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(7)").MustClick()
-
-		updated := page.MustElement("#contents").MustElements("div")
-		assert.Len(t, updated, 3)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeAfter,
+			func(t *testing.T, page *rod.Page) {
+				target := getTarget(page)
+				actualTarget := target.MustNext()
+				result := actualTarget.MustHTML()
+				assert.Contains(t, result, "background-color:#fdbf6f")
+			},
+		)
 	})
 
 	t.Run("upsertAttributes", func(t *testing.T) {
-		page := g.page("examples/merge_options")
-		assert.NotNil(t, page)
-
-		initial, _ := page.MustElement("#target").Attribute("style")
-		assert.Nil(t, initial)
-
-		page.MustElement("#contents > div:nth-of-type(2) > button:nth-of-type(8)").MustClick()
-
-		result := page.MustElement("#target").MustAttribute("style")
-		assert.Equal(t, "background-color:#ff7f00;color:black;", *result)
+		setupMergeModeTest(
+			t, datastar.FragmentMergeModeUpsertAttributes,
+			func(t *testing.T, page *rod.Page) {
+				// waitForElementWithIDToStartWith(t, page, target, "Update")
+				target := getTarget(page)
+				result := target.MustAttribute("style")
+				assert.NotNil(t, result)
+				assert.Contains(t, *result, "background-color:#ff7f00")
+			},
+		)
 	})
 }

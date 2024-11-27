@@ -27,6 +27,8 @@ func TestExampleUpdateStore(t *testing.T) {
 
 		page.MustElementR("button", "Remove 2 random").MustClick()
 
+		page.MustWaitIdle()
+
 		result := page.MustElement("pre").MustHTML()
 
 		assert.NotEqual(t, initial, result)

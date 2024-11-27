@@ -1,10 +1,8 @@
 package smoketests
 
 import (
-	"encoding/json"
 	"testing"
 
-	"github.com/go-rod/rod/lib/proto"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,19 +18,11 @@ func TestExampleRedirects(t *testing.T) {
 
 	t.Run("redirection", func(t *testing.T) {
 		btn := page.MustElementR("button", "Redirect")
+		btn.MustClick()
 
-		var e proto.NetworkRequestWillBeSent
-		wait := page.WaitEvent(&e)
+		waitForURLToContain(page, "grugs_around_fire")
 
-		go btn.MustClick()
-		wait()
-
-		var result redirect
-		err := json.Unmarshal([]byte(e.Request.PostData), &result)
-		if err != nil {
-			t.Error("error unmarshalling", err)
-		}
-
-		assert.Equal(t, "/essays/grugs_around_fire", result.RedirectTo)
+		url := page.MustInfo().URL
+		assert.Contains(t, url, "grugs_around_fire")
 	})
 }
