@@ -27,10 +27,7 @@ func TestExampleCsrf(t *testing.T) {
 		assert.NotEmpty(t, matches[0][1])
 		expectedToken := matches[0][1]
 
-		page.MustWait(`() => {
-			const q = document.querySelector('#update_me > button')
-			return q.innerText.startsWith('Send update')
-		}`)
+		waitForElementWithIDToStartWith(t, page, btn, "Send update")
 
 		page.MustScreenshotFullPage("wtf.png")
 		e := proto.NetworkRequestWillBeSent{}
