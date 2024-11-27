@@ -12,13 +12,28 @@ templ Page() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
-			<title>DATASTAR</title>
+			<title>Datastar</title>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link rel="icon" href={ staticPath("images/datastar_icon.svg") }/>
 			<link href={ staticPath("css/site.css") } rel="stylesheet" type="text/css"/>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
 			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet"/>
+			<link rel="apple-touch-icon" sizes="180x180" href={ staticPath("favicon/apple-touch-icon.png") }/>
+            <link rel="icon" type="image/png" sizes="32x32" href={ staticPath("favicon/favicon-32x32.png") }/>
+            <link rel="icon" type="image/png" sizes="16x16" href={ staticPath("favicon/favicon-16x16.png") }/>
+            <link rel="manifest" href={ staticPath("favicon/site.webmanifest") }/>
+            <meta property="og:title" content="Datastar"/>
+            <meta property="og:description" content="A real-time hypermedia framework."/>
+            <meta property="og:image" content={ staticPath("images/rocket.webp") }/>
+            <meta property="og:url" content="https://data-star.dev/"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:site_name" content="Datastar"/>
+            <meta name="twitter:card" content="summary">
+            <meta name="twitter:title" content="Datastar">
+            <meta name="twitter:description" content="A real-time hypermedia framework.">
+            <meta name="twitter:image" content={ staticPath("images/rocket.webp") }>
+            <meta name="twitter:site" content="@DelaneyGillilan">
+            <meta name="twitter:creator" content="@DelaneyGillilan">
 			<script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 			<script type="module" src={ staticPath("js/datastar.js") }></script>
 			<style>
