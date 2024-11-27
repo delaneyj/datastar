@@ -15,10 +15,12 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "django>=4.2.16",
     "fastapi[standard]>=0.115.4",
     "flask[async]>=3.0.3",
     "quart>=0.19.9",
     "sanic>=24.6.0",
+    "uvicorn>=0.32.1",
 ]
 
 [tool.bumpversion]
