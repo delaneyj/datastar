@@ -1,9 +1,11 @@
+{% import "github.com/delaneyj/toolbelt" %}
+
 {%- func datastarClientConsts(data *ConstTemplateData) -%}
 // {%s data.DoNotEdit %}
 
 export const DATASTAR = "{%s data.DatastarKey %}";
 export const DATASTAR_EVENT = "{%s data.DatastarKey %}-event";
-export const DATASTAR_REQUEST = "{%s data.DatastarKey %}-request";
+export const DATASTAR_REQUEST = "{%s toolbelt.Pascal( data.DatastarKey) %}-Request";
 export const VERSION = "{%s data.Version %}";
 
 // #region Defaults
