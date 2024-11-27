@@ -28,9 +28,9 @@ func TestExampleMergeOptions(t *testing.T) {
 		initial, _ := getTarget(page).Attribute("style")
 		assert.Nil(t, initial)
 
-		page.MustWaitIdle()
 		mergeModeBtn := page.MustElement("#" + mmStr)
 		mergeModeBtn.MustClick()
+		page.MustWaitIdle()
 
 		fn(t, page)
 	}
@@ -99,7 +99,7 @@ func TestExampleMergeOptions(t *testing.T) {
 			t, datastar.FragmentMergeModeBefore,
 			func(t *testing.T, page *rod.Page) {
 				target := getTarget(page)
-				actualTarget := target.MustPrevious()
+				actualTarget := target.MustParent().MustElement("div")
 				result := actualTarget.MustHTML()
 				assert.Contains(t, result, "background-color:#e31a1c")
 			},
