@@ -80,7 +80,7 @@ func (sse *ServerSentEventGenerator) MergeSignals(storeContents []byte, opts ...
 	return nil
 }
 
-func (sse *ServerSentEventGenerator) DeleteFromStore(paths ...string) error {
+func (sse *ServerSentEventGenerator) RemoveSignals(paths ...string) error {
 	if len(paths) == 0 {
 		return ErrNoPathsProvided
 	}
@@ -89,7 +89,7 @@ func (sse *ServerSentEventGenerator) DeleteFromStore(paths ...string) error {
 		EventTypeRemoveSignals,
 		[]string{PathsDatalineLiteral + strings.Join(paths, " ")},
 	); err != nil {
-		return fmt.Errorf("failed to send delete from store: %w", err)
+		return fmt.Errorf("failed to send remove signals: %w", err)
 	}
 	return nil
 }
