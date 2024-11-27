@@ -14,16 +14,17 @@ func TestExampleDialogsBrowser(t *testing.T) {
 
 	t.Run("launch dialog", func(t *testing.T) {
 		btn := page.MustElement("#dialogs")
+
+		waitForElementWithIDToHaveInnerText(t, page, btn)
+
 		wait, handle := page.MustHandleDialog()
-
 		go btn.MustClick()
-
 		wait()
 		handle(true, "test")
 		handle(true, "")
 
-		result := page.MustElement("span.font-bold").MustText()
-
-		assert.Equal(t, "test", result)
+		confirmation := page.MustElement("#confirmation")
+		confirmationText := confirmation.MustText()
+		assert.Equal(t, "test", confirmationText)
 	})
 }

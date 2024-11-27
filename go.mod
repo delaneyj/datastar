@@ -34,6 +34,8 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0
 	github.com/valyala/quicktemplate v1.8.0
 	github.com/wcharczuk/go-chart/v2 v2.1.2
+	github.com/ysmood/got v0.40.0
+	github.com/ysmood/gson v0.7.3
 	github.com/zeebo/xxh3 v1.0.2
 )
 
@@ -65,8 +67,7 @@ require (
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/ysmood/fetchup v0.2.4 // indirect
 	github.com/ysmood/goob v0.4.0 // indirect
-	github.com/ysmood/got v0.40.0 // indirect
-	github.com/ysmood/gson v0.7.3 // indirect
+	github.com/ysmood/gop v0.2.0 // indirect
 	github.com/ysmood/leakless v0.9.0 // indirect
 	golang.org/x/crypto v0.29.0 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
