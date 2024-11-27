@@ -1,6 +1,7 @@
 package smoketests
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/go-rod/rod/lib/proto"
@@ -14,14 +15,17 @@ func TestExampleOfflineSync(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("offline sync", func(t *testing.T) {
-		initial := page.MustElement("#results").MustText()
+		results := page.MustElement("#results")
+		initial := results.MustText()
 		assert.Equal(t, "Go offline, then online to see the store sync", initial)
 
-		_ = proto.NetworkEmulateNetworkConditions{Offline: true}.Call(page)
-		_ = proto.NetworkEmulateNetworkConditions{Offline: false}.Call(page)
+		err := proto.NetworkEmulateNetworkConditions{Offline: true}.Call(page)
+		assert.NoError(t, err)
 
-		result := page.MustElement("#results").MustText()
+		err = proto.NetworkEmulateNetworkConditions{Offline: false}.Call(page)
+		assert.NoError(t, err)
 
-		assert.NotEqual(t, initial, result)
+		waitForElementWithIDToStartWith(t, page, results, "Synchronized offline data!")
+		assert.True(t, strings.Contains(results.MustText(), "stuffAlreadyInStore"))
 	})
 }
