@@ -3,6 +3,7 @@ name: Build Docker Images
 on:
   push:
     branches: develop
+    paths: [ 'Dockerfile-dev' ]
   workflow_dispatch:
 
 jobs:
