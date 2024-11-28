@@ -15,13 +15,11 @@ export const RemoveSignals: WatcherPlugin = {
         datastarSSEEventWatcher(
             EventTypes.RemoveSignals,
             ({ paths: pathsRaw = "" }) => {
-                // replace all whitespace with a single space
-                pathsRaw = pathsRaw.replaceAll(/\s+/g, " ");
-                if (!!!pathsRaw?.length) {
+                const paths = pathsRaw.split("\n").map((p) => p.trim());
+                if (!!!paths?.length) {
                     // No paths provided for remove-signals
                     throw ERR_BAD_ARGS;
                 }
-                const paths = pathsRaw.split(" ");
                 ctx.removeSignals(...paths);
             },
         );
