@@ -23,15 +23,15 @@ templ Page(title, description string) {
 			<link rel="icon" type="image/png" sizes="32x32" href={ staticPath("favicon/favicon-32x32.png") }/>
 			<link rel="icon" type="image/png" sizes="16x16" href={ staticPath("favicon/favicon-16x16.png") }/>
 			<link rel="manifest" href={ staticPath("favicon/site.webmanifest") }/>
-			<meta property="og:title" content="Datastar"/>
-			<meta property="og:description" content="A real-time hypermedia framework."/>
+			<meta property="og:title" content={ title }/>
+			<meta property="og:description" content={ description }/>
 			<meta property="og:image" content={ staticAbsolutePath("images/rocket.webp") }/>
 			<meta property="og:url" content="https://data-star.dev/"/>
 			<meta property="og:type" content="website"/>
 			<meta property="og:site_name" content="Datastar"/>
 			<meta name="twitter:card" content="summary"/>
-			<meta name="twitter:title" content="Datastar"/>
-			<meta name="twitter:description" content="A real-time hypermedia framework."/>
+			<meta name="twitter:title" content={ title }/>
+			<meta name="twitter:description" content={ description }/>
 			<meta name="twitter:image" content={ staticAbsolutePath("images/rocket.webp") }/>
 			<meta name="twitter:site" content="@DelaneyGillilan"/>
 			<meta name="twitter:creator" content="@DelaneyGillilan"/>
