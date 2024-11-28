@@ -29,6 +29,6 @@ jobs:
           target: final
           push: true
           tags: |
-            $REGISTRY/$OWNER/$IMAGE_NAME:$(date +%s)
+            $REGISTRY/$OWNER/$IMAGE_NAME:latest
           build-args: |
             ENVIRONMENT=development
