@@ -11,6 +11,7 @@ on:
       - "**/*.qtpl"
       - "**/package.json"
       - "**/*.ts"
+      - '.github/workflows/tests.yml'
   pull_request:
     branches:
       - develop
@@ -30,4 +31,4 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Run CI tests
         run: |
-          docker container run --rm -t -v "${CURDIR}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task test'
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task test'
