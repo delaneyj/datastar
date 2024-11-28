@@ -36,8 +36,12 @@ class RemoveSignals implements EventInterface
      */
     public function getDataLines(): array
     {
-        return [
-            $this->getDataLine(Consts::PATHS_DATALINE_LITERAL, ...$this->paths),
-        ];
+        $dataLines = [];
+
+        foreach ($this->paths as $path) {
+            $dataLines[] = $this->getDataLine(Consts::PATHS_DATALINE_LITERAL, $path);
+        }
+
+        return $dataLines;
     }
 }
