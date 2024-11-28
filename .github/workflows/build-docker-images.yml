@@ -3,7 +3,9 @@ name: Build Docker Images
 on:
   push:
     branches: develop
-    paths: [ 'Dockerfile-dev' ]
+    paths:
+      - 'Dockerfile-dev'
+      - '.github/workflows/build-docker-images.yml'
   workflow_dispatch:
 
 jobs:
