@@ -20,7 +20,7 @@ var (
 )
 
 func setupExamples(ctx context.Context, router chi.Router, store sessions.Store, ns *embeddednats.Server) (err error) {
-	mdElementRenderers, _, err := markdownRenders(ctx, "examples")
+	mdDataset, err := markdownRenders(ctx, "examples")
 	if err != nil {
 		return err
 	}
@@ -134,7 +134,7 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 		examplesRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			ctx := r.Context()
 			name := chi.URLParam(r, "name")
-			contents, ok := mdElementRenderers[name]
+			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
@@ -150,7 +150,7 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(ctx, w)
+			SidebarPage(r, sidebarGroups, currentLink, mdData.Title, mdData.Description, mdData.Contents).Render(ctx, w)
 		})
 
 		if err := errors.Join(

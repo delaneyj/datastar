@@ -11,7 +11,7 @@ import (
 )
 
 func setupGuide(ctx context.Context, router chi.Router) error {
-	mdElementRenderers, _, err := markdownRenders(ctx, "guide")
+	mdDataset, err := markdownRenders(ctx, "guide")
 	if err != nil {
 		return err
 	}
@@ -56,7 +56,7 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 
 		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
-			contents, ok := mdElementRenderers[name]
+			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
@@ -72,7 +72,7 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, mdData.Title, mdData.Description, mdData.Contents).Render(r.Context(), w)
 		})
 	})
 
