@@ -53,9 +53,9 @@ $sse->ExecuteScript('console.log("Hello, world!")');
 ```
 
 ```php
-use starfederation\datastar\ReadSignals;
+use starfederation\datastar\ServerSentEventGenerator;
 
-$store = ReadSignals::getStore();
+$signals = ServerSentEventGenerator::readSignals();
 ```
 
 ---
