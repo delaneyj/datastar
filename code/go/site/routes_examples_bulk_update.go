@@ -79,7 +79,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			logJSON("incoming", store)
+			// logJSON("incoming", store)
 
 			sse := datastar.NewSSE(w, r)
 			for key, wasSelected := range store.Selections {
@@ -111,7 +111,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 				store.Selections[k] = false
 			}
 
-			logJSON("outgoing", store)
+			// logJSON("outgoing", store)
 			sse.MarshalAndMergeSignals(store)
 		}
 

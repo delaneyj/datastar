@@ -13,15 +13,17 @@ func TestExampleIndicator(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("greeting", func(t *testing.T) {
-		btn := page.MustElement("#greetingBtn")
+		btn := page.MustElement("button")
 
-		greeting := page.MustElement("#greeting").MustText()
-		assert.Equal(t, "", greeting)
+		greeting := page.MustElement("#greeting")
+		greetingText := greeting.MustText()
+		assert.Equal(t, "", greetingText)
 
 		btn.MustClick()
-		page.MustWait(`() => document.querySelector("#greeting").innerText.includes("Hello")`)
+		page.MustWaitIdle()
+		waitForElementWithIDToStartWith(t, page, greeting, "Hello")
 
-		updatedGreeting := page.MustElement("#greeting").MustText()
+		updatedGreeting := greeting.MustText()
 
 		assert.Contains(t, updatedGreeting, "Hello")
 	})
