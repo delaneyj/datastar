@@ -10,7 +10,7 @@ import (
 )
 
 templ PageBundler(r *http.Request, manifest PluginManifest, store *BundlerStore) {
-	@Page() {
+	@Page("Bundler", "Bundle only the plugins you need to reduce the size of Datastar even further.") {
 		@header(r)
 		<div data-store={ templ.JSONString(store) } class="p-8 flex flex-col gap-4">
 			<div>

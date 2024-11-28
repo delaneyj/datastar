@@ -12,7 +12,7 @@ import (
 
 func setupEssays(ctx context.Context, router chi.Router) error {
 
-	mdElementRenderers, _, err := markdownRenders(ctx, "essays")
+	mdDataset, err := markdownRenders(ctx, "essays")
 	if err != nil {
 		return err
 	}
@@ -65,7 +65,7 @@ func setupEssays(ctx context.Context, router chi.Router) error {
 
 		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
-			contents, ok := mdElementRenderers[name]
+			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
@@ -81,7 +81,7 @@ func setupEssays(ctx context.Context, router chi.Router) error {
 				}
 			}
 
-			SidebarPage(r, sidebarGroups, currentLink, contents).Render(r.Context(), w)
+			SidebarPage(r, sidebarGroups, currentLink, mdData.Title, mdData.Description, mdData.Contents).Render(r.Context(), w)
 		})
 	})
 

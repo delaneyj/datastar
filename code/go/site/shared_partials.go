@@ -46,20 +46,28 @@ type CodeSnippetBlock struct {
 	Snippets []CodeSnippet
 }
 
-func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRenderers map[string]string, mdAnchors map[string][]string, err error) {
+type MarkdownData struct {
+	Anchors     []string
+	Title       string
+	Description string
+	Contents    string
+}
+type MarkdownDataset map[string]*MarkdownData
+
+func markdownRenders(ctx context.Context, staticMdPath string) (MarkdownDataset, error) {
 	if mdRenderer == nil {
 		htmlFormatter := html.New(html.WithClasses(true), html.TabWidth(2))
 		if htmlFormatter == nil {
-			return nil, nil, fmt.Errorf("couldn't create html formatter")
+			return nil, fmt.Errorf("couldn't create html formatter")
 		}
 		styleName := "nord"
 		highlightStyle := styles.Get(styleName)
 		if highlightStyle == nil {
-			return nil, nil, fmt.Errorf("couldn't find style %s", styleName)
+			return nil, fmt.Errorf("couldn't find style %s", styleName)
 		}
 		highlightCSSBuffer := &bytes.Buffer{}
 		if err := htmlFormatter.WriteCSS(highlightCSSBuffer, highlightStyle); err != nil {
-			return nil, nil, fmt.Errorf("error writing highlight css: %w", err)
+			return nil, fmt.Errorf("error writing highlight css: %w", err)
 		}
 		highlightCSS = templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 			_, err := io.WriteString(w, fmt.Sprintf(`<style>%s</style>`, highlightCSSBuffer.String()))
@@ -124,7 +132,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 	mdDir := "static/md/" + staticMdPath
 	docs, err := staticFS.ReadDir(mdDir)
 	if err != nil {
-		return nil, nil, fmt.Errorf("error reading docs dir: %w", err)
+		return nil, fmt.Errorf("error reading docs dir: %w", err)
 	}
 
 	// regExpImg := regexp.MustCompile(`(?P<whole>!\[[^\]]+]\((?P<path>[^)]+)\))`)
@@ -133,14 +141,16 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 	codeSnippets := regexp.MustCompile(`!!!CODE_SNIPPET:(?<basePath>[^!]*)!!!`)
 	// Icon or mascot from https://icones.js.org/collection/vscode-icons
 
-	mdElementRenderers = map[string]string{}
-	mdAnchors = map[string][]string{}
+	res := MarkdownDataset{}
+
+	titleTrimmer := regexp.MustCompile(`^#+\s*`)
+
 	for _, de := range docs {
 		fullPath := mdDir + "/" + de.Name()
 
 		b, err := staticFS.ReadFile(fullPath)
 		if err != nil {
-			return nil, nil, fmt.Errorf("error reading doc %s: %w", de.Name(), err)
+			return nil, fmt.Errorf("error reading doc %s: %w", de.Name(), err)
 		}
 
 		// Package version
@@ -155,10 +165,10 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 			baseDir := filepath.Dir(fullWithTestExtension)
 			fileEntries, err := staticFS.ReadDir(baseDir)
 			if err != nil {
-				return nil, nil, fmt.Errorf("error reading code snippet dir %s: %w", baseDir, err)
+				return nil, fmt.Errorf("error reading code snippet dir %s: %w", baseDir, err)
 			}
 			if len(fileEntries) == 0 {
-				return nil, nil, fmt.Errorf("no files found in code snippet dir %s", baseDir)
+				return nil, fmt.Errorf("no files found in code snippet dir %s", baseDir)
 			}
 
 			snippetBlock := CodeSnippetBlock{
@@ -178,7 +188,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 
 				codeSnippetRaw, err := staticFS.ReadFile(fileFullPath)
 				if err != nil {
-					return nil, nil, fmt.Errorf("error reading code snippet %s: %w", fileFullPath, err)
+					return nil, fmt.Errorf("error reading code snippet %s: %w", fileFullPath, err)
 				}
 				codeSnippet := string(codeSnippetRaw)
 
@@ -186,7 +196,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 				defer bytebufferpool.Put(buf)
 
 				if err := htmlHighlight(buf, codeSnippet, ext, ""); err != nil {
-					return nil, nil, fmt.Errorf("error highlighting code snippet %s: %w", fileFullPath, err)
+					return nil, fmt.Errorf("error highlighting code snippet %s: %w", fileFullPath, err)
 				}
 
 				icon := ""
@@ -220,11 +230,16 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 			b = bytes.ReplaceAll(b, fullMatch, buf.Bytes())
 		}
 
+		title := ""
+
 		// Get all anchors
 		anchors := []string{}
 		lines := strings.Split(string(b), "\n")
 		for _, line := range lines {
 			if strings.HasPrefix(line, "#") {
+				if title == "" {
+					title = titleTrimmer.ReplaceAllString(line, "")
+				}
 				parts := strings.Split(line, " ")
 				anchor := strings.Join(parts[1:], " ")
 				anchors = append(anchors, anchor)
@@ -236,11 +251,16 @@ func markdownRenders(ctx context.Context, staticMdPath string) (mdElementRendere
 		renderedHTML := string(markdown.Render(doc, mdRenderer()))
 
 		name := de.Name()[0 : len(de.Name())-3]
-		mdElementRenderers[name] = renderedHTML
-		mdAnchors[name] = anchors
+
+		res[name] = &MarkdownData{
+			Anchors:     anchors,
+			Title:       title,
+			Description: "",
+			Contents:    renderedHTML,
+		}
 	}
 
-	return mdElementRenderers, mdAnchors, nil
+	return res, nil
 }
 
 func KVPairsAttrs(kvPairs ...string) templ.Attributes {
