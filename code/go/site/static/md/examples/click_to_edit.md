@@ -38,7 +38,7 @@ This returns a form that can be used to edit the contact
 <!-- Removed styling and escaping for brevity -->
 <div
   id="contact_1"
-  data-store="{
+  data-merge-signals="{
         id: 1,
         firstName: 'John',
         lastName: 'Doe',

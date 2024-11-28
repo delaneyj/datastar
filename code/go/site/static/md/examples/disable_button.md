@@ -17,7 +17,7 @@
     }
 </style>
 
-<div id="container" data-store="{shouldDisable:false}">
+<div id="container" data-merge-signals="{shouldDisable:false}">
   <button
     id="target"
     data-on-click="$shouldDisable = true;$get('/examples/disable_button/data')"
@@ -28,7 +28,7 @@
 ## Explanation
 
 ```html
-<div id="container" data-store="{shouldDisable:false}">
+<div id="container" data-merge-signals="{shouldDisable:false}">
   <button
     id="target"
     data-on-click="$shouldDisable = true;$get('/examples/disable_button/data')"

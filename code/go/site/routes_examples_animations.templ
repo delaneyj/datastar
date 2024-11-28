@@ -9,7 +9,7 @@ type AnimationsRestoreStore struct {
 templ animationsViewTransition(store *AnimationsRestoreStore) {
 	<div
 		id="view_transition"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 		class="slide-it"
 	>
 		<button

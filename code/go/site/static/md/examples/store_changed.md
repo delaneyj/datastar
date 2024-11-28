@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-  data-store="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-store-change.remote="$post('/examples/store_changed/updates')"
   >
     <div class="flex gap-4">
@@ -31,7 +31,7 @@
 
 ```html
 <div
-  data-store="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-store-change.remote="$post('/examples/store_changed/updates')"
 >
   <div>

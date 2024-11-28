@@ -16,7 +16,7 @@
 ```html
 <div
   id="demo"
-  data-store="{id: 1234}"
+  data-merge-signals="{id: 1234}"
   data-on-load="$get('/examples/store_ifmissing/updates')"
 >
   <div>
@@ -26,7 +26,7 @@
 </div>
 ```
 
-The `data-store` attribute is used to set the initial state of the store. You can check your browser's Network Devtools to see the `updates` endpoint alternates between sending fragments and direct signal merges like the following:
+The `data-merge-signals` attribute is used to set the initial state of the store. You can check your browser's Network Devtools to see the `updates` endpoint alternates between sending fragments and direct signal merges like the following:
 
 ```md
 ...
@@ -37,7 +37,7 @@ data: store {id:73}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
-data: fragments <div id="demo" data-store.ifmissing="{id:74}"></div>
+data: fragments <div id="demo" data-merge-signals.ifmissing="{id:74}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
@@ -45,7 +45,7 @@ data: store {id:75}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
-data: fragments <div id="demo" data-store.ifmissing="{id:76}"></div>
+data: fragments <div id="demo" data-merge-signals.ifmissing="{id:76}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
@@ -54,4 +54,4 @@ data: store {id:77}
 ...
 ```
 
-Since the store is already set, the `data-store.ifmissing` attribute will not overwrite the existing value in either case.
+Since the store is already set, the `data-merge-signals.ifmissing` attribute will not overwrite the existing value in either case.

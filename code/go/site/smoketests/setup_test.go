@@ -41,11 +41,11 @@ func TestMain(m *testing.M) {
 }
 
 var setup = func() func(t *testing.T) G {
+
 	browser := rod.New().MustConnect()
 
 	return func(t *testing.T) G {
-		t.Parallel() // run each test concurrently
-
+		// t.Parallel() // run each test concurrently
 		return G{got.New(t), browser}
 	}
 }()

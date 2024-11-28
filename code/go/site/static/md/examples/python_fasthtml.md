@@ -163,7 +163,7 @@ async def get(req):
   store = json.loads(query_params)
   store['output'] = f"Your input: {store['input']}, is {len(store['input'])} long."
   event_data = json.dumps(store)
-  fragment = f"<div id='main' data-store='{event_data}'></div>"
+  fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
 
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")
