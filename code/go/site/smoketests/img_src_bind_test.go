@@ -18,6 +18,7 @@ func TestExampleImgSrcBind(t *testing.T) {
 		assert.Equal(t, "https://picsum.photos/id/237/640/320", initial)
 
 		page.MustElement("#file_upload > button").MustClick()
+		page.MustWaitIdle()
 		result := el.MustProperty("src").Str()
 
 		assert.NotEqual(t, initial, result)

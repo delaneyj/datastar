@@ -13,7 +13,7 @@ func TestExampleCloak(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("cloak", func(t *testing.T) {
-		element := page.MustElement("#datastar--0")
+		element := page.MustElement("#datastar-2692078454")
 		initial, err := element.Attribute("class")
 		if err != nil {
 			t.Fatal("failed to get initial class: %w", err)

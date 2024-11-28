@@ -5,8 +5,6 @@
 
 import { AttributePlugin } from "../../../../engine";
 import { DATASTAR } from "../../../../engine/consts";
-import { ERR_NOT_FOUND } from "../../../../engine/errors";
-import { isDatastarGeneratedID } from "../../../../utils/regex";
 import {
     DATASTAR_SSE_EVENT,
     DatastarSSEEvent,
@@ -23,12 +21,6 @@ export const Indicator: AttributePlugin = {
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {
         const { expression, upsertSignal, el } = ctx;
-        if (isDatastarGeneratedID(el)) {
-            // Indicator cannot be used on an element without an ID
-            // otherwise it will auto generate and most like will be incorrect
-            // if you get to the point match sure this element has a unique ID.
-            throw ERR_NOT_FOUND;
-        }
         const signalName = expression;
         const signal = upsertSignal(signalName, false);
 
