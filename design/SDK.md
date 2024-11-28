@@ -218,14 +218,12 @@ ServerSentEventGenerator.RemoveSignals(
 
 #### Args
 
-`paths` is a list of strings that represent the path to the signals to be removed from the store.  The paths ***must*** be valid `.` delimited paths to signals within the store.  The Datastar client side will use these paths to remove the data from the store.
+`paths` is a list of strings that represent the signal paths to be removed from the store.  The paths ***must*** be valid `.` delimited paths to signals within the store.  The Datastar client side will use these paths to remove the data from the store.
 
 #### Logic
 When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-signals` event type.
 
-1. Each path should be on a newline
-2. The path must be prefixed with `paths foo.bar.baz`
-3. It should support spaces in the path such as `paths foo.bar baz.qux.hello world`
+1. The function ***must*** include the paths in the event data, with each line prefixed with `paths `.  Space-separated paths such as `paths foo.bar baz.qux.hello world` ***should*** be allowed.
 
 ### `ServerSentEventGenerator.ExecuteScript`
 
@@ -251,10 +249,11 @@ ServerSentEventGenerator.ExecuteScript(
 * `attributes` A line separated list of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `type module`. Each item in the array should be a string in the format `key value`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
-2. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
-3. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
-4. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
+
+1. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
+2. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
+3. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
 
 ## `ReadSignals(r *http.Request, store any) error`
 
