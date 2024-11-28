@@ -1,9 +1,8 @@
-import { nodeHTMLorSVGElement } from "../utils/dom";
+import { consistentUniqID } from "../utils/dom";
 import { HTMLorSVGElement } from "../utils/types";
 import { DeepSignal, deepSignal, DeepState } from "../vendored/deepsignal";
 import { computed, effect, Signal, signal } from "../vendored/preact-core";
 import { apply } from "../vendored/ts-merge-patch";
-import { DATASTAR } from "./consts";
 
 import {
     ERR_ALREADY_EXISTS,
@@ -48,8 +47,6 @@ export class Engine {
         computed,
         effect,
     };
-    parentID = "";
-    missingIDNext = 0;
     removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>();
     mergeRemovals = new Array<OnRemovalFn>();
 
@@ -203,9 +200,8 @@ export class Engine {
 
                     if (!rawKey.startsWith(p.name)) continue;
 
-                    if (el.id.length === 0) {
-                        el.id = `${DATASTAR}-${this.parentID}-${this
-                            .missingIDNext++}`;
+                    if (!el.id.length) {
+                        el.id = consistentUniqID(el);
                     }
 
                     appliedProcessors.clear();
@@ -339,7 +335,10 @@ export class Engine {
                             statements[statements.length - 1]
                         }`;
                         const j = statements.map((s) => `  ${s}`).join(";\n");
-                        const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll("`", "\\`")}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
+                        const fnContent =
+                            `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${
+                                j.replaceAll("`", "\\`")
+                            }\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
                         try {
                             const argumentNames = p.argumentNames || [];
                             const fn = new Function(
@@ -402,11 +401,12 @@ export class Engine {
         callback: (el: HTMLorSVGElement) => void,
         siblingOffset = 0,
     ) {
-        if (!element) return;
-        const el = nodeHTMLorSVGElement(element);
-        if (!el) return;
+        if (
+            !element ||
+            !(element instanceof HTMLElement || element instanceof SVGElement)
+        ) return null;
 
-        callback(el);
+        callback(element);
 
         siblingOffset = 0;
         element = element.firstElementChild;

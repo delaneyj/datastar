@@ -1,41 +1,37 @@
-import { ERR_BAD_ARGS, ERR_NOT_FOUND } from "../engine/errors";
-import { HTMLorSVGElement } from "./types";
+import { DATASTAR } from "../engine/consts";
+import { ERR_NOT_FOUND } from "../engine/errors";
 
-export function elemToSelector(
-    elm: Element | Window | Document | string | null,
-) {
-    if (!elm) return "null";
-    if (typeof elm === "string") return elm;
-    if (elm instanceof Window) return "Window";
-    if (elm instanceof Document) return "Document";
+export function consistentUniqID(el: Element) {
+    if (el.id) return el.id;
+    let hash = 0;
+    const hashUpdate = (n: number) => {
+        hash = ((hash << 5) - hash) + n;
+        return hash & hash;
+    };
+    const hashUpdateFromStr = (str: string) =>
+        str.split("").forEach((c) => hashUpdate(c.charCodeAt(0)));
 
-    if (elm.tagName === "BODY") return "BODY";
-    const names = new Array<string>();
-    while (elm.parentElement && elm.tagName !== "BODY") {
-        if (elm.id) {
-            const idAttr = elm.getAttribute("id");
-            if (!idAttr) {
-                // Element has an ID but no ID attribute
-                throw ERR_BAD_ARGS;
-            }
-            names.unshift("#" + idAttr); // getAttribute, because `elm.id` could also return a child element with name "id"
-            break; // Because ID should be unique, no more is needed. Remove the break, if you always want a full path.
+    while (el.parentNode) {
+        if (el.id) {
+            hashUpdateFromStr(`${el.id}`);
+            break;
         } else {
-            let c = 1,
-                e = elm;
-            for (; e.previousElementSibling; e = e.previousElementSibling, c++);
-            names.unshift(elm.tagName + ":nth-child(" + c + ")");
+            if (el === el.ownerDocument.documentElement) {
+                hashUpdateFromStr(el.tagName);
+            } else {
+                for (
+                    let i = 1, e = el;
+                    e.previousElementSibling;
+                    e = e.previousElementSibling, i++
+                ) {
+                    hashUpdate(i);
+                }
+                el = el.parentNode as Element;
+            }
         }
-        elm = elm.parentElement;
+        el = el.parentNode as Element;
     }
-    return names.join(">");
-}
-
-export function nodeHTMLorSVGElement(node: Node): HTMLorSVGElement | null {
-    if (!(node instanceof HTMLElement || node instanceof SVGElement)) {
-        return null;
-    }
-    return node;
+    return DATASTAR + hash;
 }
 
 export function scrollIntoView(
