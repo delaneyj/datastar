@@ -21,7 +21,7 @@ jobs:
         env:
           REGISTRY: ghcr.io
           OWNER: starfederation
-          IMAGE_NAME: ${{ github.repository }}-dev
+          IMAGE_NAME: ${{ github.repository }}dev
         uses: docker/build-push-action@v4
         with:
           context: ./.github
