@@ -7,6 +7,8 @@ test('Event is correctly output', function() {
     $event = new RemoveSignals(paths: $content);
     expect($event->getDataLines())
         ->toBe([
-            'data: paths x y z',
+            'data: paths x',
+            'data: paths y',
+            'data: paths z',
         ]);
 });
