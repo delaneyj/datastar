@@ -1,0 +1,34 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches: develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and Push Docker Image
+        env:
+          REGISTRY: ghcr.io
+          OWNER: starfederation
+          IMAGE_NAME: ${{ github.repository }}-dev
+        uses: docker/build-push-action@v4
+        with:
+          context: ./.github
+          file: ./Dockerfile-dev
+          target: final
+          push: true
+          tags: |
+            $REGISTRY/$OWNER/$IMAGE_NAME:$(date +%s)
+          build-args: |
+            ENVIRONMENT=development
