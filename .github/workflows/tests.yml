@@ -31,5 +31,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Run CI tests
         run: |
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'git lfs fetch --all && git lfs pull && git lfs checkout'
           docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task tools'
           docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task test'
