@@ -26,7 +26,6 @@ jobs:
         with:
           context: ./.github
           file: ./Dockerfile-dev
-          target: final
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.OWNER }}/${{ env.IMAGE_NAME }}:latest
