@@ -6,10 +6,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type redirect struct {
-	RedirectTo string `json:"redirectTo"`
-}
-
 func TestExampleRedirects(t *testing.T) {
 	g := setup(t)
 
