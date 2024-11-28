@@ -4,7 +4,8 @@ from datetime import datetime
 from sanic import Sanic
 from sanic.response import html
 
-from datastar_py import SSE_HEADERS, ServerSentEventGenerator
+from datastar_py import ServerSentEventGenerator
+from datastar_py.responses import make_datastar_sanic_response
 
 app = Sanic("DataStarApp")
 
@@ -51,7 +52,7 @@ async def hello_world(request):
 
 @app.get("/updates")
 async def updates(request):
-    response = await request.respond(headers=SSE_HEADERS)
+    response = await make_datastar_sanic_response(request)
 
     sse = ServerSentEventGenerator()
     while True:

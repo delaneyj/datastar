@@ -1,13 +1,9 @@
 import asyncio
 from datetime import datetime
 
-from django.http import HttpResponse, StreamingHttpResponse
+from django.http import HttpResponse
 
-from datastar_py import SSE_HEADERS, ServerSentEventGenerator
-
-# from django.shortcuts import render
-
-# Create your views here.
+from datastar_py.responses import DatastarDjangoResponse
 
 HTML = """\
 	<!DOCTYPE html>
@@ -52,8 +48,7 @@ async def home(request):
 
 
 async def updates(request):
-    async def time_updates():
-        sse = ServerSentEventGenerator()
+    async def time_updates(sse):
         while True:
             yield sse.merge_fragments(
                 [f"""<span id="currentTime">{datetime.now().isoformat()}"""]
@@ -62,4 +57,4 @@ async def updates(request):
             yield sse.merge_signals({"currentTime": f"{datetime.now().isoformat()}"})
             await asyncio.sleep(1)
 
-    return StreamingHttpResponse(time_updates(), headers=SSE_HEADERS)
+    return DatastarDjangoResponse(time_updates)

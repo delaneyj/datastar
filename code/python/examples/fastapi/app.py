@@ -2,9 +2,9 @@ import asyncio
 from datetime import datetime
 
 from fastapi import FastAPI
-from fastapi.responses import HTMLResponse, StreamingResponse
+from fastapi.responses import HTMLResponse
 
-from datastar_py import SSE_HEADERS, ServerSentEventGenerator
+from datastar_py.responses import DatastarFastAPIResponse
 
 app = FastAPI()
 
@@ -52,8 +52,7 @@ async def read_root():
     )
 
 
-async def time_updates():
-    sse = ServerSentEventGenerator()
+async def time_updates(sse):
     while True:
         yield sse.merge_fragments(
             [f"""<span id="currentTime">{datetime.now().isoformat()}"""]
@@ -65,4 +64,4 @@ async def time_updates():
 
 @app.get("/updates")
 async def updates():
-    return StreamingResponse(time_updates(), headers=SSE_HEADERS)
+    return DatastarFastAPIResponse(time_updates)
