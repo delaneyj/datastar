@@ -223,7 +223,9 @@ ServerSentEventGenerator.RemoveSignals(
 #### Logic
 When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-signals` event type.
 
-1. The function ***must*** include the paths in the event data in the format `paths PATHS\n` where `PATHS` is a space separated list of the provided paths.
+1. Each path should be on a newline
+2. The path must be prefixed with `paths foo.bar.baz`
+3. It should support spaces in the path such as `paths foo.bar baz.qux.hello world`
 
 ### `ServerSentEventGenerator.ExecuteScript`
 
