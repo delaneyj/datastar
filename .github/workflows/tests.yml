@@ -1,0 +1,33 @@
+name: Build Docker Images
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "**/*.templ"
+      - "**/*.md"
+      - "**/*.go"
+      - "**/*.qtpl"
+      - "**/package.json"
+      - "**/*.ts"
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run CI tests
+        run: |
+          docker container run --rm -t -v "${CURDIR}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task test'
