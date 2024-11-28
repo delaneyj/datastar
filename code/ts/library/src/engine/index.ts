@@ -1,5 +1,5 @@
 import { Computed } from "../plugins/official/attributes/core/computed";
-import { Store } from "../plugins/official/attributes/core/mergeSignals";
+import { MergeSignals } from "../plugins/official/attributes/core/mergeSignals";
 import { Star } from "../plugins/official/attributes/core/star";
 import { ActionsProcessor } from "../plugins/official/preprocessors/core/actions";
 import { SignalsProcessor } from "../plugins/official/preprocessors/core/signals";
@@ -11,11 +11,11 @@ export type * from "./types";
 
 const ds = new Engine();
 ds.load(
+    Star,
     ActionsProcessor,
     SignalsProcessor,
-    Store,
+    MergeSignals,
     Computed,
-    Star,
 );
 
 export const Datastar = ds;
