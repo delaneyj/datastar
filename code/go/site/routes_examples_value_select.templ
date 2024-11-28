@@ -20,7 +20,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 	<div
 		id="value_select"
 		class="flex flex-col gap-2"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 	>
 		<div class="text-2xl font-bold">Pick a Make / Model</div>
 		<select

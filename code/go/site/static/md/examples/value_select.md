@@ -19,7 +19,7 @@ To begin we start with a default value for the make select: Audi. We render the 
 Here is the code:
 
 ```html
-<div id="value_select" data-store='{"make":"","model":""}'>
+<div id="value_select" data-merge-signals='{"make":"","model":""}'>
   <div>Pick a Make / Model</div>
   <select
     data-model="make"
@@ -36,7 +36,7 @@ Here is the code:
 When a request is made to the /models end point, we return the models for that make:
 
 ```html
-<div id="value_select" data-store='{"make":"HZAABHANLTMQC","model":""}'>
+<div id="value_select" data-merge-signals='{"make":"HZAABHANLTMQC","model":""}'>
   <div>Pick a Make / Model</div>
   <select
     data-model="make"

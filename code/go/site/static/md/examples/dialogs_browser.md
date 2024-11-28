@@ -17,7 +17,7 @@ Dialogs can be triggered with the standard browser `prompt` and `confirm` within
 ```html
 <button
   id="dialogs"
-  data-store="{prompt:'foo',confirm:false}"
+  data-merge-signals="{prompt:'foo',confirm:false}"
   data-fetch-url=""
   data-on-click="$prompt=prompt('Enter a string',$prompt);$confirm=confirm('Are you sure?');$confirm && $get('/examples/dialogs___browser/sure')"
 >

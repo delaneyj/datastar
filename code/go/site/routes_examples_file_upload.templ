@@ -10,7 +10,7 @@ templ FileUploadView(store *FileUploadStore) {
 	<div
 		id="file_upload"
 		class="flex flex-col gap-4"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 	>
 		<div class="flex flex-col gap-2">
 			<label

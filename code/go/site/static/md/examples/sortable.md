@@ -4,7 +4,7 @@
 
 ## Demo
 
-<div class="flex flex-col gap-8" data-store="{orderInfo:''}">
+<div class="flex flex-col gap-8" data-merge-signals="{orderInfo:''}">
   <div class="text-lg">Order Info: <span class="font-bold" data-text="$orderInfo">Order Info</span></div>
   <div>Open your console to see an event results</div>
   <div id="sortContainer" data-on-orderinfo="$orderInfo = event.detail.orderInfo; console.log(`You could send this to the server! ${$orderInfo}`)" class="flex flex-col gap-4">
@@ -22,7 +22,7 @@
 In the original example you had to hook into HTMX's events.  With Datastar, you can easily listen for custom events using `data-on-*`, and update signals to effect change.
 
 ```html
-<div data-store="{orderInfo:''}">
+<div data-merge-signals="{orderInfo:''}">
   <div>OrderInfo: <span data-text="$orderInfo">Order Info</span></div>
   <div id="sortContainer"
     data-on-reordered="$orderInfo = event.detail.orderInfo; console.log(`You could send this to the server! ${$orderInfo}`)"

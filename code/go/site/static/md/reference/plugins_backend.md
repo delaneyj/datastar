@@ -65,7 +65,7 @@ data: onlyIfMissing false
 data: signals {foo: 1234}
 ```
 
-The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-merge-signals` attribute. This will get merged into the store.
 
 ### datastar-remove-fragments
 
@@ -93,7 +93,7 @@ data: attributes defer true
 data: script console.log('Hello, world!')
 ```
 
-The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser. 
+The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser.
 
 ## Attribute Plugins
 

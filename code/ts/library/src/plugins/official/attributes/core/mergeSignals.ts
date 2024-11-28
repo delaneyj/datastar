@@ -13,7 +13,7 @@ import { storeFromPossibleContents } from "../../../../utils/signals";
 // Setup the global store
 export const Store: AttributePlugin = {
     pluginType: "attribute",
-    name: "store",
+    name: "mergeSignals",
     removeNewLines: true,
     preprocessors: {
         pre: [
