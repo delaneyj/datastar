@@ -12,9 +12,8 @@ import { ClampFitInt } from "../plugins/official/actions/math/clampFitInt";
 import { Fit } from "../plugins/official/actions/math/fit";
 import { FitInt } from "../plugins/official/actions/math/fitInt";
 import { Indicator } from "../plugins/official/attributes/backend/indicator";
-import { Bind } from "../plugins/official/attributes/dom/bindOld";
+import { Bind } from "../plugins/official/attributes/dom/bind";
 import { Class } from "../plugins/official/attributes/dom/class";
-import { Model } from "../plugins/official/attributes/dom/modelOld";
 import { On } from "../plugins/official/attributes/dom/on";
 import { Ref } from "../plugins/official/attributes/dom/ref";
 import { Text } from "../plugins/official/attributes/dom/text";
@@ -31,37 +30,36 @@ import { RemoveFragments } from "../plugins/official/watchers/backend/sseRemoveF
 import { RemoveSignals } from "../plugins/official/watchers/backend/sseRemoveSignals";
 
 Datastar.load(
-    // attributes
-    Model,
-    Ref,
-    Indicator,
-    Bind,
-    ReplaceUrl,
-    Class,
-    On,
-    Text,
-    Persist,
-    Intersection,
-    ScrollIntoView,
-    Show,
-    ViewTransition,
-    // actions
-    DeleteSSE,
-    GetSSE,
-    PatchSSE,
-    PostSSE,
-    PutSSE,
-    Clipboard,
-    SetAll,
-    ToggleAll,
-    ClampFit,
-    ClampFitInt,
-    Fit,
-    FitInt,
-    // effects
-    MergeFragments,
-    MergeSignals,
-    RemoveFragments,
-    RemoveSignals,
-    ExecuteScript,
+  // attributes
+  Bind,
+  Ref,
+  Indicator,
+  ReplaceUrl,
+  Class,
+  On,
+  Text,
+  Persist,
+  Intersection,
+  ScrollIntoView,
+  Show,
+  ViewTransition,
+  // actions
+  DeleteSSE,
+  GetSSE,
+  PatchSSE,
+  PostSSE,
+  PutSSE,
+  Clipboard,
+  SetAll,
+  ToggleAll,
+  ClampFit,
+  ClampFitInt,
+  Fit,
+  FitInt,
+  // effects
+  MergeFragments,
+  MergeSignals,
+  RemoveFragments,
+  RemoveSignals,
+  ExecuteScript
 );
