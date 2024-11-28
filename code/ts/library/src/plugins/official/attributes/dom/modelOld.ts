@@ -14,7 +14,7 @@ const updateModelEvents = ["change", "input", "keydown"];
 
 export const Model: AttributePlugin = {
     pluginType: "attribute",
-    name: "model",
+    name: "modelOld",
     mustHaveEmptyKey: true,
     // bypassExpressionFunctionCreation: () => true,
     onLoad: (ctx) => {
