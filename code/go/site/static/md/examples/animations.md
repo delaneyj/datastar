@@ -67,13 +67,14 @@ Building on the last example, we can fade in the new content the same way, start
 One of the nice features for reactivity is to show a spinner when a request is in flight. On any element that is using backend actions you can add a `data-indicator` attribute to show a spinner when the request is in flight. This can be done like so:
 
 ```html
+<div data-show="$fetching">Spinner</div>
 <button
-  data-fetch-indicator="'#request_in_flight_indicator'"
-  data-on-click="$post('/examples/animations/data/request_in_flight')"
   id="submit_request_in_flight"
+  data-on-click="$post('/examples/animations/data/request_in_flight')"
+  data-indicator="fetching"
 >
   Submit
 </button>
 ```
 
-This will show the element with the id `request_in_flight_indicator` when the request is in flight and hide it when the request is complete.
+This will show the spinner element when the request is in flight and hide it when the request is complete.
