@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      REGISTRY: ghcr.io
+      OWNER: starfederation
+      IMAGE_NAME: ${{ github.repository }}-dev
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v3
@@ -18,10 +22,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Build and Push Docker Image
-        env:
-          REGISTRY: ghcr.io
-          OWNER: starfederation
-          IMAGE_NAME: ${{ github.repository }}dev
         uses: docker/build-push-action@v4
         with:
           context: ./.github
