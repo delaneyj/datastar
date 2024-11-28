@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/valyala/bytebufferpool"
@@ -85,9 +84,14 @@ func (sse *ServerSentEventGenerator) RemoveSignals(paths ...string) error {
 		return ErrNoPathsProvided
 	}
 
+	dataRows := make([]string, 0, len(paths))
+	for _, path := range paths {
+		dataRows = append(dataRows, PathsDatalineLiteral+path)
+	}
+
 	if err := sse.Send(
 		EventTypeRemoveSignals,
-		[]string{PathsDatalineLiteral + strings.Join(paths, " ")},
+		dataRows,
 	); err != nil {
 		return fmt.Errorf("failed to send remove signals: %w", err)
 	}
