@@ -16,6 +16,19 @@ use starfederation\datastar\events\RemoveSignals;
 
 class ServerSentEventGenerator
 {
+    /**
+     * Returns the signals sent in the incoming request.
+     */
+    public static function readSignals(): array
+    {
+        $input = $_GET[Consts::DATASTAR_KEY] ?? file_get_contents('php://input');
+
+        return $input ? json_decode($input, true) : [];
+    }
+
+    /**
+     * Sends headers when the class is instantiated.
+     */
     public function __construct()
     {
         $this->sendHeaders();
