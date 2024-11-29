@@ -10,7 +10,7 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesTemplCounter(examplesRouter chi.Router, sessionSignals sessions.Signals) error {
+func setupExamplesTemplCounter(examplesRouter chi.Router, sessionSignals sessions.Store) error {
 
 	var globalCounter atomic.Uint32
 	const (

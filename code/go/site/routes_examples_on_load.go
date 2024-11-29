@@ -8,7 +8,7 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesOnLoad(examplesRouter chi.Router, signals sessions.Signals) error {
+func setupExamplesOnLoad(examplesRouter chi.Router, signals sessions.Store) error {
 
 	sessionKey := "datastar-on-load-example"
 	examplesRouter.Post("/on_load/data", func(w http.ResponseWriter, r *http.Request) {

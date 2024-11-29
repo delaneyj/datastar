@@ -8,7 +8,7 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesSignalsChanged(examplesRouter chi.Router, signals sessions.Signals) error {
+func setupExamplesSignalsChanged(examplesRouter chi.Router, signals sessions.Store) error {
 	sessionKey := "datastar-on-signals-changed-example"
 
 	currentTotalUpdates := func(w http.ResponseWriter, r *http.Request) (*sessions.Session, int, error) {

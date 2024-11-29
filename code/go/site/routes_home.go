@@ -21,7 +21,7 @@ import (
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-func setupHome(router chi.Router, signals sessions.Signals, ns *embeddednats.Server) error {
+func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Server) error {
 
 	nc, err := ns.Client()
 	if err != nil {
@@ -384,7 +384,7 @@ func MustJSONMarshal(v any) string {
 	return string(b)
 }
 
-func upsertSessionID(signals sessions.Signals, r *http.Request, w http.ResponseWriter) (string, error) {
+func upsertSessionID(signals sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
 
 	sess, err := signals.Get(r, "connections")
 	if err != nil {

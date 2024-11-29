@@ -34,7 +34,7 @@ func randomQuestionId(lastQuestionId int) int {
 	return newQuestionId
 }
 
-func setupExamplesQuiz(examplesRouter chi.Router, signals sessions.Signals) error {
+func setupExamplesQuiz(examplesRouter chi.Router, signals sessions.Store) error {
 	sessionKey := "datastar-quiz-example"
 
 	examplesRouter.Get("/quiz/data", func(w http.ResponseWriter, r *http.Request) {

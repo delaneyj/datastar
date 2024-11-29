@@ -14,7 +14,7 @@ import (
 	"github.com/valyala/bytebufferpool"
 )
 
-func setupExamplesOfflineSync(examplesRouter chi.Router, signals sessions.Signals) error {
+func setupExamplesOfflineSync(examplesRouter chi.Router, signals sessions.Store) error {
 
 	lruCache := expirable.NewLRU[string, string](100, nil, 5*time.Minute)
 

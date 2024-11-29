@@ -19,7 +19,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(ctx context.Context, router chi.Router, signals sessions.Signals, ns *embeddednats.Server) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, signals sessions.Store, ns *embeddednats.Server) (err error) {
 	mdDataset, err := markdownRenders(ctx, "examples")
 	if err != nil {
 		return err

@@ -10,7 +10,7 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesQuizSlow(examplesRouter chi.Router, signals sessions.Signals) error {
+func setupExamplesQuizSlow(examplesRouter chi.Router, signals sessions.Store) error {
 	sessionKey := "datastar-quiz-slow-example"
 
 	examplesRouter.Get("/quiz_slow/data", func(w http.ResponseWriter, r *http.Request) {
