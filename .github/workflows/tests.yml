@@ -1,0 +1,36 @@
+name: Run Tests
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "**/*.templ"
+      - "**/*.md"
+      - "**/*.go"
+      - "**/*.qtpl"
+      - "**/package.json"
+      - "**/*.ts"
+      - '.github/workflows/tests.yml'
+  pull_request:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run CI tests
+        run: |
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'git lfs fetch --all && git lfs pull && git lfs checkout'
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task tools'
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task test'

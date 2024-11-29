@@ -30,6 +30,10 @@ func staticPath(path string) string {
 	return "/" + staticSys.HashName("static/"+path)
 }
 
+func staticAbsolutePath(path string) string {
+	return "https://data-star.dev/" + staticSys.HashName("static/"+path)
+}
+
 func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 	return func(ctx context.Context) error {
 

@@ -55,7 +55,7 @@ function sendSSE({ res, frag, selector, merge, mergeType, end }) {
   res.write("event: datastar-merge-fragments\n");
   if (selector) res.write(`data: selector ${selector}\n`);
   if (merge) res.write(`data: mergeMode ${mergeType}\n`);
-  res.write(`data: fragment ${frag}\n\n`);
+  res.write(`data: fragments ${frag}\n\n`);
   if (end) res.end();
 }
 

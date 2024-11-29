@@ -50,7 +50,7 @@ id: 129798448043016254
 data: selector
 data: mergeMode upsertAttributes
 data: settleDuration 500
-data: fragment ...
+data: fragments ...
 ```
 
 Notice the `settle` value is 500. This means the `datastar-settling` class will be added immediately and removed after 500ms. This is a nice way to show the user that something is happening.

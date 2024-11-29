@@ -54,7 +54,7 @@ func setupExamplesUpdateStore(examplesRouter chi.Router) error {
 					keysToDelete = keysToDelete[:maxDeletes]
 				}
 
-				sse.DeleteFromStore(keysToDelete...)
+				sse.RemoveSignals(keysToDelete...)
 			})
 		})
 

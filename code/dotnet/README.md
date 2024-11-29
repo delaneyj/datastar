@@ -10,7 +10,7 @@ Real-time Hypermedia first Library and Framework for dotnet
     <title>D* Demo</title>
 </head>
 <body>
-<main class="container" id="main" data-signals="{'input':'','output':''}">
+<main class="container" id="main" data-merge-signals="{'input':'','output':''}">
     <button data-on-click="$get('/displayDate')">Display Date</button>
     <div id="target"></div>
     <input type="text" placeholder="input:" data-model="input"/><br>

@@ -43,7 +43,7 @@ id: 129618219840307262
 data: selector
 data: mergeMode morph
 data: settleDuration 0
-data: fragment <div ...>...</div>
+data: fragments <div ...>...</div>
 
 
 ```
