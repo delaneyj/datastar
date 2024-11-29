@@ -1,6 +1,6 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:home-storage
-// Slug: Store signals into a singleton per page
+// Slug: Merge signals into a singleton per page
 // Description: This action stores signals into a singleton per page. This is useful for storing signals that are used across multiple components.
 
 import {
@@ -8,9 +8,9 @@ import {
     AttributePlugin,
     RegexpGroups,
 } from "../../../../engine";
-import { storeFromPossibleContents } from "../../../../utils/signals";
+import { signalsFromPossibleContents } from "../../../../utils/signals";
 
-// Setup the global store
+// Merge into singleton signals
 export const MergeSignals: AttributePlugin = {
     pluginType: "attribute",
     name: "mergeSignals",
@@ -19,7 +19,7 @@ export const MergeSignals: AttributePlugin = {
         pre: [
             {
                 pluginType: "preprocessor",
-                name: "store",
+                name: "signals",
                 regexp: /(?<whole>.+)/g,
                 replacer: (groups: RegexpGroups) => {
                     const { whole } = groups;
@@ -31,7 +31,7 @@ export const MergeSignals: AttributePlugin = {
     allowedModifiers: new Set(["ifmissing"]),
     onLoad: (ctx: AttributeContext) => {
         const possibleMergeSignals = ctx.expressionFn(ctx);
-        const actualMergeSignals = storeFromPossibleContents(
+        const actualMergeSignals = signalsFromPossibleContents(
             ctx.signals(),
             possibleMergeSignals,
             ctx.modifiers.has("ifmissing"),

@@ -1,7 +1,7 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals store data from a server using the Datastar SDK interface
-// Description: Merge store data from a server using the Datastar SDK interface
+// Slug: Merge fine grain signals from a server using the Datastar SDK interface
+// Description: Merge signals from a server using the Datastar SDK interface
 
 import { WatcherPlugin } from "../../../../engine";
 import {

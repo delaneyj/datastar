@@ -11,13 +11,8 @@ class Consts
 {
     public const DATASTAR_KEY = 'datastar';
     public const VERSION = '0.20.1';
-<<<<<<< HEAD
-    public const VERSION_CLIENT_BYTE_SIZE = 35871;
-    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12629;
-=======
-    public const VERSION_CLIENT_BYTE_SIZE = 35830;
-    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12632;
->>>>>>> v0-21-0-breaking
+    public const VERSION_CLIENT_BYTE_SIZE = 35873;
+    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12628;
 
     // The default duration for settling during merges. Allows for CSS transitions to complete.
     public const DEFAULT_SETTLE_DURATION = 300;

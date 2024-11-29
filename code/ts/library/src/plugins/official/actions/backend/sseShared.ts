@@ -45,12 +45,12 @@ export function sendSSERequest(
             "Content-Type": "application/json",
             [DATASTAR_REQUEST]: true,
         }, args?.headers);
-        const currentStore = ctx.signals().value;
-        let store = Object.assign({}, currentStore);
+        const currentSignals = ctx.signals().value;
+        let signals = Object.assign({}, currentSignals);
         if (onlyRemoteSignals) {
-            store = remoteSignals(store);
+            signals = remoteSignals(signals);
         }
-        const storeJSON = JSON.stringify(store);
+        const signalsJSON = JSON.stringify(signals);
 
         const { el: { id: elID } } = ctx;
         dispatchSSE(STARTED, { elID });
@@ -109,10 +109,10 @@ export function sendSSERequest(
 
         if (method === "GET") {
             const queryParams = new URLSearchParams(urlInstance.search);
-            queryParams.append(DATASTAR, storeJSON);
+            queryParams.append(DATASTAR, signalsJSON);
             urlInstance.search = queryParams.toString();
         } else {
-            req.body = storeJSON;
+            req.body = signalsJSON;
         }
 
         try {

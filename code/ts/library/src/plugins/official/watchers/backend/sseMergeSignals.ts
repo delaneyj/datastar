@@ -1,14 +1,14 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals store data from a server using the Datastar SDK interface
-// Description: Merge store data from a server using the Datastar SDK interface
+// Slug: Merge fine grain signals data from a server using the Datastar SDK interface
+// Description: Merge signals from a server using the Datastar SDK interface
 
 import { InitExpressionFunction, WatcherPlugin } from "../../../../engine";
 import {
     DefaultMergeSignalsOnlyIfMissing,
     EventTypes,
 } from "../../../../engine/consts";
-import { storeFromPossibleContents } from "../../../../utils/signals";
+import { signalsFromPossibleContents } from "../../../../utils/signals";
 import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "./sseShared";
 
@@ -30,7 +30,7 @@ export const MergeSignals: WatcherPlugin = {
                     fnContents,
                 ) as InitExpressionFunction;
                 const possibleMergeSignals = fn(ctx);
-                const actualMergeSignals = storeFromPossibleContents(
+                const actualMergeSignals = signalsFromPossibleContents(
                     ctx.signals(),
                     possibleMergeSignals,
                     onlyIfMissing,

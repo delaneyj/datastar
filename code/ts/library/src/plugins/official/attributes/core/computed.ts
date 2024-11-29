@@ -10,14 +10,14 @@ export const Computed: AttributePlugin = {
     name: "computed",
     mustNotEmptyKey: true,
     onLoad: (ctx) => {
-        const store = ctx.signals();
-        store[ctx.key] = ctx.reactivity.computed(() => {
+        const signals = ctx.signals();
+        signals[ctx.key] = ctx.reactivity.computed(() => {
             return ctx.expressionFn(ctx);
         });
 
         return () => {
-            const store = ctx.signals();
-            delete store[ctx.key];
+            const signals = ctx.signals();
+            delete signals[ctx.key];
         };
     },
 };
