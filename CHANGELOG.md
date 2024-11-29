@@ -4,9 +4,11 @@
 
 ### Changed
 
+- Changed the `$` prefix for action plugins to `@`.
 - Renamed the `data-store` attribute to `data-merge-signals`.
 - Renamed the `data-model` attribute to `data-bind`.
 
 ### Fixed
 
+- Fixed headers not merging correctly. 
 - Fixed new lines in the SDK protocol for paths.
