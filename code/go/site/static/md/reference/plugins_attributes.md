@@ -17,7 +17,7 @@ Allows any valid attribute to be bound to an expression. This is useful for maki
 ### Model
 
 ```html
-<input data-model="foo" />
+<input data-bind="foo" />
 ```
 
 Sets up two-way data-binding on an element.
@@ -55,6 +55,7 @@ The `data-on-*` matches DOM events, however there are currently a few special ca
 3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
+
 - `.once`\* - Only trigger the event listener once
 - `.passive`\* - Do not call `preventDefault` on the event listener
 - `.capture`\* - Use a capture event listener
@@ -95,6 +96,7 @@ Persists store values in Local Storage. This is useful for storing values betwee
 If one or more values are provided, only those store values will be persisted.
 
 #### Modifiers
+
 - `.session` - Persists store values in Session Storage
 - `.remote` - Persists only remotely viewable store values
 

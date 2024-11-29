@@ -21,7 +21,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 				<input
 					type="text"
 					class="input input-bordered"
-					data-model="name"
+					data-bind="name"
 					data-testid={ contactKeyPrefix + "_name" }
 				/>
 			} else {
@@ -33,7 +33,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 				<input
 					type="text"
 					class="input input-bordered"
-					data-model="email"
+					data-bind="email"
 					data-testid={ contactKeyPrefix + "_email" }
 				/>
 			} else {

@@ -15,7 +15,7 @@ templ bulkUpdateContact(i int, cs *ContactActive, wasChanged bool) {
 			<input
 				class="checkbox"
 				type="checkbox"
-				data-model={ "selections." + key }
+				data-bind={ "selections." + key }
 			/>
 		</td>
 		<td>{ cs.Name }</td>
@@ -44,7 +44,7 @@ templ bulkUpdateContacts(store *BulkUpdateSelectionStore, contacts []*ContactAct
 						<input
 							class="checkbox"
 							type="checkbox"
-							data-model="selections.all"
+							data-bind="selections.all"
 							data-on-change="$setAll('contact_', $selections.all)"
 						/>
 					</th>

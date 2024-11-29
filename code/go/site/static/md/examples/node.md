@@ -20,7 +20,7 @@ function indexPage() {
       <body>
         <h2>Node/Express + Datastar Example</h2>
         <main class="container" id="main" data-merge-signals='{ input: "", show: false }'>
-        <input type="text" placeholder="Type here!" data-model="input" />
+        <input type="text" placeholder="Type here!" data-bind="input" />
         <button data-on-click="$put('/put')">Send State</button>
         <div id="output"></div>
         <button data-on-click="$get('/get')">Get Backend State</button>

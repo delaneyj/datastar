@@ -25,7 +25,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 		<div class="text-2xl font-bold">Pick a Make / Model</div>
 		<select
 			class="select select-bordered"
-			data-model="make"
+			data-bind="make"
 			data-on-change="$get('/examples/value_select/data')"
 			data-testid="make_select"
 		>
@@ -37,7 +37,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 		if make != nil {
 			<select
 				class="select select-bordered"
-				data-model="model"
+				data-bind="model"
 				data-on-change="$get('/examples/value_select/data')"
 				data-testid="model_select"
 			>

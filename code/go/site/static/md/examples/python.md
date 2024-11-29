@@ -20,7 +20,7 @@ def send_index():
 <body>
     <h2>Python/Starlette + Datastar Example</h2>
     <main class="container" id="main" data-merge-signals=\'{json.dumps(store)}\'>
-        <input type="text" placeholder="Send to server..." data-model="input"/>
+        <input type="text" placeholder="Send to server..." data-bind="input"/>
         <button data-on-click="$get('/get')">Send State Roundtrip</button>
         <button data-on-click="$get('/target')">Target HTML Element</button>
         <button data-on-click="$show=!$show">Toggle Feed</button>

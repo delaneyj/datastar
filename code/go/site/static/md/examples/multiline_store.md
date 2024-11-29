@@ -11,12 +11,12 @@
         step="1"
         min="0"
         max="10"
-        data-model="foo"
+        data-bind="foo"
         class="input input-bordered"
     />
     <input
         type="text"
-        data-model="bar"
+        data-bind="bar"
         class="input input-bordered"
     />
 </div>
@@ -30,8 +30,8 @@
     bar:'bar'
 }"
 >
-  <input type="number" step="1" min="0" max="10" data-model="foo" />
-  <input type="text" data-model="bar" />
+  <input type="number" step="1" min="0" max="10" data-bind="foo" />
+  <input type="text" data-bind="bar" />
 </div>
 ```
 

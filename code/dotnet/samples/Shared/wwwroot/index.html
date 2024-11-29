@@ -1,39 +1,59 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <title>dotnet Example</title>
-    <script type="module" defer src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
-    <link href="style.css" rel="stylesheet">
-</head>
-<body>
-
-<main class="container" id="main" data-merge-signals="{'input':'','output':'','show':true}">
-    <div class="grid-container">
-        <div class="item1"><h2><span id="language" data-on-load="$get('/language/dotnet')">___</span> + D* Example</h2></div>
+    <script
+      type="module"
+      defer
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
+    ></script>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <main
+      class="container"
+      id="main"
+      data-merge-signals="{'input':'','output':'','show':true}"
+    >
+      <div class="grid-container">
+        <div class="item1">
+          <h2>
+            <span id="language" data-on-load="$get('/language/dotnet')"
+              >___</span
+            >
+            + D* Example
+          </h2>
+        </div>
         <div class="item2">
-            <div data-show="$show">
-                <span  style="font-size: 9em">
-                   &#x1F680;
-                </span>
-                <hr>
-                <span style="font-family: 'Courier',serif">
-                    <span id="feed" data-on-load="$get('/feed')">5999999999999999999</span>
-                </span>
-            </div>
+          <div data-show="$show">
+            <span style="font-size: 9em"> &#x1F680; </span>
+            <hr />
+            <span style="font-family: 'Courier', serif">
+              <span id="feed" data-on-load="$get('/feed')"
+                >5999999999999999999</span
+              >
+            </span>
+          </div>
         </div>
         <div class="item3">
-            <input type="text" placeholder="input:" data-model="input"/><br>
-            <br>
-            <button class="button-69" data-on-click="$get('/patch')">Patch State</button><br>
-            <button class="button-69" data-on-click="$get('/target')">Target HTML Element</button><br>
-            <button class="button-69" data-on-click="$show=!$show">Toggle Rocket</button><br>
-            <div id="output" data-text="$output"></div>
-            <div id="target"></div>
+          <input type="text" placeholder="input:" data-bind="input" /><br />
+          <br />
+          <button class="button-69" data-on-click="$get('/patch')">
+            Patch State</button
+          ><br />
+          <button class="button-69" data-on-click="$get('/target')">
+            Target HTML Element</button
+          ><br />
+          <button class="button-69" data-on-click="$show=!$show">
+            Toggle Rocket</button
+          ><br />
+          <div id="output" data-text="$output"></div>
+          <div id="target"></div>
         </div>
         <div class="item4">
-            <pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
+          <pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
         </div>
-    </div>
-</main>
-</body>
+      </div>
+    </main>
+  </body>
 </html>
