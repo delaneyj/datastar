@@ -23,7 +23,7 @@ export const MergeSignals: AttributePlugin = {
                 regexp: /(?<whole>.+)/g,
                 replacer: (groups: RegexpGroups) => {
                     const { whole } = groups;
-                    return `Object.assign({...ctx.store()}, ${whole})`;
+                    return `Object.assign({...ctx.signals()}, ${whole})`;
                 },
             },
         ],
@@ -32,7 +32,7 @@ export const MergeSignals: AttributePlugin = {
     onLoad: (ctx: AttributeContext) => {
         const possibleMergeSignals = ctx.expressionFn(ctx);
         const actualMergeSignals = storeFromPossibleContents(
-            ctx.store(),
+            ctx.signals(),
             possibleMergeSignals,
             ctx.modifiers.has("ifmissing"),
         );

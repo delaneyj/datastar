@@ -37,7 +37,7 @@ const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
 
 export class Engine {
     plugins: AttributePlugin[] = [];
-    store: DeepSignal<any> = deepSignal({});
+    signals: DeepSignal<any> = deepSignal({});
     preprocessors = new Array<PreprocessorPlugin>();
     actions: ActionPlugins = {};
     watchers = new Array<WatcherPlugin>();
@@ -101,7 +101,7 @@ export class Engine {
 
             if (globalInitializer) {
                 globalInitializer({
-                    store: () => this.store,
+                    signals: () => this.signals,
                     upsertSignal: this.upsertSignal
                         .bind(this),
                     mergeSignals: this.mergeSignals.bind(this),
@@ -131,58 +131,61 @@ export class Engine {
         }
     }
 
-    lastMarshalledStore = "";
+    lastMarshalledSignals = "";
     private mergeSignals<T extends object>(mergeSignals: T) {
         this.mergeRemovals.forEach((removal) => removal());
         this.mergeRemovals = this.mergeRemovals.slice(0);
 
-        const revisedStore = apply(this.store.value, mergeSignals) as DeepState;
-        this.store = deepSignal(revisedStore);
+        const revisedSignals = apply(
+            this.signals.value,
+            mergeSignals,
+        ) as DeepState;
+        this.signals = deepSignal(revisedSignals);
 
-        const marshalledStore = JSON.stringify(this.store.value);
-        if (marshalledStore === this.lastMarshalledStore) return;
+        const marshalledSignals = JSON.stringify(this.signals.value);
+        if (marshalledSignals === this.lastMarshalledSignals) return;
     }
 
     private removeSignals(...keys: string[]) {
-        const revisedStore = { ...this.store.value };
+        const revisedSignals = { ...this.signals.value };
         let found = false;
         for (const key of keys) {
             const parts = key.split(".");
             let currentID = parts[0];
-            let subStore = revisedStore;
+            let subSignals = revisedSignals;
             for (let i = 1; i < parts.length; i++) {
                 const part = parts[i];
-                if (!subStore[currentID]) {
-                    subStore[currentID] = {};
+                if (!subSignals[currentID]) {
+                    subSignals[currentID] = {};
                 }
-                subStore = subStore[currentID];
+                subSignals = subSignals[currentID];
                 currentID = part;
             }
-            delete subStore[currentID];
+            delete subSignals[currentID];
             found = true;
         }
         if (!found) return;
-        this.store = deepSignal(revisedStore);
+        this.signals = deepSignal(revisedSignals);
         this.applyPlugins(document.body);
     }
 
     private upsertSignal<T>(path: string, value: T) {
         const parts = path.split(".");
-        let subStore = this.store as any;
+        let subSignals = this.signals as any;
         for (let i = 0; i < parts.length - 1; i++) {
             const part = parts[i];
-            if (!subStore[part]) {
-                subStore[part] = {};
+            if (!subSignals[part]) {
+                subSignals[part] = {};
             }
-            subStore = subStore[part];
+            subSignals = subSignals[part];
         }
         const last = parts[parts.length - 1];
 
-        const current = subStore[last];
+        const current = subSignals[last];
         if (!!current) return current;
 
         const signal = this.reactivity.signal(value);
-        subStore[last] = signal;
+        subSignals[last] = signal;
 
         return signal;
     }
@@ -301,7 +304,7 @@ export class Engine {
                     }
 
                     const ctx: AttributeContext = {
-                        store: () => this.store,
+                        signals: () => this.signals,
                         mergeSignals: this.mergeSignals.bind(this),
                         upsertSignal: this.upsertSignal
                             .bind(this),
@@ -309,7 +312,7 @@ export class Engine {
                         applyPlugins: this.applyPlugins.bind(this),
                         cleanup: this.cleanup
                             .bind(this),
-                        walkSignals: this.walkSignals.bind(this),
+                        walkSignals: this.walkMySignals.bind(this),
                         actions: this.actions,
                         reactivity: this.reactivity,
                         el,
@@ -369,14 +372,14 @@ export class Engine {
         });
     }
 
-    private walkSignalsStore(
-        store: any,
+    private walkSignals(
+        signals: any,
         callback: (name: string, signal: Signal<any>) => void,
     ) {
-        const keys = Object.keys(store);
+        const keys = Object.keys(signals);
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i];
-            const value = store[key];
+            const value = signals[key];
             const isSignal = value instanceof Signal;
             const hasChildren = typeof value === "object" &&
                 Object.keys(value).length > 0;
@@ -388,12 +391,14 @@ export class Engine {
 
             if (!hasChildren) continue;
 
-            this.walkSignalsStore(value, callback);
+            this.walkSignals(value, callback);
         }
     }
 
-    private walkSignals(callback: (name: string, signal: Signal<any>) => void) {
-        this.walkSignalsStore(this.store, callback);
+    private walkMySignals(
+        callback: (name: string, signal: Signal<any>) => void,
+    ) {
+        this.walkSignals(this.signals, callback);
     }
 
     private walkDownDOM(

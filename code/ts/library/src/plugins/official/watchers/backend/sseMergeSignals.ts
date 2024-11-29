@@ -23,7 +23,7 @@ export const MergeSignals: WatcherPlugin = {
         }) => {
             const onlyIfMissing = isBoolString(onlyIfMissingRaw);
             const fnContents =
-                ` return Object.assign({...ctx.store()}, ${signals})`;
+                ` return Object.assign({...ctx.signals()}, ${signals})`;
             try {
                 const fn = new Function(
                     "ctx",
@@ -31,7 +31,7 @@ export const MergeSignals: WatcherPlugin = {
                 ) as InitExpressionFunction;
                 const possibleMergeSignals = fn(ctx);
                 const actualMergeSignals = storeFromPossibleContents(
-                    ctx.store(),
+                    ctx.signals(),
                     possibleMergeSignals,
                     onlyIfMissing,
                 );

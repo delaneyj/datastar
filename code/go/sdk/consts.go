@@ -7,8 +7,8 @@ import "time"
 const (
     DatastarKey = "datastar"
     Version                   = "0.20.1"
-    VersionClientByteSize     = 35832
-    VersionClientByteSizeGzip = 12631
+    VersionClientByteSize     = 35871
+    VersionClientByteSizeGzip = 12629
 
     //region Default durations
 
@@ -47,7 +47,7 @@ var (
     // Should fragments be merged using the ViewTransition API?
     DefaultFragmentsUseViewTransitions = false
 
-    // Should a given set of signals merge if they are missing from the store?
+    // Should a given set of signals merge if they are missing?
     DefaultMergeSignalsOnlyIfMissing = false
 
     // Should script element remove itself after execution?
@@ -100,13 +100,13 @@ const (
     // An event for merging HTML fragments into the DOM.
     EventTypeMergeFragments EventType = "datastar-merge-fragments"
 
-    // An event for merging signals into the store.
+    // An event for merging signals.
     EventTypeMergeSignals EventType = "datastar-merge-signals"
 
     // An event for removing HTML fragments from the DOM.
     EventTypeRemoveFragments EventType = "datastar-remove-fragments"
 
-    // An event for removing signals from the store.
+    // An event for removing signals.
     EventTypeRemoveSignals EventType = "datastar-remove-signals"
 
     // An event for executing <script/> elements in the browser.

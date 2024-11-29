@@ -44,7 +44,7 @@ Makes an element available as a signal in the store.
 
 ### SignalProcessor
 
-Takes a `$var` and converts into a `ctx.store().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
+Takes a `$var` and converts into a `ctx.signals().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
 
 ### ActionProcessor
 

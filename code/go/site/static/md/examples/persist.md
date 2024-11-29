@@ -2,7 +2,7 @@
 
 <div data-merge-signals="{nested:{test1:'foo',test2:'bar',test3:'baz' }}" data-persist-foo="`nested.test1 nested.test3`">
     <input class="input input-bordered" data-bind="nested.test1"/>
-    <pre data-text="JSON.stringify(ctx.store(),null,2)">Replace me</pre>
+    <pre data-text="JSON.stringify(ctx.signals(),null,2)">Replace me</pre>
 </div>
 
 ## Explanation
@@ -13,7 +13,7 @@
   data-persist-foo="`nested.test1 nested.test3`"
 >
   <input class="input input-bordered" data-bind="nested.test1" />
-  <pre data-text="JSON.stringify(ctx.store(),null,2)">Replace me</pre>
+  <pre data-text="JSON.stringify(ctx.signals(),null,2)">Replace me</pre>
 </div>
 ```
 

@@ -30,7 +30,7 @@ export const Persist: AttributePlugin = {
         const useRemote = ctx.modifiers.has("remote");
 
         const storeUpdateHandler = ((_: CustomEvent<DatastarSSEEvent>) => {
-            let store = ctx.store();
+            let store = ctx.signals();
             if (useRemote) {
                 store = remoteSignals(store);
             }

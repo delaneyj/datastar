@@ -120,7 +120,7 @@ export const On: AttributePlugin = {
 
             case "store-change":
                 return ctx.reactivity.effect(() => {
-                    const store = ctx.store();
+                    const store = ctx.signals();
                     let storeValue = store.value;
                     if (ctx.modifiers.has("remote")) {
                         storeValue = remoteSignals(storeValue);

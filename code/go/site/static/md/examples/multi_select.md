@@ -13,7 +13,7 @@
       <option value="audi">Audi</option>
     </select>
   </label>
-  <pre data-text="JSON.stringify(ctx.store().value, null, 2)">Store</pre>
+  <pre data-text="JSON.stringify(ctx.signals().value, null, 2)">Store</pre>
 </div>
 
 ## Explanation
@@ -26,7 +26,7 @@
     <option value="opel">Opel</option>
     <option value="audi">Audi</option>
   </select>
-  <pre data-text="JSON.stringify(ctx.store().value, null, 2)">Store</pre>
+  <pre data-text="JSON.stringify(ctx.signals().value, null, 2)">Store</pre>
 </div>
 ```
 

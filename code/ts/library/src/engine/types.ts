@@ -17,7 +17,7 @@ export type Reactivity = {
 };
 
 export type InitContext = {
-  store: () => any;
+  signals: () => any;
   upsertSignal: (path: string, value: any) => Signal<any>;
   mergeSignals: (store: DeepState) => void;
   removeSignals: (...paths: string[]) => void;

@@ -1,14 +1,14 @@
 import { PreprocessorPlugin, RegexpGroups } from "../../../../engine";
 import { wholePrefixSuffix } from "../../../../utils/regex";
 
-// Replacing $signal with ctx.store.signal.value`
+// Replacing $signal with ctx.signals.signal.value`
 export const SignalsProcessor: PreprocessorPlugin = {
     name: "signal",
     pluginType: "preprocessor",
     regexp: wholePrefixSuffix("\\$", "signal", "(?<method>\\([^\\)]*\\))?"),
     replacer: (groups: RegexpGroups) => {
         const { signal, method } = groups;
-        const prefix = `ctx.store()`;
+        const prefix = `ctx.signals()`;
         if (!method?.length) {
             return `${prefix}.${signal}.value`;
         }

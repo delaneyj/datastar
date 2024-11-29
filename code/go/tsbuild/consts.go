@@ -84,7 +84,7 @@ var Consts = &ConstTemplateData{
 		},
 		{
 			Name:        toolbelt.ToCasedString("mergeSignalsOnlyIfMissing"),
-			Description: "Should a given set of signals merge if they are missing from the store?",
+			Description: "Should a given set of signals merge if they are missing?",
 			Value:       false,
 		},
 		{
@@ -187,7 +187,7 @@ var Consts = &ConstTemplateData{
 				},
 				{
 					Name:        toolbelt.ToCasedString("MergeSignals"),
-					Description: "An event for merging signals into the store.",
+					Description: "An event for merging signals.",
 					Value:       "datastar-merge-signals",
 				},
 				{
@@ -197,7 +197,7 @@ var Consts = &ConstTemplateData{
 				},
 				{
 					Name:        toolbelt.ToCasedString("RemoveSignals"),
-					Description: "An event for removing signals from the store.",
+					Description: "An event for removing signals.",
 					Value:       "datastar-remove-signals",
 				},
 				{

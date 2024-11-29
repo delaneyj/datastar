@@ -25,11 +25,11 @@ type FragmentMergeMode =
 type EventType =
 /// An event for merging HTML fragments into the DOM.
 | MergeFragments
-/// An event for merging signals into the store.
+/// An event for merging signals.
 | MergeSignals
 /// An event for removing HTML fragments from the DOM.
 | RemoveFragments
-/// An event for removing signals from the store.
+/// An event for removing signals.
 | RemoveSignals
 /// An event for executing &lt;script/&gt; elements in the browser.
 | ExecuteScript
@@ -38,8 +38,8 @@ type EventType =
 module Consts =
     let [<Literal>] DatastarKey               = "datastar"
     let [<Literal>] Version                   = "0.20.1"
-    let [<Literal>] VersionClientByteSize     = 35832
-    let [<Literal>] VersionClientByteSizeGzip = 12631
+    let [<Literal>] VersionClientByteSize     = 35871
+    let [<Literal>] VersionClientByteSizeGzip = 12629
 
     /// Default: TimeSpan.FromMilliseconds 300
     let DefaultSettleDuration = TimeSpan.FromMilliseconds 300

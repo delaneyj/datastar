@@ -6,7 +6,7 @@
      <div data-ref="foo">I'm a div that is getting referenced</div>
      <pre
           class="code"
-          data-text="JSON.stringify(ctx.store(),null,2)"
+          data-text="JSON.stringify(ctx.signals(),null,2)"
      >
           Stuff in store
      </pre>
