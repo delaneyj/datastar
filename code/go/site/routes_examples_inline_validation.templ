@@ -16,7 +16,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 		<input
 			class={ "input input-bordered", templ.KV("input-error",!isValid) }
 			data-bind={ field }
-			data-on-keydown.debounce_500ms="$get('/examples/inline_validation/data')"
+			data-on-keydown.debounce_500ms="@get('/examples/inline_validation/data')"
 			data-testid={ "input_" + field }
 		/>
 		if !isValid {
@@ -36,7 +36,7 @@ templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFir
 		<button
 			class="btn btn-success"
 			disabled?={ !isValid }
-			data-on-click="$post('/examples/inline_validation/data')"
+			data-on-click="@post('/examples/inline_validation/data')"
 			data-testid="submit_button"
 		>
 			@icon("material-symbols:person-add")

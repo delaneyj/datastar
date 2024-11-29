@@ -36,16 +36,16 @@ When the button is clicked it will log `hello world` to the console.
 
 Actions are helper functions that are made available during a `data-*` attribute evaluation. They are a way to do more complex operations without having to write a lot of javascript. Here are a few of the most common actions. They are prefixed with `$` to avoid any conflicts with other attributes.
 
-### `$setAll`
+### `@setAll`
 
 Sometimes you want to set multiple values at once. It takes a prefix regexp and a set of signals. For example if you have a form with a bunch of inputs and you want to set them all at once you could do something like this.
 
 ```html
-data-text="$setAll('contact_',true)`
+data-text="@setAll('contact_',true)`
 ```
 
-### `$toggleAll`
+### `@toggleAll`
 
-Works the same as `$setAll` but will flip the value of the signals.
+Works the same as `@setAll` but will flip the value of the signals.
 
 There can be many more actions and you can even write your own. But the majority of the time you'll be using the actions that allow for backend integration, which we'll cover in the next section.

@@ -18,7 +18,7 @@
       <div class="grid-container">
         <div class="item1">
           <h2>
-            <span id="language" data-on-load="$get('/language/dotnet')"
+            <span id="language" data-on-load="@get('/language/dotnet')"
               >___</span
             >
             + D* Example
@@ -29,7 +29,7 @@
             <span style="font-size: 9em"> &#x1F680; </span>
             <hr />
             <span style="font-family: 'Courier', serif">
-              <span id="feed" data-on-load="$get('/feed')"
+              <span id="feed" data-on-load="@get('/feed')"
                 >5999999999999999999</span
               >
             </span>
@@ -38,10 +38,10 @@
         <div class="item3">
           <input type="text" placeholder="input:" data-bind="input" /><br />
           <br />
-          <button class="button-69" data-on-click="$get('/patch')">
+          <button class="button-69" data-on-click="@get('/patch')">
             Patch State</button
           ><br />
-          <button class="button-69" data-on-click="$get('/target')">
+          <button class="button-69" data-on-click="@get('/target')">
             Target HTML Element</button
           ><br />
           <button class="button-69" data-on-click="$show=!$show">

@@ -16,13 +16,13 @@ templ setupExamplesClickToEditUserComponent(store *ClickToEditContactStore) {
 		<div class="flex gap-4">
 			<button
 				class="btn btn-primary"
-				data-on-click="$get('/examples/click_to_edit/contact/1/edit')"
+				data-on-click="@get('/examples/click_to_edit/contact/1/edit')"
 			>
 				Edit
 			</button>
 			<button
 				class="btn btn-secondary"
-				data-on-click="$patch('/examples/click_to_edit/contact/1/reset')"
+				data-on-click="@patch('/examples/click_to_edit/contact/1/reset')"
 			>
 				Reset
 			</button>
@@ -47,13 +47,13 @@ templ setupExamplesClickToEditUserEdit(store *ClickToEditContactStore) {
 		<div class="flex gap-4">
 			<button
 				class="btn btn-primary"
-				data-on-click="$put('/examples/click_to_edit/contact/1')"
+				data-on-click="@put('/examples/click_to_edit/contact/1')"
 			>
 				Save
 			</button>
 			<button
 				class="btn btn-secondary"
-				data-on-click="$get('/examples/click_to_edit/contact/1')"
+				data-on-click="@get('/examples/click_to_edit/contact/1')"
 			>
 				Cancel
 			</button>

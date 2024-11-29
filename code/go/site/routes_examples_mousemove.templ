@@ -5,7 +5,7 @@ import "fmt"
 templ MouseMouseUI(id string, collection *MouseXYCollection) {
 	<div
 		id="container"
-		data-on-store-change.throttle_10ms="$put('/examples/mouse_move/updates')"
+		data-on-store-change.throttle_10ms="@put('/examples/mouse_move/updates')"
 		data-merge-signals={ fmt.Sprintf("{id:'%s',x:0,y:0}", id) }
 	>
 		<div>My ID: { id }</div>

@@ -5,7 +5,7 @@
 <div
      data-merge-signals='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
      data-persist.local
-     data-on-online.window="console.log('online, syncing'); $put('/examples/offline_sync/sync', false)"
+     data-on-online.window="console.log('online, syncing'); @put('/examples/offline_sync/sync', false)"
      data-on-offline.window="console.log('offline')"
 >
      <div id="results">Go offline, then online to see the store sync</div>
@@ -17,7 +17,7 @@
 <div
   data-merge-signals='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
   data-persist.local
-  data-on-online.window="console.log('online, syncing'); $put('/examples/offline_sync/sync', false)"
+  data-on-online.window="console.log('online, syncing'); @put('/examples/offline_sync/sync', false)"
   data-on-offline.window="console.log('offline')"
 >
   <div id="results"></div>
