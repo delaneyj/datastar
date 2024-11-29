@@ -1,10 +1,11 @@
-import { PreprocessorPlugin, RegexpGroups } from "../../../../engine";
+import { MacroPlugin, RegexpGroups } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { wholePrefixSuffix } from "../../../../utils/regex";
 
 // Replacing $action(args) with ctx.actions.action(ctx, args)
-export const ActionsProcessor: PreprocessorPlugin = {
+export const ActionsMacro: MacroPlugin = {
     name: "action",
-    pluginType: "preprocessor",
+    pluginType: PluginType.Macro,
     regexp: wholePrefixSuffix(
         "\\$",
         "action",

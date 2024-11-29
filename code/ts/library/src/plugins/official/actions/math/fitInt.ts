@@ -4,9 +4,10 @@
 // Description: This action linearly fits a value to a new range. The value is first scaled to the new range.  Note it is not clamped to the new range.
 
 import { ActionPlugin, AttributeContext } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const FitInt: ActionPlugin = {
-    pluginType: "action",
+    pluginType: PluginType.Action,
     name: "fitInt",
     method: (
         _: AttributeContext,

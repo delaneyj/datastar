@@ -4,9 +4,10 @@
 // Description: This plugin allows you to replace the current URL with a new URL.  Once you add this attribute the current URL will be replaced with the new URL.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const ReplaceUrl: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "replaceUrl",
     mustHaveEmptyKey: true,
     mustNotEmptyExpression: true,

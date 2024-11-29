@@ -4,9 +4,10 @@
 // Description: This attribute creates a computed signal that updates when its dependencies change.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const Computed: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "computed",
     mustNotEmptyKey: true,
     onLoad: (ctx) => {

@@ -4,10 +4,11 @@
 // Description: This action copies text to the clipboard using the Clipboard API.
 
 import { ActionPlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { ERR_NOT_ALLOWED } from "../../../../engine/errors";
 
 export const Clipboard: ActionPlugin = {
-    pluginType: "action",
+    pluginType: PluginType.Action,
     name: "clipboard",
     method: (_, text) => {
         if (!navigator.clipboard) {

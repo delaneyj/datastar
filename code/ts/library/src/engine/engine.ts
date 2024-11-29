@@ -3,6 +3,7 @@ import { HTMLorSVGElement } from "../utils/types";
 import { DeepSignal, deepSignal, DeepState } from "../vendored/deepsignal";
 import { computed, effect, Signal, signal } from "../vendored/preact-core";
 import { apply } from "../vendored/ts-merge-patch";
+import { PluginType } from "./enums";
 
 import {
     ERR_ALREADY_EXISTS,
@@ -19,26 +20,28 @@ import {
     AttributePlugin,
     DatastarPlugin,
     InitContext,
+    MacroPlugin,
     OnRemovalFn,
-    PreprocessorPlugin,
     Reactivity,
     WatcherPlugin,
 } from "./types";
 import { VERSION } from "./version";
 
-const isPreprocessorPlugin = (p: DatastarPlugin): p is PreprocessorPlugin =>
-    p.pluginType === "preprocessor";
+const isMacroPlugin = (p: DatastarPlugin): p is MacroPlugin =>
+    p.pluginType === PluginType.Macro;
 const isWatcherPlugin = (p: DatastarPlugin): p is WatcherPlugin =>
-    p.pluginType === "watcher";
+    p.pluginType === PluginType.Watcher;
 const isAttributePlugin = (p: DatastarPlugin): p is AttributePlugin =>
-    p.pluginType === "attribute";
+    p.pluginType === PluginType.Attribute;
 const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
-    p.pluginType === "action";
+    p.pluginType ===  PluginType.Action;
+
+export * from "./enums";
 
 export class Engine {
     plugins: AttributePlugin[] = [];
     store: DeepSignal<any> = deepSignal({});
-    preprocessors = new Array<PreprocessorPlugin>();
+    macros = new Array<MacroPlugin>();
     actions: ActionPlugins = {};
     watchers = new Array<WatcherPlugin>();
     refs: Record<string, HTMLElement> = {};
@@ -73,11 +76,11 @@ export class Engine {
             }
 
             let globalInitializer: ((ctx: InitContext) => void) | undefined;
-            if (isPreprocessorPlugin(plugin)) {
-                if (this.preprocessors.includes(plugin)) {
+            if (isMacroPlugin(plugin)) {
+                if (this.macros.includes(plugin)) {
                     throw ERR_ALREADY_EXISTS;
                 }
-                this.preprocessors.push(plugin);
+                this.macros.push(plugin);
             } else if (isWatcherPlugin(plugin)) {
                 if (this.watchers.includes(plugin)) {
                     throw ERR_ALREADY_EXISTS;
@@ -188,7 +191,7 @@ export class Engine {
     }
 
     private applyPlugins(rootElement: Element) {
-        const appliedProcessors = new Set<PreprocessorPlugin>();
+        const appliedProcessors = new Set<MacroPlugin>();
 
         this.plugins.forEach((p, pi) => {
             this.walkDownDOM(rootElement, (el) => {
@@ -266,9 +269,9 @@ export class Engine {
                     }
 
                     const processors = [
-                        ...(p.preprocessors?.pre || []),
-                        ...this.preprocessors,
-                        ...(p.preprocessors?.post || []),
+                        ...(p.macros?.pre || []),
+                        ...this.macros,
+                        ...(p.macros?.post || []),
                     ];
                     for (const processor of processors) {
                         if (appliedProcessors.has(processor)) continue;

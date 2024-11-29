@@ -1,10 +1,11 @@
-import { PreprocessorPlugin, RegexpGroups } from "../../../../engine";
+import { MacroPlugin, RegexpGroups } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { wholePrefixSuffix } from "../../../../utils/regex";
 
 // Replacing $signal with ctx.store.signal.value`
-export const SignalsProcessor: PreprocessorPlugin = {
+export const SignalsMacro: MacroPlugin = {
     name: "signal",
-    pluginType: "preprocessor",
+    pluginType: PluginType.Macro,
     regexp: wholePrefixSuffix("\\$", "signal", "(?<method>\\([^\\)]*\\))?"),
     replacer: (groups: RegexpGroups) => {
         const { signal, method } = groups;

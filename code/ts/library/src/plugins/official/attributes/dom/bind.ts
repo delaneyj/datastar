@@ -4,10 +4,11 @@
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { kebabize } from "../../../../utils/text";
 
 export const Bind: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "bind",
     mustNotEmptyKey: true,
     mustNotEmptyExpression: true,

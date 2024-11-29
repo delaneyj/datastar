@@ -5,6 +5,7 @@
 
 import { AttributePlugin } from "../../../../engine";
 import { DATASTAR } from "../../../../engine/consts";
+import { PluginType } from "../../../../engine/enums";
 import {
     DATASTAR_SSE_EVENT,
     DatastarSSEEvent,
@@ -16,7 +17,7 @@ export const INDICATOR_CLASS = `${DATASTAR}-indicator`;
 export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 
 export const Indicator: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "indicator",
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {
