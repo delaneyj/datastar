@@ -4,6 +4,7 @@
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 import { argsHas, argsToMs } from "../../../../utils/arguments";
 import { remoteSignals } from "../../../../utils/signals";
@@ -25,7 +26,7 @@ let lastSignalsMarshalled = "";
 
 // Sets the event listener of the element
 export const On: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "on",
     mustNotEmptyKey: true,
     mustNotEmptyExpression: true,

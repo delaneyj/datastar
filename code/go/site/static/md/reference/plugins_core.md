@@ -40,16 +40,16 @@ Allows you to define a computed signals value that automatically updates its val
 
 Makes an element available as a signal in the signals.
 
-## Preprocessor Plugins
+## Macro Plugins
 
-### SignalProcessor
+### SignalMacro
 
 Takes a `$var` and converts into a `ctx.signals().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
 
-### ActionProcessor
+### ActionMacro
 
 Takes a `$fn('foo','bar',1234)` and converts into a `ctx.actions.fn('foo','bar',1234()`. This is used to trigger actions plugins.
 
-### RefProcessor
+### RefMacro
 
 Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svelte components.

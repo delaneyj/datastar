@@ -4,6 +4,7 @@
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import {
   ERR_BAD_ARGS,
   ERR_METHOD_NOT_ALLOWED,
@@ -14,7 +15,7 @@ const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateModelEvents = ["change", "input", "keydown"];
 
 export const Bind: AttributePlugin = {
-  pluginType: "attribute",
+  pluginType: PluginType.Attribute,
   name: "bind",
   onLoad: (ctx) => {
     const {
@@ -44,8 +45,8 @@ export const Bind: AttributePlugin = {
       let signalDefault: string | boolean | File = "";
       const isInput = tnl.includes("input");
       const type = el.getAttribute("type");
-      const isCheckbox = tnl.includes("checkbox") ||
-        (isInput && type === "checkbox");
+      const isCheckbox =
+        tnl.includes("checkbox") || (isInput && type === "checkbox");
       if (isCheckbox) {
         signalDefault = false;
       }
@@ -124,7 +125,7 @@ export const Bind: AttributePlugin = {
                 reader.onloadend = () => resolve(void 0);
                 reader.readAsDataURL(f);
               });
-            }),
+            })
           );
 
           signal.value = allContents;
@@ -149,15 +150,15 @@ export const Bind: AttributePlugin = {
           signal.value = input.value || input.getAttribute("value") || "";
         } else if (typeof current === "boolean") {
           if (isCheckbox) {
-            signal.value = input.checked ||
-              input.getAttribute("checked") === "true";
+            signal.value =
+              input.checked || input.getAttribute("checked") === "true";
           } else {
             signal.value = Boolean(input.value || input.getAttribute("value"));
           }
         } else if (typeof current === "undefined") {
         } else if (typeof current === "bigint") {
           signal.value = BigInt(
-            input.value || input.getAttribute("value") || "0",
+            input.value || input.getAttribute("value") || "0"
           );
         } else if (Array.isArray(current)) {
           // check if the input is a select element

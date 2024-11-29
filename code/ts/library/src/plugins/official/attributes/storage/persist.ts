@@ -5,11 +5,12 @@
 
 import { AttributePlugin } from "../../../../engine";
 import { DATASTAR, DATASTAR_EVENT } from "../../../../engine/consts";
+import { PluginType } from "../../../../engine/enums";
 import { remoteSignals } from "../../../../utils/signals";
 import { DatastarSSEEvent } from "../../watchers/backend/sseShared";
 
 export const Persist: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType:PluginType.Attribute,
     name: "persist",
     allowedModifiers: new Set(["local", "session", "remote"]),
     onLoad: (ctx) => {

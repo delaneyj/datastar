@@ -4,12 +4,13 @@
 // Description: This attribute plugin sets up view transitions for the current view. This plugin requires the view transition API to be enabled in the browser. If the browser does not support view transitions, an error will be logged to the console.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { supportsViewTransitions } from "../../../../utils/view-transitions";
 
 const VIEW_TRANSITION = "view-transition";
 
 export const ViewTransition: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: VIEW_TRANSITION,
     onGlobalInit() {
         let hasViewTransitionMeta = false;
