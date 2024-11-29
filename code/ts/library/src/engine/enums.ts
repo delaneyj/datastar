@@ -1,7 +1,6 @@
-
-export  enum PluginType  {
+export enum PluginType {
     Macro,
     Attribute,
     Watcher,
     Action,
-  }
+}
