@@ -44,7 +44,7 @@ public record DatastarSignalsStore : IDatastarSignalsStore
 ...
 // add as an ASP Service
 //  allows injection of IServerSentEventGenerator, to respond to a request with a Datastar friendly ServerSentEvent
-//                  and IDatastarSignalsStore, to read what is in the data-signals of the client
+//                  and IDatastarSignalsStore, to read what is in the data-merge-signals of the client
 builder.Services.AddDatastar<DatastarSignalsStore>();
 ...
 app.UseStaticFiles();
