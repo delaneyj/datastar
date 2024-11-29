@@ -18,7 +18,7 @@ module ServerSentEventServices =
 
         serviceCollection
 
-    let datastarServiceWithCustomDeserializer<'T when 'T :> IDatastarSignalsStore> (signalStoreDeserializer:string -> 'T) (serviceCollection:IServiceCollection) =
+    let datastarServiceWithCustomDeserializer<'T when 'T :> IDatastarSignals> (signalStoreDeserializer:string -> 'T) (serviceCollection:IServiceCollection) =
         serviceCollection.AddHttpContextAccessor() |> ignore
 
         serviceCollection.AddScoped<IServerSentEventService>(fun (svcPvd:IServiceProvider) ->
@@ -26,7 +26,7 @@ module ServerSentEventServices =
             ServerSentEventService(httpContext)
             ) |> ignore
 
-        serviceCollection.AddScoped<IDatastarSignalsStore>(fun (svcPvd:IServiceProvider) ->
+        serviceCollection.AddScoped<IDatastarSignals>(fun (svcPvd:IServiceProvider) ->
             let httpContextAccessor = svcPvd.GetService<IHttpContextAccessor>()
             let rawSignals = ServerSentEventHttpHandler.ReadRawSignalStore(httpContextAccessor.HttpContext.Request).GetAwaiter().GetResult()
             match rawSignals with
@@ -36,7 +36,7 @@ module ServerSentEventServices =
 
         serviceCollection
 
-    let datastarService<'T when 'T :> IDatastarSignalsStore> (serviceCollection:IServiceCollection) =
+    let datastarService<'T when 'T :> IDatastarSignals> (serviceCollection:IServiceCollection) =
         datastarServiceWithCustomDeserializer JsonSerializer.Deserialize<'T> serviceCollection
 
 [<System.Runtime.CompilerServices.Extension>]
@@ -47,9 +47,9 @@ type ServiceCollectionExtensionMethods() =
         ServerSentEventServices.datastarServiceWithoutSignals serviceCollection
 
     [<System.Runtime.CompilerServices.Extension>]
-    static member AddDatastar<'T when 'T :> IDatastarSignalsStore> serviceCollection =
+    static member AddDatastar<'T when 'T :> IDatastarSignals> serviceCollection =
         ServerSentEventServices.datastarService<'T> serviceCollection
 
     [<System.Runtime.CompilerServices.Extension>]
-    static member AddDatastar<'T when 'T :> IDatastarSignalsStore> (serviceCollection:ServiceCollection, signalsStoreDeserializer:Func<string, 'T>) =
+    static member AddDatastar<'T when 'T :> IDatastarSignals> (serviceCollection:ServiceCollection, signalsStoreDeserializer:Func<string, 'T>) =
         ServerSentEventServices.datastarServiceWithCustomDeserializer<'T> signalsStoreDeserializer.Invoke serviceCollection

@@ -13,10 +13,10 @@ type IServerSentEventService =
     abstract MergeFragments: fragment:string * options:ServerSentEventMergeFragmentsOptions -> Task
     abstract RemoveFragments: selector:Selector -> Task
     abstract RemoveFragments: selector:Selector * options:ServerSentEventRemoveFragmentsOptions -> Task
-    abstract MergeSignals: dataSignals:IDatastarSignalsStore -> Task
-    abstract MergeSignals: dataSignals:IDatastarSignalsStore * options:ServerSentEventOptions -> Task
-    abstract MergeSignals: dataSignals:IDatastarSignalsStore * onlyIfMissing:bool -> Task
-    abstract MergeSignals: dataSignals:IDatastarSignalsStore * onlyIfMissing:bool * options:ServerSentEventOptions -> Task
+    abstract MergeSignals: dataSignals:IDatastarSignals -> Task
+    abstract MergeSignals: dataSignals:IDatastarSignals * options:ServerSentEventOptions -> Task
+    abstract MergeSignals: dataSignals:IDatastarSignals * onlyIfMissing:bool -> Task
+    abstract MergeSignals: dataSignals:IDatastarSignals * onlyIfMissing:bool * options:ServerSentEventOptions -> Task
     abstract RemoveSignals: paths:DataSignalPath seq -> Task
     abstract RemoveSignals: paths:DataSignalPath seq * options:ServerSentEventOptions -> Task
     abstract ExecuteScript: script:string -> Task

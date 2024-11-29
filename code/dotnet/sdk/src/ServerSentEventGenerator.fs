@@ -35,7 +35,7 @@ module ServerSentEventGenerator =
         |> send env
     let removeFragments env = removeFragmentsWithOptions RemoveFragmentsOptions.defaults env
 
-    let mergeSignalsWithOptions options env onlyIfMissing (mergeSignalData:IDatastarSignalsStore) : Task =
+    let mergeSignalsWithOptions options env onlyIfMissing (mergeSignalData:IDatastarSignals) : Task =
         { EventType = MergeSignals
           Id = options.EventId
           Retry = options.Retry

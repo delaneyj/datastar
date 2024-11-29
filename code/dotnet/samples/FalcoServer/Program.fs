@@ -15,7 +15,7 @@ open Falco.HostBuilder
 type SignalsStore = { input: string; output: string; show: bool }
     with
     static member defaults = { input = ""; output = ""; show = false }
-    interface IDatastarSignalsStore with
+    interface IDatastarSignals with
         member this.Serialize () = JsonSerializer.Serialize(this)
 
 [<EntryPoint>]

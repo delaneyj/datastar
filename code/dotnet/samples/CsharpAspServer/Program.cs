@@ -6,7 +6,7 @@ using StarFederation.Datastar.DependencyInjection;
 
 namespace CsharpAspServer;
 
-public record DataSignalsStore : IDatastarSignalsStore
+public record DataSignalsStore : IDatastarSignals
 {
     [JsonPropertyName("input")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -46,7 +46,7 @@ public static class Program
             return Task.CompletedTask;
         });
         app.MapGet("/language/{lang:required}", (string lang, IServerSentEventService sseService) => sseService.MergeFragments($"""<span id="language">{lang}</span>"""));
-        app.MapGet("/patch", async (IServerSentEventService sseService, IDatastarSignalsStore dsStore) =>
+        app.MapGet("/patch", async (IServerSentEventService sseService, IDatastarSignals dsStore) =>
         {
             DataSignalsStore signalsStore = (dsStore as DataSignalsStore) ?? throw new InvalidCastException("Unknown Datastore passed");
             DataSignalsStore mergeSignalsStore = new() { Output = $"Patched Output: {signalsStore.Input}" };
