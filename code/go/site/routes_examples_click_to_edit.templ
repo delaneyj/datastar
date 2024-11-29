@@ -34,15 +34,15 @@ templ setupExamplesClickToEditUserEdit(store *ClickToEditContactStore) {
 	<div id="contact_1" class="flex flex-col gap-2" data-store={ templ.JSONString(store) }>
 		<label class="flex items-center gap-2 input input-bordered">
 			First Name
-			<input type="text" class="grow" data-model="firstName"/>
+			<input type="text" class="grow" data-bind="firstName"/>
 		</label>
 		<label class="flex items-center gap-2 input input-bordered">
 			Last Name
-			<input type="text" class="grow" data-model="lastName"/>
+			<input type="text" class="grow" data-bind="lastName"/>
 		</label>
 		<label class="flex items-center gap-2 input input-bordered">
 			Email
-			<input type="text" class="grow" data-model="email"/>
+			<input type="text" class="grow" data-bind="email"/>
 		</label>
 		<div class="flex gap-4">
 			<button

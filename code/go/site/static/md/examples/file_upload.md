@@ -24,7 +24,7 @@ In this example we show how to create a file upload form that will be submitted 
     <label>
       <span class="label-text">Pick anything reasonably sized</span>
     </label>
-    <input type="file" data-model="files" multiple>
+    <input type="file" data-bind="files" multiple>
     <button
       data-fetch-url="'/examples/file_upload/upload'"
       data-on-click="$post">
@@ -35,7 +35,7 @@ In this example we show how to create a file upload form that will be submitted 
 ```
 
 We don't need a form because everything is encoded as signals and automatically sent to the server.
-We `POST` the form to /upload, since the `input` is using `data-model` the file will be automatically encoded as base64. If your store includes `${signalName}Mimes` and `${signalName}Names` then those will be sent as well. All three signals are arrays and files / metainfo will be appended in the order of selection.
+We `POST` the form to /upload, since the `input` is using `data-bind` the file will be automatically encoded as base64. If your store includes `${signalName}Mimes` and `${signalName}Names` then those will be sent as well. All three signals are arrays and files / metainfo will be appended in the order of selection.
 
 **Note:** If you try to upload a file that is too large you will get an error message in the console.
 

@@ -23,7 +23,7 @@ templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, store
 						<select
 							id={ o.Label }
 							class="select select-bordered"
-							data-model={ o.Label }
+							data-bind={ o.Label }
 						>
 							for _, v := range o.Values {
 								<option value={ v }>{ v }</option>
