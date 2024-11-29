@@ -10,7 +10,7 @@ Real-time Hypermedia first Library and Framework for dotnet
     <title>D* Demo</title>
 </head>
 <body>
-<main class="container" id="main" data-signals="{'input':'','output':''}">
+<main class="container" id="main" data-merge-signals="{'input':'','output':''}">
     <button data-on-click="$get('/displayDate')">Display Date</button>
     <div id="target"></div>
     <input type="text" placeholder="input:" data-model="input"/><br>
@@ -44,7 +44,7 @@ public record DatastarSignalsStore : IDatastarSignalsStore
 ...
 // add as an ASP Service
 //  allows injection of IServerSentEventGenerator, to respond to a request with a Datastar friendly ServerSentEvent
-//                  and IDatastarSignalsStore, to read what is in the data-signals of the client
+//                  and IDatastarSignalsStore, to read what is in the data-merge-signals of the client
 builder.Services.AddDatastarGenerator<DatastarSignalsStore>();
 ...
 app.UseStaticFiles();
