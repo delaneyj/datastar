@@ -15,7 +15,7 @@ templ infiniteScrollMore(store *infiniteScrollStore) {
 		id="loading_message"
 		class="alert alert-info"
 		data-intersects={ fmt.Sprintf(
-			"$offset=%d;$limit=%d;$get('/examples/infinite_scroll/data')",
+			"$offset=%d;$limit=%d;@get('/examples/infinite_scroll/data')",
 			store.Offset+store.Limit,
 			store.Limit,
 		) }

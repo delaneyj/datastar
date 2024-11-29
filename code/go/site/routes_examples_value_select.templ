@@ -26,7 +26,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 		<select
 			class="select select-bordered"
 			data-bind="make"
-			data-on-change="$get('/examples/value_select/data')"
+			data-on-change="@get('/examples/value_select/data')"
 			data-testid="make_select"
 		>
 			<option disabled selected>Select a Make</option>
@@ -38,7 +38,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 			<select
 				class="select select-bordered"
 				data-bind="model"
-				data-on-change="$get('/examples/value_select/data')"
+				data-on-change="@get('/examples/value_select/data')"
 				data-testid="model_select"
 			>
 				<option disabled selected>Select a Model</option>
@@ -50,7 +50,7 @@ templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *Va
 		if isValid {
 			<button
 				class="btn btn-success"
-				data-on-click="$post('/examples/value_select/data')"
+				data-on-click="@post('/examples/value_select/data')"
 				data-testid="select_button"
 			>
 				@icon("material-symbols:car-repair")
@@ -71,7 +71,7 @@ templ valueSelectResults(make *ValueSelectMake, model *ValueSelectModel) {
 		</div>
 		<button
 			class="btn btn-warning"
-			data-on-click="$get('/examples/value_select/data')"
+			data-on-click="@get('/examples/value_select/data')"
 		>
 			@icon("material-symbols:reset-wrench")
 			Resest form

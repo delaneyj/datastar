@@ -10,7 +10,7 @@ templ DialogBrowserView(store *DialogBrowserStore) {
 		id="dialogs"
 		class="flex items-center btn btn-primary"
 		data-merge-signals={ templ.JSONString(store) }
-		data-on-click="$prompt = prompt('Enter a string',$prompt);$confirm = confirm('Are you sure?');$confirm && $get('/examples/dialogs_browser/sure')"
+		data-on-click="$prompt = prompt('Enter a string',$prompt);$confirm = confirm('Are you sure?');$confirm && @get('/examples/dialogs_browser/sure')"
 	>
 		Click Me
 		@icon("material-symbols:question-mark")
@@ -23,7 +23,7 @@ templ DialogBrowserSure(store *DialogBrowserStore) {
 			<div>
 				You clicked the button and confirmed with prompt of <span id="confirmation" class="font-bold text-accent">{ store.Prompt }</span>!
 			</div>
-			<button class="flex items-center gap-2 btn btn-accent" data-on-click="$get('/examples/dialogs_browser/data')">
+			<button class="flex items-center gap-2 btn btn-accent" data-on-click="@get('/examples/dialogs_browser/data')">
 				@icon("material-symbols:arrow-back")
 				Reset
 			</button>

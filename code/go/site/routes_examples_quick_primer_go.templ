@@ -18,12 +18,12 @@ templ QuickPrimerGoView(store *QuickPrimerGoStore) {
 				<span>Hello from Datastar!</span>
 			</div>
 			<div id="output">#output</div>
-			<button class="btn btn-accent" data-on-click="$put('/examples/quick_primer_go/data')">Send State</button>
+			<button class="btn btn-accent" data-on-click="@put('/examples/quick_primer_go/data')">Send State</button>
 			<div id="output2">#output2</div>
-			<button class="btn btn-accent" data-on-click="$get('/examples/quick_primer_go/data')">Get State</button>
+			<button class="btn btn-accent" data-on-click="@get('/examples/quick_primer_go/data')">Get State</button>
 			<div>
 				<span>Feed from server: </span>
-				<span id="feed" data-on-load="$get('/examples/quick_primer_go/data/feed')"></span>
+				<span id="feed" data-on-load="@get('/examples/quick_primer_go/data/feed')"></span>
 			</div>
 		</main>
 	</div>
