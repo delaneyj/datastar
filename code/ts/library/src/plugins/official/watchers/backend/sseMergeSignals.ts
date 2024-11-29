@@ -1,7 +1,7 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals data from a server using the Datastar SDK interface
-// Description: Merge signals from a server using the Datastar SDK interface
+// Slug: Merge signals using a Server-Sent Event
+// // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { InitExpressionFunction, WatcherPlugin } from "../../../../engine";
 import {
