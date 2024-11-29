@@ -11,11 +11,11 @@ func setupExamplesToggleVisibility(examplesRouter chi.Router) error {
 	examplesRouter.Get("/toggle_visibility/data", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 
-		store := &ShowStore{
+		signals := &ShowSignals{
 			BindBool: false,
 		}
 
-		sse.MergeFragmentTempl(ToggleVisibilityView(store))
+		sse.MergeFragmentTempl(ToggleVisibilityView(signals))
 	})
 
 	return nil

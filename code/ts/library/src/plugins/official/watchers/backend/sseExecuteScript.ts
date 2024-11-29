@@ -1,7 +1,7 @@
 // Authors: Delaney Gillilan
 // Icon: tabler:file-type-js
-// Slug: Execute JavaScript from a Server-Sent Event
-// Description: Execute JavaScript from a Server-Sent Event
+// Slug: Execute JavaScript using a Server-Sent Event
+// Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { WatcherPlugin } from "../../../../engine/types";
 

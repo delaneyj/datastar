@@ -41,9 +41,9 @@ trait EventTrait
     /**
      * @inerhitdoc
      */
-    public function getDataLine(string $datalineLiteral, string|int ...$parts): string
+    public function getDataLine(string $datalineLiteral, string|int $value = ''): string
     {
-        return 'data: ' . $datalineLiteral . implode(' ', $parts);
+        return 'data: ' . $datalineLiteral . $value;
     }
 
     /**

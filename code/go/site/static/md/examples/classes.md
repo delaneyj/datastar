@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-    data-store="{count:0}"
+    data-merge-signals="{count:0}"
     data-on-raf.throttle_500ms="$count++"
     data-computed-blinker="$count % 2 === 0"
 >
@@ -17,7 +17,7 @@
 
 ```html
 <div
-    data-store="{count:0}"
+    data-merge-signals="{count:0}"
     data-on-raf.throttle_500ms="$count++"
     data-computed-blinker="$count % 2 === 0"
 >
@@ -28,4 +28,4 @@
 </div>
 ```
 
-Here we are using computed signal to store a boolean then use it to drive classes
+Here we are using computed signal to signals a boolean then use it to drive classes

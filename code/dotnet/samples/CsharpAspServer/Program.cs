@@ -6,7 +6,7 @@ using StarFederation.Datastar.DependencyInjection;
 
 namespace CsharpAspServer;
 
-public record DataSignalsStore : IDatastarSignalsStore
+public record DataSignals : IDatastarSignals
 {
     [JsonPropertyName("input")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -28,7 +28,7 @@ public static class Program
     public static void Main(string[] args)
     {
         WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
-        builder.Services.AddDatastar<DataSignalsStore>();
+        builder.Services.AddDatastar<DataSignals>();
 
         WebApplication app = builder.Build();
         app.UseDefaultFiles(new DefaultFilesOptions
@@ -46,16 +46,16 @@ public static class Program
             return Task.CompletedTask;
         });
         app.MapGet("/language/{lang:required}", (string lang, IServerSentEventService sseService) => sseService.MergeFragments($"""<span id="language">{lang}</span>"""));
-        app.MapGet("/patch", async (IServerSentEventService sseService, IDatastarSignalsStore dsStore) =>
+        app.MapGet("/patch", async (IServerSentEventService sseService, IDatastarSignals signals) =>
         {
-            DataSignalsStore signalsStore = (dsStore as DataSignalsStore) ?? throw new InvalidCastException("Unknown Datastore passed");
-            DataSignalsStore mergeSignalsStore = new() { Output = $"Patched Output: {signalsStore.Input}" };
-            await sseService.MergeSignals(mergeSignalsStore);
+            DataSignals signals = (signals as DataSignals) ?? throw new InvalidCastException("Unknown DataSignals passed");
+            DataSignals mergeSignals = new() { Output = $"Patched Output: {signals.Input}" };
+            await sseService.MergeSignals(mergeSignals);
         });
         app.MapGet("/target", async (IServerSentEventService sseService) =>
         {
             string today = DateTime.Now.ToString("%y-%M-%d %h:%m:%s");
-            await sseService.MergeFragments($"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="$get('/removeDate')">Remove</button></span></div>""");
+            await sseService.MergeFragments($"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="@get('/removeDate')">Remove</button></span></div>""");
         });
         app.MapGet("/removeDate", (IServerSentEventService sseService) => sseService.RemoveFragments("#date"));
         app.MapGet("/feed", async (IHttpContextAccessor acc, IServerSentEventService sseService, CancellationToken ct) =>

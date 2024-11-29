@@ -15,8 +15,8 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 		</label>
 		<input
 			class={ "input input-bordered", templ.KV("input-error",!isValid) }
-			data-model={ field }
-			data-on-keydown.debounce_500ms="$get('/examples/inline_validation/data')"
+			data-bind={ field }
+			data-on-keydown.debounce_500ms="@get('/examples/inline_validation/data')"
 			data-testid={ "input_" + field }
 		/>
 		if !isValid {
@@ -26,7 +26,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 }
 
 templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFirstNameValid, isLastNameValid, isValid bool) {
-	<div id="inline_validation" class="flex flex-col gap-4" data-store.ifmissing={ templ.JSONString(u) }>
+	<div id="inline_validation" class="flex flex-col gap-4" data-merge-signals.ifmissing={ templ.JSONString(u) }>
 		<div class="text-2xl font-bold">Sign Up</div>
 		<div>
 			@inlineValidationFieldComponent("Email Address", "email", isEmailValid, "Email '%s' is already taken or is invalid.  Please enter another email.", u.Email)
@@ -36,7 +36,7 @@ templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFir
 		<button
 			class="btn btn-success"
 			disabled?={ !isValid }
-			data-on-click="$post('/examples/inline_validation/data')"
+			data-on-click="@post('/examples/inline_validation/data')"
 			data-testid="submit_button"
 		>
 			@icon("material-symbols:person-add")

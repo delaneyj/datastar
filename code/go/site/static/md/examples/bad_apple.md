@@ -5,15 +5,15 @@
 <div
     id="contents"
     class="flex flex-col gap-4 p-4 w-full"
-    data-store="{_contents: 'bad apple frames go here', percentage: 0}"
-    data-on-load="$get('/examples/bad_apple/updates')"
+    data-merge-signals="{_contents: 'bad apple frames go here', percentage: 0}"
+    data-on-load="@get('/examples/bad_apple/updates')"
 >
     <div class="flex gap-4 items-center font-mono">
         <input
             disabled
             class="range range-neutral flex-1"
             type="range" min="1" max="100"
-            data-model="percentage"
+            data-bind="percentage"
          />
         <div>
             <span data-text="$percentage.toFixed(2)"></span>%
@@ -38,11 +38,11 @@ We take the [already converted](https://github.com/trung-kieen/bad-apple-ascii) 
 ```html
 <div
   id="contents"
-  data-store="{_contents: 'bad apple frames go here', percentage: 0}"
-  data-on-load="$get('/examples/bad_apple/updates')"
+  data-merge-signals="{_contents: 'bad apple frames go here', percentage: 0}"
+  data-on-load="@get('/examples/bad_apple/updates')"
 >
   <div>
-    <input type="range" min="1" max="100" data-model="percentage" disabled />
+    <input type="range" min="1" max="100" data-bind="percentage" disabled />
     <div><span data-text="$percentage.toFixed(2)"></span>%</div>
   </div>
   <div>

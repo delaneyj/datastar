@@ -14,7 +14,7 @@ import (
 	"github.com/valyala/bytebufferpool"
 )
 
-func setupExamplesOfflineSync(examplesRouter chi.Router, store sessions.Store) error {
+func setupExamplesOfflineSync(examplesRouter chi.Router, signals sessions.Store) error {
 
 	lruCache := expirable.NewLRU[string, string](100, nil, 5*time.Minute)
 
@@ -26,10 +26,10 @@ func setupExamplesOfflineSync(examplesRouter chi.Router, store sessions.Store) e
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		storeJSON := buf.String()
+		signalsJSON := buf.String()
 
 		var sessionID string
-		session, err := store.Get(r, sessionKey)
+		session, err := signals.Get(r, sessionKey)
 		if err != nil || len(session.Values) == 0 {
 			sessionID = toolbelt.NextEncodedID()
 			session.Values["id"] = sessionID
@@ -40,18 +40,18 @@ func setupExamplesOfflineSync(examplesRouter chi.Router, store sessions.Store) e
 			sessionID = session.Values["id"].(string)
 		}
 
-		lruCache.Add(sessionID, storeJSON)
+		lruCache.Add(sessionID, signalsJSON)
 
 		datastar.NewSSE(w, r).MergeFragments(fmt.Sprintf(`
 <div id="results">
 	<p>Synchronized offline data!</p>
 	<p>at %s</p>
 	<p>Session ID: %s</p>
-	<p>Store JSON: %s</p>
+	<p>Signals JSON: %s</p>
 </div>
 `,
 			time.Now().Format(time.RFC3339),
-			sessionID, storeJSON,
+			sessionID, signalsJSON,
 		))
 
 		log.Print("Syncing offline data!")

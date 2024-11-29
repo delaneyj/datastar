@@ -6,26 +6,26 @@ A set of plugins that allow for the integration of any backend service that supp
 
 ## Action Plugins
 
-### `$get`, `$post`, `$put`, `$patch`, `$delete`
+### `@get`, `@post`, `@put`, `@patch`, `@delete`
 
 ```html
-<div data-on-click="$get('/examples/click_to_edit/contact/1')"></div>
+<div data-on-click="@get('/examples/click_to_edit/contact/1')"></div>
 ```
 
-Makes an HTML_VERB request to the server and merges the response with the current DOM and store. The URL can be any valid URL but the response must be a Datastar formatted SSE event.
+Makes an HTML_VERB request to the server and merges the response with the current DOM and signals. The URL can be any valid URL but the response must be a Datastar formatted SSE event.
 
-Every request will be sent with a `{datastar: *}` object containing the current store (except for store keys beginning with an underscore). When using `$get` the store will be sent as a query parameter, otherwise it will be sent as a JSON body.
+Every request will be sent with a `{datastar: *}` object containing the current signals (except for signals keys beginning with an underscore). When using `@get` the signals will be sent as a query parameter, otherwise it will be sent as a JSON body.
 
 #### Options
 
 The actions above take a second argument of options.
 
-The `onlyRemoteSignals` option determines whether to only send remotely viewable store values (defaults to `true`).
+The `onlyRemoteSignals` option determines whether to only send remotely viewable signals values (defaults to `true`).
 
 The `headers` option is an object containing headers to send with the request.
 
 ```html
-<div data-on-click="$get('/examples/click_to_edit/contact/1', {
+<div data-on-click="@get('/examples/click_to_edit/contact/1', {
   onlyRemoteSignals: false,
   headers: {
     'X-Csrf-Token': 'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg==',
@@ -65,7 +65,7 @@ Additional `data` lines can be added to the response to override the default beh
 | `data: mergeMode append`           | Appends the fragment to the target's children.                                                                          |
 | `data: mergeMode before`           | Inserts the fragment before the target as a sibling.                                                                    |
 | `data: mergeMode after`            | Inserts the fragment after the target as a sibling.                                                                     |
-| `data: mergeMode upsertAttributes` | Merges attributes from the fragment into the target – useful for updating a store.                                      |
+| `data: mergeMode upsertAttributes` | Merges attributes from the fragment into the target – useful for updating a signals.                                      |
 | `data: settleDuration 1000`        | Settles the element after 1000ms, useful for transitions. Defaults to `300`.                                            |
 | `data: useViewTransition true`     | Whether to use view transitions when merging into the DOM. Defaults to `false`.                                         |
 | `data: fragments`                  | The HTML fragments to merge into the DOM.                                                                               |
@@ -78,7 +78,7 @@ data: onlyIfMissing false
 data: signals {foo: 1234}
 ```
 
-The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-merge-signals` event is used to update the signals with new values. The `onlyIfMissing` line determines whether to update the signals with new values only if the key does not exist. The `signals` line should be a valid `data-merge-signals` attribute. This will get merged into the signals.
 
 #### `datastar-remove-fragments`
 
@@ -94,7 +94,7 @@ event: datastar-remove-signals
 data: paths foo.bar 1234 abc
 ```
 
-The `datastar-remove-signals` event is used to remove signals that match the provided paths from the store.
+The `datastar-remove-signals` event is used to remove signals that match the provided paths from the signals.
 
 #### `datastar-execute-script`
 
@@ -106,7 +106,7 @@ data: attributes defer true
 data: script console.log('Hello, world!')
 ```
 
-The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser. 
+The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser.
 
 ## Attribute Plugins
 
@@ -115,7 +115,7 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 ```html
 <svg data-show="$fetching">Spinner</svg>
 <button
-  data-on-click="$get('/examples/click_to_edit/contact/1')"
+  data-on-click="@get('/examples/click_to_edit/contact/1')"
   data-indicator="fetching"
   data-bind-disabled="$fetching"
 ></button>

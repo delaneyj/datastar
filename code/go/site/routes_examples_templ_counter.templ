@@ -1,6 +1,6 @@
 package site
 
-type TemplCounterStore struct {
+type TemplCounterSignals struct {
 	Global uint32 `json:"global"`
 	User   uint32 `json:"user"`
 }
@@ -9,13 +9,13 @@ templ templCounterExampleButtons() {
 	<div class="flex justify-around gap-4">
 		<button
 			class="btn btn-info"
-			data-on-click="$post('/examples/templ_counter/increment/global')"
+			data-on-click="@post('/examples/templ_counter/increment/global')"
 		>
 			Increment Global
 		</button>
 		<button
 			class="btn btn-success"
-			data-on-click="$post('/examples/templ_counter/increment/user')"
+			data-on-click="@post('/examples/templ_counter/increment/user')"
 		>
 			Increment User
 		</button>
@@ -35,10 +35,10 @@ templ templCounterExampleCounts() {
 	</div>
 }
 
-templ templCounterExampleInitialContents(store TemplCounterStore) {
+templ templCounterExampleInitialContents(signals TemplCounterSignals) {
 	<div
 		id="container"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 		class="flex flex-col gap-4"
 	>
 		@templCounterExampleButtons()

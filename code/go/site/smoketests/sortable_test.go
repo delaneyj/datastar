@@ -25,7 +25,7 @@ func TestExampleSortable(t *testing.T) {
 		page.Mouse.MoveLinear(proto.NewPoint(760.5, 735.0), 1)
 		page.Mouse.MustUp("left")
 
-		page.MustWaitStable()
+		page.MustWaitIdle()
 
 		result := page.MustElement("#sortContainer").MustHTML()
 

@@ -15,9 +15,9 @@ Datastar helps you build real-time web applications with the simplicity of serve
 Here’s what frontend reactivity looks like using Datastar:
 
 ```html
-<input data-model="input" type="text">
+<input data-bind="input" type="text">
 <div data-text="$input.toUpperCase()"></div>
-<button data-on-click="$post('/endpoint')">Save</button>
+<button data-on-click="@post('/endpoint')">Save</button>
 ```
 
 Visit the [Datastar Website »](https://data-star.dev/)

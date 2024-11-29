@@ -7,7 +7,7 @@ export const ActionsMacro: MacroPlugin = {
     name: "action",
     pluginType: PluginType.Macro,
     regexp: wholePrefixSuffix(
-        "\\$",
+        "@",
         "action",
         "(?<call>\\((?<args>.*)\\))",
         false,

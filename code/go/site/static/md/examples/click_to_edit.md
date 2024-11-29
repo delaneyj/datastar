@@ -6,7 +6,7 @@
 
 <div
     id="contact_1"
-    data-on-load="$get('/examples/click_to_edit/contact/1')"
+    data-on-load="@get('/examples/click_to_edit/contact/1')"
 >
 
 </div>
@@ -22,10 +22,10 @@ The click to edit pattern provides a way to offer inline editing of all or part 
   <label>Last Name: Doe</label>
   <label>Email: joe@blow.com</label>
   <div>
-    <button data-on-click="$get('/examples/click_to_edit/contact/1/edit')">
+    <button data-on-click="@get('/examples/click_to_edit/contact/1/edit')">
       Edit
     </button>
-    <button data-on-click="$get('/examples/click_to_edit/contact/1/reset')">
+    <button data-on-click="@get('/examples/click_to_edit/contact/1/reset')">
       Reset
     </button>
   </div>
@@ -38,7 +38,7 @@ This returns a form that can be used to edit the contact
 <!-- Removed styling and escaping for brevity -->
 <div
   id="contact_1"
-  data-store="{
+  data-merge-signals="{
         id: 1,
         firstName: 'John',
         lastName: 'Doe',
@@ -47,21 +47,21 @@ This returns a form that can be used to edit the contact
 >
   <div class="form-control">
     <label>First Name</label>
-    <input type="text" data-model="firstName" />
+    <input type="text" data-bind="firstName" />
   </div>
   <div>
     <label>Last Name</label>
-    <input type="text" data-model="lastName" />
+    <input type="text" data-bind="lastName" />
   </div>
   <div>
     <label>Email</label>
-    <input type="text" data-model="email" />
+    <input type="text" data-bind="email" />
   </div>
   <div>
-    <button data-on-click="$put('/examples/click_to_edit/contact/1')">
+    <button data-on-click="@put('/examples/click_to_edit/contact/1')">
       Save
     </button>
-    <button data-on-click="$get('/examples/click_to_edit/contact/1')">
+    <button data-on-click="@get('/examples/click_to_edit/contact/1')">
       Cancel
     </button>
   </div>
@@ -70,7 +70,7 @@ This returns a form that can be used to edit the contact
 
 ### There is no form
 
-If you compare to HTMX you'll notice there is no form, you can use one, but it's unnecessary. This is because you are already using signals and when you use a `PUT` to `/contact/1/edit`, the body is the entire contents of the store, and it's available to handle errors and validation holistically. There is also a profanity filter on the normal rendering of the contact that is not applied to the edit form. Controlling the rendering complete on the server allows you to have a single source of truth for the data and the rendering.
+If you compare to HTMX you'll notice there is no form, you can use one, but it's unnecessary. This is because you are already using signals and when you use a `PUT` to `/contact/1/edit`, the body is the entire contents of the signals, and it's available to handle errors and validation holistically. There is also a profanity filter on the normal rendering of the contact that is not applied to the edit form. Controlling the rendering complete on the server allows you to have a single source of truth for the data and the rendering.
 
 ### There is no client validation
 

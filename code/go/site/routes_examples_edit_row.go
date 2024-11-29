@@ -38,19 +38,19 @@ func starterEditContacts() []*ContactEdit {
 func setupExamplesEditRow(examplesRouter chi.Router) error {
 	contacts := starterEditContacts()
 
-	emptyStore := &EditRowStore{EditRowIndex: -1}
+	emptySignals := &EditRowSignals{EditRowIndex: -1}
 
 	examplesRouter.Get("/edit_row/reset", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 		contacts = starterEditContacts()
-		sse.MergeFragmentTempl(EditRowContacts(contacts, emptyStore))
+		sse.MergeFragmentTempl(EditRowContacts(contacts, emptySignals))
 	})
 
 	examplesRouter.Route("/edit_row/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 
 			sse := datastar.NewSSE(w, r)
-			sse.MergeFragmentTempl(EditRowContacts(contacts, emptyStore))
+			sse.MergeFragmentTempl(EditRowContacts(contacts, emptySignals))
 		})
 
 		dataRouter.Get("/{index}", func(w http.ResponseWriter, r *http.Request) {
@@ -61,58 +61,58 @@ func setupExamplesEditRow(examplesRouter chi.Router) error {
 				http.Error(w, fmt.Sprintf("error parsing index: %s", err), http.StatusBadRequest)
 				return
 			}
-			store := &EditRowStore{
+			signals := &EditRowSignals{
 				EditRowIndex: i,
 				Name:         contacts[i].Name,
 				Email:        contacts[i].Email,
 			}
 
-			sse.MergeFragmentTempl(EditRowContacts(contacts, store))
+			sse.MergeFragmentTempl(EditRowContacts(contacts, signals))
 		})
 	})
 
 	examplesRouter.Route("/edit_row/edit", func(editRouter chi.Router) {
 		editRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &EditRowStore{}
-			if err := datastar.ReadSignals(r, &store); err != nil {
+			signals := &EditRowSignals{}
+			if err := datastar.ReadSignals(r, &signals); err != nil {
 				http.Error(w, fmt.Sprintf("error unmarshalling contact : %s", err), http.StatusBadRequest)
 			}
 
-			if store.EditRowIndex < 0 || store.EditRowIndex >= len(contacts) {
-				http.Error(w, fmt.Sprintf("invalid index: %d", store.EditRowIndex), http.StatusBadRequest)
+			if signals.EditRowIndex < 0 || signals.EditRowIndex >= len(contacts) {
+				http.Error(w, fmt.Sprintf("invalid index: %d", signals.EditRowIndex), http.StatusBadRequest)
 				return
 			}
 
-			i := store.EditRowIndex
+			i := signals.EditRowIndex
 			c := contacts[i]
-			store = &EditRowStore{
+			signals = &EditRowSignals{
 				EditRowIndex: i,
 				Name:         c.Name,
 				Email:        c.Email,
 			}
 
 			sse := datastar.NewSSE(w, r)
-			sse.MergeFragmentTempl(EditRowContacts(contacts, store))
+			sse.MergeFragmentTempl(EditRowContacts(contacts, signals))
 		})
 
 		editRouter.Patch("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &EditRowStore{}
-			if err := datastar.ReadSignals(r, &store); err != nil {
-				http.Error(w, fmt.Sprintf("error unmarshalling store : %s", err), http.StatusBadRequest)
+			signals := &EditRowSignals{}
+			if err := datastar.ReadSignals(r, &signals); err != nil {
+				http.Error(w, fmt.Sprintf("error unmarshalling signals : %s", err), http.StatusBadRequest)
 				return
 			}
 
-			if store.EditRowIndex < 0 || store.EditRowIndex >= len(contacts) {
-				http.Error(w, fmt.Sprintf("invalid index: %d", store.EditRowIndex), http.StatusBadRequest)
+			if signals.EditRowIndex < 0 || signals.EditRowIndex >= len(contacts) {
+				http.Error(w, fmt.Sprintf("invalid index: %d", signals.EditRowIndex), http.StatusBadRequest)
 				return
 			}
-			i := store.EditRowIndex
+			i := signals.EditRowIndex
 			c := contacts[i]
-			c.Name = store.Name
-			c.Email = store.Email
+			c.Name = signals.Name
+			c.Email = signals.Email
 
 			sse := datastar.NewSSE(w, r)
-			sse.MergeFragmentTempl(EditRowContacts(contacts, emptyStore))
+			sse.MergeFragmentTempl(EditRowContacts(contacts, emptySignals))
 		})
 	})
 

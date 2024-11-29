@@ -6,7 +6,7 @@
 
 <div
     id="edit_row"
-    data-on-load="$get('/examples/edit_row/data')"
+    data-on-load="@get('/examples/edit_row/data')"
 >
 </div>
 
@@ -19,7 +19,7 @@ This example shows how to implement editable rows. First let’s look at the row
   <td>Joe Smith<//td>
   <td>joe@smith.org</td>
   <td>
-    <button data-on-click="$editRowIndex=0;$get('/examples/edit_row/edit')" >Edit</button>
+    <button data-on-click="$editRowIndex=0;@get('/examples/edit_row/edit')" >Edit</button>
   </td>
 </tr>
 ```
@@ -31,14 +31,14 @@ Finally, here is what the row looks like when the data is being edited:
 ```html
 <tr id="contact_0">
   <td>
-    <input data-model="name" type="text" />
+    <input data-bind="name" type="text" />
   </td>
   <td>
-    <input data-model="email" type="text" />
+    <input data-bind="email" type="text" />
   </td>
   <td>
-    <button data-on-click="$get('/examples/edit_row/data')">Cancel</button>
-    <button data-on-click="$patch('/examples/edit_row/edit')">Save</button>
+    <button data-on-click="@get('/examples/edit_row/data')">Cancel</button>
+    <button data-on-click="@patch('/examples/edit_row/edit')">Save</button>
   </td>
 </tr>
 ```

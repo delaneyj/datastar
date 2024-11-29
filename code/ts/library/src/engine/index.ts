@@ -1,8 +1,7 @@
+import { ActionsMacro, SignalsMacro } from "../plugins";
 import { Computed } from "../plugins/official/attributes/core/computed";
+import { MergeSignals } from "../plugins/official/attributes/core/mergeSignals";
 import { Star } from "../plugins/official/attributes/core/star";
-import { Store } from "../plugins/official/attributes/core/store";
-import { ActionsMacro } from "../plugins/official/macros/core/actions";
-import { SignalsMacro } from "../plugins/official/macros/core/signals";
 import { Engine } from "./engine";
 
 export { VERSION } from "./consts";
@@ -10,12 +9,6 @@ export { VERSION } from "./consts";
 export type * from "./types";
 
 const ds = new Engine();
-ds.load(
-    ActionsMacro,
-    SignalsMacro,
-    Store,
-    Computed,
-    Star,
-);
+ds.load(Star, ActionsMacro, SignalsMacro, MergeSignals, Computed);
 
 export const Datastar = ds;

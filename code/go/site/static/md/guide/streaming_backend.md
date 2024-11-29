@@ -29,11 +29,11 @@ On the [click to edit example](/examples/click_to_edit) when you first load the 
 ```html
 <div
   id="contact_1"
-  data-on-load="$get('/examples/click_to_edit/contact/1')"
+  data-on-load="@get('/examples/click_to_edit/contact/1')"
 ></div>
 ```
 
-Normally you don't need to do this but its trying to show that you can load a page and then have the data update. The `$get` action is a helper function that will make a fetch request and update the store with the results. The `datastar-indicator` class is a helper class that will show a spinner when the request is in flight.
+Normally you don't need to do this but its trying to show that you can load a page and then have the data update. The `@get` action is a helper function that will make a fetch request and update the signals with the results. The `datastar-indicator` class is a helper class that will show a spinner when the request is in flight.
 
 On the backend (Go in this case) we return a set of render fragments in the form of a set of `text/event-stream` events. In this case it's just a single event.
 

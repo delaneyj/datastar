@@ -2,9 +2,9 @@
 
 ## Demo
 
-<div data-store="{currentTime:Date.now()}" data-on-raf="$currentTime = Date.now()">
+<div data-merge-signals="{currentTime:Date.now()}" data-on-raf="$currentTime = Date.now()">
   <div id="time">Current Time: <span data-text="new Date($currentTime).toLocaleString()">will be replaced by current time</span></div>
-  <pre data-text="JSON.stringify(ctx.store().value, null,2)"></pre>
+  <pre data-text="JSON.stringify(ctx.signals().value, null,2)"></pre>
 </div>
 
 ## Explanation
@@ -13,7 +13,7 @@ In the [Title Update Backend](/examples/title_update_backend) example we showed 
 
 ```html
 <div
-  data-store="{currentTime:Date.now()}"
+  data-merge-signals="{currentTime:Date.now()}"
   data-on-raf="$currentTime = Date.now()"
 >
   <div id="time">
@@ -22,10 +22,10 @@ In the [Title Update Backend](/examples/title_update_backend) example we showed 
       >will be replaced by current time</span
     >
   </div>
-  <pre data-text="JSON.stringify(ctx.store().value, null,2)"></pre>
+  <pre data-text="JSON.stringify(ctx.signals().value, null,2)"></pre>
 </div>
 ```
 
-`data-on-raf` is a special event that is triggered on every requestAnimationFrame event. This is useful for updating the UI at maximum at the rendering refresh rate of the browser. In this example we update the currentTime store with a new Date object. This triggers a re-render of the currentTime span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further.
+`data-on-raf` is a special event that is triggered on every requestAnimationFrame event. This is useful for updating the UI at maximum at the rendering refresh rate of the browser. In this example we update the currentTime signals with a new Date object. This triggers a re-render of the currentTime span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further.
 
-In this case we are updating the currentTime store with the current time. This triggers a re-render of the `currentTime` span element, however if you inspect with the browser debugger you will notice that `#time`'s `<span>` element is not updated every frame. This is because the signals are smartly updated only when the value changes. This is a performance optimization that is done by default.
+In this case we are updating the currentTime signals with the current time. This triggers a re-render of the `currentTime` span element, however if you inspect with the browser debugger you will notice that `#time`'s `<span>` element is not updated every frame. This is because the signals are smartly updated only when the value changes. This is a performance optimization that is done by default.

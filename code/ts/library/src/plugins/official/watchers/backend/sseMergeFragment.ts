@@ -1,6 +1,6 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:cloud-download
-// Slug: Use Server-Sent Events to fetch data from a server using the Datastar SDK interface
+// Slug: Merge fragments into the DOM using a Server-Sent Event
 // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { InitContext, WatcherPlugin } from "../../../../engine";

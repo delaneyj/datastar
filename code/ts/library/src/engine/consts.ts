@@ -30,7 +30,7 @@ export const DefaultExecuteScriptAttributes = "type module";
 // Should fragments be merged using the ViewTransition API?
 export const DefaultFragmentsUseViewTransitions = false;
 
-// Should a given set of signals merge if they are missing from the store?
+// Should a given set of signals merge if they are missing?
 export const DefaultMergeSignalsOnlyIfMissing = false;
 
 // Should script element remove itself after execution?
@@ -68,11 +68,11 @@ export const DefaultFragmentMergeMode = FragmentMergeModes.Morph;
 export const EventTypes = {
     // An event for merging HTML fragments into the DOM.
     MergeFragments: "datastar-merge-fragments",
-    // An event for merging signals into the store.
+    // An event for merging signals.
     MergeSignals: "datastar-merge-signals",
     // An event for removing HTML fragments from the DOM.
     RemoveFragments: "datastar-remove-fragments",
-    // An event for removing signals from the store.
+    // An event for removing signals.
     RemoveSignals: "datastar-remove-signals",
     // An event for executing <script/> elements in the browser.
     ExecuteScript: "datastar-execute-script",

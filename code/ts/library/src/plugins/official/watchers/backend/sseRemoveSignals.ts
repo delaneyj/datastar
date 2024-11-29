@@ -1,7 +1,7 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals store data from a server using the Datastar SDK interface
-// Description: Merge store data from a server using the Datastar SDK interface
+// Slug: Remove signals using a Server-Sent Event
+// Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { EventTypes } from "../../../../engine/consts";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
@@ -15,13 +15,11 @@ export const RemoveSignals: WatcherPlugin = {
         datastarSSEEventWatcher(
             EventTypes.RemoveSignals,
             ({ paths: pathsRaw = "" }) => {
-                // replace all whitespace with a single space
-                pathsRaw = pathsRaw.replaceAll(/\s+/g, " ");
-                if (!!!pathsRaw?.length) {
+                const paths = pathsRaw.split("\n").map((p) => p.trim());
+                if (!!!paths?.length) {
                     // No paths provided for remove-signals
                     throw ERR_BAD_ARGS;
                 }
-                const paths = pathsRaw.split(" ");
                 ctx.removeSignals(...paths);
             },
         );
