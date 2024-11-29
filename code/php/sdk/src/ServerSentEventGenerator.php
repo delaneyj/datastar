@@ -16,6 +16,19 @@ use starfederation\datastar\events\RemoveSignals;
 
 class ServerSentEventGenerator
 {
+    /**
+     * Returns the signals sent in the incoming request.
+     */
+    public static function readSignals(): array
+    {
+        $input = $_GET[Consts::DATASTAR_KEY] ?? file_get_contents('php://input');
+
+        return $input ? json_decode($input, true) : [];
+    }
+
+    /**
+     * Sends headers when the class is instantiated.
+     */
     public function __construct()
     {
         $this->sendHeaders();
@@ -52,7 +65,7 @@ class ServerSentEventGenerator
     }
 
     /**
-     * Merges signals into the store.
+     * Merges signals into the signals.
      */
     public function mergeSignals(array|string $signals, array $options = []): void
     {
@@ -60,7 +73,7 @@ class ServerSentEventGenerator
     }
 
     /**
-     * Removes signal paths from the store.
+     * Removes signal paths from the signals.
      */
     public function removeSignals(array $paths, array $options = []): void
     {

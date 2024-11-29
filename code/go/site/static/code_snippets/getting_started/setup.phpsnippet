@@ -8,5 +8,5 @@ $sse->mergeFragments(
     '<div id="question">What do you put in a toaster?</div>'
 );
 
-// Merges signals into the store.
+// Merges signals into the signals.
 $sse->mergeSignals(['response' => '', 'answer' => 'bread']);

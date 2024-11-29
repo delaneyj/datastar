@@ -38,8 +38,8 @@ using StarFederation.Datastar.DependencyInjection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 ...
-// define your signals store
-public record DatastarSignalsStore : IDatastarSignalsStore
+// define your signals
+public record DatastarSignals : IDatastarSignals
 {
     [JsonPropertyName("input")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -54,8 +54,8 @@ public record DatastarSignalsStore : IDatastarSignalsStore
 ...
 // add as an ASP Service
 //  allows injection of IServerSentEventGenerator, to respond to a request with a Datastar friendly ServerSentEvent
-//                  and IDatastarSignalsStore, to read what is in the data-merge-signals of the client
-builder.Services.AddDatastar<DatastarSignalsStore>();
+//                  and IDatastarSignals, to read the signals sent by the client
+builder.Services.AddDatastar<DatastarSignals>();
 ...
 app.UseStaticFiles();
 
@@ -66,10 +66,10 @@ app.MapGet("/displayDate", async (IServerSentEventGenerator sse) =>
     await sse.MergeFragments($"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="@get('/removeDate')">Remove</button></span></div>""");
 });
 app.MapGet("/removeDate", async (IServerSentEventGenerator sse) => { await sse.RemoveFragments("#date"); });
-app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignalsStore dsStore) =>
+app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignals signals) =>
 {
-    DatastarSignalsStore signalStore = (dsStore as DatastarSignalsStore) ?? throw new InvalidCastException("Unknown IDatastarSignalsStore passed");
-    DatastarSignalsStore newSignalsStore = new() { Output = $"Your Input: {signalStore.Input}" };
-    await sse.MergeSignals(newSignalsStore);
+    DatastarSignals signals = (signals as DatastarSignals) ?? throw new InvalidCastException("Unknown IDatastarSignals passed");
+    DatastarSignals newSignals = new() { Output = $"Your Input: {signals.Input}" };
+    await sse.MergeSignals(newSignals);
 });
 ```

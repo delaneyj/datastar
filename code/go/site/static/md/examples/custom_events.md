@@ -46,7 +46,7 @@
 </div>
 ```
 
-Datastar `data-on-*` plugin can listen to any event, including custom events. In this example, we are listening to a custom event `myevent` on the `foo` element. When the event is triggered, the event details are stored in the `eventDetails` store and the `eventCount` store is incremented. The event is triggered every second using `setInterval` in the script tag.
+Datastar `data-on-*` plugin can listen to any event, including custom events. In this example, we are listening to a custom event `myevent` on the `foo` element. When the event is triggered, the event details are signalsd in the `eventDetails` signals and the `eventCount` signals is incremented. The event is triggered every second using `setInterval` in the script tag.
 
 This is primarily used when interacting with Web Components or other custom elements that emit custom events.
 

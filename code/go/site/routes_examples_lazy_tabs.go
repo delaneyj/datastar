@@ -15,13 +15,13 @@ func setupExamplesLazyTabs(examplesRouter chi.Router) error {
 	}
 
 	examplesRouter.Get("/lazy_tabs/data", func(w http.ResponseWriter, r *http.Request) {
-		store := &LazyTabsStore{}
-		if err := datastar.ReadSignals(r, store); err != nil {
+		signals := &LazyTabsSignals{}
+		if err := datastar.ReadSignals(r, signals); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 		sse := datastar.NewSSE(w, r)
-		component := setupExamplesLazyTabsComponent(len(tabs), tabs[store.TabID], store)
+		component := setupExamplesLazyTabsComponent(len(tabs), tabs[signals.TabID], signals)
 		sse.MergeFragmentTempl(component)
 	})
 

@@ -87,14 +87,14 @@ func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, 
 		)
 	}
 
-	sessionStore := sessions.NewCookieStore([]byte("datastar-session-secret"))
-	sessionStore.MaxAge(int(24 * time.Hour / time.Second))
+	sessionSignals := sessions.NewCookieStore([]byte("datastar-session-secret"))
+	sessionSignals.MaxAge(int(24 * time.Hour / time.Second))
 
 	if err := errors.Join(
-		setupHome(router, sessionStore, ns),
+		setupHome(router, sessionSignals, ns),
 		setupGuide(ctx, router),
 		setupReferenceRoutes(ctx, router),
-		setupExamples(ctx, router, sessionStore, ns),
+		setupExamples(ctx, router, sessionSignals, ns),
 		setupEssays(ctx, router),
 		setupMemes(router),
 		setupBundler(router),

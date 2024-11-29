@@ -2,17 +2,17 @@ package site
 
 import goaway "github.com/TwiN/go-away"
 
-type ClickToEditContactStore struct {
+type ClickToEditContactSignals struct {
 	FirstName string `json:"firstName,omitempty" san:"trim,xss,max=128"`
 	LastName  string `json:"lastName,omitempty" san:"trim,xss,max=128"`
 	Email     string `json:"email,omitempty" san:"trim,xss,max=128"`
 }
 
-templ setupExamplesClickToEditUserComponent(store *ClickToEditContactStore) {
+templ setupExamplesClickToEditUserComponent(signals *ClickToEditContactSignals) {
 	<div id="contact_1" class="flex flex-col max-w-sm gap-2">
-		<label>First Name: { goaway.Censor(store.FirstName) }</label>
-		<label>Last Name: { goaway.Censor(store.LastName) }</label>
-		<label>Email: { goaway.Censor(store.Email) }</label>
+		<label>First Name: { goaway.Censor(signals.FirstName) }</label>
+		<label>Last Name: { goaway.Censor(signals.LastName) }</label>
+		<label>Email: { goaway.Censor(signals.Email) }</label>
 		<div class="flex gap-4">
 			<button
 				class="btn btn-primary"
@@ -30,8 +30,8 @@ templ setupExamplesClickToEditUserComponent(store *ClickToEditContactStore) {
 	</div>
 }
 
-templ setupExamplesClickToEditUserEdit(store *ClickToEditContactStore) {
-	<div id="contact_1" class="flex flex-col gap-2" data-merge-signals={ templ.JSONString(store) }>
+templ setupExamplesClickToEditUserEdit(signals *ClickToEditContactSignals) {
+	<div id="contact_1" class="flex flex-col gap-2" data-merge-signals={ templ.JSONString(signals) }>
 		<label class="flex items-center gap-2 input input-bordered">
 			First Name
 			<input type="text" class="grow" data-bind="firstName"/>

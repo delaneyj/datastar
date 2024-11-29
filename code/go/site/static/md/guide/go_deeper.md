@@ -76,7 +76,7 @@ effect(() => {
 
 The difference is if you change `a` or `b`, `c` will auto schedule for updates. So you spend your time declaring relationships more than procedures. They have been popularized by [Solid,js](https://www.solidjs.com/) but are now used by many frameworks.
 
-## The Store
+## Signals
 
 Ok so back to our hypothetical framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
 
@@ -88,7 +88,7 @@ The contents are just a set of data that can evaluated
 
 1. into a valid Javascript Object
 2. converted into a tree of signals
-3. merge into a store that tracks all the reactivity on the page.
+3. merge into a signals that tracks all the reactivity on the page.
 
 In this case we want there to be a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-merge-signals` attribute and think declaratively.
 

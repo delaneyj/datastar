@@ -27,18 +27,18 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
 
-			store := &ScrollIntoViewStore{
+			signals := &ScrollIntoViewSignals{
 				Behavior: "smooth",
 				Block:    "vcenter",
 				Inline:   "hcenter",
 			}
 
-			sse.MergeFragmentTempl(scrollIntoViewView(paragraphs, opts, store))
+			sse.MergeFragmentTempl(scrollIntoViewView(paragraphs, opts, signals))
 		})
 
 		dataRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &ScrollIntoViewStore{}
-			if err := datastar.ReadSignals(r, store); err != nil {
+			signals := &ScrollIntoViewSignals{}
+			if err := datastar.ReadSignals(r, signals); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
@@ -46,14 +46,14 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 			sse := datastar.NewSSE(w, r)
 
 			attr := "scroll-into-view"
-			if store.Behavior != "" {
-				attr += "." + store.Behavior
+			if signals.Behavior != "" {
+				attr += "." + signals.Behavior
 			}
-			if store.Block != "" {
-				attr += "." + store.Block
+			if signals.Block != "" {
+				attr += "." + signals.Block
 			}
-			if store.Inline != "" {
-				attr += "." + store.Inline
+			if signals.Inline != "" {
+				attr += "." + signals.Inline
 			}
 
 			updated := fmt.Sprintf(`<p id="p%d" data-%s></p>`, paragraphCount/2, attr)

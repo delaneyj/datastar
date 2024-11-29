@@ -11,14 +11,14 @@ func setupExamplesModelBinding(examplesRouter chi.Router) error {
 	examplesRouter.Get("/model_binding/data", func(w http.ResponseWriter, r *http.Request) {
 		sse := datastar.NewSSE(w, r)
 
-		store := &ModelBindingStore{
+		signals := &ModelBindingSignals{
 			BindText:      "foo",
 			BindNumber:    42,
 			BindSelection: 1,
 			BindBool:      true,
 		}
 
-		sse.MergeFragmentTempl(ModelBindingView(7, store))
+		sse.MergeFragmentTempl(ModelBindingView(7, signals))
 	})
 
 	return nil

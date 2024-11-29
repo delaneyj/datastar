@@ -25,4 +25,4 @@ Dialogs can be triggered with the standard browser `prompt` and `confirm` within
 </button>
 ```
 
-The value provided by the user to the prompt dialog is fed back into the store, and the confirm dialog is used to determine whether the request should be sent.
+The value provided by the user to the prompt dialog is fed back into the signals, and the confirm dialog is used to determine whether the request should be sent.

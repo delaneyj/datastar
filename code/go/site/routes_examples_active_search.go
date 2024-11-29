@@ -27,14 +27,14 @@ func setupExamplesActiveSearch(examplesRouter chi.Router) error {
 	}
 
 	examplesRouter.Get("/active_search/updates", func(w http.ResponseWriter, r *http.Request) {
-		store := &ActiveSearchStore{}
-		if err := datastar.ReadSignals(r, store); err != nil {
+		signals := &ActiveSearchSignals{}
+		if err := datastar.ReadSignals(r, signals); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		scores := map[string]float64{}
-		s := strings.ToLower(store.Search)
+		s := strings.ToLower(signals.Search)
 		minScore, maxScore := math.MaxFloat64, -math.MaxFloat64
 		for _, u := range users {
 			fn := strings.ToLower(u.FirstName)
@@ -65,7 +65,7 @@ func setupExamplesActiveSearch(examplesRouter chi.Router) error {
 			return int(10000 * (scores[b.ID] - scores[a.ID]))
 		})
 
-		datastar.NewSSE(w, r).MergeFragmentTempl(ActiveSearchComponent(filteredUsers, scores, store))
+		datastar.NewSSE(w, r).MergeFragmentTempl(ActiveSearchComponent(filteredUsers, scores, signals))
 	})
 
 	return nil

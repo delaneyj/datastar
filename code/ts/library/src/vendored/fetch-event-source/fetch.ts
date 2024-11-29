@@ -136,7 +136,7 @@ export function fetchEventSource(input: RequestInfo, {
                     response.body!,
                     getLines(getMessages((id) => {
                         if (id) {
-                            // store the id and send it back on the next retry:
+                            // signals the id and send it back on the next retry:
                             headers[LastEventId] = id;
                         } else {
                             // don't send the last-event-id header anymore:

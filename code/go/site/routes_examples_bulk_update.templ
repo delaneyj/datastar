@@ -30,10 +30,10 @@ templ bulkUpdateContact(i int, cs *ContactActive, wasChanged bool) {
 	</tr>
 }
 
-templ bulkUpdateContacts(store *BulkUpdateSelectionStore, contacts []*ContactActive) {
+templ bulkUpdateContacts(signals *BulkUpdateSelectionSignals, contacts []*ContactActive) {
 	<div
 		id="bulk_update"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table table-zebra">

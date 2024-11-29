@@ -44,8 +44,8 @@ export const Bind: AttributePlugin = {
       let signalDefault: string | boolean | File = "";
       const isInput = tnl.includes("input");
       const type = el.getAttribute("type");
-      const isCheckbox =
-        tnl.includes("checkbox") || (isInput && type === "checkbox");
+      const isCheckbox = tnl.includes("checkbox") ||
+        (isInput && type === "checkbox");
       if (isCheckbox) {
         signalDefault = false;
       }
@@ -124,11 +124,11 @@ export const Bind: AttributePlugin = {
                 reader.onloadend = () => resolve(void 0);
                 reader.readAsDataURL(f);
               });
-            })
+            }),
           );
 
           signal.value = allContents;
-          const s = ctx.store();
+          const s = ctx.signals();
           const mimeName = `${expression}Mimes`,
             nameName = `${expression}Names`;
           if (mimeName in s) {
@@ -149,15 +149,15 @@ export const Bind: AttributePlugin = {
           signal.value = input.value || input.getAttribute("value") || "";
         } else if (typeof current === "boolean") {
           if (isCheckbox) {
-            signal.value =
-              input.checked || input.getAttribute("checked") === "true";
+            signal.value = input.checked ||
+              input.getAttribute("checked") === "true";
           } else {
             signal.value = Boolean(input.value || input.getAttribute("value"));
           }
         } else if (typeof current === "undefined") {
         } else if (typeof current === "bigint") {
           signal.value = BigInt(
-            input.value || input.getAttribute("value") || "0"
+            input.value || input.getAttribute("value") || "0",
           );
         } else if (Array.isArray(current)) {
           // check if the input is a select element

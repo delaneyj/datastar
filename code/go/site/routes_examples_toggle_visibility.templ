@@ -1,14 +1,14 @@
 package site
 
-type ShowStore struct {
+type ShowSignals struct {
 	BindBool bool `json:"bindBool"`
 }
 
-templ ToggleVisibilityView(store *ShowStore) {
+templ ToggleVisibilityView(signals *ShowSignals) {
 	<div
 		id="container"
 		class="flex flex-col gap-4"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<button
 			class="btn btn-primary"

@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleUpdateStore(t *testing.T) {
+func TestExampleUpdateSignals(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/update_store")
+	page := g.page("examples/update_signals")
 	assert.NotNil(t, page)
 
 	t.Run("apply random signal patch", func(t *testing.T) {

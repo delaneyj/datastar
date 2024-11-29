@@ -6,13 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleStoreIfmissing(t *testing.T) {
+func TestExampleSignalsIfmissing(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/store_ifmissing")
+	page := g.page("examples/signals_ifmissing")
 	assert.NotNil(t, page)
 
-	t.Run("check the store", func(t *testing.T) {
+	t.Run("check the signals", func(t *testing.T) {
 
 		initial := page.MustElement("#placeholder").MustText()
 		assert.Empty(t, initial)

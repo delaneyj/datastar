@@ -2,21 +2,21 @@ package site
 
 import "fmt"
 
-type AnimationsRestoreStore struct {
+type AnimationsRestoreSignals struct {
 	ShouldRestore bool `json:"shouldRestore"`
 }
 
-templ animationsViewTransition(store *AnimationsRestoreStore) {
+templ animationsViewTransition(signals *AnimationsRestoreSignals) {
 	<div
 		id="view_transition"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 		class="slide-it"
 	>
 		<button
 			class="btn btn-primary btn-lg"
 			data-on-click="@get('/examples/animations/data/view_transition') "
 		>
-			if store.ShouldRestore {
+			if signals.ShouldRestore {
 				@icon("material-symbols:arrow-left")
 				Restore It!
 			} else {

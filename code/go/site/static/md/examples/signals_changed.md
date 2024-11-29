@@ -1,10 +1,10 @@
-## Store Changed
+## Signals Changed
 
 ## Demo
 
 <div
   data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
-  data-on-store-change.remote="@post('/examples/store_changed/updates')"
+  data-on-signals-change.remote="@post('/examples/signals_changed/updates')"
   >
     <div class="flex gap-4">
       <button
@@ -15,7 +15,7 @@
       <button
         id="clear"
         class="btn btn-warning"
-        data-on-click="$clicks=0; @delete('/examples/store_changed/updates')"
+        data-on-click="$clicks=0; @delete('/examples/signals_changed/updates')"
       >Clear Local & Server</button>
       <button
         id="reload"
@@ -32,13 +32,13 @@
 ```html
 <div
   data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
-  data-on-store-change.remote="@post('/examples/store_changed/updates')"
+  data-on-signals-change.remote="@post('/examples/signals_changed/updates')"
 >
   <div>
     <button id="increment" data-on-click="$clicks++">Click Me</button>
     <button
       id="clear"
-      data-on-click="$clicks=0; @delete('/examples/store_changed/updates')"
+      data-on-click="$clicks=0; @delete('/examples/signals_changed/updates')"
     >
       Clear Local & Server
     </button>
@@ -51,9 +51,9 @@
 </div>
 ```
 
-`data-on-store-change` is a special event that is triggered when the store changes. This is useful for updating the UI when the store changes. In this example we update the `clicks` store with a new value. This triggers a re-render of the `clicks` span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further. In this case we are sending the store changes to the server to update the lifetime total clicks the server has seen.
+`data-on-signals-change` is a special event that is triggered when the signals changes. This is useful for updating the UI when the signals changes. In this example we update the `clicks` signals with a new value. This triggers a re-render of the `clicks` span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further. In this case we are sending the signals changes to the server to update the lifetime total clicks the server has seen.
 
-**Note**: The `.remote` modifier is used to only trigger this event when remotely viewable signals are updated. This is useful for not sending data that is not needed to the server. To look at the details run `console.log(JSON.stringify(ds.store.value,null,2))` in the browser console. You should see something like
+**Note**: The `.remote` modifier is used to only trigger this event when remotely viewable signals are updated. This is useful for not sending data that is not needed to the server. To look at the details run `console.log(JSON.stringify(ds.signals.value,null,2))` in the browser console. You should see something like
 
 ```json
 {

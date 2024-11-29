@@ -1,14 +1,14 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals store data from a server using the Datastar SDK interface
-// Description: Merge store data from a server using the Datastar SDK interface
+// Slug: Merge signals using a Server-Sent Event
+// // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { InitExpressionFunction, WatcherPlugin } from "../../../../engine";
 import {
     DefaultMergeSignalsOnlyIfMissing,
     EventTypes,
 } from "../../../../engine/consts";
-import { storeFromPossibleContents } from "../../../../utils/signals";
+import { signalsFromPossibleContents } from "../../../../utils/signals";
 import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "./sseShared";
 
@@ -23,15 +23,15 @@ export const MergeSignals: WatcherPlugin = {
         }) => {
             const onlyIfMissing = isBoolString(onlyIfMissingRaw);
             const fnContents =
-                ` return Object.assign({...ctx.store()}, ${signals})`;
+                ` return Object.assign({...ctx.signals()}, ${signals})`;
             try {
                 const fn = new Function(
                     "ctx",
                     fnContents,
                 ) as InitExpressionFunction;
                 const possibleMergeSignals = fn(ctx);
-                const actualMergeSignals = storeFromPossibleContents(
-                    ctx.store(),
+                const actualMergeSignals = signalsFromPossibleContents(
+                    ctx.signals(),
                     possibleMergeSignals,
                     onlyIfMissing,
                 );

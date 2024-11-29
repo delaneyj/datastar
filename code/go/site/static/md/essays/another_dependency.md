@@ -8,10 +8,10 @@ It accounts for over half of the size is actually the dependencies; let's break 
 
 | Dependency                                                            | Usage                                                                                                 |
 | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| **[ts-merge-patch](https://github.com/riagominota/ts-merge-patch)**   | is used by the core to merge the stores while matching RPC7396 for JSON Merge Patch.                  |
+| **[ts-merge-patch](https://github.com/riagominota/ts-merge-patch)**   | is used by the core to merge the signalss while matching RPC7396 for JSON Merge Patch.                  |
 | **[json-bigint](https://github.com/Ivan-Korolenko/json-with-bigint)** | native JSON.parse/stringify don't support BigInts, this is a polyfill, hopefully some day its native. |
 | **[preact-core](https://github.com/preactjs/signals)**                | Fine grained reactivity, used by the core to update the views.                                        |
-| **[deep-signal](https://github.com/EthanStandel/deepsignal)**         | Forms the basis of the reactive store.                                                                |
+| **[deep-signal](https://github.com/EthanStandel/deepsignal)**         | Forms the basis of the reactive signals.                                                                |
 | **[idiomorph](https://github.com/bigskysoftware/idiomorph)**          | Morph incoming HTML fragments into existing DOM, by same author as [HTMX](https://htmx.org/). [^1]    |
 | **[fetch-event-source](https://github.com/Azure/fetch-event-source)** | Microsoft's take of using `text/event-stream` without EventSource API                                 |
 

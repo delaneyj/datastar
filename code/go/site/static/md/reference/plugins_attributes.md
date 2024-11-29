@@ -2,7 +2,7 @@
 
 [Source](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/attributes.ts)
 
-Primarily used to help hook up the store and the DOM.
+Primarily used to help hook up the signals and the DOM.
 
 ## Attributes Plugins
 
@@ -51,7 +51,7 @@ An `evt` variable that represents the event object is available in the expressio
 The `data-on-*` matches DOM events, however there are currently a few special cases for custom events.
 
 1.  `data-on-load` which is triggered when the element is loaded into the DOM.
-2.  `data-on-store-change` which is triggered when the store changes.
+2.  `data-on-signals-change` which is triggered when the signals changes.
 3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
 
 #### Modifiers
@@ -87,18 +87,18 @@ Adds or removes each of the keys in the set of key-value pairs to the element’
 <div data-persist></div>
 ```
 
-Persists store values in Local Storage. This is useful for storing values between page loads.
+Persists signals values in Local Storage. This is useful for storing values between page loads.
 
 ```html
 <div data-persist="'foo bar'"></div>
 ```
 
-If one or more values are provided, only those store values will be persisted.
+If one or more values are provided, only those signals values will be persisted.
 
 #### Modifiers
 
-- `.session` - Persists store values in Session Storage
-- `.remote` - Persists only remotely viewable store values
+- `.session` - Persists signals values in Session Storage
+- `.remote` - Persists only remotely viewable signals values
 
 ```html
 <div data-persist-foo.session></div>

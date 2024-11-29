@@ -21,7 +21,7 @@ import (
 	"github.com/wcharczuk/go-chart/v2/drawing"
 )
 
-func setupHome(router chi.Router, store sessions.Store, ns *embeddednats.Server) error {
+func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Server) error {
 
 	nc, err := ns.Client()
 	if err != nil {
@@ -66,7 +66,7 @@ func setupHome(router chi.Router, store sessions.Store, ns *embeddednats.Server)
 
 	mvcSession := func(w http.ResponseWriter, r *http.Request) (string, *TodoMVC, error) {
 		ctx := r.Context()
-		sessionID, err := upsertSessionID(store, r, w)
+		sessionID, err := upsertSessionID(signals, r, w)
 		if err != nil {
 			return "", nil, fmt.Errorf("failed to get session id: %w", err)
 		}
@@ -308,17 +308,17 @@ func setupHome(router chi.Router, store sessions.Store, ns *embeddednats.Server)
 					})
 
 					editRouter.Put("/", func(w http.ResponseWriter, r *http.Request) {
-						type Store struct {
+						type Signals struct {
 							Input string `json:"input"`
 						}
-						store := &Store{}
+						signals := &Signals{}
 
-						if err := datastar.ReadSignals(r, store); err != nil {
+						if err := datastar.ReadSignals(r, signals); err != nil {
 							http.Error(w, err.Error(), http.StatusBadRequest)
 							return
 						}
 
-						if store.Input == "" {
+						if signals.Input == "" {
 							return
 						}
 
@@ -334,10 +334,10 @@ func setupHome(router chi.Router, store sessions.Store, ns *embeddednats.Server)
 						}
 
 						if i >= 0 {
-							mvc.Todos[i].Text = store.Input
+							mvc.Todos[i].Text = signals.Input
 						} else {
 							mvc.Todos = append(mvc.Todos, &Todo{
-								Text:      store.Input,
+								Text:      signals.Input,
 								Completed: false,
 							})
 						}
@@ -384,9 +384,9 @@ func MustJSONMarshal(v any) string {
 	return string(b)
 }
 
-func upsertSessionID(store sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
+func upsertSessionID(signals sessions.Store, r *http.Request, w http.ResponseWriter) (string, error) {
 
-	sess, err := store.Get(r, "connections")
+	sess, err := signals.Get(r, "connections")
 	if err != nil {
 		return "", fmt.Errorf("failed to get session: %w", err)
 	}

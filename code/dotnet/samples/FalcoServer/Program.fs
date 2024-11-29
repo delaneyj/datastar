@@ -12,10 +12,10 @@ open global.Falco
 open Falco.Routing
 open Falco.HostBuilder
 
-type SignalsStore = { input: string; output: string; show: bool }
+type Signals = { input: string; output: string; show: bool }
     with
     static member defaults = { input = ""; output = ""; show = false }
-    interface IDatastarSignalsStore with
+    interface IDatastarSignals with
         member this.Serialize () = JsonSerializer.Serialize(this)
 
 [<EntryPoint>]
@@ -32,7 +32,7 @@ let main args =
             webAppBuilder.UseDefaultFiles(defaultFileOptions).UseStaticFiles(staticFileOptions)
             )
 
-        add_service (ServerSentEventServices.datastarServiceWithCustomDeserializer<SignalsStore>( JsonSerializer.Deserialize<SignalsStore> ))
+        add_service (ServerSentEventServices.datastarServiceWithCustomDeserializer<Signals>( JsonSerializer.Deserialize<Signals> ))
 
         endpoints [
             get "/" (Response.redirectTemporarily "index.html")
@@ -41,13 +41,13 @@ let main args =
                     (fun route -> route.GetString "lang")
                     (fun lang -> Response.sseMergeFragments (fun _ -> $"""<span id="language">{lang}</span>"""))
                     )
-            get "/patch" (Response.sseMergeSignals (fun signalsStore -> { signalsStore with output =  $"Patched Output: {signalsStore.input}" } ))
+            get "/patch" (Response.sseMergeSignals (fun signals -> { signals with output =  $"Patched Output: {signals.input}" } ))
             get "/target" (Response.sseMergeFragments (fun _ ->
                 let today = System.DateTime.Now.ToString("%y-%M-%d %h:%m:%s");
                 $"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="@get('/removeDate')">Remove</button></span></div>"""
                 ))
             get "/removeDate" (Response.sseRemoveFragments (fun _ -> "#date"))
-            get "/feed" (Response.sseGenerator (fun ctx sseService signalsStore -> task {
+            get "/feed" (Response.sseGenerator (fun ctx sseService signals -> task {
                 let requestCanceled = ctx.RequestAborted
                 while (requestCanceled.IsCancellationRequested |> not) do
                     let rand = Random.Shared.NextInt64(1000000000000000000L, 5999999999999999999L);

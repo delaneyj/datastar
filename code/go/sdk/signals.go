@@ -42,7 +42,7 @@ func WithOnlyIfMissing(onlyIfMissing bool) MergeSignalsOption {
 	}
 }
 
-func (sse *ServerSentEventGenerator) MergeSignals(storeContents []byte, opts ...MergeSignalsOption) error {
+func (sse *ServerSentEventGenerator) MergeSignals(signalsContents []byte, opts ...MergeSignalsOption) error {
 	options := &MergeSignalsOptions{
 		EventID:       "",
 		RetryDuration: DefaultSseRetryDuration,
@@ -56,7 +56,7 @@ func (sse *ServerSentEventGenerator) MergeSignals(storeContents []byte, opts ...
 	if options.OnlyIfMissing {
 		dataRows = append(dataRows, OnlyIfMissingDatalineLiteral+strconv.FormatBool(options.OnlyIfMissing))
 	}
-	lines := bytes.Split(storeContents, newLineBuf)
+	lines := bytes.Split(signalsContents, newLineBuf)
 	for _, line := range lines {
 		dataRows = append(dataRows, SignalsDatalineLiteral+string(line))
 	}
@@ -74,7 +74,7 @@ func (sse *ServerSentEventGenerator) MergeSignals(storeContents []byte, opts ...
 		dataRows,
 		sendOptions...,
 	); err != nil {
-		return fmt.Errorf("failed to send merge store: %w", err)
+		return fmt.Errorf("failed to send merge signals: %w", err)
 	}
 	return nil
 }
@@ -98,7 +98,7 @@ func (sse *ServerSentEventGenerator) RemoveSignals(paths ...string) error {
 	return nil
 }
 
-func ReadSignals(r *http.Request, store any) error {
+func ReadSignals(r *http.Request, signals any) error {
 	var dsInput []byte
 
 	isDatastarRequest := r.Header.Get("datastar-request") == "true"
@@ -125,7 +125,7 @@ func ReadSignals(r *http.Request, store any) error {
 		dsInput = buf.Bytes()
 	}
 
-	if err := json.Unmarshal(dsInput, store); err != nil {
+	if err := json.Unmarshal(dsInput, signals); err != nil {
 		return fmt.Errorf("failed to unmarshal: %w", err)
 	}
 	return nil

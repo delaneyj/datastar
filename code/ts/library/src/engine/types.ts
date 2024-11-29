@@ -1,6 +1,7 @@
-import { HTMLorSVGElement } from "../utils/types";
 import { DeepState } from "../vendored/deepsignal";
 import { ReadonlySignal, Signal } from "../vendored/preact-core";
+
+export type HTMLorSVGElement = Element & (HTMLElement | SVGElement);
 
 export type InitExpressionFunction = (
   ctx: InitContext,
@@ -17,9 +18,9 @@ export type Reactivity = {
 };
 
 export type InitContext = {
-  store: () => any;
+  signals: () => any;
   upsertSignal: (path: string, value: any) => Signal<any>;
-  mergeSignals: (store: DeepState) => void;
+  mergeSignals: (signals: DeepState) => void;
   removeSignals: (...paths: string[]) => void;
   actions: Readonly<ActionPlugins>;
   reactivity: Reactivity;
