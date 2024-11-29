@@ -18,7 +18,7 @@ type LazyTabsStore struct {
 }
 
 templ setupExamplesLazyTabsComponent(tabCount int, contents templ.Component, store *LazyTabsStore) {
-	<div id="lazy_tabs" data-store={ templ.JSONString(store) } class="flex flex-col">
+	<div id="lazy_tabs" data-merge-signals={ templ.JSONString(store) } class="flex flex-col">
 		<div id="tabButtons" role="tablist" class="tabs tabs-bordered">
 			for i := 0; i < tabCount; i++ {
 				<button

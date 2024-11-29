@@ -19,7 +19,7 @@ def send_index():
     <script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script></head>
 <body>
     <h2>Python/Starlette + Datastar Example</h2>
-    <main class="container" id="main" data-store=\'{json.dumps(store)}\'>
+    <main class="container" id="main" data-merge-signals=\'{json.dumps(store)}\'>
         <input type="text" placeholder="Send to server..." data-model="input"/>
         <button data-on-click="@get('/get')">Send State Roundtrip</button>
         <button data-on-click="@get('/target')">Target HTML Element</button>
@@ -54,7 +54,7 @@ async def homepage(request):
 async def get_data(request):
     store = json.loads(dict(request.query_params)['datastar'])
     store['output'] = f"Your input: {store['input']}, is {len(store['input'])} long."
-    frag = f'<main id="main" data-store=\'{json.dumps(store)}\'></main>'
+    frag = f'<main id="main" data-merge-signals=\'{json.dumps(store)}\'></main>'
     return StreamingResponse(
         send_event(frag, True),
         headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},

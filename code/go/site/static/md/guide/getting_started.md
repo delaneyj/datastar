@@ -210,24 +210,24 @@ This results in the button being given the `disabled` attribute whenever the inp
 </div>
 
 
-### `data-store`
+### `data-merge-signals`
 
 So far, we've created signals on the fly using `data-model` and `data-computed-*`. All signals are merged into a **store** that is accessible from anywhere in the DOM.
 
-We can merge signals into the store using the [`data-store`](/reference/plugins_core#store) attribute.
+We can merge signals into the store using the [`data-merge-signals`](/reference/plugins_core#store) attribute.
 
 ```html
-<div data-store="{input: ''}"></div>
+<div data-merge-signals="{input: ''}"></div>
 ```
 
-The `data-store` value must be written as a JavaScript object literal _or_ using JSON syntax.
+The `data-merge-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
 
-Adding `data-store` to multiple elements is allowed, and the signals provided will be _merged_ into the existing store (values defined later in the DOM tree override those defined earlier).
+Adding `data-merge-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing store (values defined later in the DOM tree override those defined earlier).
 
 Signals are nestable, which can be useful for namespacing.
 
 ```html
-<div data-store="{primary: {input: ''}, secondary: {input: '' }}"></div>
+<div data-merge-signals="{primary: {input: ''}, secondary: {input: '' }}"></div>
 ```
 
 ### `data-on-*`
@@ -261,7 +261,7 @@ See if you can follow the code below _before_ trying the demo.
 
 ```html
 <div
-    data-store="{response: '', answer: 'bread'}"
+    data-merge-signals="{response: '', answer: 'bread'}"
     data-computed-correct="$response.toLowerCase() == $answer"
 >
     <div id="question">
@@ -282,7 +282,7 @@ See if you can follow the code below _before_ trying the demo.
 </div>
 ```
 
-<div data-store="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="alert flex justify-between items-start gap-4 p-8">
+<div data-merge-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="alert flex justify-between items-start gap-4 p-8">
     <div class="space-y-3">
         <div id="question1">
             What do you put in a toaster?
@@ -320,7 +320,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 ```html
 <div
-    data-store="{response: '', answer: '', correct: false}"
+    data-merge-signals="{response: '', answer: '', correct: false}"
     data-computed-correct="$response.toLowerCase() == $answer"
 >
     <div id="question"></div>
@@ -344,7 +344,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 Now when the `Fetch a question` button is clicked, the server will respond with an event to modify the `question` element in the DOM and an event to modify the `response` and `answer` signals. We're driving state from the backend!
 
-<div data-store="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="alert flex justify-between items-start gap-4 p-8">
+<div data-merge-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="alert flex justify-between items-start gap-4 p-8">
     <div class="space-y-3 pb-3">
         <div id="question2"></div>
         <div data-show="$response2 != ''">
@@ -502,7 +502,7 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Show or hide an element using an expression: `data-show="$foo"
 - Modify the classes on an element: `data-class="{'font-bold': $foo}"`
 - Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
-- Merge signals into the store: `data-store="{foo: ''}"`
+- Merge signals into the store: `data-merge-signals="{foo: ''}"`
 - Execute an expression on an event: `data-on-click="@get(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
 - Replace the URL: `data-replace-url="'/page1'"`

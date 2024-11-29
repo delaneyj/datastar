@@ -17,7 +17,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 	<div
 		id="active_search"
 		class="flex flex-col gap-4"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 	>
 		<div class="flex">
 			<input

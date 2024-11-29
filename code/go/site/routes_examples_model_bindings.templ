@@ -13,7 +13,7 @@ templ ModelBindingView(optionCount int, store *ModelBindingStore) {
 	<div
 		id="container"
 		class="flex flex-col gap-4"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 	>
 		<input class="input input-bordered" data-model="bindText"/>
 		<input class="input input-bordered" type="number" data-model="bindNumber"/>

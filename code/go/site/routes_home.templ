@@ -153,7 +153,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
-				data-store={ fmt.Sprintf("{input:'%s'}", input) }
+				data-merge-signals={ fmt.Sprintf("{input:'%s'}", input) }
 			>
 				<p class="text-sm">
 					This mini application is driven by a

@@ -9,7 +9,7 @@ templ pageDBmon(dbs []*DbmonDatabase, mutationRate float64, renderTime time.Dura
 	<div
 		id="contents"
 		class="flex flex-col gap-4 p-4 w-full"
-		data-store={ fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate)) }
+		data-merge-signals={ fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate)) }
 		data-on-load="@get('/examples/dbmon/updates')"
 	>
 		@dbmonFPS(renderTime)

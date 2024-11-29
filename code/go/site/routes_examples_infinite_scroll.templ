@@ -36,7 +36,7 @@ templ infiniteScrollAgent(i int) {
 templ infiniteScrollAgents(store *infiniteScrollStore) {
 	<div
 		id="infinite_scroll"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table w-full table-zebra">

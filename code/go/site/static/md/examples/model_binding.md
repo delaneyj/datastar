@@ -9,7 +9,7 @@
 ```html
 <div
   id="container"
-  data-store="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
+  data-merge-signals="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
 >
   <input type="text" data-model="bindText" />
   <input type="number" data-model="bindNumber" />

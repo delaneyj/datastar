@@ -78,7 +78,7 @@ data: onlyIfMissing false
 data: signals {foo: 1234}
 ```
 
-The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-merge-signals` attribute. This will get merged into the store.
 
 #### `datastar-remove-fragments`
 

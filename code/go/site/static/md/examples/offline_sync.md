@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-     data-store='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
+     data-merge-signals='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
      data-persist.local
      data-on-online.window="console.log('online, syncing'); @put('/examples/offline_sync/sync', false)"
      data-on-offline.window="console.log('offline')"
@@ -15,7 +15,7 @@
 
 ```html
 <div
-  data-store='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
+  data-merge-signals='{"stuffAlreadyInStore":"this will persist in the store even without network"}'
   data-persist.local
   data-on-online.window="console.log('online, syncing'); @put('/examples/offline_sync/sync', false)"
   data-on-offline.window="console.log('offline')"

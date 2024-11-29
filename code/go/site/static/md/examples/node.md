@@ -19,7 +19,7 @@ function indexPage() {
         <script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script></head>
       <body>
         <h2>Node/Express + Datastar Example</h2>
-        <main class="container" id="main" data-store='{ input: "", show: false }'>
+        <main class="container" id="main" data-merge-signals='{ input: "", show: false }'>
         <input type="text" placeholder="Type here!" data-model="input" />
         <button data-on-click="@put('/put')">Send State</button>
         <div id="output"></div>

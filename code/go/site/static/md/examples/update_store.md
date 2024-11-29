@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-     data-store='{"stuffAlreadyInStore":"this is already in the store"}'
+     data-merge-signals='{"stuffAlreadyInStore":"this is already in the store"}'
 >
      <button
           class="btn btn-success"
@@ -34,7 +34,7 @@ This example demonstrates how to update the store directly from the frontend. Th
 event: datastar-merge-signals,
 data: store { HYAAA4BK7IFQE: "2024-05-23T10:33:14.167189214-07:00", stuffAlreadyInStore: "this is already in the store"}
 ```
-It will accept anything that is also accepted by the `data-store` attribute.
+It will accept anything that is also accepted by the `data-merge-signals` attribute.
 
 
 The deletion event looks like
