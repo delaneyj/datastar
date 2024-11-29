@@ -1,5 +1,4 @@
 import { consistentUniqID } from "../utils/dom";
-import { HTMLorSVGElement } from "../utils/types";
 import { DeepSignal, deepSignal, DeepState } from "../vendored/deepsignal";
 import { computed, effect, Signal, signal } from "../vendored/preact-core";
 import { apply } from "../vendored/ts-merge-patch";
@@ -18,6 +17,7 @@ import {
     AttributeContext,
     AttributePlugin,
     DatastarPlugin,
+    HTMLorSVGElement,
     InitContext,
     OnRemovalFn,
     PreprocessorPlugin,
