@@ -6,7 +6,7 @@
 
 <div
     id="value_select"
-    data-on-load="$get('/examples/value_select/data')"
+    data-on-load="@get('/examples/value_select/data')"
 >
 </div>
 
@@ -23,7 +23,7 @@ Here is the code:
   <div>Pick a Make / Model</div>
   <select
     data-model="make"
-    data-on-change="$get('/examples/value_select/data')"
+    data-on-change="@get('/examples/value_select/data')"
   >
     <option disabled>Select a Make</option>
     <option value="HYAABHANLTMQC">Audi</option>
@@ -40,7 +40,7 @@ When a request is made to the /models end point, we return the models for that m
   <div>Pick a Make / Model</div>
   <select
     data-model="make"
-    data-on-change="$get('/examples/value_select/data')"
+    data-on-change="@get('/examples/value_select/data')"
   >
     <option disabled>Select a Make</option>
     <option value="HYAABHANLTMQC">Audi</option>
@@ -49,7 +49,7 @@ When a request is made to the /models end point, we return the models for that m
   </select>
   <select
     data-model="model"
-    data-on-change="$get('/examples/value_select/data')"
+    data-on-change="@get('/examples/value_select/data')"
   >
     <option disabled="" selected="" value="">Select a Model</option>
     <option value="HZIABHANLTMQC">Land Cruiser</option>

@@ -316,7 +316,7 @@ The `mergeFragments()` method merges the provided HTML fragment into the DOM, re
 
 The `mergeSignals()` method merges the `response` and `answer` signals into the frontend store.
 
-With our backend in place, we can now use the `data-on-click` attribute to trigger the `$get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
+With our backend in place, we can now use the `data-on-click` attribute to trigger the `@get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
 
 ```html
 <div
@@ -324,7 +324,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
     data-computed-correct="$response.toLowerCase() == $answer"
 >
     <div id="question"></div>
-    <button data-on-click="$get('/actions/quiz')">
+    <button data-on-click="@get('/actions/quiz')">
         Fetch a question
     </button>
     <button data-show="$answer != ''"
@@ -354,7 +354,7 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
                 The correct answer is “<span data-text="$answer2"></span>” 🤷
             </span>
         </div>
-        <button data-on-click="$get('/examples/quiz/data')" class="btn btn-secondary">
+        <button data-on-click="@get('/examples/quiz/data')" class="btn btn-secondary">
             Fetch a question
         </button>
     </div>
@@ -373,7 +373,7 @@ Note that elements using the `data-indicator` attribute ***must*** have a unique
 <div id="question"></div>
 <div data-class="{loading: $fetching}" class="indicator"></div>
 <button id="fetch-a-question"
-    data-on-click="$get('/actions/quiz')"
+    data-on-click="@get('/actions/quiz')"
     data-indicator="fetching"
 >
     Fetch a question
@@ -384,7 +384,7 @@ Note that elements using the `data-indicator` attribute ***must*** have a unique
     <div class="space-y-3 pb-3">
         <div id="question3"></div>
         <div class="flex items-center gap-2">
-            <button id="fetch-a-question" data-on-click="$get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
+            <button id="fetch-a-question" data-on-click="@get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
                 Fetch a question
             </button>
             <div data-class="{loading: $fetching}" class="indicator"></div>
@@ -392,12 +392,12 @@ Note that elements using the `data-indicator` attribute ***must*** have a unique
     </div>
 </div>
 
-We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `$get()`, `$post()`, `$put()`, `$patch()` and `$delete()` actions, respectively.
+We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `@get()`, `@post()`, `@put()`, `@patch()` and `@delete()` actions, respectively.
 
 Here's how we could send an answer to the server for processing, using a `POST` request.
 
 ```html
-<button data-on-click="$post('/actions/quiz')">
+<button data-on-click="@post('/actions/quiz')">
     Submit answer
 </button>
 ```
@@ -408,14 +408,14 @@ One of the benefits of using SSE is that we can send multiple events (HTML fragm
 
 ## Actions
 
-Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `$get` action above. Here are a few other common actions.
+Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `@get` action above. Here are a few other common actions.
 
-### `$setAll()`
+### `@setAll()`
 
-The `$setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
+The `@setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
 
 ```html
-<button data-on-click="$setAll('form_', true)"></button>
+<button data-on-click="@setAll('form_', true)"></button>
 ```
 
 This sets the values of all signals containing `form_` to `true`, which could be useful for enabling input fields in a form.
@@ -424,7 +424,7 @@ This sets the values of all signals containing `form_` to `true`, which could be
 <input type="checkbox" data-model="checkbox_1"> Checkbox 1
 <input type="checkbox" data-model="checkbox_2"> Checkbox 2
 <input type="checkbox" data-model="checkbox_3"> Checkbox 3
-<button data-on-click="$setAll('checkbox_', true)">Check All</button>
+<button data-on-click="@setAll('checkbox_', true)">Check All</button>
 ```
 
 <div class="alert flex flex-col items-start gap-2 p-8">
@@ -446,17 +446,17 @@ This sets the values of all signals containing `form_` to `true`, which could be
             <input type="checkbox" class="toggle" data-model="checkbox_1_3"/>
         </label>
     </div>
-    <button data-on-click="$setAll('checkbox_1_', true)" class="btn btn-secondary mt-4">
+    <button data-on-click="@setAll('checkbox_1_', true)" class="btn btn-secondary mt-4">
         Check All
     </button>
 </div>
 
-### `$toggleAll()`
+### `@toggleAll()`
 
-The `$toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
+The `@toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
 
 ```html
-<button data-on-click="$toggleAll('form_')"></button>
+<button data-on-click="@toggleAll('form_')"></button>
 ```
 
 This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
@@ -465,7 +465,7 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 <input type="checkbox" data-model="checkbox_1"> Checkbox 1
 <input type="checkbox" data-model="checkbox_2"> Checkbox 2
 <input type="checkbox" data-model="checkbox_3"> Checkbox 3
-<button data-on-click="$toggleAll('checkbox_')">Toggle All</button>
+<button data-on-click="@toggleAll('checkbox_')">Toggle All</button>
 ```
 
 <div class="alert flex flex-col items-start gap-2 p-8">
@@ -487,7 +487,7 @@ This toggles the values of all signals containing `form_` (to either `true` or `
             <input type="checkbox" class="toggle" data-model="checkbox_2_3"/>
         </label>
     </div>
-    <button data-on-click="$toggleAll('checkbox_2_')" class="btn btn-secondary mt-4">
+    <button data-on-click="@toggleAll('checkbox_2_')" class="btn btn-secondary mt-4">
         Toggle All
     </button>
 </div>
@@ -503,7 +503,7 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Modify the classes on an element: `data-class="{'font-bold': $foo}"`
 - Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
 - Merge signals into the store: `data-store="{foo: ''}"`
-- Execute an expression on an event: `data-on-click="$get(/endpoint)"`
+- Execute an expression on an event: `data-on-click="@get(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
 - Replace the URL: `data-replace-url="'/page1'"`
 - Persist all signals in local storage: `data-persist`

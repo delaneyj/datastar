@@ -7,13 +7,13 @@
 >
      <button
           class="btn btn-success"
-          data-on-click="$post('/examples/update_store/data/patch')"
+          data-on-click="@post('/examples/update_store/data/patch')"
      >
           Apply random signal patch
      </button>
      <button
           class="btn btn-error"
-          data-on-click="$delete('/examples/update_store/data/patch')"
+          data-on-click="@delete('/examples/update_store/data/patch')"
      >
           Remove 2 random
      </button>

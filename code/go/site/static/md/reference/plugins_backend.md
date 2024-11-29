@@ -6,15 +6,15 @@ A set of plugins that allow for the integration of any backend service that supp
 
 ## Action Plugins
 
-### `$get`, `$post`, `$put`, `$patch`, `$delete`
+### `@get`, `@post`, `@put`, `@patch`, `@delete`
 
 ```html
-<div data-on-click="$get('/examples/click_to_edit/contact/1')"></div>
+<div data-on-click="@get('/examples/click_to_edit/contact/1')"></div>
 ```
 
 Makes an HTML_VERB request to the server and merges the response with the current DOM and store. The URL can be any valid URL but the response must be a Datastar formatted SSE event.
 
-Every request will be sent with a `{datastar: *}` object containing the current store (except for store keys beginning with an underscore). When using `$get` the store will be sent as a query parameter, otherwise it will be sent as a JSON body.
+Every request will be sent with a `{datastar: *}` object containing the current store (except for store keys beginning with an underscore). When using `@get` the store will be sent as a query parameter, otherwise it will be sent as a JSON body.
 
 #### Options
 
@@ -25,7 +25,7 @@ The `onlyRemoteSignals` option determines whether to only send remotely viewable
 The `headers` option is an object containing headers to send with the request.
 
 ```html
-<div data-on-click="$get('/examples/click_to_edit/contact/1', {
+<div data-on-click="@get('/examples/click_to_edit/contact/1', {
   onlyRemoteSignals: false,
   headers: {
     'X-Csrf-Token': 'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg==',
@@ -106,7 +106,7 @@ data: attributes defer true
 data: script console.log('Hello, world!')
 ```
 
-The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser. 
+The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser.
 
 ## Attribute Plugins
 
@@ -115,7 +115,7 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 ```html
 <svg data-show="$fetching">Spinner</svg>
 <button
-  data-on-click="$get('/examples/click_to_edit/contact/1')"
+  data-on-click="@get('/examples/click_to_edit/contact/1')"
   data-indicator="fetching"
   data-bind-disabled="$fetching"
 ></button>

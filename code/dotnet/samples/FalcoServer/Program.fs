@@ -44,7 +44,7 @@ let main args =
             get "/patch" (Response.sseMergeSignals (fun signalsStore -> { signalsStore with output =  $"Patched Output: {signalsStore.input}" } ))
             get "/target" (Response.sseMergeFragments (fun _ ->
                 let today = System.DateTime.Now.ToString("%y-%M-%d %h:%m:%s");
-                $"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="$get('/removeDate')">Remove</button></span></div>"""
+                $"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="@get('/removeDate')">Remove</button></span></div>"""
                 ))
             get "/removeDate" (Response.sseRemoveFragments (fun _ -> "#date"))
             get "/feed" (Response.sseGenerator (fun ctx sseService signalsStore -> task {

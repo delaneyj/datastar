@@ -26,7 +26,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				type="text"
 				placeholder="Search..."
 				data-model="search"
-				data-on-input.debounce_500ms="$get('/examples/active_search/updates')"
+				data-on-input.debounce_500ms="@get('/examples/active_search/updates')"
 				data-indicator="fetching"
 			/>
 			@sseIndicator("fetching")

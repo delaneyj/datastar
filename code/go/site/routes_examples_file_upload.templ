@@ -29,7 +29,7 @@ templ FileUploadView(store *FileUploadStore) {
 		</div>
 		<button
 			class="btn btn-primary"
-			data-on-click="$post('/examples/file_upload/upload')"
+			data-on-click="@post('/examples/file_upload/upload')"
 			data-show="!!$files?.length"
 		>
 			Submit

@@ -10,6 +10,6 @@ templ redirectsView(store *RedirectsStore) {
 			<span>Redirect to: </span>
 			<input data-model="redirectTo" class="flex-1 input input-bordered"/>
 		</label>
-		<button class="btn btn-success" data-on-click="$post('/examples/redirects/data')">Redirect</button>
+		<button class="btn btn-success" data-on-click="@post('/examples/redirects/data')">Redirect</button>
 	</div>
 }

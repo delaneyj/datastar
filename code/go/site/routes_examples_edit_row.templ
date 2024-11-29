@@ -46,7 +46,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 					<div class="flex gap-2">
 						<button
 							class="btn btn-sm btn-error"
-							data-on-click="$get('/examples/edit_row/data')"
+							data-on-click="@get('/examples/edit_row/data')"
 							data-testid={ contactKeyPrefix + "_cancel" }
 						>
 							@icon("material-symbols:cancel")
@@ -54,7 +54,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 						</button>
 						<button
 							class="btn btn-sm btn-success"
-							data-on-click="$patch('/examples/edit_row/edit')"
+							data-on-click="@patch('/examples/edit_row/edit')"
 							data-testid={ contactKeyPrefix + "_save" }
 						>
 							@icon("material-symbols:save")
@@ -65,7 +65,7 @@ templ EditRowContact(contacts []*ContactEdit, i int, isEditingRow, isEditingAnyR
 			} else {
 				<button
 					class="btn btn-sm btn-accent"
-					data-on-click={ fmt.Sprintf("$editRowIndex = %d; $get('/examples/edit_row/edit')", i) }
+					data-on-click={ fmt.Sprintf("$editRowIndex = %d; @get('/examples/edit_row/edit')", i) }
 					data-testid={ contactKeyPrefix + "_edit" }
 				>
 					@icon("material-symbols:edit")
@@ -100,7 +100,7 @@ templ EditRowContacts(contacts []*ContactEdit, store *EditRowStore) {
 		<div>
 			<button
 				class="btn btn-warning"
-				data-on-click="$get('/examples/edit_row/reset')"
+				data-on-click="@get('/examples/edit_row/reset')"
 				data-testid="reset"
 			>
 				@icon("material-symbols:refresh")

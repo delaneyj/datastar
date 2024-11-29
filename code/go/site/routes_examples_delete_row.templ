@@ -16,7 +16,7 @@ templ deleteRowContact(cs *ContactActive) {
 		<td class="flex justify-end">
 			<button
 				class="btn btn-error"
-				data-on-click={ fmt.Sprintf(`confirm('Are you sure?') && $delete("/examples/delete_row/data/%d")`, cs.ID) }
+				data-on-click={ fmt.Sprintf(`confirm('Are you sure?') && @delete("/examples/delete_row/data/%d")`, cs.ID) }
 			>
 				@icon("material-symbols:delete")
 				Delete
@@ -46,7 +46,7 @@ templ deleteRowContacts(contacts []*ContactActive) {
 		<div>
 			<button
 				class="btn btn-primary"
-				data-on-click="$get('/examples/delete_row/data/reset')"
+				data-on-click="@get('/examples/delete_row/data/reset')"
 			>
 				@icon("material-symbols:refresh")
 				Reset

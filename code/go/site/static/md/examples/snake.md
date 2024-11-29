@@ -5,7 +5,7 @@
 <div
 			id="snake_example"
 			class="flex flex-col gap-4"
-			data-on-load="$get('/examples/snake/updates')"
+			data-on-load="@get('/examples/snake/updates')"
 		>
 			<div id="snake_buttons"></div>
       <div id="snake_arena"></div>

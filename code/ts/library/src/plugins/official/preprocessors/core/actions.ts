@@ -6,7 +6,7 @@ export const ActionsProcessor: PreprocessorPlugin = {
     name: "action",
     pluginType: "preprocessor",
     regexp: wholePrefixSuffix(
-        "\\$",
+        "@",
         "action",
         "(?<call>\\((?<args>.*)\\))",
         false,
