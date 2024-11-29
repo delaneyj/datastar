@@ -81,7 +81,7 @@ The difference is if you change `a` or `b`, `c` will auto schedule for updates. 
 Ok so back to our hypothetical framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
 
 ```html
-<div data-store="{value:'hello world'}"></div>
+<div data-merge-signals="{value:'hello world'}"></div>
 ```
 
 The contents are just a set of data that can evaluated
@@ -90,14 +90,14 @@ The contents are just a set of data that can evaluated
 2. converted into a tree of signals
 3. merge into a store that tracks all the reactivity on the page.
 
-In this case we want there to be a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-store` attribute and think declaratively.
+In this case we want there to be a single `value` signal with the contents of `'hello world'`. Normally you'd have to write a bunch of code to make this happen but with Datastar you just add a `data-merge-signals` attribute and think declaratively.
 
 ## Models
 
 Let's replace the hard coded value in the input with another attribute
 
 ```html
-<div data-store="{value:'hello world'}">
+<div data-merge-signals="{value:'hello world'}">
   <label>HELLO WORLD</label>
   <input data-bind="value" />
 </div>
@@ -110,7 +110,7 @@ Here we've created a new attribute `data-bind` with the contents of `value`. We 
 Now we want to update the label relationship.
 
 ```html
-<div data-store="{value:'hello world'}">
+<div data-merge-signals="{value:'hello world'}">
   <label data-text="$value"></label>
   <input data-bind="value" />
 </div>
@@ -121,7 +121,7 @@ Here we've added another attribute `data-text` but the content has a `$` prefix.
 However, it doesn't yet match the original intent, which was to make it uppercase, so let's make a quick adjustment.
 
 ```html
-<div data-store="{value:'hello world'}">
+<div data-merge-signals="{value:'hello world'}">
   <label data-text="$value.toUpperCase()"></label>
   <input data-bind="value" />
 </div>

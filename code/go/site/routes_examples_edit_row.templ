@@ -80,7 +80,7 @@ templ EditRowContacts(contacts []*ContactEdit, store *EditRowStore) {
 	<div
 		id="edit_row"
 		class="flex flex-col"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 	>
 		<table class="table w-full">
 			<caption>Contacts</caption>

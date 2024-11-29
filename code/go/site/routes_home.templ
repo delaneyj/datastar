@@ -11,7 +11,10 @@ templ Home() {
 	{{
 		cdnText := `<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>`
 	}}
-	@Page() {
+	@Page(
+		"A real-time hypermedia framework",
+		"Datastar helps you build real-time web applications with the simplicity of server-side rendering and the power of a full-stack SPA framework.",
+	) {
 		<div class="flex flex-col w-full min-h-screen bg-base-200 md:bg-gradient-to-br md:items-center from-base-300 to-base-100">
 			<div class="flex flex-col items-stretch gap-7 p-4 md:pt-8 md:max-w-3xl max-w-none">
 				<div class="flex flex-col items-center gap-7">
@@ -150,7 +153,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
-				data-store={ fmt.Sprintf("{input:'%s'}", input) }
+				data-merge-signals={ fmt.Sprintf("{input:'%s'}", input) }
 			>
 				<p class="text-sm">
 					This mini application is driven by a

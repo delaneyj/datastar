@@ -38,7 +38,7 @@ templ templCounterExampleCounts() {
 templ templCounterExampleInitialContents(store TemplCounterStore) {
 	<div
 		id="container"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(store) }
 		class="flex flex-col gap-4"
 	>
 		@templCounterExampleButtons()

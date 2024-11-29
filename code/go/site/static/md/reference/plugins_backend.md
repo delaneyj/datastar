@@ -4,10 +4,6 @@
 
 A set of plugins that allow for the integration of any backend service that supports SSE with Datastar.
 
-## Attribute Plugins
-
-Request for data from the server via SSE and merge with the page.
-
 ## Action Plugins
 
 ### `$get`, `$post`, `$put`, `$patch`, `$delete`
@@ -20,7 +16,24 @@ Makes an HTML_VERB request to the server and merges the response with the curren
 
 Every request will be sent with a `{datastar: *}` object containing the current store (except for store keys beginning with an underscore). When using `$get` the store will be sent as a query parameter, otherwise it will be sent as a JSON body.
 
-## Datastar SSE Event
+#### Options
+
+The actions above take a second argument of options.
+
+The `onlyRemoteSignals` option determines whether to only send remotely viewable store values (defaults to `true`).
+
+The `headers` option is an object containing headers to send with the request.
+
+```html
+<div data-on-click="$get('/examples/click_to_edit/contact/1', {
+  onlyRemoteSignals: false,
+  headers: {
+    'X-Csrf-Token': 'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg==',
+  },
+})"></div>
+```
+
+### Datastar SSE Events
 
 An example of a minimal valid response would be:
 
@@ -40,7 +53,7 @@ Additional `data` lines can be added to the response to override the default beh
   </p>
 </div>
 
-### datastar-merge-fragments
+#### `datastar-merge-fragments`
 
 | Key                                | Description                                                                                                             |
 |------------------------------------|-------------------------------------------------------------------------------------------------------------------------|
@@ -57,7 +70,7 @@ Additional `data` lines can be added to the response to override the default beh
 | `data: useViewTransition true`     | Whether to use view transitions when merging into the DOM. Defaults to `false`.                                         |
 | `data: fragments`                  | The HTML fragments to merge into the DOM.                                                                               |
 
-### datastar-merge-signals
+#### `datastar-merge-signals`
 
 ```go
 event: datastar-merge-signals
@@ -65,9 +78,9 @@ data: onlyIfMissing false
 data: signals {foo: 1234}
 ```
 
-The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-store` attribute. This will get merged into the store.
+The `datastar-merge-signals` event is used to update the store with new values. The `onlyIfMissing` line determines whether to update the store with new values only if the key does not exist. The `signals` line should be a valid `data-merge-signals` attribute. This will get merged into the store.
 
-### datastar-remove-fragments
+#### `datastar-remove-fragments`
 
 ```go
 event: datastar-remove-fragments
@@ -83,7 +96,7 @@ data: paths foo.bar 1234 abc
 
 The `datastar-remove-signals` event is used to remove signals that match the provided paths from the store.
 
-### datastar-execute-script
+#### `datastar-execute-script`
 
 ```go
 event: datastar-execute-script
@@ -93,26 +106,26 @@ data: attributes defer true
 data: script console.log('Hello, world!')
 ```
 
-The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser. 
+The `datastar-execute-script` event is used to execute JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser.
 
 ## Attribute Plugins
 
-### Fetch Indicator
+### `data-indicator`
 
 ```html
-<svg id="foo">Spinner</svg>
+<svg data-show="$fetching">Spinner</svg>
 <button
   data-on-click="$get('/examples/click_to_edit/contact/1')"
-  data-fetch-indicator="#foo"
-  data-bind-disabled="$isFetching('#foo')"
+  data-indicator="fetching"
+  data-bind-disabled="$fetching"
 ></button>
 ```
 
-Show a spinner when the request is in flight. The `data-fetch-indicator` attribute should be a CSS selector to the element(s). When the attribute is present, the element will be hidden when requests are not in flight and shown when they are.
+The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. This signal can be used by other attributes to show a loading spinner, disable a button, etc.
 
-The `$isFetching` action returns a computed value that allows you to easily react to the state of the indicator.
+Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute.
 
-### Replace URL
+### `data-replace-url`
 
 ```html
 <div
@@ -127,13 +140,3 @@ Replaces the URL in the browser without reloading the page. The value can be a r
   data-replace-url="`/page{$page}`">
 </div>
 ```
-
-### Headers
-
-```html
-<div
-  data-header="{'x-csrf-token':'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg=='}">
-</div>
-```
-
-Can be added anywhere on the page and will be included on SSE fetches.  In general, you should lean to Cookies unless your backend framework demand it.

@@ -18,7 +18,7 @@ In this example we show how to create a file upload form that will be submitted 
 <!-- Removed styling for brevity -->
 <div
   id="file_upload" data-on-load="$get"
-  data-store="{"files": [],"filesMimes": [],"filesNames": []}"
+  data-merge-signals="{"files": [],"filesMimes": [],"filesNames": []}"
 >
   <div>
     <label>

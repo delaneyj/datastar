@@ -2,9 +2,9 @@
 
 ## Demo
 
-<div data-store="{name:'',reversed:''}" class="flex flex-col gap-4">
+<div data-merge-signals="{name:'',reversed:''}" class="flex flex-col gap-4">
     <input data-bind="name" class="flex items-center input input-bordered">
-    <div class="alert h-16">
+    <div class="h-16 alert">
         <span data-text="$reversed"></span>
     </div>
     <reverse-component data-bind-name="$name" data-on-reverse="$reversed = event.detail.value"></reverse-component>
@@ -16,7 +16,7 @@
 This is an example of two-way binding with a web component that reverses a string. Normally, the web component would output the reversed value, but in this example, all it does is perform the logic and dispatch an event containing the result, which is then displayed.
 
 ```html
-<div data-store="{name:'',reversed:''}">
+<div data-merge-signals="{name:'',reversed:''}">
   <input data-bind="name" />
   <span data-text="$reversed"></span>
   <reverse-component
