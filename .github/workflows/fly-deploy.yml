@@ -1,5 +1,10 @@
 name: Fly Deploy
 on:
+  push:
+    branches:
+      - develop
+    paths:
+      - '.github/workflows/fly-deploy.yml'
   workflow_dispatch:
 
 jobs:
