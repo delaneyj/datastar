@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type ShoelaceKitchensinkStore struct {
+type ShoelaceKitchensinkSignals struct {
 	Nested *ShoelaceKitchensinkNested `json:"nested"`
 }
 
@@ -20,11 +20,11 @@ type ShoelaceKitchensinkOption struct {
 	Value uint32 `json:"value"`
 }
 
-templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOption, store *ShoelaceKitchensinkStore) {
+templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOption, signals *ShoelaceKitchensinkSignals) {
 	<div
 		id="shoelace_kitchensink"
 		class="flex flex-col gap-4 sl-theme-dark"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<sl-input label="Label" data-bind="nested.label"></sl-input>
 		<sl-select

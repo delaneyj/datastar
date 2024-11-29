@@ -2,7 +2,7 @@ package site
 
 import "fmt"
 
-type ScrollIntoViewStore struct {
+type ScrollIntoViewSignals struct {
 	Behavior string `json:"behavior"`
 	Block    string `json:"block"`
 	Inline   string `json:"inline"`
@@ -13,8 +13,8 @@ type ScrollIntoViewOption struct {
 	Values []string
 }
 
-templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, store *ScrollIntoViewStore) {
-	<div id="replaceMe" data-merge-signals={ templ.JSONString(store) }>
+templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, signals *ScrollIntoViewSignals) {
+	<div id="replaceMe" data-merge-signals={ templ.JSONString(signals) }>
 		<div class="flex flex-col gap-4">
 			<div class="flex flex-wrap gap-8 justify-center">
 				for _, o := range opts {

@@ -8,7 +8,7 @@
           class="code"
           data-text="JSON.stringify(ctx.signals(),null,2)"
      >
-          Stuff in store
+          Stuff in signals
      </pre>
      <div class="card bg-primary text-primary-content">
           <div class="card-body">

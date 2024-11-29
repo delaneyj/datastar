@@ -17,7 +17,7 @@ func TestExampleOfflineSync(t *testing.T) {
 	t.Run("offline sync", func(t *testing.T) {
 		results := page.MustElement("#results")
 		initial := results.MustText()
-		assert.Equal(t, "Go offline, then online to see the store sync", initial)
+		assert.Equal(t, "Go offline, then online to see the signals sync", initial)
 
 		err := proto.NetworkEmulateNetworkConditions{Offline: true}.Call(page)
 		assert.NoError(t, err)
@@ -26,6 +26,6 @@ func TestExampleOfflineSync(t *testing.T) {
 		assert.NoError(t, err)
 
 		waitForElementWithIDToStartWith(t, page, results, "Synchronized offline data!")
-		assert.True(t, strings.Contains(results.MustText(), "stuffAlreadyInStore"))
+		assert.True(t, strings.Contains(results.MustText(), "existingSignals"))
 	})
 }

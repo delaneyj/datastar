@@ -8,7 +8,7 @@ namespace starfederation\datastar;
 class ReadSignals
 {
     /**
-     * Returns the store from the incoming request.
+     * Returns the signals from the incoming request.
      */
     public static function getStore(): array
     {

@@ -7,7 +7,7 @@ open System.Threading.Tasks
 open StarFederation.Datastar.Utility
 
 type ISendServerEvent = abstract SendServerEvent: string -> Task
-type IReadRawSignalsStore = abstract ReadRawSignalStore: unit -> ValueTask<Result<string, exn>>
+type IReadRawSignals = abstract ReadRawSignals: unit -> ValueTask<Result<string, exn>>
 
 type IDatastarSignals =
     abstract Serialize : unit -> string
@@ -33,8 +33,8 @@ module ServerSentEvent =
             ""; ""
         } |> String.concat "\n"
 
-module DatastarSignalStore =
-    let private readRawSignals (env:IReadRawSignalsStore) = env.ReadRawSignalStore()
+module DatastarSignals =
+    let private readRawSignals (env:IReadRawSignals) = env.ReadRawSignals()
 
     let readSignalsWithDeserialize<'T when 'T :> IDatastarSignals>  (deserialize:string -> Result<'T, exn>) env = task {
         let! rawSignal = readRawSignals env

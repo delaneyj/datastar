@@ -5,19 +5,19 @@ import (
 	"github.com/delaneyj/toolbelt"
 )
 
-type infiniteScrollStore struct {
+type infiniteScrollSignals struct {
 	Limit  int `json:"limit"`
 	Offset int `json:"offset"`
 }
 
-templ infiniteScrollMore(store *infiniteScrollStore) {
+templ infiniteScrollMore(signals *infiniteScrollSignals) {
 	<div
 		id="loading_message"
 		class="alert alert-info"
 		data-intersects={ fmt.Sprintf(
 			"$offset=%d;$limit=%d;@get('/examples/infinite_scroll/data')",
-			store.Offset+store.Limit,
-			store.Limit,
+			signals.Offset+signals.Limit,
+			signals.Limit,
 		) }
 	>
 		@icon("svg-spinners:blocks-wave")
@@ -33,10 +33,10 @@ templ infiniteScrollAgent(i int) {
 	</tr>
 }
 
-templ infiniteScrollAgents(store *infiniteScrollStore) {
+templ infiniteScrollAgents(signals *infiniteScrollSignals) {
 	<div
 		id="infinite_scroll"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table w-full table-zebra">
@@ -49,12 +49,12 @@ templ infiniteScrollAgents(store *infiniteScrollStore) {
 				</tr>
 			</thead>
 			<tbody id="click_to_load_rows">
-				for i := 0; i < store.Limit; i++ {
-					@infiniteScrollAgent(store.Offset + i)
+				for i := 0; i < signals.Limit; i++ {
+					@infiniteScrollAgent(signals.Offset + i)
 				}
 			</tbody>
 		</table>
-		@infiniteScrollMore(store)
+		@infiniteScrollMore(signals)
 	</div>
 }
 

@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleStoreChanged(t *testing.T) {
+func TestExampleSignalsChanged(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/store_changed")
+	page := g.page("examples/signals_changed")
 	assert.NotNil(t, page)
 
 	t.Run("increment", func(t *testing.T) {

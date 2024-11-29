@@ -67,15 +67,15 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 		},
 	}
 
-	storeValidation := func(store *ValueSelectStore) (make *ValueSelectMake, model *ValueSelectModel, isValid bool) {
-		if store.Make != "" {
+	signalsValidation := func(signals *ValueSelectSignals) (make *ValueSelectMake, model *ValueSelectModel, isValid bool) {
+		if signals.Make != "" {
 			for _, possibleMake := range cars {
-				if possibleMake.ID == store.Make {
+				if possibleMake.ID == signals.Make {
 					make = possibleMake
 
-					if store.Model != "" {
+					if signals.Model != "" {
 						for _, possibleModel := range make.Models {
-							if possibleModel.ID == store.Model {
+							if possibleModel.ID == signals.Model {
 								model = possibleModel
 								isValid = true
 							}
@@ -92,26 +92,26 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 	examplesRouter.Route("/value_select/data", func(dataRouter chi.Router) {
 
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &ValueSelectStore{}
-			if err := datastar.ReadSignals(r, store); err != nil {
+			signals := &ValueSelectSignals{}
+			if err := datastar.ReadSignals(r, signals); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 
-			make, model, isValid := storeValidation(store)
+			make, model, isValid := signalsValidation(signals)
 
-			c := valueSelectView(cars, store, make, model, isValid)
+			c := valueSelectView(cars, signals, make, model, isValid)
 			datastar.NewSSE(w, r).MergeFragmentTempl(c)
 		})
 
 		dataRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
-			store := &ValueSelectStore{}
-			if err := datastar.ReadSignals(r, store); err != nil {
+			signals := &ValueSelectSignals{}
+			if err := datastar.ReadSignals(r, signals); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
 
-			_, _, isValid := storeValidation(store)
+			_, _, isValid := signalsValidation(signals)
 
 			if !isValid {
 				http.Error(w, "invalid input", http.StatusBadRequest)
@@ -121,7 +121,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 			sse := datastar.NewSSE(w, r)
 
 			make, ok := lo.Find(cars, func(item *ValueSelectMake) bool {
-				return item.ID == store.Make
+				return item.ID == signals.Make
 			})
 			if !ok {
 				http.Error(w, "invalid input", http.StatusBadRequest)
@@ -129,7 +129,7 @@ func setupExamplesValueSelect(examplesRouter chi.Router) error {
 			}
 
 			model, ok := lo.Find(make.Models, func(item *ValueSelectModel) bool {
-				return item.ID == store.Model
+				return item.ID == signals.Model
 			})
 
 			if !ok {

@@ -38,7 +38,7 @@ using StarFederation.Datastar.DependencyInjection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 ...
-// define your signals store
+// define your signals
 public record DatastarSignals : IDatastarSignals
 {
     [JsonPropertyName("input")]
@@ -66,10 +66,10 @@ app.MapGet("/displayDate", async (IServerSentEventGenerator sse) =>
     await sse.MergeFragments($"""<div id='target'><span id='date'><b>{today}</b><button data-on-click="@get('/removeDate')">Remove</button></span></div>""");
 });
 app.MapGet("/removeDate", async (IServerSentEventGenerator sse) => { await sse.RemoveFragments("#date"); });
-app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignals dsStore) =>
+app.MapPost("/changeOutput", async (IServerSentEventGenerator sse, IDatastarSignals signals) =>
 {
-    DatastarSignals signalStore = (dsStore as DatastarSignals) ?? throw new InvalidCastException("Unknown IDatastarSignals passed");
-    DatastarSignals newSignalsStore = new() { Output = $"Your Input: {signalStore.Input}" };
-    await sse.MergeSignals(newSignalsStore);
+    DatastarSignals signals = (signals as DatastarSignals) ?? throw new InvalidCastException("Unknown IDatastarSignals passed");
+    DatastarSignals newSignals = new() { Output = $"Your Input: {signals.Input}" };
+    await sse.MergeSignals(newSignals);
 });
 ```

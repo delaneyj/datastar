@@ -1,4 +1,4 @@
-## Multi-line Store
+## Multi-line Merge Signals
 
 ## Demo
 
@@ -35,4 +35,4 @@
 </div>
 ```
 
-The `data-merge-signals` attribute is used to define a store object. The store object is a JS object. Before you could not have a multi-line store object. Now you can.
+The `data-merge-signals` attribute is used to define a signals object. The signals object is a JS object. 

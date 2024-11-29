@@ -18,7 +18,7 @@ module ServerSentEventServices =
 
         serviceCollection
 
-    let datastarServiceWithCustomDeserializer<'T when 'T :> IDatastarSignals> (signalStoreDeserializer:string -> 'T) (serviceCollection:IServiceCollection) =
+    let datastarServiceWithCustomDeserializer<'T when 'T :> IDatastarSignals> (signalDeserializer:string -> 'T) (serviceCollection:IServiceCollection) =
         serviceCollection.AddHttpContextAccessor() |> ignore
 
         serviceCollection.AddScoped<IServerSentEventService>(fun (svcPvd:IServiceProvider) ->
@@ -28,10 +28,10 @@ module ServerSentEventServices =
 
         serviceCollection.AddScoped<IDatastarSignals>(fun (svcPvd:IServiceProvider) ->
             let httpContextAccessor = svcPvd.GetService<IHttpContextAccessor>()
-            let rawSignals = ServerSentEventHttpHandler.ReadRawSignalStore(httpContextAccessor.HttpContext.Request).GetAwaiter().GetResult()
+            let rawSignals = ServerSentEventHttpHandler.ReadRawSignals(httpContextAccessor.HttpContext.Request).GetAwaiter().GetResult()
             match rawSignals with
-            | Ok rawSignals' -> signalStoreDeserializer(rawSignals')
-            | Error _ -> signalStoreDeserializer("{}")
+            | Ok rawSignals' -> signalDeserializer(rawSignals')
+            | Error _ -> signalDeserializer("{}")
             ) |> ignore
 
         serviceCollection
@@ -51,5 +51,5 @@ type ServiceCollectionExtensionMethods() =
         ServerSentEventServices.datastarService<'T> serviceCollection
 
     [<System.Runtime.CompilerServices.Extension>]
-    static member AddDatastar<'T when 'T :> IDatastarSignals> (serviceCollection:ServiceCollection, signalsStoreDeserializer:Func<string, 'T>) =
-        ServerSentEventServices.datastarServiceWithCustomDeserializer<'T> signalsStoreDeserializer.Invoke serviceCollection
+    static member AddDatastar<'T when 'T :> IDatastarSignals> (serviceCollection:ServiceCollection, signalsDeserializer:Func<string, 'T>) =
+        ServerSentEventServices.datastarServiceWithCustomDeserializer<'T> signalsDeserializer.Invoke serviceCollection

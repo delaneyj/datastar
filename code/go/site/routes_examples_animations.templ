@@ -2,11 +2,11 @@ package site
 
 import "fmt"
 
-type AnimationsRestoreStore struct {
+type AnimationsRestoreSignals struct {
 	ShouldRestore bool `json:"shouldRestore"`
 }
 
-templ animationsViewTransition(store *AnimationsRestoreStore) {
+templ animationsViewTransition(store *AnimationsRestoreSignals) {
 	<div
 		id="view_transition"
 		data-merge-signals={ templ.JSONString(store) }

@@ -27,7 +27,7 @@ This is an example of two-way binding with a web component that reverses a strin
 <script type="module" src="/static/js/web_component.js"></script>
 ```
 
-The `name` attribute value is bound to the `$name` store value, and an event listener modifies the `$reversed` store value sent in the `reverse` event.
+The `name` attribute value is bound to the `$name` signals value, and an event listener modifies the `$reversed` signals value sent in the `reverse` event.
 
 The web component observes changes to the `name` attribute and responds by reversing the string and dispatching a `reverse` event containing the resulting value.
 

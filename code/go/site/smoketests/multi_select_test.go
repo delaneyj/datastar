@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-type carStore struct {
+type carSignals struct {
 	Cars []string `json:"cars"`
 }
 
@@ -29,9 +29,9 @@ func TestExampleMultiSelect(t *testing.T) {
 
 		pre := page.MustElement("pre")
 
-		store := &carStore{}
-		json.Unmarshal([]byte(pre.MustText()), store)
+		signals := &carSignals{}
+		json.Unmarshal([]byte(pre.MustText()), signals)
 
-		assert.Len(t, store.Cars, 3)
+		assert.Len(t, signals.Cars, 3)
 	})
 }

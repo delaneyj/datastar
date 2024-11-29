@@ -19,7 +19,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(ctx context.Context, router chi.Router, store sessions.Store, ns *embeddednats.Server) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, signals sessions.Signals, ns *embeddednats.Server) (err error) {
 	mdDataset, err := markdownRenders(ctx, "examples")
 	if err != nil {
 		return err
@@ -66,13 +66,13 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 				{ID: "redirects"},
 				{ID: "view_transition_api"},
 				{ID: "title_update_backend"},
-				{ID: "store_changed"},
+				{ID: "signals_changed"},
 				{ID: "csrf"},
-				{ID: "multiline_store"},
+				{ID: "multiline_signals"},
 				{ID: "multi_select"},
 				{ID: "raf_update"},
-				{ID: "update_store"},
-				{ID: "store_ifmissing"},
+				{ID: "update_signals"},
+				{ID: "signals_ifmissing"},
 				{ID: "offline_sync"},
 				{ID: "session_storage"},
 				{ID: "refs"},
@@ -154,8 +154,8 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 		})
 
 		if err := errors.Join(
-			setupExamplesQuiz(examplesRouter, store),
-			setupExamplesQuizSlow(examplesRouter, store),
+			setupExamplesQuiz(examplesRouter, signals),
+			setupExamplesQuizSlow(examplesRouter, signals),
 			setupExamplesClickToEdit(examplesRouter),
 			setupExamplesBulkUpdate(examplesRouter),
 			setupExamplesClickToLoad(examplesRouter),
@@ -163,7 +163,7 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 			setupExamplesDeleteRow(examplesRouter),
 			setupExamplesLazyLoad(examplesRouter),
 			setupExamplesIndicator(examplesRouter),
-			setupExamplesOnLoad(examplesRouter, store),
+			setupExamplesOnLoad(examplesRouter, signals),
 			setupExamplesDisableButton(examplesRouter),
 			setupExampleInlineValidation(examplesRouter),
 			setupExamplesInfiniteScroll(examplesRouter),
@@ -176,8 +176,8 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 			setupExamplesLazyTabs(examplesRouter),
 			setupExamplesMergeOptions(examplesRouter),
 			setupExamplesRedirects(examplesRouter),
-			setupExamplesUpdateStore(examplesRouter),
-			setupExamplesOfflineSync(examplesRouter, store),
+			setupExamplesUpdateSignals(examplesRouter),
+			setupExamplesOfflineSync(examplesRouter, signals),
 			setupExamplesDbmon(examplesRouter),
 			setupExamplesBadApple(examplesRouter),
 			setupExamplesMousemove(ctx, examplesRouter, ns),
@@ -189,15 +189,15 @@ func setupExamples(ctx context.Context, router chi.Router, store sessions.Store,
 			//
 			// setupExamplesShoelaceKitchensink(examplesRouter),
 			//
-			setupExamplesStoreIfMissing(examplesRouter),
+			setupExamplesSignalsIfMissing(examplesRouter),
 			setupExamplesViewTransitionAPI(examplesRouter),
 			setupExamplesModelBinding(examplesRouter),
 			setupExamplesTitleUpdateBackend(examplesRouter),
-			setupExamplesStoreChanged(examplesRouter, store),
+			setupExamplesSignalsChanged(examplesRouter, signals),
 			setupExamplesCSRF(examplesRouter),
 			setupExamplesScrollIntoView(examplesRouter),
 			setupExamplesQuickPrimerGo(examplesRouter),
-			setupExamplesTemplCounter(examplesRouter, store),
+			setupExamplesTemplCounter(examplesRouter, signals),
 			setupExamplesToggleVisibility(examplesRouter),
 		); err != nil {
 			panic(fmt.Sprintf("error setting up examples routes: %s", err))

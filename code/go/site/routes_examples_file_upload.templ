@@ -1,16 +1,16 @@
 package site
 
-type FileUploadStore struct {
+type FileUploadSignals struct {
 	FilesBase64 []string `json:"files"`
 	FileMimes   []string `json:"filesMimes"`
 	FileNames   []string `json:"filesNames"`
 }
 
-templ FileUploadView(store *FileUploadStore) {
+templ FileUploadView(signals *FileUploadSignals) {
 	<div
 		id="file_upload"
 		class="flex flex-col gap-4"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<div class="flex flex-col gap-2">
 			<label
@@ -44,7 +44,7 @@ templ FileUpdateAlert(err error) {
 	</div>
 }
 
-templ FileUploadResults(store *FileUploadStore, humainzeByteCount, humanizedHashes []string) {
+templ FileUploadResults(signals *FileUploadSignals, humainzeByteCount, humanizedHashes []string) {
 	<table id="file_upload" class="table w-full table-compact table-zebra">
 		<caption>File Upload Results</caption>
 		<thead>
@@ -56,11 +56,11 @@ templ FileUploadResults(store *FileUploadStore, humainzeByteCount, humanizedHash
 			</tr>
 		</thead>
 		<tbody>
-			for i := range store.FileNames {
+			for i := range signals.FileNames {
 				<tr>
-					<td class="font-bold text-center">{ store.FileNames[i] }</td>
+					<td class="font-bold text-center">{ signals.FileNames[i] }</td>
 					<td class="text-center">{ humainzeByteCount[i] }</td>
-					<td class="text-center">{ store.FileMimes[i] }</td>
+					<td class="text-center">{ signals.FileMimes[i] }</td>
 					<td class="overflow-hidden font-mono text-xs text-center text-ellipsis">{ humanizedHashes[i] }</td>
 				</tr>
 			}

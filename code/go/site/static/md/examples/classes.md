@@ -28,4 +28,4 @@
 </div>
 ```
 
-Here we are using computed signal to store a boolean then use it to drive classes
+Here we are using computed signal to signals a boolean then use it to drive classes

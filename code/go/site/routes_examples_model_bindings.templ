@@ -2,18 +2,18 @@ package site
 
 import "fmt"
 
-type ModelBindingStore struct {
+type ModelBindingSignals struct {
 	BindText      string `json:"bindText"`
 	BindNumber    int    `json:"bindNumber"`
 	BindBool      bool   `json:"bindBool"`
 	BindSelection int    `json:"bindSelection"`
 }
 
-templ ModelBindingView(optionCount int, store *ModelBindingStore) {
+templ ModelBindingView(optionCount int, signals *ModelBindingSignals) {
 	<div
 		id="container"
 		class="flex flex-col gap-4"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<input class="input input-bordered" data-bind="bindText"/>
 		<input class="input input-bordered" type="number" data-bind="bindNumber"/>

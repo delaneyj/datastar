@@ -52,7 +52,7 @@ class ServerSentEventGenerator
     }
 
     /**
-     * Merges signals into the store.
+     * Merges signals into the signals.
      */
     public function mergeSignals(array|string $signals, array $options = []): void
     {
@@ -60,7 +60,7 @@ class ServerSentEventGenerator
     }
 
     /**
-     * Removes signal paths from the store.
+     * Removes signal paths from the signals.
      */
     public function removeSignals(array $paths, array $options = []): void
     {

@@ -21,4 +21,4 @@ Look at your Local Storage in your browser's developer tools.
 
 In this example we are caching the `nested.test1` and `nested.test3` values in the Local Storage.
 
-If you don't use any values it will cache the entire store.
+If you don't use any values it will cache the entire signals.

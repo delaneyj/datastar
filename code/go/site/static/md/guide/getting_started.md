@@ -213,9 +213,9 @@ This results in the button being given the `disabled` attribute whenever the inp
 
 ### `data-merge-signals`
 
-So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a **store** that is accessible from anywhere in the DOM.
+So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a **signals** that is accessible from anywhere in the DOM.
 
-We can merge signals into the store using the [`data-merge-signals`](/reference/plugins_core#store) attribute.
+We can merge signals into the signals using the [`data-merge-signals`](/reference/plugins_core#signals) attribute.
 
 ```html
 <div data-merge-signals="{input: ''}"></div>
@@ -223,7 +223,7 @@ We can merge signals into the store using the [`data-merge-signals`](/reference/
 
 The `data-merge-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
 
-Adding `data-merge-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing store (values defined later in the DOM tree override those defined earlier).
+Adding `data-merge-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
 
 Signals are nestable, which can be useful for namespacing.
 
@@ -311,7 +311,7 @@ The following code would exist in a controller action endpoint in your backend.
 
 The `mergeFragments()` method merges the provided HTML fragment into the DOM, replacing the element with `id="question"`. An element with the ID `question` must already exist in the DOM.
 
-The `mergeSignals()` method merges the `response` and `answer` signals into the frontend store.
+The `mergeSignals()` method merges the `response` and `answer` signals into the frontend signals.
 
 With our backend in place, we can now use the `data-on-click` attribute to trigger the `@get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
 
@@ -497,7 +497,7 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Show or hide an element using an expression: `data-show="$foo"
 - Modify the classes on an element: `data-class="{'font-bold': $foo}"`
 - Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
-- Merge signals into the store: `data-merge-signals="{foo: ''}"`
+- Merge signals into the signals: `data-merge-signals="{foo: ''}"`
 - Execute an expression on an event: `data-on-click="@get(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
 - Replace the URL: `data-replace-url="'/page1'"`

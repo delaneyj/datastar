@@ -12,7 +12,7 @@ This example displays how to toggle visibility using the `data-show` attribute.
 <div
   id="container"
   class="flex flex-col gap-4"
-  data-merge-signals={ templ.JSONString(store) }
+  data-merge-signals={ templ.JSONString(signals) }
 >
   <button
     class="btn btn-primary"

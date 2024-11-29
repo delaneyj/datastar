@@ -1,9 +1,9 @@
-## Store If Missing
+## Merge Signals If Missing
 
 ## Demo
 
 <div
-  data-on-load="@get('/examples/store_ifmissing/updates')"
+  data-on-load="@get('/examples/signals_ifmissing/updates')"
 >
   <div>
     Should always be 1234:
@@ -17,7 +17,7 @@
 <div
   id="demo"
   data-merge-signals="{id: 1234}"
-  data-on-load="@get('/examples/store_ifmissing/updates')"
+  data-on-load="@get('/examples/signals_ifmissing/updates')"
 >
   <div>
     Should always be 1234:
@@ -26,14 +26,14 @@
 </div>
 ```
 
-The `data-merge-signals` attribute is used to set the initial state of the store. You can check your browser's Network Devtools to see the `updates` endpoint alternates between sending fragments and direct signal merges like the following:
+The `data-merge-signals` attribute is used to set the initial state of the signals. You can check your browser's Network Devtools to see the `updates` endpoint alternates between sending fragments and direct signal merges like the following:
 
 ```md
 ...
 
 event: datastar-merge-signals
 data: ifmissing true
-data: store {id:73}
+data: signals {id:73}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
@@ -41,7 +41,7 @@ data: fragments <div id="demo" data-merge-signals.ifmissing="{id:74}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
-data: store {id:75}
+data: signals {id:75}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
@@ -49,9 +49,9 @@ data: fragments <div id="demo" data-merge-signals.ifmissing="{id:76}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
-data: store {id:77}
+data: signals {id:77}
 
 ...
 ```
 
-Since the store is already set, the `data-merge-signals.ifmissing` attribute will not overwrite the existing value in either case.
+Since the signals is already set, the `data-merge-signals.ifmissing` attribute will not overwrite the existing value in either case.

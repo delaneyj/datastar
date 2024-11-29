@@ -147,7 +147,7 @@ def render_footer():
     return Div("FastAPI - Hypermedia - DataStar")
 
 
-def render_main_partial(store):
+def render_main_partial(signals):
   return Div(
     Div(
       Input(type="text", placeholder="Send to server...", **{"data-bind":"input"}),
@@ -163,15 +163,15 @@ def render_main_partial(store):
         ),
     ),
     id="main",
-    **{"data-merge-signals":f'{json.dumps(store)}'}
+    **{"data-merge-signals":f'{json.dumps(signals)}'}
   )
 
 
-def render_index(store):
+def render_index(signals):
     return base().extend(
         "header", render_header()
     ).extend(
-        "main", render_main_partial(store)
+        "main", render_main_partial(signals)
     ).extend(
         "footer", render_footer()
     )
@@ -180,17 +180,17 @@ def render_index(store):
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    store = {'input': '', 'output': '', 'show': True}
-    page: Element = render_index(store=store).dump()
+    signals = {'input': '', 'output': '', 'show': True}
+    page: Element = render_index(signals=signals).dump()
     return HTMLResponse(page)
 
 
 @app.get("/get")
 async def get_data(request: Request):
   query_params = request.query_params.get('datastar')
-  store = json.loads(query_params)
-  store['output'] = f"Your input: {store['input']}, is {len(store['input'])} long."
-  event_data = json.dumps(store)
+  signals = json.loads(query_params)
+  signals['output'] = f"Your input: {signals['input']}, is {len(signals['input'])} long."
+  event_data = json.dumps(signals)
   fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")

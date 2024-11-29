@@ -1,6 +1,6 @@
 package site
 
-type ValueSelectStore struct {
+type ValueSelectSignals struct {
 	Make  string `json:"make"`
 	Model string `json:"model"`
 }
@@ -16,11 +16,11 @@ type ValueSelectModel struct {
 	Label string `json:"label"`
 }
 
-templ valueSelectView(cars []*ValueSelectMake, store *ValueSelectStore, make *ValueSelectMake, model *ValueSelectModel, isValid bool) {
+templ valueSelectView(cars []*ValueSelectMake, signals *ValueSelectSignals, make *ValueSelectMake, model *ValueSelectModel, isValid bool) {
 	<div
 		id="value_select"
 		class="flex flex-col gap-2"
-		data-merge-signals={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<div class="text-2xl font-bold">Pick a Make / Model</div>
 		<select
