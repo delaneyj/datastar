@@ -2,7 +2,6 @@
 
 export * from "./bind";
 export * from "./class";
-export * from "./model";
 export * from "./on";
 export * from "./ref";
 export * from "./text";

@@ -47,15 +47,15 @@ This returns a form that can be used to edit the contact
 >
   <div class="form-control">
     <label>First Name</label>
-    <input type="text" data-model="firstName" />
+    <input type="text" data-bind="firstName" />
   </div>
   <div>
     <label>Last Name</label>
-    <input type="text" data-model="lastName" />
+    <input type="text" data-bind="lastName" />
   </div>
   <div>
     <label>Email</label>
-    <input type="text" data-model="email" />
+    <input type="text" data-bind="email" />
   </div>
   <div>
     <button data-on-click="@put('/examples/click_to_edit/contact/1')">

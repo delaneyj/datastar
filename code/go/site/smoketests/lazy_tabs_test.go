@@ -7,6 +7,7 @@ import (
 )
 
 func TestExampleLazyTabs(t *testing.T) {
+
 	g := setup(t)
 
 	page := g.page("examples/lazy_tabs")

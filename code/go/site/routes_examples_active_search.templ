@@ -25,7 +25,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				class="flex-1 input input-bordered"
 				type="text"
 				placeholder="Search..."
-				data-model="search"
+				data-bind="search"
 				data-on-input.debounce_500ms="@get('/examples/active_search/updates')"
 				data-indicator="fetching"
 			/>

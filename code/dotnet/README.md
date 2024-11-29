@@ -3,25 +3,35 @@
 Real-time Hypermedia first Library and Framework for dotnet
 
 # HTML Frontend
+
 ```html
 <html lang="en">
-<head>
-    <script type="module" defer src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
+  <head>
+    <script
+      type="module"
+      defer
+      src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
+    ></script>
     <title>D* Demo</title>
-</head>
-<body>
-<main class="container" id="main" data-merge-signals="{'input':'','output':''}">
-    <button data-on-click="@get('/displayDate')">Display Date</button>
-    <div id="target"></div>
-    <input type="text" placeholder="input:" data-model="input"/><br>
-    <span data-model="output"></span>
-    <button data-on-click="@post('/changeOutput')">Change Output</button>
-</main>
-</body>
+  </head>
+  <body>
+    <main
+      class="container"
+      id="main"
+      data-merge-signals="{'input':'','output':''}"
+    >
+      <button data-on-click="@get('/displayDate')">Display Date</button>
+      <div id="target"></div>
+      <input type="text" placeholder="input:" data-bind="input" /><br />
+      <span data-bind="output"></span>
+      <button data-on-click="@post('/changeOutput')">Change Output</button>
+    </main>
+  </body>
 </html>
 ```
 
 # C# Backend
+
 ```csharp
 using StarFederation.Datastar;
 using StarFederation.Datastar.DependencyInjection;
@@ -45,7 +55,7 @@ public record DatastarSignalsStore : IDatastarSignalsStore
 // add as an ASP Service
 //  allows injection of IServerSentEventGenerator, to respond to a request with a Datastar friendly ServerSentEvent
 //                  and IDatastarSignalsStore, to read what is in the data-merge-signals of the client
-builder.Services.AddDatastarGenerator<DatastarSignalsStore>();
+builder.Services.AddDatastar<DatastarSignalsStore>();
 ...
 app.UseStaticFiles();
 

@@ -3,8 +3,8 @@
 ## Demo
 
 <div data-merge-signals="{name:'',reversed:''}" class="flex flex-col gap-4">
-    <input data-model="name" class="flex items-center input input-bordered">
-    <div class="alert h-16">
+    <input data-bind="name" class="flex items-center input input-bordered">
+    <div class="h-16 alert">
         <span data-text="$reversed"></span>
     </div>
     <reverse-component data-bind-name="$name" data-on-reverse="$reversed = event.detail.value"></reverse-component>
@@ -17,12 +17,12 @@ This is an example of two-way binding with a web component that reverses a strin
 
 ```html
 <div data-merge-signals="{name:'',reversed:''}">
-    <input data-model="name">
-    <span data-text="$reversed"></span>
-    <reverse-component
-        data-bind-name="$name"
-        data-on-reverse="$reversed = event.detail.value"
-    ></reverse-component>
+  <input data-bind="name" />
+  <span data-text="$reversed"></span>
+  <reverse-component
+    data-bind-name="$name"
+    data-on-reverse="$reversed = event.detail.value"
+  ></reverse-component>
 </div>
 <script type="module" src="/static/js/web_component.js"></script>
 ```
@@ -33,16 +33,15 @@ The web component observes changes to the `name` attribute and responds by rever
 
 ```js
 class ReverseComponent extends HTMLElement {
-    static get observedAttributes() {
-        return ['name'];
-    }
+  static get observedAttributes() {
+    return ["name"];
+  }
 
-    attributeChangedCallback(name, oldValue, newValue) {
-        const value = newValue.split('').reverse().join('');
-        this.dispatchEvent(new CustomEvent('reverse', {detail: {value}}));
-    }
+  attributeChangedCallback(name, oldValue, newValue) {
+    const value = newValue.split("").reverse().join("");
+    this.dispatchEvent(new CustomEvent("reverse", { detail: { value } }));
+  }
 }
 
-customElements.define('reverse-component', ReverseComponent);
+customElements.define("reverse-component", ReverseComponent);
 ```
-

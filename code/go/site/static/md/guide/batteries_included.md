@@ -10,7 +10,7 @@ Before we had used something like `data-text="$foo"` attribute. What this is act
 
 ## More attributes
 
-So far we've seen `data-merge-signals`, `data-model` and `data-text`. There are many more attributes that can be used to make your page more reactive. Check out the API for a full list of attributes but here are a few more that get used the most.
+So far we've seen `data-merge-signals`, `data-bind` and `data-text`. There are many more attributes that can be used to make your page more reactive. Check out the API for a full list of attributes but here are a few more that get used the most.
 
 ### `data-show`
 

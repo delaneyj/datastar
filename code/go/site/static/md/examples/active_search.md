@@ -16,7 +16,7 @@ The interesting part is the input field:
 
 ```html
 <input
-  data-model="search"
+  data-bind="search"
   data-on-input.debounce_1000ms="@get('/examples/active_search/data')"
   placeholder="Search..."
   type="text"

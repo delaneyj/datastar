@@ -6,23 +6,25 @@ Based on the Python example at https://data-star.dev/examples/python
 Datastar functions:
 FragmentMergeType, DatastarEventMessage, SingleDatastarEventMessage are from a litestar-gist by @avila-gabriel
 
-
 ## FastAPI
+
 https://fastapi.tiangolo.com/
 
 ## Hypermedia
+
 Create `HTML` using python code
 https://github.com/thomasborgen/hypermedia
 Version >=5.0.0
 
-
 `requirements.txt`
+
 ```
 fastapi[standard]
 hypermedia>=5.0.0
 ```
 
 `main.py`
+
 ```python
 import asyncio
 import json
@@ -148,7 +150,7 @@ def render_footer():
 def render_main_partial(store):
   return Div(
     Div(
-      Input(type="text", placeholder="Send to server...", **{"data-model":"input"}),
+      Input(type="text", placeholder="Send to server...", **{"data-bind":"input"}),
       Button("Send State Roundtrip", **{"data-on-click":'@get("/get")'}),
       Button("Target HTML Element", **{"data-on-click":'@get("/target")'}),
       Button("Toggle Feed", **{"data-on-click":'$show=!$show'}),

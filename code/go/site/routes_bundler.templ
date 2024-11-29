@@ -50,7 +50,7 @@ templ PageBundler(r *http.Request, manifest PluginManifest, store *BundlerStore)
 								<div class="flex flex-wrap items-center gap-4 justify-between">
 									<div class="flex gap-4 items-center text-xl">
 										@icon(plugin.Icon)
-										<input class="toggle toggle-success" type="checkbox" data-model={ signal }/>
+										<input class="toggle toggle-success" type="checkbox" data-bind={ signal }/>
 										<div class="flex item-center font-mono">
 											<div>{ plugin.Label }</div>
 										</div>

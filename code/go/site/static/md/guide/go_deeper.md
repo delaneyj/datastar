@@ -99,11 +99,11 @@ Let's replace the hard coded value in the input with another attribute
 ```html
 <div data-merge-signals="{value:'hello world'}">
   <label>HELLO WORLD</label>
-  <input data-model="value" />
+  <input data-bind="value" />
 </div>
 ```
 
-Here we've created a new attribute `data-model` with the contents of `value`. We are just saying when the signal `value` changes **or** input is edited on the page make sure you keep them in sync. We don't care how, just do it.
+Here we've created a new attribute `data-bind` with the contents of `value`. We are just saying when the signal `value` changes **or** input is edited on the page make sure you keep them in sync. We don't care how, just do it.
 
 ## Contents
 
@@ -112,7 +112,7 @@ Now we want to update the label relationship.
 ```html
 <div data-merge-signals="{value:'hello world'}">
   <label data-text="$value"></label>
-  <input data-model="value" />
+  <input data-bind="value" />
 </div>
 ```
 
@@ -123,7 +123,7 @@ However, it doesn't yet match the original intent, which was to make it uppercas
 ```html
 <div data-merge-signals="{value:'hello world'}">
   <label data-text="$value.toUpperCase()"></label>
-  <input data-model="value" />
+  <input data-bind="value" />
 </div>
 ```
 
@@ -132,7 +132,10 @@ So with this change and in a declarative nature you'd be able to extend HTML and
 Our HTML looks pretty neat but what would it take to make it actually work? Well just add:
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"
+></script>
 ```
 
 somewhere on your page and it should **_just work_**. If you look at the dev tools of your browser you'll also see its tiny compared to any other full framework, and we haven't scratched the surface of what's included.
