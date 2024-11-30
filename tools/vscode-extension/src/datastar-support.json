@@ -13,7 +13,7 @@
     },
     {
       "name": "data-bind-*",
-      "description": "Binds an expression to an attribute’s value.\n```html\ndata-bind-disabled=\"$signalName\"\n```",
+      "description": "Binds an element’s attribute value to an expression.\n```html\ndata-bind-disabled=\"$signalName\"\n```",
       "references": [
         {
           "name": "Documentation",
@@ -82,6 +82,36 @@
       ]
     },
     {
+      "name": "data-on-load",
+      "description": "Executes an expression whenever the element is loaded into the DOM.\n```html\ndata-on-load=\"alert($signalName)\"\n```",
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://data-star.dev/guide/getting_started#data-on"
+        }
+      ]
+    },
+    {
+      "name": "data-on-signal-change",
+      "description": "Executes an expression whenever a signal changes.\n```html\ndata-on-signal-change=\"alert($signalName)\"\n```",
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://data-star.dev/guide/getting_started#data-on"
+        }
+      ]
+    },
+    {
+      "name": "data-on-raf",
+      "description": "Executes an expression on every `requestAnimationFrame` event.\n```html\ndata-on-raf=\"alert($signalName)\"\n```",
+      "references": [
+        {
+          "name": "Documentation",
+          "url": "https://data-star.dev/guide/getting_started#data-on"
+        }
+      ]
+    },
+    {
       "name": "data-persist",
       "description": "Persists all signals in local storage.\n```html\ndata-persist\n```",
       "references": [
@@ -92,22 +122,12 @@
       ]
     },
     {
-      "name": "data-persist.session",
-      "description": "Persists all signals in session storage.\n```html\ndata-persist\n```",
-      "references": [
-        {
-          "name": "Documentation",
-          "url": "https://data-star.dev/guide/getting_started#data-persist"
-        }
-      ]
-    },
-    {
       "name": "data-ref",
-      "description": "Create a signal that references an element.\n```html\ndata-ref=\"signalName\"\n```",
+      "description": "Creates a signal that references an element.\n```html\ndata-ref=\"signalName\"\n```",
       "references": [
         {
           "name": "Documentation",
-          "url": "https://data-star.dev/guide/getting_started#data-show"
+          "url": "https://data-star.dev/guide/getting_started#data-ref"
         }
       ]
     },
@@ -127,7 +147,7 @@
       "references": [
         {
           "name": "Documentation",
-          "url": "https://data-star.dev/guide/getting_started#data-intersect"
+          "url": "https://data-star.dev/guide/getting_started#data-scroll-into-view"
         }
       ]
     },
