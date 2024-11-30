@@ -6,7 +6,7 @@
   "author": "Ben Croker",
   "publisher": "starfederation",
   "license": "MIT",
-  "repository": "https://github.com/starfederation/datastar-vscode-support",
+  "repository": "https://github.com/starfederation/datastar",
   "icon": "./src/icon.png",
   "galleryBanner": {
     "color": "#bee3f8",
