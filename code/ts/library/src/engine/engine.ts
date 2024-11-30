@@ -64,7 +64,7 @@ export class Engine {
       if (plugin.requiredPlugins) {
         for (const requiredPluginType of plugin.requiredPlugins) {
           if (!allLoadedPlugins.has(requiredPluginType)) {
-            // requires other plugin to be loaded
+            // REQ_PLUGIN_NOT_LOADED – The plugin requires another plugin to be loaded first.
             throw ERR_NOT_ALLOWED;
           }
         }
@@ -73,27 +73,32 @@ export class Engine {
       let globalInitializer: ((ctx: InitContext) => void) | undefined;
       if (isMacroPlugin(plugin)) {
         if (this.macros.includes(plugin)) {
+          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.macros.push(plugin);
       } else if (isWatcherPlugin(plugin)) {
         if (this.watchers.includes(plugin)) {
+          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.watchers.push(plugin);
         globalInitializer = plugin.onGlobalInit;
       } else if (isActionPlugin(plugin)) {
         if (!!this.actions[plugin.name]) {
+          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.actions[plugin.name] = plugin;
       } else if (isAttributePlugin(plugin)) {
         if (this.plugins.includes(plugin)) {
+          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.plugins.push(plugin);
         globalInitializer = plugin.onGlobalInit;
       } else {
+        // INV_PLUGIN_TYPE – The plugin type is invalid.
         throw ERR_NOT_FOUND;
       }
 
@@ -207,6 +212,7 @@ export class Engine {
               lowerCaseTag.match(r)
             );
             if (!allowed) {
+              // TAG_NOT_ALLOWED – The tag is not allowed.
               throw ERR_NOT_ALLOWED;
             }
           }
@@ -214,11 +220,11 @@ export class Engine {
           let keyRaw = rawKey.slice(p.name.length);
           let [key, ...modifiersWithArgsArr] = keyRaw.split(".");
           if (p.mustHaveEmptyKey && key.length > 0) {
-            // must have empty key
+            // MUST_EMPTY_KEY – The key must be empty. This plugin `{plugin}` does not support keys.
             throw ERR_BAD_ARGS;
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            // must have non-empty key
+            // MUST_NON_EMPTY_KEY – The key must not be empty. This plugin `{plugin}` requires a key.
             throw ERR_BAD_ARGS;
           }
           if (key.length) {
@@ -320,9 +326,8 @@ export class Engine {
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length);
-            statements[statements.length - 1] = `return ${
-              statements[statements.length - 1]
-            }`;
+            statements[statements.length - 1] = `return ${statements[statements.length - 1]
+              }`;
             const j = statements.map((s) => `  ${s}`).join(";\n");
             const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll(
               "`",
