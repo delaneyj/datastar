@@ -94,27 +94,7 @@ function nestedSubset(original: NestedValues, ...keys: string[]): NestedValues {
 export class SignalsRoot {
     private _signals: NestedSignal = {};
 
-    private constructor(private engine: Engine) {}
-
-    static empty(engine: Engine): SignalsRoot {
-        return new SignalsRoot(engine);
-    }
-
-    static clone(source: SignalsRoot): SignalsRoot {
-        const root = new SignalsRoot(source.engine);
-        mergeNested(root._signals, source._signals);
-        return root;
-    }
-
-    static fromValues(engine: Engine, values: NestedValues): SignalsRoot {
-        const root = new SignalsRoot(engine);
-        mergeNested(root._signals, values);
-        return root;
-    }
-
-    static fromString(engine: Engine, json: string): SignalsRoot {
-        return SignalsRoot.fromValues(engine, JSON.parse(json));
-    }
+    constructor(private engine: Engine) {}
 
     exists(dotDelimitedPath: string): boolean {
         return !!this.signal(dotDelimitedPath);
@@ -134,10 +114,7 @@ export class SignalsRoot {
         return subSignals[last] as Signal<any>;
     }
 
-    add<T extends Signal>(
-        dotDelimitedPath: string,
-        signal: T,
-    ): void {
+    add<T extends Signal>(dotDelimitedPath: string, signal: T) {
         const parts = dotDelimitedPath.split(".");
         let subSignals = this._signals;
         for (let i = 0; i < parts.length - 1; i++) {
@@ -151,12 +128,17 @@ export class SignalsRoot {
         subSignals[last] = signal;
     }
 
-    value(dotDelimitedPath: string): any {
+    value<T>(dotDelimitedPath: string): T {
         const signal = this.signal(dotDelimitedPath);
         return signal?.value;
     }
 
-    upsert<T>(dotDelimitedPath: string, value: T): Signal<T> {
+    set<T>(dotDelimitedPath: string, value: T) {
+        const s = this.upsert(dotDelimitedPath, value);
+        s.value = value;
+    }
+
+    upsert<T>(dotDelimitedPath: string, value: T) {
         const parts = dotDelimitedPath.split(".");
         let subSignals = this._signals;
         for (let i = 0; i < parts.length - 1; i++) {
@@ -177,7 +159,7 @@ export class SignalsRoot {
         return signal;
     }
 
-    remove(...dotDelimitedPaths: string[]): void {
+    remove(...dotDelimitedPaths: string[]) {
         let hadChanges = false;
         for (const path of dotDelimitedPaths) {
             const parts = path.split(".");
@@ -199,7 +181,7 @@ export class SignalsRoot {
         }
     }
 
-    merge(other: NestedValues, onlyIfMissing = false): void {
+    merge(other: NestedValues, onlyIfMissing = false) {
         mergeNested(this._signals, other, onlyIfMissing);
     }
 
@@ -207,7 +189,7 @@ export class SignalsRoot {
         return nestedSubset(this.values(), ...keys);
     }
 
-    walk(cb: (name: string, signal: Signal<any>) => void): void {
+    walk(cb: (name: string, signal: Signal<any>) => void) {
         walkNested(this._signals, cb);
     }
 
@@ -215,7 +197,7 @@ export class SignalsRoot {
         return nestedValues(this._signals, onlyPublic);
     }
 
-    JSON(shouldIndent = false, onlyPublic = false): string {
+    JSON(shouldIndent = true, onlyPublic = false) {
         const values = this.values(onlyPublic);
         if (!shouldIndent) {
             return JSON.stringify(values);
@@ -223,7 +205,7 @@ export class SignalsRoot {
         return JSON.stringify(values, null, 2);
     }
 
-    public toString(): string {
+    public toString() {
         return this.JSON();
     }
 }

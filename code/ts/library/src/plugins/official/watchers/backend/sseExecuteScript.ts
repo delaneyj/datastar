@@ -43,7 +43,7 @@ export const ExecuteScript: WatcherPlugin = {
         if (autoRemove) {
           scriptEl.remove();
         }
-      }
+      },
     );
   },
 };

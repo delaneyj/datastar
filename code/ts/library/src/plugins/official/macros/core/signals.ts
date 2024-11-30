@@ -1,21 +1,22 @@
 import { MacroPlugin, RegexpGroups } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
-import { wholePrefixSuffix } from "../../../../utils/regex";
 
 // Replacing $signal with ctx.signals.signal.value`
-export const SignalsMacro: MacroPlugin = {
-  name: "signal",
+export const SignalsGetMacro: MacroPlugin = {
+  name: "signalGet",
   pluginType: PluginType.Macro,
-  regexp: wholePrefixSuffix("\\$", "signal", "(?<method>\\([^\\)]*\\))?"),
+  regexp: /(?<whole>\$(?<key>\w*))/gm,
   replacer: (groups: RegexpGroups) => {
-    const { signal, method } = groups;
-    const prefix = `ctx.signals`;
-    if (!method?.length) {
-      return `${prefix}.${signal}.value`;
-    }
-    const parts = signal.split(".");
-    const methodName = parts.pop();
-    const nestedSignal = parts.join(".");
-    return `${prefix}.${nestedSignal}.value.${methodName}${method}`;
+    const { key } = groups;
+    return `ctx.signals.value('${key}')`;
+  },
+};
+
+export const SignalsSetMacro: MacroPlugin = {
+  name: "signalsSet",
+  pluginType: PluginType.Macro,
+  regexp: /(?<whole>\$(?<key>\w*)\s*=\s*(?<value>\w*))/gm,
+  replacer: ({ key, value }) => {
+    return `ctx.signals.set("${key}", ${value})`;
   },
 };
