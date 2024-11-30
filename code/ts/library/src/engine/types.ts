@@ -1,5 +1,6 @@
 import { ReadonlySignal, Signal } from "../vendored/preact-core";
 import { PluginType } from "./enums";
+import { SignalsRoot } from "./nestedSignals";
 
 export type HTMLorSVGElement = Element & (HTMLElement | SVGElement);
 
@@ -15,10 +16,7 @@ export type Reactivity = {
 };
 
 export type InitContext = {
-  signals: any;
-  upsertSignal: (path: string, value: any) => Signal<any>;
-  mergeSignals: (signals: any) => void;
-  removeSignals: (...paths: string[]) => void;
+  signals: SignalsRoot;
   actions: Readonly<ActionPlugins>;
   reactivity: Reactivity;
   applyPlugins: (target: Element) => void;
@@ -26,7 +24,6 @@ export type InitContext = {
 };
 
 export type AttributeContext = InitContext & {
-  walkSignals: (cb: (name: string, signal: Signal<any>) => void) => void;
   el: Readonly<HTMLorSVGElement>; // The element the attribute is on
   key: Readonly<string>; // data-* key without the prefix or modifiers
   rawKey: Readonly<string>; // raw data-* key
@@ -90,3 +87,6 @@ export interface WatcherPlugin extends DatastarPlugin {
   pluginType: PluginType.Watcher;
   onGlobalInit?: (ctx: InitContext) => void;
 }
+
+export type NestedValues = { [key: string]: NestedValues | any };
+export type NestedSignal = { [key: string]: NestedSignal | Signal<any> };

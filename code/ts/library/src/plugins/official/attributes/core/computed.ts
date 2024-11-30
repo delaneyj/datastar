@@ -5,6 +5,7 @@
 
 import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
+import { Computed as ComputedType } from "../../../../vendored";
 
 export const Computed: AttributePlugin = {
   pluginType: PluginType.Attribute,
@@ -18,12 +19,13 @@ export const Computed: AttributePlugin = {
       reactivity: { computed },
     } = ctx;
 
-    signals[key] = computed(() => {
+    const c = computed(() => {
       return expressionFn(ctx);
-    });
+    }) as ComputedType;
+    signals.add(key, c);
 
     return () => {
-      delete signals[ctx.key];
+      signals.remove(key);
     };
   },
 };

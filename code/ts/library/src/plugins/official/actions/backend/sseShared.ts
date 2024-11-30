@@ -1,7 +1,6 @@
 import { ActionMethod } from "../../../../engine";
 import { DATASTAR, DATASTAR_REQUEST } from "../../../../engine/consts";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
-import { remoteSignals } from "../../../../utils/signals";
 import {
   fetchEventSource,
   FetchEventSourceInit,
@@ -26,7 +25,7 @@ function dispatchSSE(type: string, argsRaw: Record<string, string>) {
   document.dispatchEvent(
     new CustomEvent<DatastarSSEEvent>(DATASTAR_SSE_EVENT, {
       detail: { type, argsRaw },
-    })
+    }),
   );
 }
 
@@ -40,17 +39,11 @@ export function sendSSERequest(method: string): ActionMethod {
         "Content-Type": "application/json",
         [DATASTAR_REQUEST]: true,
       },
-      args?.headers
+      args?.headers,
     );
-    let signals = Object.assign({}, ctx.signals);
-    if (onlyRemoteSignals) {
-      signals = remoteSignals(signals);
-    }
-    const signalsJSON = JSON.stringify(signals);
+    const { signals, el: { id: elID } } = ctx;
+    const signalsJSON = signals.JSON(false, onlyRemoteSignals);
 
-    const {
-      el: { id: elID },
-    } = ctx;
     dispatchSSE(STARTED, { elID });
 
     const urlInstance = new URL(url, window.location.origin);

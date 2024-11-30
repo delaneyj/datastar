@@ -13,12 +13,8 @@ export const Ref: AttributePlugin = {
     mustHaveEmptyKey: true,
     mustNotEmptyExpression: true,
     bypassExpressionFunctionCreation: () => true,
-    onLoad: (ctx) => {
-        const signalName = ctx.expression;
-        ctx.upsertSignal(signalName, ctx.el);
-
-        return () => {
-            ctx.removeSignals(signalName);
-        };
+    onLoad: ({ el, expression, signals }) => {
+        signals.upsert(expression, el);
+        return () => signals.remove(expression);
     },
 };

@@ -6,39 +6,22 @@
 import {
   AttributeContext,
   AttributePlugin,
-  RegexpGroups,
+  NestedValues,
 } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
-import { signalsFromPossibleContents } from "../../../../utils/signals";
+
+const IF_MISSING = "ifmissing";
 
 // Merge into singleton signals
 export const MergeSignals: AttributePlugin = {
   pluginType: PluginType.Attribute,
   name: "mergeSignals",
   removeNewLines: true,
-  macros: {
-    pre: [
-      {
-        pluginType: PluginType.Macro,
-        name: "signals",
-        regexp: /(?<whole>.+)/g,
-        replacer: (groups: RegexpGroups) => {
-          const { whole } = groups;
-          return `Object.assign({...ctx.signals}, ${whole})`;
-        },
-      },
-    ],
-  },
-  allowedModifiers: new Set(["ifmissing"]),
+  allowedModifiers: new Set([IF_MISSING]),
   onLoad: (ctx: AttributeContext) => {
-    const { el, signals, expressionFn, modifiers, mergeSignals } = ctx;
-    const possibleMergeSignals = expressionFn(ctx);
-    const actualMergeSignals = signalsFromPossibleContents(
-      signals,
-      possibleMergeSignals,
-      modifiers.has("ifmissing")
-    );
-    mergeSignals(actualMergeSignals);
+    const { el, expressionFn, modifiers } = ctx;
+    const possibleMergeValues: NestedValues = expressionFn(ctx);
+    ctx.signals.merge(possibleMergeValues, modifiers.has(IF_MISSING));
     delete el.dataset[ctx.rawKey];
   },
 };

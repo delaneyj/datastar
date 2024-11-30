@@ -513,7 +513,7 @@ function cleanupSources(target: Computed | Effect) {
   target._sources = head;
 }
 
-declare class Computed<T = any> extends Signal<T> {
+export declare class Computed<T = any> extends Signal<T> {
   _fn: () => T;
   _sources?: Node;
   _globalVersion: number;
@@ -525,7 +525,7 @@ declare class Computed<T = any> extends Signal<T> {
   get value(): T;
 }
 
-function Computed(this: Computed, fn: () => unknown) {
+export function Computed(this: Computed, fn: () => unknown) {
   Signal.call(this, undefined);
 
   this._fn = fn;

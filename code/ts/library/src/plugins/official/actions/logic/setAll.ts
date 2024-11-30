@@ -10,7 +10,7 @@ export const SetAll: ActionPlugin = {
     name: "setAll",
     method: (ctx, regexp, newValue) => {
         const re = new RegExp(regexp);
-        ctx.walkSignals((name, signal) =>
+        ctx.signals.walk((name, signal) =>
             re.test(name) && (signal.value = newValue)
         );
     },

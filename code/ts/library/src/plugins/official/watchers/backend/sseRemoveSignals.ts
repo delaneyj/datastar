@@ -21,8 +21,8 @@ export const RemoveSignals: WatcherPlugin = {
           // No paths provided for remove-signals
           throw ERR_BAD_ARGS;
         }
-        ctx.removeSignals(...paths);
-      }
+        ctx.signals.remove(...paths);
+      },
     );
   },
 };

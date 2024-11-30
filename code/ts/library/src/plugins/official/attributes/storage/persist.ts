@@ -6,7 +6,6 @@
 import { AttributePlugin } from "../../../../engine";
 import { DATASTAR, DATASTAR_EVENT } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
-import { remoteSignals } from "../../../../utils/signals";
 import { DatastarSSEEvent } from "../../watchers/backend/sseShared";
 
 export const Persist: AttributePlugin = {
@@ -14,12 +13,13 @@ export const Persist: AttributePlugin = {
   name: "persist",
   allowedModifiers: new Set(["local", "session", "remote"]),
   onLoad: (ctx) => {
+    const { signals, expressionFn } = ctx;
     const key = ctx.key || DATASTAR;
     const expression = ctx.expression;
     const keys = new Set<string>();
 
     if (expression.trim() !== "") {
-      const value = ctx.expressionFn(ctx);
+      const value = expressionFn(ctx);
       const parts = value.split(" ");
       for (const part of parts) {
         keys.add(part);
@@ -31,44 +31,19 @@ export const Persist: AttributePlugin = {
     const useRemote = ctx.modifiers.has("remote");
 
     const signalsUpdateHandler = ((_: CustomEvent<DatastarSSEEvent>) => {
-      let signals = ctx.signals;
-      if (useRemote) {
-        signals = remoteSignals(signals);
-      }
-      if (keys.size > 0) {
-        const newSignals: Record<string, any> = {};
-        for (const key of keys) {
-          const parts = key.split(".");
-          let newSubSignals = newSignals;
-          let subSignals = signals;
-          for (let i = 0; i < parts.length - 1; i++) {
-            const part = parts[i];
-            if (!newSubSignals[part]) {
-              newSubSignals[part] = {};
-            }
-            newSubSignals = newSubSignals[part];
-            subSignals = subSignals[part];
-          }
+      const marshalled = signals.subset(...keys).JSON(false, useRemote);
 
-          const lastPart = parts[parts.length - 1];
-          newSubSignals[lastPart] = subSignals[lastPart];
-        }
-        signals = newSignals;
-      }
-
-      const marshalledSignals = JSON.stringify(signals);
-
-      if (marshalledSignals === lastMarshalled) {
+      if (marshalled === lastMarshalled) {
         return;
       }
 
       if (storageType === "session") {
-        window.sessionStorage.setItem(key, marshalledSignals);
+        window.sessionStorage.setItem(key, marshalled);
       } else {
-        window.localStorage.setItem(key, marshalledSignals);
+        window.localStorage.setItem(key, marshalled);
       }
 
-      lastMarshalled = marshalledSignals;
+      lastMarshalled = marshalled;
     }) as EventListener;
 
     window.addEventListener(DATASTAR_EVENT, signalsUpdateHandler);
@@ -82,10 +57,8 @@ export const Persist: AttributePlugin = {
     }
 
     if (!!marshalledSignals) {
-      const signals = JSON.parse(marshalledSignals);
-      for (const key in signals) {
-        ctx.upsertSignal(key, signals[key]);
-      }
+      const unmarshalledSignals = JSON.parse(marshalledSignals);
+      signals.merge(unmarshalledSignals, true);
     }
 
     return () => {

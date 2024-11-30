@@ -12,12 +12,12 @@ export const Text: AttributePlugin = {
     name: "text",
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {
-        const { el, expressionFn } = ctx;
+        const { el, expressionFn, reactivity: { effect } } = ctx;
         if (!(el instanceof HTMLElement)) {
             // Element is not HTMLElement
             throw ERR_BAD_ARGS;
         }
-        return ctx.reactivity.effect(() => {
+        return effect(() => {
             const res = expressionFn(ctx);
             el.textContent = `${res}`;
         });

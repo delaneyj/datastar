@@ -21,9 +21,9 @@ export const Indicator: AttributePlugin = {
     name: "indicator",
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {
-        const { expression, upsertSignal, el } = ctx;
+        const { expression, signals, el } = ctx;
         const signalName = expression;
-        const signal = upsertSignal(signalName, false);
+        const signal = signals.upsert(signalName, false);
 
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {
             const { type, argsRaw: { elID } } = event.detail;

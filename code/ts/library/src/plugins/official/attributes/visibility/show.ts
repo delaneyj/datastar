@@ -6,6 +6,9 @@
 import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
+const NONE = "none";
+const DISPLAY = "display";
+
 export const Show: AttributePlugin = {
     pluginType: PluginType.Attribute,
     name: "show",
@@ -13,15 +16,15 @@ export const Show: AttributePlugin = {
     mustNotEmptyExpression: true,
 
     onLoad: (ctx) => {
-        return ctx.reactivity.effect(async () => {
-            const shouldShow: boolean = ctx.expressionFn(ctx);
-
+        const { expressionFn, el: { style: s }, reactivity: { effect } } = ctx;
+        return effect(async () => {
+            const shouldShow: boolean = expressionFn(ctx);
             if (shouldShow) {
-                if (ctx.el.style.display === "none") {
-                    ctx.el.style.removeProperty("display");
+                if (s.display === NONE) {
+                    s.removeProperty(DISPLAY);
                 }
             } else {
-                ctx.el.style.setProperty("display", "none");
+                s.setProperty(DISPLAY, NONE);
             }
         });
     },

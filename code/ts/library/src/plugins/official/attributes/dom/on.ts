@@ -7,7 +7,6 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 import { argsHas, argsToMs } from "../../../../utils/arguments";
-import { remoteSignals } from "../../../../utils/signals";
 import { kebabize } from "../../../../utils/text";
 import { debounce, throttle } from "../../../../utils/timing";
 
@@ -69,7 +68,7 @@ export const On: AttributePlugin = {
     if (ctx.modifiers.has("once")) evtListOpts.once = true;
 
     const unknownModifierKeys = [...ctx.modifiers.keys()].filter(
-      (key) => !knownOnModifiers.has(key)
+      (key) => !knownOnModifiers.has(key),
     );
 
     unknownModifierKeys.forEach((attrName) => {
@@ -121,11 +120,8 @@ export const On: AttributePlugin = {
 
       case "signals-change":
         return ctx.reactivity.effect(() => {
-          let signalsValue = ctx.signals;
-          if (ctx.modifiers.has("remote")) {
-            signalsValue = remoteSignals(signalsValue);
-          }
-          const current = JSON.stringify(signalsValue);
+          const onlyRemoteSignals = ctx.modifiers.has("remote");
+          const current = ctx.signals.JSON(false, onlyRemoteSignals);
           if (lastSignalsMarshalled !== current) {
             lastSignalsMarshalled = current;
             callback();

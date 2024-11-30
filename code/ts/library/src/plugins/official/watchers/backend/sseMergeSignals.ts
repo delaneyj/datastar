@@ -9,7 +9,6 @@ import {
   EventTypes,
 } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
-import { signalsFromPossibleContents } from "../../../../utils/signals";
 import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "./sseShared";
 
@@ -20,27 +19,23 @@ export const MergeSignals: WatcherPlugin = {
     datastarSSEEventWatcher(
       EventTypes.MergeSignals,
       ({
-        signals = "{}",
+        signals: raw = "{}",
         onlyIfMissing: onlyIfMissingRaw = `${DefaultMergeSignalsOnlyIfMissing}`,
       }) => {
+        const { signals } = ctx;
         const onlyIfMissing = isBoolString(onlyIfMissingRaw);
-        const fnContents = ` return Object.assign({...ctx.signals}, ${signals})`;
+        const fnContents = ` return Object.assign({...ctx.signals}, ${raw})`;
         try {
           const fn = new Function("ctx", fnContents) as InitExpressionFunction;
           const possibleMergeSignals = fn(ctx);
-          const actualMergeSignals = signalsFromPossibleContents(
-            ctx.signals,
-            possibleMergeSignals,
-            onlyIfMissing
-          );
-          ctx.mergeSignals(actualMergeSignals);
+          signals.merge(possibleMergeSignals, onlyIfMissing);
           ctx.applyPlugins(document.body);
         } catch (e) {
           console.log(fnContents);
           console.error(e);
           debugger;
         }
-      }
+      },
     );
   },
 };

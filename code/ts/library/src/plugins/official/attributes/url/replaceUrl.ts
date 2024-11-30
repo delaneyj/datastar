@@ -13,8 +13,9 @@ export const ReplaceUrl: AttributePlugin = {
     mustNotEmptyExpression: true,
 
     onLoad: (ctx) => {
-        return ctx.reactivity.effect(() => {
-            const value = ctx.expressionFn(ctx);
+        const { expressionFn, reactivity: { effect } } = ctx;
+        return effect(() => {
+            const value = expressionFn(ctx);
             const baseUrl = window.location.href;
             const url = new URL(value, baseUrl).toString();
 

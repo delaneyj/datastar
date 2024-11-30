@@ -1,5 +1,5 @@
 import { consistentUniqID } from "../utils/dom";
-import { computed, effect, Signal, signal } from "../vendored/preact-core";
+import { computed, effect, signal } from "../vendored/preact-core";
 import { PluginType } from "./enums";
 
 import {
@@ -9,6 +9,7 @@ import {
   ERR_NOT_ALLOWED,
   ERR_NOT_FOUND,
 } from "./errors";
+import { SignalsRoot } from "./nestedSignals";
 import {
   ActionPlugin,
   ActionPlugins,
@@ -36,7 +37,7 @@ const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
 
 export class Engine {
   plugins: AttributePlugin[] = [];
-  private _signals: any = {};
+  private _signals: SignalsRoot = SignalsRoot.empty(this);
   macros = new Array<MacroPlugin>();
   actions: ActionPlugins = {};
   watchers = new Array<WatcherPlugin>();
@@ -90,14 +91,14 @@ export class Engine {
       }
 
       if (globalInitializer) {
-        const { _signals } = this;
+        const that = this;
         globalInitializer({
           get signals() {
-            return _signals;
+            return that._signals;
           },
-          upsertSignal: this.upsertSignal.bind(this),
-          mergeSignals: this.mergeSignals.bind(this),
-          removeSignals: this.removeSignals.bind(this),
+          // upsertSignal: this.upsertSignal.bind(this),
+          // mergeSignals: this.mergeSignals.bind(this),
+          // removeSignals: this.removeSignals.bind(this),
           actions: this.actions,
           reactivity: this.reactivity,
           applyPlugins: this.applyPlugins.bind(this),
@@ -121,74 +122,7 @@ export class Engine {
     }
   }
 
-  lastMarshalledSignals = "";
-  private mergeSignals<T extends object>(signalsToMerge: T) {
-    this.mergeRemovals.forEach((removal) => removal());
-    this.mergeRemovals = this.mergeRemovals.slice(0);
-
-    // Dot notation to object
-    const objectToKeys = (obj: any, prefix = "") => {
-      const keys: { k: string; v: any }[] = [];
-      Object.entries(obj).forEach(([k, v]) => {
-        k = prefix ? `${prefix}.${k}` : k;
-        if (typeof v === "object") {
-          keys.push(...objectToKeys(v, k));
-        } else {
-          keys.push({ k, v });
-        }
-      });
-      return keys;
-    };
-    objectToKeys(signalsToMerge).forEach(({ k, v }) => this.upsertSignal(k, v));
-
-    const marshalledSignals = JSON.stringify(this._signals);
-    if (marshalledSignals === this.lastMarshalledSignals) return;
-    this.lastMarshalledSignals = marshalledSignals;
-  }
-
-  private removeSignals(...keys: string[]) {
-    const revisedSignals = { ...this._signals };
-    let found = false;
-    for (const key of keys) {
-      const parts = key.split(".");
-      let currentID = parts[0];
-      let subSignals = revisedSignals;
-
-      for (let i = 1; i < parts.length; i++) {
-        const part = parts[i];
-        currentID = part;
-        subSignals = subSignals[currentID];
-      }
-      delete subSignals[currentID];
-      found = true;
-    }
-    if (!found) return;
-    this._signals = revisedSignals;
-    this.applyPlugins(document.body);
-  }
-
-  private upsertSignal<T>(path: string, value: T) {
-    const parts = path.split(".");
-    let subSignals = this._signals;
-    for (let i = 0; i < parts.length - 1; i++) {
-      const part = parts[i];
-      if (!subSignals[part]) {
-        subSignals[part] = {};
-      }
-      subSignals = subSignals[part];
-    }
-    const last = parts[parts.length - 1];
-
-    const current = subSignals[last];
-    if (!!current) return current;
-
-    const signal = this.reactivity.signal(value);
-    subSignals[last] = signal;
-
-    return signal;
-  }
-
-  private applyPlugins(rootElement: Element) {
+  applyPlugins(rootElement: Element) {
     const appliedMacros = new Set<MacroPlugin>();
 
     this.plugins.forEach((p, pi) => {
@@ -296,17 +230,13 @@ export class Engine {
             expression = revisedParts.join("; ");
           }
 
-          const { _signals } = this;
+          const that = this; // I hate javascript
           const ctx: AttributeContext = {
             get signals() {
-              return _signals;
+              return that._signals;
             },
-            mergeSignals: this.mergeSignals.bind(this),
-            upsertSignal: this.upsertSignal.bind(this),
-            removeSignals: this.removeSignals.bind(this),
             applyPlugins: this.applyPlugins.bind(this),
             cleanup: this.cleanup.bind(this),
-            walkSignals: this.walkMySignals.bind(this),
             actions: this.actions,
             reactivity: this.reactivity,
             el,
@@ -333,16 +263,23 @@ export class Engine {
               statements[statements.length - 1]
             }`;
             const j = statements.map((s) => `  ${s}`).join(";\n");
-            const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll(
-              "`",
-              "\\`"
-            )}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
+            const fnContent = `
+try{
+  ${j}
+}catch(e){
+  console.error(\`Error evaluating Datastar expression:
+  ${j.replaceAll("`", "\\`")}
+
+  Error: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());
+  debugger;
+}
+`;
             try {
               const argumentNames = p.argumentNames || [];
               const fn = new Function(
                 "ctx",
                 ...argumentNames,
-                fnContent
+                fnContent,
               ) as AttribtueExpressionFunction;
               ctx.expressionFn = fn;
             } catch (e) {
@@ -367,43 +304,17 @@ export class Engine {
     });
   }
 
-  private walkSignals(
-    signals: any,
-    callback: (name: string, signal: Signal<any>) => void
-  ) {
-    const keys = Object.keys(signals);
-    for (let i = 0; i < keys.length; i++) {
-      const key = keys[i];
-      const value = signals[key];
-      const isSignal = value instanceof Signal;
-      const hasChildren =
-        typeof value === "object" && Object.keys(value).length > 0;
-
-      if (isSignal) {
-        callback(key, value);
-        continue;
-      }
-
-      if (!hasChildren) continue;
-
-      this.walkSignals(value, callback);
-    }
-  }
-
-  private walkMySignals(callback: (name: string, signal: Signal<any>) => void) {
-    this.walkSignals(this._signals, callback);
-  }
-
   private walkDownDOM(
     element: Element | null,
     callback: (el: HTMLorSVGElement) => void,
-    siblingOffset = 0
+    siblingOffset = 0,
   ) {
     if (
       !element ||
       !(element instanceof HTMLElement || element instanceof SVGElement)
-    )
+    ) {
       return null;
+    }
 
     callback(element);
 

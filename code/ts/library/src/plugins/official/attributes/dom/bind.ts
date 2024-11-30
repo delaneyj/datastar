@@ -10,6 +10,7 @@ import {
   ERR_METHOD_NOT_ALLOWED,
 } from "../../../../engine/errors";
 import { kebabize } from "../../../../utils/text";
+import { Signal } from "../../../../vendored";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateModelEvents = ["change", "input", "keydown"];
@@ -23,7 +24,7 @@ export const Bind: AttributePlugin = {
       expression,
       expressionFn,
       key,
-      upsertSignal,
+      signals,
       reactivity: { effect },
     } = ctx;
 
@@ -42,13 +43,17 @@ export const Bind: AttributePlugin = {
       }
 
       const tnl = el.tagName.toLowerCase();
-      let signalDefault: string | boolean | File = "";
+      let signalDefault: string | boolean | number | File = "";
       const isInput = tnl.includes("input");
       const type = el.getAttribute("type");
-      const isCheckbox =
-        tnl.includes("checkbox") || (isInput && type === "checkbox");
+      const isCheckbox = tnl.includes("checkbox") ||
+        (isInput && type === "checkbox");
       if (isCheckbox) {
         signalDefault = false;
+      }
+      const isNumber = isInput && type === "number";
+      if (isNumber) {
+        signalDefault = 0;
       }
       const isSelect = tnl.includes("select");
       const isRadio = tnl.includes("radio") || (isInput && type === "radio");
@@ -63,7 +68,10 @@ export const Bind: AttributePlugin = {
         }
       }
 
-      const signal = upsertSignal(expression, signalDefault);
+      const signal: Signal<any> = signals.upsert(
+        expression,
+        signalDefault,
+      );
 
       setFromSignal = () => {
         const hasValue = "value" in el;
@@ -72,7 +80,7 @@ export const Bind: AttributePlugin = {
         if (isCheckbox || isRadio) {
           const input = el as HTMLInputElement;
           if (isCheckbox) {
-            input.checked = v;
+            input.checked = !!!v || v === "true";
           } else if (isRadio) {
             // evaluate the value as string to handle any type casting
             // automatically since the attribute has to be a string anyways
@@ -85,7 +93,13 @@ export const Bind: AttributePlugin = {
           if (select.multiple) {
             Array.from(select.options).forEach((opt) => {
               if (opt?.disabled) return;
-              opt.selected = v.includes(opt.value);
+              if (typeof v === "string") {
+                opt.selected = v.includes(opt.value);
+              } else if (typeof v === "number") {
+                opt.selected = v === Number(opt.value);
+              } else {
+                opt.selected = v;
+              }
             });
           } else {
             select.value = vStr;
@@ -125,18 +139,18 @@ export const Bind: AttributePlugin = {
                 reader.onloadend = () => resolve(void 0);
                 reader.readAsDataURL(f);
               });
-            })
+            }),
           );
 
-          signal.value = allContents;
-          const s = ctx.signals;
+          signal.value = allContents.join(",");
+          const { signals } = ctx;
           const mimeName = `${expression}Mimes`,
             nameName = `${expression}Names`;
-          if (mimeName in s) {
-            s[`${mimeName}`].value = allMimes;
+          if (mimeName in signals) {
+            signals.upsert(mimeName, allMimes);
           }
-          if (nameName in s) {
-            s[`${nameName}`].value = allNames;
+          if (nameName in signals) {
+            signals.upsert(nameName, allNames);
           }
           return;
         }
@@ -150,16 +164,12 @@ export const Bind: AttributePlugin = {
           signal.value = input.value || input.getAttribute("value") || "";
         } else if (typeof current === "boolean") {
           if (isCheckbox) {
-            signal.value =
-              input.checked || input.getAttribute("checked") === "true";
+            signal.value = input.checked ||
+              input.getAttribute("checked") === "true";
           } else {
             signal.value = Boolean(input.value || input.getAttribute("value"));
           }
         } else if (typeof current === "undefined") {
-        } else if (typeof current === "bigint") {
-          signal.value = BigInt(
-            input.value || input.getAttribute("value") || "0"
-          );
         } else if (Array.isArray(current)) {
           // check if the input is a select element
           if (isSelect) {

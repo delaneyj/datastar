@@ -14,23 +14,23 @@ export function remoteSignals(obj: Object): Object {
     return res;
 }
 
-export function signalsFromPossibleContents(
-    currentSignals: any,
-    contents: any,
-    hasIfMissing: boolean,
-) {
-    const actual: any = {};
+// export function signalsFromPossibleContents(
+//     currentSignals: any,
+//     contents: any,
+//     hasIfMissing: boolean,
+// ) {
+//     const actual: NestedSignal = {};
 
-    if (!hasIfMissing) {
-        Object.assign(actual, contents);
-    } else {
-        for (const key in contents) {
-            const currentValue = currentSignals[key]?.value;
-            if (currentValue === undefined || currentValue === null) {
-                actual[key] = contents[key];
-            }
-        }
-    }
+//     if (!hasIfMissing) {
+//         Object.assign(actual, contents);
+//     } else {
+//         for (const key in contents) {
+//             const currentValue = currentSignals[key]?.value;
+//             if (currentValue === undefined || currentValue === null) {
+//                 actual[key] = contents[key];
+//             }
+//         }
+//     }
 
-    return actual;
-}
+//     return actual;
+// }
