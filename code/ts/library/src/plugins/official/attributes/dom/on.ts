@@ -89,7 +89,7 @@ export const On: AttributePlugin = {
                     const expr = eventValues.join("").toLowerCase().trim();
                     valid = lowerAttr === expr;
                 } else {
-                    // console.error(`Invalid value for ${attrName} modifier on ${key} on ${el}`);
+                    // INV_MOD_VAL – An invalid value was provided to the ${attrName} modifier on ${key} on ${el}. The value must be a string, boolean, or function.
                     throw ERR_BAD_ARGS;
                 }
 
@@ -105,7 +105,7 @@ export const On: AttributePlugin = {
             case "load":
                 callback();
                 delete ctx.el.dataset.onLoad;
-                return () => {};
+                return () => { };
 
             case "raf":
                 let rafId: number | undefined;

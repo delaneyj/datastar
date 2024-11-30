@@ -12,7 +12,7 @@ import {
 import { kebabize } from "../../../../utils/text";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
-const updateModelEvents = ["change", "input", "keydown"];
+const updateBindingEvents = ["change", "input", "keydown"];
 
 export const Bind: AttributePlugin = {
   pluginType: PluginType.Attribute,
@@ -27,17 +27,18 @@ export const Bind: AttributePlugin = {
       reactivity: { effect },
     } = ctx;
 
-    let setFromSignal = () => {};
-    let fromElementToSignal = () => {};
+    let setFromSignal = () => { };
+    let fromElementToSignal = () => { };
 
     const isTwoWayBinding = key === "";
 
     if (isTwoWayBinding) {
-      // I better be tied to a signal
       if (typeof expression !== "string") {
+        // NON_STR_EXP – An non-string expression was provided to the `data-{plugin}` attribute. The value must be a string.
         throw new Error("Invalid expression");
       }
       if (expression.includes("$")) {
+        // DOL_INC_SIG – A string containing a `$` was provided to the `data-{plugin}` attribute. The value must be a a signal name without the `$` sign.
         throw new Error("Not an expression");
       }
 
@@ -110,12 +111,12 @@ export const Bind: AttributePlugin = {
                 const reader = new FileReader();
                 reader.onload = () => {
                   if (typeof reader.result !== "string") {
-                    // console.error(`Invalid result type: ${typeof reader.result}`);
+                    // UPL_FIL_ERR – Uploading a file was unsuccessful.
                     throw ERR_BAD_ARGS;
                   }
                   const match = reader.result.match(dataURIRegex);
                   if (!match?.groups) {
-                    // console.error(`Invalid data URI: ${reader.result}`);
+                    // INV_FIL_UPL – An invalid file was uploaded.
                     throw ERR_BAD_ARGS;
                   }
                   allContents.push(match.groups.contents);
@@ -172,7 +173,7 @@ export const Bind: AttributePlugin = {
           }
           console.log(input.value);
         } else {
-          // console.log(`Unsupported type ${typeof current}`);
+          // INV_SIG_TYPE - An invalid signal was provided. The signal type must be a string, number, boolean, or array.
           throw ERR_METHOD_NOT_ALLOWED;
         }
       };
@@ -196,7 +197,7 @@ export const Bind: AttributePlugin = {
     }
 
     if (isTwoWayBinding) {
-      updateModelEvents.forEach((event) => {
+      updateBindingEvents.forEach((event) => {
         el.addEventListener(event, fromElementToSignal);
       });
     }
@@ -209,7 +210,7 @@ export const Bind: AttributePlugin = {
       setElementFromSignalDisposer();
 
       if (isTwoWayBinding) {
-        updateModelEvents.forEach((event) => {
+        updateBindingEvents.forEach((event) => {
           el.removeEventListener(event, fromElementToSignal);
         });
       }

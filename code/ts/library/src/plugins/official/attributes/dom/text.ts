@@ -14,7 +14,7 @@ export const Text: AttributePlugin = {
     onLoad: (ctx) => {
         const { el, expressionFn } = ctx;
         if (!(el instanceof HTMLElement)) {
-            // Element is not HTMLElement
+            // NON_HTML_EL – The `data-{plugin}` attribute was placed on a non-HTML element. It can only be placed on HTML elements.
             throw ERR_BAD_ARGS;
         }
         return ctx.reactivity.effect(() => {

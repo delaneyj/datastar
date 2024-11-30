@@ -38,7 +38,7 @@ export const MergeFragments: WatcherPlugin = {
         mergeMode = DefaultFragmentMergeMode,
         settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
         useViewTransition:
-          useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
+        useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
       }) => {
         const settleDuration = parseInt(settleDurationRaw);
         const useViewTransition = isBoolString(useViewTransitionRaw);
@@ -47,7 +47,7 @@ export const MergeFragments: WatcherPlugin = {
         const fragments = [...fragmentContainer.content.children];
         fragments.forEach((fragment) => {
           if (!(fragment instanceof Element)) {
-            // No fragments found
+            // NO_FRAGS - No fragments were provided. At least one fragament must be provided to the `merge-fragments` event.
             throw ERR_BAD_ARGS;
           }
 
@@ -55,7 +55,7 @@ export const MergeFragments: WatcherPlugin = {
           const targets = document.querySelectorAll(selectorOrID) || [];
           const allTargets = [...targets];
           if (!allTargets.length) {
-            // No targets found
+            // NO_TARGETS - No targets were found. Fragments must have IDs, or a selector must be provided to the `merge-fragments` event.
             throw ERR_BAD_ARGS;
           }
 
@@ -106,7 +106,7 @@ function applyToTargets(
           },
         });
         if (!result?.length) {
-          // No morph result
+          // NO_MORPH - The morph operation was unsuccessful. It must return a result.
           throw ERR_BAD_ARGS;
         }
         modifiedTarget = result[0] as Element;
@@ -143,7 +143,7 @@ function applyToTargets(
         });
         break;
       default:
-        // Unknown merge type
+        // INV_MERGE - An invalid merge type was provided. The merge type must be one of the following: `morph`, `inner`, `outer`, `prepend`, `append`, `before`, `after`, `upsert-attributes`.
         throw ERR_BAD_ARGS;
     }
     ctx.cleanup(modifiedTarget);

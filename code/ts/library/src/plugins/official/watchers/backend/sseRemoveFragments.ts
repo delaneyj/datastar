@@ -28,10 +28,10 @@ export const RemoveFragments: WatcherPlugin = {
         selector,
         settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
         useViewTransition:
-          useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
+        useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
       }) => {
         if (!!!selector.length) {
-          // No selector provided for remove-fragments
+          // NO_SELECTOR – No selector was provided. A selector must be provided to the `remove-fragments` event.
           throw ERR_BAD_ARGS;
         }
 

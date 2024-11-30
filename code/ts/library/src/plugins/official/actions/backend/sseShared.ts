@@ -38,8 +38,10 @@ export function sendSSERequest(
         url,
         args?: SSERequestArgs,
     ) => {
-        if (!!!url?.length) throw ERR_BAD_ARGS;
-
+        if (!!!url?.length) {
+            // NO_URL - No URL was provided. A URL must be provided to the `{plugin}` action.
+            throw ERR_BAD_ARGS;
+        }
         const onlyRemoteSignals = args?.onlyRemoteSignals ?? true;
         const headers = Object.assign({
             "Content-Type": "application/json",
@@ -94,7 +96,7 @@ export function sendSSERequest(
             },
             onerror: (err) => {
                 if (isWrongContent(err)) {
-                    // don't retry if the content-type is wrong
+                    // INV_CONTENT_TYPE - The server sent an invalid content type. The content type must be `text/event-stream`.
                     throw err;
                 }
                 // do nothing and it will retry
@@ -120,6 +122,7 @@ export function sendSSERequest(
             await fetchEventSource(revisedURL, req);
         } catch (err) {
             if (!isWrongContent(err)) {
+                // FETCH_ERR - An error occurred while fetching the URL. The error message was: `{err}`
                 throw err;
             }
 
