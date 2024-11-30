@@ -21,9 +21,7 @@ With Datastar, you can build any UI that a full-stack framework like React, Vue.
 The quickest way to use Datastar is to include it in your HTML using a script tag hosted on a CDN.
 
 ```html
-<script
-  type="module"
-  src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
+<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
 ></script>
 ```
 
@@ -49,7 +47,7 @@ Datastar uses signals to manage state. You can think of signals as reactive vari
 
 ### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#model) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#model) attribute, which can be placed on any HTML element that can have a `value` (`input`, `textarea`, `select`, `checkbox`, `radio` elements and web components).
 
 ```html
 <input data-bind="input" type="text" />
@@ -59,7 +57,7 @@ This creates a new signal called `input`, and binds it to the element's value. I
 
 ### `data-text`
 
-To see this in action, we can use the [`data-text`](/reference/plugins_attributes#text) attribute.
+To see this in action, we can use the [`data-text`](/reference/plugins_attributes#text) attribute. The value is an expression in which signal values are evaluated. To denote a signal, we must prefix it with `$` within the expression.
 
 ```html
 <div data-text="$input">
@@ -80,9 +78,9 @@ To see this in action, we can use the [`data-text`](/reference/plugins_attribute
     </div>
 </div>
 
-This sets the text content of an element to the value of the signal `$input`. The `$` is required to denote a signal in the expression.
+This sets the text content of an element to the value of the signal `$input`. 
 
-The value of the `data-text` attribute is an expression that is evaluated, meaning that we can use JavaScript in it.
+Since the value of the `data-text` attribute is an evaluated expression, we can use JavaScript in it.
 
 ```html
 <div data-text="$input.toUpperCase()">
@@ -105,7 +103,7 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
 
 ### `data-computed-*`
 
-The `data-computed-*` attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
+The `data-computed-*` attribute creates a new signal that is computed based on an expression. The computed signal is automatically updated when any signals in the expression are updated.
 
 ```html
 <div data-computed-repeated="$input.repeat(2)">
