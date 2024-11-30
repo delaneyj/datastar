@@ -47,7 +47,7 @@ export const MergeFragments: WatcherPlugin = {
         const fragments = [...fragmentContainer.content.children];
         fragments.forEach((fragment) => {
           if (!(fragment instanceof Element)) {
-            // NO_FRAGS - No fragments were provided. At least one fragament must be provided to the `merge-fragments` event.
+            // MISS_FRAGS - No fragments were provided. At least one fragament must be provided to the `merge-fragments` event.
             throw ERR_BAD_ARGS;
           }
 
@@ -55,7 +55,7 @@ export const MergeFragments: WatcherPlugin = {
           const targets = document.querySelectorAll(selectorOrID) || [];
           const allTargets = [...targets];
           if (!allTargets.length) {
-            // NO_TARGETS - No targets were found. Fragments must have IDs, or a selector must be provided to the `merge-fragments` event.
+            // MISS_TARGETS - No targets were found. Fragments must have IDs, or a selector must be provided to the `merge-fragments` event.
             throw ERR_BAD_ARGS;
           }
 
@@ -106,7 +106,7 @@ function applyToTargets(
           },
         });
         if (!result?.length) {
-          // NO_MORPH - The morph operation was unsuccessful. It must return a result.
+          // MISS_MORPH - The morph operation was unsuccessful. It must return a result.
           throw ERR_BAD_ARGS;
         }
         modifiedTarget = result[0] as Element;

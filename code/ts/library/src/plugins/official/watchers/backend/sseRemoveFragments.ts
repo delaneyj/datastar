@@ -31,7 +31,7 @@ export const RemoveFragments: WatcherPlugin = {
         useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
       }) => {
         if (!!!selector.length) {
-          // NO_SELECTOR – No selector was provided. A selector must be provided to the `remove-fragments` event.
+          // MISS_SELECTOR – No selector was provided. A selector must be provided to the `remove-fragments` event.
           throw ERR_BAD_ARGS;
         }
 

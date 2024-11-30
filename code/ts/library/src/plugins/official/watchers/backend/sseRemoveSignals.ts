@@ -18,7 +18,7 @@ export const RemoveSignals: WatcherPlugin = {
       ({ paths: pathsRaw = "" }) => {
         const paths = pathsRaw.split("\n").map((p) => p.trim());
         if (!!!paths?.length) {
-          // NO_PATHS – No paths were provided. At least one path must be provided to the `remove-signals` event.
+          // MISS_PATHS – No paths were provided. At least one path must be provided to the `remove-signals` event.
           throw ERR_BAD_ARGS;
         }
         ctx.removeSignals(...paths);

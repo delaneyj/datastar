@@ -12,7 +12,7 @@ export const Clipboard: ActionPlugin = {
     name: "clipboard",
     method: (_, text) => {
         if (!navigator.clipboard) {
-            // NO_CLIP – The clipboard API is available.
+            // CLIPBOARD_ERR – The clipboard API is not available.
             throw ERR_NOT_ALLOWED;
         }
         navigator.clipboard.writeText(text);

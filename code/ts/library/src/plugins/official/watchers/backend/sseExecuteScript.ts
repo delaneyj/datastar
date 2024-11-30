@@ -28,7 +28,7 @@ export const ExecuteScript: WatcherPlugin = {
       }) => {
         const autoRemove = isBoolString(autoRemoveRaw);
         if (!script?.length) {
-          // NO_SCRIPT - No script was provided. A script must be provided to the `execute-script` event.
+          // MISS_SCRIPT - No script was provided. A script must be provided to the `execute-script` event.
           throw ERR_BAD_ARGS;
         }
         const scriptEl = document.createElement("script");

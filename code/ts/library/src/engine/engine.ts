@@ -64,7 +64,7 @@ export class Engine {
       if (plugin.requiredPlugins) {
         for (const requiredPluginType of plugin.requiredPlugins) {
           if (!allLoadedPlugins.has(requiredPluginType)) {
-            // REQ_PLUGIN_NOT_LOADED – The plugin requires another plugin to be loaded first.
+            // REQ_PLUGIN_NOT_LOADED – The `{plugin}` plugin requires the `{requiredPluginType}` plugin to be loaded first.
             throw ERR_NOT_ALLOWED;
           }
         }
@@ -73,32 +73,32 @@ export class Engine {
       let globalInitializer: ((ctx: InitContext) => void) | undefined;
       if (isMacroPlugin(plugin)) {
         if (this.macros.includes(plugin)) {
-          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
+          // PLUGIN_ALREADY_LOADED – The `{plugin}` plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.macros.push(plugin);
       } else if (isWatcherPlugin(plugin)) {
         if (this.watchers.includes(plugin)) {
-          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
+          // PLUGIN_ALREADY_LOADED – The `{plugin}` plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.watchers.push(plugin);
         globalInitializer = plugin.onGlobalInit;
       } else if (isActionPlugin(plugin)) {
         if (!!this.actions[plugin.name]) {
-          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
+          // PLUGIN_ALREADY_LOADED – The `{plugin}` plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.actions[plugin.name] = plugin;
       } else if (isAttributePlugin(plugin)) {
         if (this.plugins.includes(plugin)) {
-          // PLUGIN_ALREADY_LOADED – The plugin is already loaded.
+          // PLUGIN_ALREADY_LOADED – The `{plugin}` plugin is already loaded.
           throw ERR_ALREADY_EXISTS;
         }
         this.plugins.push(plugin);
         globalInitializer = plugin.onGlobalInit;
       } else {
-        // INV_PLUGIN_TYPE – The plugin type is invalid.
+        // INV_PLUGIN_TYPE – The `{plugin}` plugin type is invalid.
         throw ERR_NOT_FOUND;
       }
 
@@ -212,7 +212,7 @@ export class Engine {
               lowerCaseTag.match(r)
             );
             if (!allowed) {
-              // TAG_NOT_ALLOWED – The tag is not allowed.
+              // TAG_NOT_ALLOWED – The `{lowerCaseTag}` tag is not allowed.
               throw ERR_NOT_ALLOWED;
             }
           }
@@ -220,11 +220,11 @@ export class Engine {
           let keyRaw = rawKey.slice(p.name.length);
           let [key, ...modifiersWithArgsArr] = keyRaw.split(".");
           if (p.mustHaveEmptyKey && key.length > 0) {
-            // MUST_EMPTY_KEY – The key must be empty. This plugin `{plugin}` does not support keys.
+            // MUST_EMPTY_KEY – The key must be empty. The `{plugin}` plugin does not support keys.
             throw ERR_BAD_ARGS;
           }
           if (p.mustNotEmptyKey && key.length === 0) {
-            // MUST_NON_EMPTY_KEY – The key must not be empty. This plugin `{plugin}` requires a key.
+            // MUST_NON_EMPTY_KEY – The key must not be empty. The `{plugin}` plugin requires a key.
             throw ERR_BAD_ARGS;
           }
           if (key.length) {
@@ -238,7 +238,7 @@ export class Engine {
           if (p.allowedModifiers) {
             for (const modifier of modifiersArr) {
               if (!p.allowedModifiers.has(modifier.label)) {
-                // modifier not allowed
+                // MOD_NOT_ALLOWED – The `{modifier}` modifier is not allowed by the `{plugin}` plugin.
                 throw ERR_NOT_ALLOWED;
               }
             }
@@ -249,11 +249,11 @@ export class Engine {
           }
 
           if (p.mustHaveEmptyExpression && expression.length) {
-            // must have empty expression
+            // MUST_EMPTY_EXP – The expression must be empty. The `{plugin}` plugin does not support expressions.
             throw ERR_BAD_ARGS;
           }
           if (p.mustNotEmptyExpression && !expression.length) {
-            // must have non-empty expression
+            // MUST_NON_EMPTY_EXP – The expression must not be empty. The `{plugin}` plugin requires an expression.
             throw ERR_BAD_ARGS;
           }
 
@@ -312,6 +312,7 @@ export class Engine {
             rawExpression,
             expression,
             expressionFn: () => {
+              // MUST_EMPTY_EXP – No expression function was provided. The `{plugin}` plugin requires an expression function.
               throw ERR_METHOD_NOT_ALLOWED;
             },
             modifiers,

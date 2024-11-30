@@ -39,7 +39,7 @@ export function sendSSERequest(
         args?: SSERequestArgs,
     ) => {
         if (!!!url?.length) {
-            // NO_URL - No URL was provided. A URL must be provided to the `{plugin}` action.
+            // MISS_URL - No URL was provided. A URL must be provided to the `{plugin}` action.
             throw ERR_BAD_ARGS;
         }
         const onlyRemoteSignals = args?.onlyRemoteSignals ?? true;

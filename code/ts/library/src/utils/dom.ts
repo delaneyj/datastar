@@ -40,7 +40,7 @@ export function scrollIntoView(
     shouldFocus = true,
 ) {
     if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
-        // Element is not an HTMLElement or SVGElement
+        // NON_HTML_SVG_EL – The `data-scroll-into-view` attribute was placed on an invalid element. It can only be placed on HTML and SVG elements.
         throw ERR_NOT_FOUND;
     }
     if (!el.tabIndex) el.setAttribute("tabindex", "0");
