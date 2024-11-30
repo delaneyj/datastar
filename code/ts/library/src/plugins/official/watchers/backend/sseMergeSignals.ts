@@ -24,12 +24,12 @@ export const MergeSignals: WatcherPlugin = {
         onlyIfMissing: onlyIfMissingRaw = `${DefaultMergeSignalsOnlyIfMissing}`,
       }) => {
         const onlyIfMissing = isBoolString(onlyIfMissingRaw);
-        const fnContents = ` return Object.assign({...ctx.signals()}, ${signals})`;
+        const fnContents = ` return Object.assign({...ctx.signals}, ${signals})`;
         try {
           const fn = new Function("ctx", fnContents) as InitExpressionFunction;
           const possibleMergeSignals = fn(ctx);
           const actualMergeSignals = signalsFromPossibleContents(
-            ctx.signals(),
+            ctx.signals,
             possibleMergeSignals,
             onlyIfMissing
           );

@@ -1,13 +1,9 @@
-import { DeepState } from "../vendored/deepsignal";
 import { ReadonlySignal, Signal } from "../vendored/preact-core";
 import { PluginType } from "./enums";
 
 export type HTMLorSVGElement = Element & (HTMLElement | SVGElement);
 
-export type InitExpressionFunction = (
-  ctx: InitContext,
-  ...args: any
-) => any;
+export type InitExpressionFunction = (ctx: InitContext, ...args: any) => any;
 export type AttribtueExpressionFunction = (
   ctx: AttributeContext,
   ...args: any
@@ -19,9 +15,9 @@ export type Reactivity = {
 };
 
 export type InitContext = {
-  signals: () => any;
+  signals: any;
   upsertSignal: (path: string, value: any) => Signal<any>;
-  mergeSignals: (signals: DeepState) => void;
+  mergeSignals: (signals: any) => void;
   removeSignals: (...paths: string[]) => void;
   actions: Readonly<ActionPlugins>;
   reactivity: Reactivity;
@@ -43,7 +39,7 @@ export type AttributeContext = InitContext & {
 export type OnRemovalFn = () => void;
 
 export interface DatastarPlugin {
-  pluginType: PluginType;  // The type of plugin
+  pluginType: PluginType; // The type of plugin
   name: string; // The name of the plugin
   requiredPlugins?: Set<DatastarPlugin>; // If not provided, no plugins are required
 }

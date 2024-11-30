@@ -95,7 +95,7 @@ export class Engine {
 
       if (globalInitializer) {
         globalInitializer({
-          signals: () => this.signals,
+          signals: this.signals,
           upsertSignal: this.upsertSignal.bind(this),
           mergeSignals: this.mergeSignals.bind(this),
           removeSignals: this.removeSignals.bind(this),
@@ -267,27 +267,27 @@ export class Engine {
               .join(" ");
           }
 
-          const processors = [
+          const macros = [
             ...(p.macros?.pre || []),
             ...this.macros,
             ...(p.macros?.post || []),
           ];
-          for (const processor of processors) {
-            if (appliedMacros.has(processor)) continue;
-            appliedMacros.add(processor);
+          for (const macro of macros) {
+            if (appliedMacros.has(macro)) continue;
+            appliedMacros.add(macro);
 
             const expressionParts = expression.split(splitRegex);
             const revisedParts: string[] = [];
 
             expressionParts.forEach((exp) => {
               let revised = exp;
-              const matches = [...revised.matchAll(processor.regexp)];
+              const matches = [...revised.matchAll(macro.regexp)];
               if (matches.length) {
                 for (const match of matches) {
                   if (!match.groups) continue;
                   const { groups } = match;
                   const { whole } = groups;
-                  revised = revised.replace(whole, processor.replacer(groups));
+                  revised = revised.replace(whole, macro.replacer(groups));
                 }
               }
               revisedParts.push(revised);

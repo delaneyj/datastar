@@ -129,7 +129,7 @@ export const Bind: AttributePlugin = {
           );
 
           signal.value = allContents;
-          const s = ctx.signals();
+          const s = ctx.signals;
           const mimeName = `${expression}Mimes`,
             nameName = `${expression}Names`;
           if (mimeName in s) {

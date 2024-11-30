@@ -7,18 +7,23 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const Computed: AttributePlugin = {
-    pluginType: PluginType.Attribute,
-    name: "computed",
-    mustNotEmptyKey: true,
-    onLoad: (ctx) => {
-        const signals = ctx.signals();
-        signals[ctx.key] = ctx.reactivity.computed(() => {
-            return ctx.expressionFn(ctx);
-        });
+  pluginType: PluginType.Attribute,
+  name: "computed",
+  mustNotEmptyKey: true,
+  onLoad: (ctx) => {
+    const {
+      signals,
+      key,
+      expressionFn,
+      reactivity: { computed },
+    } = ctx;
 
-        return () => {
-            const signals = ctx.signals();
-            delete signals[ctx.key];
-        };
-    },
+    signals[key] = computed(() => {
+      return expressionFn(ctx);
+    });
+
+    return () => {
+      delete signals[ctx.key];
+    };
+  },
 };

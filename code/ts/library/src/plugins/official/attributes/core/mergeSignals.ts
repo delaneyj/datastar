@@ -24,21 +24,21 @@ export const MergeSignals: AttributePlugin = {
         regexp: /(?<whole>.+)/g,
         replacer: (groups: RegexpGroups) => {
           const { whole } = groups;
-          return `Object.assign({...ctx.signals()}, ${whole})`;
+          return `Object.assign({...ctx.signals}, ${whole})`;
         },
       },
     ],
   },
   allowedModifiers: new Set(["ifmissing"]),
   onLoad: (ctx: AttributeContext) => {
-    const possibleMergeSignals = ctx.expressionFn(ctx);
+    const { el, signals, expressionFn, modifiers, mergeSignals } = ctx;
+    const possibleMergeSignals = expressionFn(ctx);
     const actualMergeSignals = signalsFromPossibleContents(
-      ctx.signals(),
+      signals,
       possibleMergeSignals,
-      ctx.modifiers.has("ifmissing")
+      modifiers.has("ifmissing")
     );
-    ctx.mergeSignals(actualMergeSignals);
-
-    delete ctx.el.dataset[ctx.rawKey];
+    mergeSignals(actualMergeSignals);
+    delete el.dataset[ctx.rawKey];
   },
 };

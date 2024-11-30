@@ -9,7 +9,7 @@ export const SignalsMacro: MacroPlugin = {
   regexp: wholePrefixSuffix("\\$", "signal", "(?<method>\\([^\\)]*\\))?"),
   replacer: (groups: RegexpGroups) => {
     const { signal, method } = groups;
-    const prefix = `ctx.signals()`;
+    const prefix = `ctx.signals`;
     if (!method?.length) {
       return `${prefix}.${signal}.value`;
     }

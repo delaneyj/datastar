@@ -44,7 +44,7 @@ Makes an element available as a signal in the signals.
 
 ### SignalMacro
 
-Takes a `$var` and converts into a `ctx.signals().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
+Takes a `$var` and converts into a `ctx.signals.var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
 
 ### ActionMacro
 

@@ -6,7 +6,7 @@
      <div data-ref="foo">I'm a div that is getting referenced</div>
      <pre
           class="code"
-          data-text="JSON.stringify(ctx.signals(),null,2)"
+          data-text="JSON.stringify(ctx.signals,null,2)"
      >
           Stuff in signals
      </pre>
@@ -30,4 +30,4 @@
 
 Adding `data-ref="foo"` to an element creates a signal called `$foo` that points to that element.
 
-***Note:*** We have to wrap the reference in `()` to avoid parsing issues.  This is most do to supported nested signals.  To the parser `foo.bar.bar` and `foo.bar.length` look the same.  We are looking at efficient ways to handle this but for now this is the solution.
+**_Note:_** We have to wrap the reference in `()` to avoid parsing issues. This is most do to supported nested signals. To the parser `foo.bar.bar` and `foo.bar.length` look the same. We are looking at efficient ways to handle this but for now this is the solution.
