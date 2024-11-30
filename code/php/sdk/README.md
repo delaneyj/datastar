@@ -40,12 +40,12 @@ $sse->mergeFragments('<div></div>', [
 // Removes HTML fragments from the DOM.
 $sse->removeFragments('#my-div');
 
-// Merges signals into the store.
+// Merges signals.
 $sse->mergeSignals('{foo: 123}', [
     'onlyIfMissing' => true,
 ]);
 
-// Removes signals from the store.
+// Removes signals.
 $sse->removeSignals(['foo', 'bar']);
 
 // Executes JavaScript in the browser.
@@ -53,9 +53,9 @@ $sse->ExecuteScript('console.log("Hello, world!")');
 ```
 
 ```php
-use starfederation\datastar\ReadSignals;
+use starfederation\datastar\ServerSentEventGenerator;
 
-$store = ReadSignals::getStore();
+$signals = ServerSentEventGenerator::readSignals();
 ```
 
 ---

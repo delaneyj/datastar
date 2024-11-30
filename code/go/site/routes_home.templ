@@ -68,7 +68,7 @@ templ Home() {
 						<div class="flex items-center gap-4">
 							<button
 								class="btn btn-primary btn-ghost"
-								data-on-click={ fmt.Sprintf("$clipboard('%s')", cdnText) }
+								data-on-click={ fmt.Sprintf("@clipboard('%s')", cdnText) }
 							>
 								@icon("material-symbols:content-copy")
 							</button>
@@ -101,7 +101,7 @@ templ Home() {
 					We are by far the smallest and fastest full-featured framework, even with everything included.  But don't fret, we provide a “pay what for what you use” bundling system for when you want a custom build.
 				</p>
 				<img class="w-full" src="/chart"/>
-				<div id="todosMVC" data-on-load="$get('/api/todos')">
+				<div id="todosMVC" data-on-load="@get('/api/todos')">
 					<p>Todos Example</p>
 					<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
 					<p>We recently updated the site and the old cookies are causing issues.</p>
@@ -153,7 +153,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
-				data-store={ fmt.Sprintf("{input:'%s'}", input) }
+				data-merge-signals={ fmt.Sprintf("{input:'%s'}", input) }
 			>
 				<p class="text-sm">
 					This mini application is driven by a
@@ -167,7 +167,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 							<h3 class="text-lg">example</h3>
 						</div>
 						<h2 class="text-sm">
-							The input is bound to a local store, but this is not a single page application.  It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
+							The input is bound to a local signals, but this is not a single page application.  It is like having <a class="link-primary" href="https://htmx.org" target="_blank">HTMX</a> + <a class="link-primary" href="https://alpinejs.dev/" target="_blank">Alpine.js</a> but with just one API to learn and much easier to extend.
 						</h2>
 						<div class="flex items-center gap-2">
 							if hasTodos {
@@ -175,10 +175,10 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										id="toggleAll"
 										class="btn btn-lg"
-										data-on-click="$post('/api/todos/-1/toggle')"
+										data-on-click="@post('/api/todos/-1/toggle')"
 										data-testid="toggle_all_todos"
 										data-indicator="toggleAllFetching"
-										data-bind-disabled="$toggleAllFetching"
+										data-bind-disabled="@toggleAllFetching"
 									>
 										@icon("material-symbols:checklist")
 									</button>
@@ -216,7 +216,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									} else {
 										<button
 											class="btn btn-xs join-item"
-											data-on-click={ fmt.Sprintf("$put('/api/todos/mode/%d')", i) }
+											data-on-click={ fmt.Sprintf("@put('/api/todos/mode/%d')", i) }
 											data-testid={ TodoViewModeStrings[i] + "_mode" }
 										>
 											{ TodoViewModeStrings[i] }
@@ -229,7 +229,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
 										<button
 											class="btn btn-error btn-xs join-item"
-											data-on-click="$delete('/api/todos/-1')"
+											data-on-click="@delete('/api/todos/-1')"
 											data-testid="clear_todos"
 										>
 											@icon("material-symbols:delete")
@@ -239,7 +239,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								<div class="tooltip" data-tip="Reset list">
 									<button
 										class="btn btn-warning btn-xs join-item"
-										data-on-click="$put('/api/todos/reset')"
+										data-on-click="@put('/api/todos/reset')"
 										data-testid="reset_todos"
 									>
 										@icon("material-symbols:delete-sweep")
@@ -263,10 +263,10 @@ templ TodoInput(i int) {
 		data-testid="todos_input"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
-		data-model="input"
+		data-bind="input"
 		data-on-keypress={ fmt.Sprintf(`
 			if (event.key === 'Enter' && $input.trim().length) {
-				$put('/api/todos/%d/edit');
+				@put('/api/todos/%d/edit');
 				$input = '';
 			}
 		`, i) }

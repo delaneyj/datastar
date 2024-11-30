@@ -42,8 +42,8 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 			sse.MergeFragmentTempl(animationsFadeMeIn(true))
 			sse.MergeFragmentTempl(animationsRequestInFlight())
 
-			store := &AnimationsRestoreStore{ShouldRestore: true}
-			sse.MergeFragmentTempl(animationsViewTransition(store))
+			signals := &AnimationsRestoreSignals{ShouldRestore: true}
+			sse.MergeFragmentTempl(animationsViewTransition(signals))
 
 			colorThrobTicker := time.NewTicker(2 * time.Second)
 			for {
@@ -78,13 +78,13 @@ func setupExamplesAnimations(examplesRouter chi.Router) error {
 		})
 
 		dataRouter.Get("/view_transition", func(w http.ResponseWriter, r *http.Request) {
-			store := &AnimationsRestoreStore{}
-			if err := datastar.ReadSignals(r, store); err != nil {
+			signals := &AnimationsRestoreSignals{}
+			if err := datastar.ReadSignals(r, signals); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			store.ShouldRestore = !store.ShouldRestore
-			datastar.NewSSE(w, r).MergeFragmentTempl(animationsViewTransition(store))
+			signals.ShouldRestore = !signals.ShouldRestore
+			datastar.NewSSE(w, r).MergeFragmentTempl(animationsViewTransition(signals))
 		})
 	})
 

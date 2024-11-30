@@ -73,9 +73,9 @@ Currently valid values are
 | Event                     | Description                         |
 |---------------------------|-------------------------------------|
 | datastar-merge-fragments  | Merges HTML fragments into the DOM  |
-| datastar-merge-signals    | Merges signals into the store       |
+| datastar-merge-signals    | Merges signals into the signals       |
 | datastar-remove-fragments | Removes HTML fragments from the DOM |
-| datastar-remove-signals   | Removes signals from the store      |
+| datastar-remove-signals   | Removes signals from the signals      |
 | datastar-execute-script   | Executes JavaScript in the browser  |
 
 ##### Options
@@ -186,15 +186,15 @@ ServerSentEventGenerator.MergeSignals(
  )
 ```
 
-`MergeSignals` is a helper function to send one or more signals to the browser to be merged into the store.
+`MergeSignals` is a helper function to send one or more signals to the browser to be merged into the signals.
 
 #### Args
 
-Data is a JavaScript object or JSON string that will be sent to the browser to update signals in the store.  The data ***must*** evaluate to a valid JavaScript.  It will be converted to signals by the Datastar client side.
+Data is a JavaScript object or JSON string that will be sent to the browser to update signals in the signals.  The data ***must*** evaluate to a valid JavaScript.  It will be converted to signals by the Datastar client side.
 
 ##### Options
 
-* `onlyIfMissing` (boolean) If `true`, the SDK ***should*** send the signal only if the data is not already in the store.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the store.
+* `onlyIfMissing` (boolean) If `true`, the SDK ***should*** send the signal only if the data is not already in the signals.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the signals.
 
 #### Logic
 When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-signals` event type.
@@ -214,16 +214,16 @@ ServerSentEventGenerator.RemoveSignals(
 )
 ```
 
-`RemoveSignals` is a helper function to send signals to the browser to be removed from the store.
+`RemoveSignals` is a helper function to send signals to the browser to be removed from the signals.
 
 #### Args
 
-`paths` is a list of strings that represent the path to the signals to be removed from the store.  The paths ***must*** be valid `.` delimited paths to signals within the store.  The Datastar client side will use these paths to remove the data from the store.
+`paths` is a list of strings that represent the signal paths to be removed from the signals.  The paths ***must*** be valid `.` delimited paths to signals within the signals.  The Datastar client side will use these paths to remove the data from the signals.
 
 #### Logic
 When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-remove-signals` event type.
 
-1. The function ***must*** include the paths in the event data in the format `paths PATHS\n` where `PATHS` is a space separated list of the provided paths.
+1. The function ***must*** include the paths in the event data, with each line prefixed with `paths `.  Space-separated paths such as `paths foo.bar baz.qux.hello world` ***should*** be allowed.
 
 ### `ServerSentEventGenerator.ExecuteScript`
 
@@ -249,19 +249,20 @@ ServerSentEventGenerator.ExecuteScript(
 * `attributes` A line separated list of attributes to add to the `script` element, if not provided the Datastar client side ***will*** default to `type module`. Each item in the array should be a string in the format `key value`.
 
 #### Logic
-1. When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
-2. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
-3. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
-4. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
+When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-execute-script` event type.
 
-## `ReadSignals(r *http.Request, store any) error`
+1. If `autoRemove` is provided, the function ***must*** include the auto remove script value in the event data in the format `autoRemove AUTO_REMOVE\n`, ***unless*** the value is the default of `true`.
+2. If `attributes` is provided, the function ***must*** include the attributes in the event data, with each line prefixed with `attributes `, ***unless*** the attributes value is the default of `type module`.
+3. The function ***must*** include the script in the event data, with each line prefixed with `script `.  This ***should*** be output after all other event data.
+
+## `ReadSignals(r *http.Request, signals any) error`
 
 `ReadSignals` is a helper function to parse incoming data from the browser.  It should take the incoming request and convert into an object that can be used by the backend.
 
 #### Args
 
 * `r` (http.Request) The incoming request object from the browser.  This object ***must*** be a valid Request object per the language specifics.
-* `store` (any) The store object that will the incoming data will be unmarshalled into.  The exact function signature will depend on the language specifics.
+* `signals` (any) The signals object that will the incoming data will be unmarshalled into.  The exact function signature will depend on the language specifics.
 
 #### Logic
 

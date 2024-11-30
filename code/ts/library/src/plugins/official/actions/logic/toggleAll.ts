@@ -3,9 +3,10 @@
 // Slug: Toggle all signals that match a regular expression
 
 import { ActionPlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const ToggleAll: ActionPlugin = {
-    pluginType: "action",
+    pluginType: PluginType.Action,
     name: "toggleAll",
     method: (ctx, regexp) => {
         const re = new RegExp(regexp);

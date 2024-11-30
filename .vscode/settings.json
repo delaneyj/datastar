@@ -3,5 +3,6 @@
     "go.coverOnSingleTestFile": true,
     "go.coverOnSingleTest": true,
     "editor.foldingStrategy": "indentation",
-    "makefile.configureOnOpen": false
+    "makefile.configureOnOpen": false,
+    "editor.formatOnSave": true
 }

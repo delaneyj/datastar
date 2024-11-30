@@ -46,7 +46,7 @@ func starterActiveContacts() []*ContactActive {
 	}
 }
 
-type BulkUpdateSelectionStore struct {
+type BulkUpdateSelectionSignals struct {
 	Selections map[string]bool `json:"selections"`
 }
 
@@ -54,7 +54,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 
 	contacts := starterActiveContacts()
 
-	defaultSelectionStore := func() *BulkUpdateSelectionStore {
+	defaultSelectionSignals := func() *BulkUpdateSelectionSignals {
 		selections := map[string]bool{
 			"all": false,
 		}
@@ -62,7 +62,7 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 			key := fmt.Sprintf("contact_%d", i)
 			selections[key] = false
 		}
-		return &BulkUpdateSelectionStore{
+		return &BulkUpdateSelectionSignals{
 			Selections: selections,
 		}
 	}
@@ -70,19 +70,19 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 	examplesRouter.Route("/bulk_update/data", func(dataRouter chi.Router) {
 		dataRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			sse := datastar.NewSSE(w, r)
-			sse.MergeFragmentTempl(bulkUpdateContacts(defaultSelectionStore(), contacts))
+			sse.MergeFragmentTempl(bulkUpdateContacts(defaultSelectionSignals(), contacts))
 		})
 
 		setActivation := func(w http.ResponseWriter, r *http.Request, isActive bool) {
-			store := &BulkUpdateSelectionStore{}
-			if err := datastar.ReadSignals(r, store); err != nil {
+			signals := &BulkUpdateSelectionSignals{}
+			if err := datastar.ReadSignals(r, signals); err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
 				return
 			}
-			// logJSON("incoming", store)
+			// logJSON("incoming", signals)
 
 			sse := datastar.NewSSE(w, r)
-			for key, wasSelected := range store.Selections {
+			for key, wasSelected := range signals.Selections {
 				const prefix = "contact_"
 				if strings.HasPrefix(key, prefix) {
 					idStr := strings.TrimPrefix(key, prefix)
@@ -107,12 +107,12 @@ func setupExamplesBulkUpdate(examplesRouter chi.Router) error {
 			}
 
 			// Reset all selections
-			for k := range store.Selections {
-				store.Selections[k] = false
+			for k := range signals.Selections {
+				signals.Selections[k] = false
 			}
 
-			// logJSON("outgoing", store)
-			sse.MarshalAndMergeSignals(store)
+			// logJSON("outgoing", signals)
+			sse.MarshalAndMergeSignals(signals)
 		}
 
 		dataRouter.Put("/activate", func(w http.ResponseWriter, r *http.Request) {

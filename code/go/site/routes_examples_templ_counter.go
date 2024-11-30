@@ -10,7 +10,7 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesTemplCounter(examplesRouter chi.Router, sessionStore sessions.Store) error {
+func setupExamplesTemplCounter(examplesRouter chi.Router, sessionSignals sessions.Store) error {
 
 	var globalCounter atomic.Uint32
 	const (
@@ -19,7 +19,7 @@ func setupExamplesTemplCounter(examplesRouter chi.Router, sessionStore sessions.
 	)
 
 	userVal := func(r *http.Request) (uint32, *sessions.Session, error) {
-		sess, err := sessionStore.Get(r, sessionKey)
+		sess, err := sessionSignals.Get(r, sessionKey)
 		if err != nil {
 			return 0, nil, err
 		}
@@ -37,17 +37,17 @@ func setupExamplesTemplCounter(examplesRouter chi.Router, sessionStore sessions.
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
 
-		store := TemplCounterStore{
+		signals := TemplCounterSignals{
 			Global: globalCounter.Load(),
 			User:   userVal,
 		}
 
-		c := templCounterExampleInitialContents(store)
+		c := templCounterExampleInitialContents(signals)
 		datastar.NewSSE(w, r).MergeFragmentTempl(c)
 	})
 
-	updateGlobal := func(store *gabs.Container) {
-		store.Set(globalCounter.Add(1), "global")
+	updateGlobal := func(signals *gabs.Container) {
+		signals.Set(globalCounter.Add(1), "global")
 	}
 
 	examplesRouter.Route("/templ_counter/increment", func(incrementRouter chi.Router) {

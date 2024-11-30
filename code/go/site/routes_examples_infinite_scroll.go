@@ -10,26 +10,26 @@ import (
 func setupExamplesInfiniteScroll(examplesRouter chi.Router) error {
 
 	examplesRouter.Get("/infinite_scroll/data", func(w http.ResponseWriter, r *http.Request) {
-		store := &infiniteScrollStore{}
-		if err := datastar.ReadSignals(r, store); err != nil {
+		signals := &infiniteScrollSignals{}
+		if err := datastar.ReadSignals(r, signals); err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-		if store.Limit < 1 || store.Limit > 100 {
-			store.Limit = 10
+		if signals.Limit < 1 || signals.Limit > 100 {
+			signals.Limit = 10
 		}
 
 		sse := datastar.NewSSE(w, r)
 
-		if store.Offset == 0 {
-			sse.MergeFragmentTempl(infiniteScrollAgents(store))
+		if signals.Offset == 0 {
+			sse.MergeFragmentTempl(infiniteScrollAgents(signals))
 		} else {
-			if store.Offset < 100 {
-				sse.MergeFragmentTempl(infiniteScrollMore(store))
-				for i := 0; i < store.Limit; i++ {
+			if signals.Offset < 100 {
+				sse.MergeFragmentTempl(infiniteScrollMore(signals))
+				for i := 0; i < signals.Limit; i++ {
 
 					sse.MergeFragmentTempl(
-						infiniteScrollAgent(store.Offset+i),
+						infiniteScrollAgent(signals.Offset+i),
 						datastar.WithSelectorID("click_to_load_rows"),
 						datastar.WithMergeAppend(),
 					)

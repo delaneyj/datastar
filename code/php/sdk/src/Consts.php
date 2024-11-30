@@ -11,8 +11,8 @@ class Consts
 {
     public const DATASTAR_KEY = 'datastar';
     public const VERSION = '0.20.1';
-    public const VERSION_CLIENT_BYTE_SIZE = 35928;
-    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12637;
+    public const VERSION_CLIENT_BYTE_SIZE = 35480;
+    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12565;
 
     // The default duration for settling during merges. Allows for CSS transitions to complete.
     public const DEFAULT_SETTLE_DURATION = 300;
@@ -23,7 +23,7 @@ class Consts
     // Should fragments be merged using the ViewTransition API?
     public const DEFAULT_FRAGMENTS_USE_VIEW_TRANSITIONS = false;
 
-    // Should a given set of signals merge if they are missing from the store?
+    // Should a given set of signals merge if they are missing?
     public const DEFAULT_MERGE_SIGNALS_ONLY_IF_MISSING = false;
 
     // Should script element remove itself after execution?

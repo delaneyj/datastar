@@ -21,7 +21,10 @@ With Datastar, you can build any UI that a full-stack framework like React, Vue.
 The quickest way to use Datastar is to include it in your HTML using a script tag hosted on a CDN.
 
 ```html
-<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
+<script
+  type="module"
+  src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"
+></script>
 ```
 
 If you prefer to host the file yourself, download your own bundle using the [bundler](/bundler), then include it from the appropriate path.
@@ -32,7 +35,7 @@ If you prefer to host the file yourself, download your own bundle using the [bun
 
 ### Using NPM
 
-You can alternatively install Datastar via [npm](https://www.npmjs.com/package/@starfederation/datastar).  We don't recommend this for most use-cases, as it requires a build step, but it can be useful for legacy frontend projects.
+You can alternatively install Datastar via [npm](https://www.npmjs.com/package/@starfederation/datastar). We don't recommend this for most use-cases, as it requires a build step, but it can be useful for legacy frontend projects.
 
 ```bash
 npm install @starfederation/datastar
@@ -44,12 +47,12 @@ At the core of Datastar are [`data-*`](https://developer.mozilla.org/en-US/docs/
 
 Datastar uses signals to manage state. You can think of signals as reactive variables that automatically track and propagate changes from expressions. They can be created and modified using data attributes on the frontend, and using events sent from the backend. Don't worry if this sounds complicated; it will become clearer as we look at some examples.
 
-### `data-model`
+### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-model`](/reference/plugins_attributes#model) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#model) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
 
 ```html
-<input data-model="input" type="text" />
+<input data-bind="input" type="text" />
 ```
 
 This creates a new signal called `input`, and binds it to the element's value. If either is changed, the other automatically updates.
@@ -60,15 +63,15 @@ To see this in action, we can use the [`data-text`](/reference/plugins_attribute
 
 ```html
 <div data-text="$input">
-    I will get replaced with the contents of the input signal
+  I will get replaced with the contents of the input signal
 </div>
 ```
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input1" class="input input-bordered">
+            <input data-bind="input1" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -83,15 +86,15 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
 
 ```html
 <div data-text="$input.toUpperCase()">
-    Will be replaced with the uppercase contents of the input signal
+  Will be replaced with the uppercase contents of the input signal
 </div>
 ```
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input2" class="input input-bordered">
+            <input data-bind="input2" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -106,18 +109,18 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
 
 ```html
 <div data-computed-repeated="$input.repeat(2)">
-    <input data-model="input" type="text">
-    <div data-text="$repeated">
-        Will be replaced with the contents of the repeated signal
-    </div>
+  <input data-bind="input" type="text" />
+  <div data-text="$repeated">
+    Will be replaced with the contents of the repeated signal
+  </div>
 </div>
 ```
 
-<div data-computed-repeated="$input3.repeat(2)" class="alert flex justify-between items-start p-8">
+<div data-computed-repeated="$input3.repeat(2)" class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input3" class="input input-bordered">
+            <input data-bind="input3" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -125,7 +128,6 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
         </div>
     </div>
 </div>
-
 
 ### `data-show`
 
@@ -137,11 +139,11 @@ The `data-show` attribute can be used to show or hide an element based on whethe
 
 This results in the button being visible only when the input is _not_ empty.
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input4" class="input input-bordered">
+            <input data-bind="input4" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -167,11 +169,11 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!$i
 <button data-class="{hidden: !$input}">Save</button>
 ```
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input5" class="input input-bordered">
+            <input data-bind="input5" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -185,7 +187,7 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!$i
 
 ### `data-bind-*`
 
-The `data-bind-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute.  The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
+The `data-bind-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute. The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
 
 ```html
 <button data-bind-disabled="$input == ''">Save</button>
@@ -193,11 +195,11 @@ The `data-bind-*` attribute can be used to bind a JavaScript expression to **any
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input6" class="input input-bordered">
+            <input data-bind="input6" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -209,25 +211,24 @@ This results in the button being given the `disabled` attribute whenever the inp
     </button>
 </div>
 
+### `data-merge-signals`
 
-### `data-store`
+So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a **signals** that is accessible from anywhere in the DOM.
 
-So far, we've created signals on the fly using `data-model` and `data-computed-*`. All signals are merged into a **store** that is accessible from anywhere in the DOM.
-
-We can merge signals into the store using the [`data-store`](/reference/plugins_core#store) attribute.
+We can merge signals into the signals using the [`data-merge-signals`](/reference/plugins_core#signals) attribute.
 
 ```html
-<div data-store="{input: ''}"></div>
+<div data-merge-signals="{input: ''}"></div>
 ```
 
-The `data-store` value must be written as a JavaScript object literal _or_ using JSON syntax.
+The `data-merge-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
 
-Adding `data-store` to multiple elements is allowed, and the signals provided will be _merged_ into the existing store (values defined later in the DOM tree override those defined earlier).
+Adding `data-merge-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
 
 Signals are nestable, which can be useful for namespacing.
 
 ```html
-<div data-store="{primary: {input: ''}, secondary: {input: '' }}"></div>
+<div data-merge-signals="{primary: {input: ''}, secondary: {input: '' }}"></div>
 ```
 
 ### `data-on-*`
@@ -238,13 +239,13 @@ The [`data-on-*`](/reference/plugins_attributes#on) attribute can be used to exe
 <button data-on-click="$input=''">Reset</button>
 ```
 
-This results in the `$input` signal being set to an empty string when the button element is clicked. If the `$input` signal is used elsewhere, its value will automatically update.  This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
+This results in the `$input` signal being set to an empty string when the button element is clicked. If the `$input` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
 
-<div class="alert flex justify-between items-start p-8">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-model="input7" class="input input-bordered">
+            <input data-bind="input7" class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -261,28 +262,24 @@ See if you can follow the code below _before_ trying the demo.
 
 ```html
 <div
-    data-store="{response: '', answer: 'bread'}"
-    data-computed-correct="$response.toLowerCase() == $answer"
+  data-merge-signals="{response: '', answer: 'bread'}"
+  data-computed-correct="$response.toLowerCase() == $answer"
 >
-    <div id="question">
-        What do you put in a toaster?
-    </div>
-    <button data-on-click="$response = prompt('Answer:')">
-        BUZZ
-    </button>
-    <div data-show="$response != ''">
-        You answered “<span data-text="$response"></span>”.
-        <span data-show="$correct">That is correct ✅</span>
-        <span data-show="!$correct">
-            The correct answer is “
-                <span data-text="$answer"></span>
-            ” 🤷
-        </span>
-    </div>
+  <div id="question">What do you put in a toaster?</div>
+  <button data-on-click="$response = prompt('Answer:')">BUZZ</button>
+  <div data-show="$response != ''">
+    You answered “<span data-text="$response"></span>”.
+    <span data-show="$correct">That is correct ✅</span>
+    <span data-show="!$correct">
+      The correct answer is “
+      <span data-text="$answer"></span>
+      ” 🤷
+    </span>
+  </div>
 </div>
 ```
 
-<div data-store="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="alert flex justify-between items-start gap-4 p-8">
+<div data-merge-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="space-y-3">
         <div id="question1">
             What do you put in a toaster?
@@ -314,38 +311,37 @@ The following code would exist in a controller action endpoint in your backend.
 
 The `mergeFragments()` method merges the provided HTML fragment into the DOM, replacing the element with `id="question"`. An element with the ID `question` must already exist in the DOM.
 
-The `mergeSignals()` method merges the `response` and `answer` signals into the frontend store.
+The `mergeSignals()` method merges the `response` and `answer` signals into the frontend signals.
 
-With our backend in place, we can now use the `data-on-click` attribute to trigger the `$get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
+With our backend in place, we can now use the `data-on-click` attribute to trigger the `@get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
 
 ```html
 <div
-    data-store="{response: '', answer: '', correct: false}"
-    data-computed-correct="$response.toLowerCase() == $answer"
+  data-merge-signals="{response: '', answer: '', correct: false}"
+  data-computed-correct="$response.toLowerCase() == $answer"
 >
-    <div id="question"></div>
-    <button data-on-click="$get('/actions/quiz')">
-        Fetch a question
-    </button>
-    <button data-show="$answer != ''"
-            data-on-click="$response = prompt('Answer:') ?? ''"
-    >
-        BUZZ
-    </button>
-    <div data-show="$response != ''">
-        You answered “<span data-text="$response"></span>”.
-        <span data-show="$correct">That is correct ✅</span>
-        <span data-show="!$correct">
-            The correct answer is “<span data-text="$answer2"></span>” 🤷
-        </span>
-    </div>
+  <div id="question"></div>
+  <button data-on-click="@get('/actions/quiz')">Fetch a question</button>
+  <button
+    data-show="$answer != ''"
+    data-on-click="$response = prompt('Answer:') ?? ''"
+  >
+    BUZZ
+  </button>
+  <div data-show="$response != ''">
+    You answered “<span data-text="$response"></span>”.
+    <span data-show="$correct">That is correct ✅</span>
+    <span data-show="!$correct">
+      The correct answer is “<span data-text="$answer2"></span>” 🤷
+    </span>
+  </div>
 </div>
 ```
 
 Now when the `Fetch a question` button is clicked, the server will respond with an event to modify the `question` element in the DOM and an event to modify the `response` and `answer` signals. We're driving state from the backend!
 
-<div data-store="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="alert flex justify-between items-start gap-4 p-8">
-    <div class="space-y-3 pb-3">
+<div data-merge-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="flex items-start justify-between gap-4 p-8 alert">
+    <div class="pb-3 space-y-3">
         <div id="question2"></div>
         <div data-show="$response2 != ''">
             You answered “<span data-text="$response2"></span>”.
@@ -354,7 +350,7 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
                 The correct answer is “<span data-text="$answer2"></span>” 🤷
             </span>
         </div>
-        <button data-on-click="$get('/examples/quiz/data')" class="btn btn-secondary">
+        <button data-on-click="@get('/examples/quiz/data')" class="btn btn-secondary">
             Fetch a question
         </button>
     </div>
@@ -367,24 +363,25 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
 
 The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator, which may be desirable for slower responses.
 
-Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute.
+Note that elements using the `data-indicator` attribute **_must_** have a unique ID attribute.
 
 ```html
 <div id="question"></div>
 <div data-class="{loading: $fetching}" class="indicator"></div>
-<button id="fetch-a-question"
-    data-on-click="$get('/actions/quiz')"
-    data-indicator="fetching"
+<button
+  id="fetch-a-question"
+  data-on-click="@get('/actions/quiz')"
+  data-indicator="fetching"
 >
-    Fetch a question
+  Fetch a question
 </button>
 ```
 
-<div class="alert flex justify-between items-start gap-4 p-8">
-    <div class="space-y-3 pb-3">
+<div class="flex items-start justify-between gap-4 p-8 alert">
+    <div class="pb-3 space-y-3">
         <div id="question3"></div>
         <div class="flex items-center gap-2">
-            <button id="fetch-a-question" data-on-click="$get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
+            <button id="fetch-a-question" data-on-click="@get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
                 Fetch a question
             </button>
             <div data-class="{loading: $fetching}" class="indicator"></div>
@@ -392,14 +389,12 @@ Note that elements using the `data-indicator` attribute ***must*** have a unique
     </div>
 </div>
 
-We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `$get()`, `$post()`, `$put()`, `$patch()` and `$delete()` actions, respectively.
+We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `@get()`, `@post()`, `@put()`, `@patch()` and `@delete()` actions, respectively.
 
 Here's how we could send an answer to the server for processing, using a `POST` request.
 
 ```html
-<button data-on-click="$post('/actions/quiz')">
-    Submit answer
-</button>
+<button data-on-click="@post('/actions/quiz')">Submit answer</button>
 ```
 
 One of the benefits of using SSE is that we can send multiple events (HTML fragments, signal updates, etc.) in a single response.
@@ -408,86 +403,86 @@ One of the benefits of using SSE is that we can send multiple events (HTML fragm
 
 ## Actions
 
-Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `$get` action above. Here are a few other common actions.
+Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `@get` action above. Here are a few other common actions.
 
-### `$setAll()`
+### `@setAll()`
 
-The `$setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
+The `@setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
 
 ```html
-<button data-on-click="$setAll('form_', true)"></button>
+<button data-on-click="@setAll('form_', true)"></button>
 ```
 
 This sets the values of all signals containing `form_` to `true`, which could be useful for enabling input fields in a form.
 
 ```html
-<input type="checkbox" data-model="checkbox_1"> Checkbox 1
-<input type="checkbox" data-model="checkbox_2"> Checkbox 2
-<input type="checkbox" data-model="checkbox_3"> Checkbox 3
-<button data-on-click="$setAll('checkbox_', true)">Check All</button>
+<input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
+<input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
+<input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
+<button data-on-click="@setAll('checkbox_', true)">Check All</button>
 ```
 
-<div class="alert flex flex-col items-start gap-2 p-8">
+<div class="flex flex-col items-start gap-2 p-8 alert">
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 1</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_1_1"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_1_1"/>
         </label>
     </div>
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 2</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_1_2"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_1_2"/>
         </label>
     </div>
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 3</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_1_3"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_1_3"/>
         </label>
     </div>
-    <button data-on-click="$setAll('checkbox_1_', true)" class="btn btn-secondary mt-4">
+    <button data-on-click="@setAll('checkbox_1_', true)" class="mt-4 btn btn-secondary">
         Check All
     </button>
 </div>
 
-### `$toggleAll()`
+### `@toggleAll()`
 
-The `$toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
+The `@toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
 
 ```html
-<button data-on-click="$toggleAll('form_')"></button>
+<button data-on-click="@toggleAll('form_')"></button>
 ```
 
 This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
 
 ```html
-<input type="checkbox" data-model="checkbox_1"> Checkbox 1
-<input type="checkbox" data-model="checkbox_2"> Checkbox 2
-<input type="checkbox" data-model="checkbox_3"> Checkbox 3
-<button data-on-click="$toggleAll('checkbox_')">Toggle All</button>
+<input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
+<input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
+<input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
+<button data-on-click="@toggleAll('checkbox_')">Toggle All</button>
 ```
 
-<div class="alert flex flex-col items-start gap-2 p-8">
+<div class="flex flex-col items-start gap-2 p-8 alert">
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 1</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_2_1"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_2_1"/>
         </label>
     </div>
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 2</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_2_2"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_2_2"/>
         </label>
     </div>
     <div class="form-control">
-        <label class="label cursor-pointer gap-2">
+        <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 3</span>
-            <input type="checkbox" class="toggle" data-model="checkbox_2_3"/>
+            <input type="checkbox" class="toggle" data-bind="checkbox_2_3"/>
         </label>
     </div>
-    <button data-on-click="$toggleAll('checkbox_2_')" class="btn btn-secondary mt-4">
+    <button data-on-click="@toggleAll('checkbox_2_')" class="mt-4 btn btn-secondary">
         Toggle All
     </button>
 </div>
@@ -496,14 +491,14 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 
 Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes, you can introduce reactive state to your frontend and access it anywhere in the DOM and in your backend. You can set up events that trigger requests to backend endpoints that respond with HTML fragment and signal updates.
 
-- Bind element values to signals: `data-model="foo"`
+- Bind element values to signals: `data-bind="foo"`
 - Set the text content of an element to an expression.: `data-text="$foo"`
 - Create a computed signal: `data-computed-foo="$bar + 1"`
 - Show or hide an element using an expression: `data-show="$foo"
 - Modify the classes on an element: `data-class="{'font-bold': $foo}"`
 - Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
-- Merge signals into the store: `data-store="{foo: ''}"`
-- Execute an expression on an event: `data-on-click="$get(/endpoint)"`
+- Merge signals into the signals: `data-merge-signals="{foo: ''}"`
+- Execute an expression on an event: `data-on-click="@get(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
 - Replace the URL: `data-replace-url="'/page1'"`
 - Persist all signals in local storage: `data-persist`

@@ -2,7 +2,7 @@ package site
 
 import "fmt"
 
-type ActiveSearchStore struct {
+type ActiveSearchSignals struct {
 	Search string `json:"search"`
 }
 
@@ -13,11 +13,11 @@ type ActiveSearchUser struct {
 	Email     string `json:"email"`
 }
 
-templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string]float64, store *ActiveSearchStore) {
+templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string]float64, signals *ActiveSearchSignals) {
 	<div
 		id="active_search"
 		class="flex flex-col gap-4"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
 		<div class="flex">
 			<input
@@ -25,8 +25,8 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				class="flex-1 input input-bordered"
 				type="text"
 				placeholder="Search..."
-				data-model="search"
-				data-on-input.debounce_500ms="$get('/examples/active_search/updates')"
+				data-bind="search"
+				data-on-input.debounce_500ms="@get('/examples/active_search/updates')"
 				data-indicator="fetching"
 			/>
 			@sseIndicator("fetching")
@@ -52,6 +52,6 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				}
 			</tbody>
 		</table>
-		@templStoreJSON()
+		@templSignalsJSON()
 	</div>
 }

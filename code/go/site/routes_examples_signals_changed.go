@@ -8,11 +8,11 @@ import (
 	datastar "github.com/starfederation/datastar/code/go/sdk"
 )
 
-func setupExamplesStoreChanged(examplesRouter chi.Router, store sessions.Store) error {
-	sessionKey := "datastar-on-store-changed-example"
+func setupExamplesSignalsChanged(examplesRouter chi.Router, signals sessions.Store) error {
+	sessionKey := "datastar-on-signals-changed-example"
 
 	currentTotalUpdates := func(w http.ResponseWriter, r *http.Request) (*sessions.Session, int, error) {
-		session, err := store.Get(r, sessionKey)
+		session, err := signals.Get(r, sessionKey)
 		if err != nil || len(session.Values) == 0 {
 			session.Values["updated"] = 0
 			if err := session.Save(r, w); err != nil {
@@ -35,9 +35,9 @@ func setupExamplesStoreChanged(examplesRouter chi.Router, store sessions.Store) 
 		)
 	}
 
-	examplesRouter.Route("/store_changed/updates", func(storeChangedUpdatesRouter chi.Router) {
+	examplesRouter.Route("/signals_changed/updates", func(signalsChangedUpdatesRouter chi.Router) {
 
-		storeChangedUpdatesRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
+		signalsChangedUpdatesRouter.Post("/", func(w http.ResponseWriter, r *http.Request) {
 			session, totalUpdates, err := currentTotalUpdates(w, r)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -47,7 +47,7 @@ func setupExamplesStoreChanged(examplesRouter chi.Router, store sessions.Store) 
 			saveAndRenderTotalUpdates(w, r, session, totalUpdates)
 		})
 
-		storeChangedUpdatesRouter.Delete("/", func(w http.ResponseWriter, r *http.Request) {
+		signalsChangedUpdatesRouter.Delete("/", func(w http.ResponseWriter, r *http.Request) {
 			session, _, err := currentTotalUpdates(w, r)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusInternalServerError)

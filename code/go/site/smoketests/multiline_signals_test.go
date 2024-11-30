@@ -6,10 +6,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestExampleMultilineStore(t *testing.T) {
+func TestExampleMultilineSignals(t *testing.T) {
 	g := setup(t)
 
-	page := g.page("examples/multiline_store")
+	page := g.page("examples/multiline_signals")
 	assert.NotNil(t, page)
 
 	t.Run("number", func(t *testing.T) {

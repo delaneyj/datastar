@@ -1,15 +1,15 @@
 package site
 
-type RedirectsStore struct {
+type RedirectsSignals struct {
 	RedirectTo string `json:"redirectTo"`
 }
 
-templ redirectsView(store *RedirectsStore) {
-	<div id="demo" class="flex w-full gap-4" data-store={ templ.JSONString(store) }>
+templ redirectsView(signals *RedirectsSignals) {
+	<div id="demo" class="flex w-full gap-4" data-merge-signals={ templ.JSONString(signals) }>
 		<label class="flex items-center flex-1 gap-2">
 			<span>Redirect to: </span>
-			<input data-model="redirectTo" class="flex-1 input input-bordered"/>
+			<input data-bind="redirectTo" class="flex-1 input input-bordered"/>
 		</label>
-		<button class="btn btn-success" data-on-click="$post('/examples/redirects/data')">Redirect</button>
+		<button class="btn btn-success" data-on-click="@post('/examples/redirects/data')">Redirect</button>
 	</div>
 }

@@ -9,15 +9,15 @@ This example actively searches a contacts database as the user enters text.
 ## Demo
 
 <div>
-<div id="active_search" data-on-load="$get('/examples/active_search/updates')"></div>
+<div id="active_search" data-on-load="@get('/examples/active_search/updates')"></div>
 </div>
 
 The interesting part is the input field:
 
 ```html
 <input
-  data-model="search"
-  data-on-input.debounce_1000ms="$get('/examples/active_search/data')"
+  data-bind="search"
+  data-on-input.debounce_1000ms="@get('/examples/active_search/data')"
   placeholder="Search..."
   type="text"
 />

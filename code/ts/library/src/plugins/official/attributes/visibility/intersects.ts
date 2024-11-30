@@ -4,6 +4,7 @@
 // Description: An attribute that runs an expression when the element intersects with the viewport.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 const ONCE = "once";
 const HALF = "half";
@@ -11,7 +12,7 @@ const FULL = "full";
 
 // Run expression when element intersects with viewport
 export const Intersection: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "intersects",
     allowedModifiers: new Set([ONCE, HALF, FULL]),
     mustHaveEmptyKey: true,

@@ -6,23 +6,25 @@ Based on the Python example at https://data-star.dev/examples/python
 Datastar functions:
 FragmentMergeType, DatastarEventMessage, SingleDatastarEventMessage are from a litestar-gist by @avila-gabriel
 
-
 ## FastAPI
+
 https://fastapi.tiangolo.com/
 
 ## Hypermedia
+
 Create `HTML` using python code
 https://github.com/thomasborgen/hypermedia
 Version >=5.0.0
 
-
 `requirements.txt`
+
 ```
 fastapi[standard]
 hypermedia>=5.0.0
 ```
 
 `main.py`
+
 ```python
 import asyncio
 import json
@@ -145,31 +147,31 @@ def render_footer():
     return Div("FastAPI - Hypermedia - DataStar")
 
 
-def render_main_partial(store):
+def render_main_partial(signals):
   return Div(
     Div(
-      Input(type="text", placeholder="Send to server...", **{"data-model":"input"}),
-      Button("Send State Roundtrip", **{"data-on-click":'$get("/get")'}),
-      Button("Target HTML Element", **{"data-on-click":'$get("/target")'}),
+      Input(type="text", placeholder="Send to server...", **{"data-bind":"input"}),
+      Button("Send State Roundtrip", **{"data-on-click":'@get("/get")'}),
+      Button("Target HTML Element", **{"data-on-click":'@get("/target")'}),
       Button("Toggle Feed", **{"data-on-click":'$show=!$show'}),
       Div(id="output", **{"data-text":"$output"}),
       Div(id=f"{target}"),
       Div(
         Span("Feed from server: "),
-        Span(id="feed", **{"data-on-load":'$get("/feed")'}),
+        Span(id="feed", **{"data-on-load":'@get("/feed")'}),
         **{"$data-show.duration_500ms":"$show"}
         ),
     ),
     id="main",
-    **{"data-store":f'{json.dumps(store)}'}
+    **{"data-merge-signals":f'{json.dumps(signals)}'}
   )
 
 
-def render_index(store):
+def render_index(signals):
     return base().extend(
         "header", render_header()
     ).extend(
-        "main", render_main_partial(store)
+        "main", render_main_partial(signals)
     ).extend(
         "footer", render_footer()
     )
@@ -178,18 +180,18 @@ def render_index(store):
 # Routes
 @app.get("/", response_class=HTMLResponse)
 async def index():
-    store = {'input': '', 'output': '', 'show': True}
-    page: Element = render_index(store=store).dump()
+    signals = {'input': '', 'output': '', 'show': True}
+    page: Element = render_index(signals=signals).dump()
     return HTMLResponse(page)
 
 
 @app.get("/get")
 async def get_data(request: Request):
   query_params = request.query_params.get('datastar')
-  store = json.loads(query_params)
-  store['output'] = f"Your input: {store['input']}, is {len(store['input'])} long."
-  event_data = json.dumps(store)
-  fragment = f"<div id='main' data-store='{event_data}'></div>"
+  signals = json.loads(query_params)
+  signals['output'] = f"Your input: {signals['input']}, is {len(signals['input'])} long."
+  event_data = json.dumps(signals)
+  fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")
 

@@ -9,59 +9,59 @@
 This means every data fragment is an OOB in HTMX terms.
 
 ```html
-event: datastar-merge-fragments 
-id: 92680296792588350 
-data: mergeMode morph 
-data: settleDuration 0 
+event: datastar-merge-fragments
+id: 92680296792588350
+data: mergeMode morph
+data: settleDuration 0
 data: fragment
 <div id="lazy_tabs">
   <div class="tabs tabs-bordered">
     <button
       id="tab_0"
       class="tab tab-active"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=0')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=0')"
     >
       Tab 0</button
     ><button
       id="tab_1"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=1')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=1')"
     >
       Tab 1</button
     ><button
       id="tab_2"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=2')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=2')"
     >
       Tab 2</button
     ><button
       id="tab_3"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=3')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=3')"
     >
       Tab 3</button
     ><button
       id="tab_4"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=4')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=4')"
     >
       Tab 4</button
     ><button
       id="tab_5"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=5')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=5')"
     >
       Tab 5</button
     ><button
       id="tab_6"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=6')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=6')"
     >
       Tab 6</button
     ><button
       id="tab_7"
       class="tab"
-      data-on-click="$get('/examples/lazy_tabs/data?tabId=7')"
+      data-on-click="@get('/examples/lazy_tabs/data?tabId=7')"
     >
       Tab 7
     </button>

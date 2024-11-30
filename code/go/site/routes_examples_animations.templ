@@ -2,21 +2,21 @@ package site
 
 import "fmt"
 
-type AnimationsRestoreStore struct {
+type AnimationsRestoreSignals struct {
 	ShouldRestore bool `json:"shouldRestore"`
 }
 
-templ animationsViewTransition(store *AnimationsRestoreStore) {
+templ animationsViewTransition(signals *AnimationsRestoreSignals) {
 	<div
 		id="view_transition"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 		class="slide-it"
 	>
 		<button
 			class="btn btn-primary btn-lg"
-			data-on-click="$get('/examples/animations/data/view_transition') "
+			data-on-click="@get('/examples/animations/data/view_transition') "
 		>
-			if store.ShouldRestore {
+			if signals.ShouldRestore {
 				@icon("material-symbols:arrow-left")
 				Restore It!
 			} else {
@@ -34,7 +34,7 @@ templ animationsFadeOutSwap(shouldHide bool) {
 			"btn btn-error",
 			templ.KV("transition-all duration-1000 opacity-0", shouldHide),
 		}
-		data-on-click="$delete('/examples/animations/data')"
+		data-on-click="@delete('/examples/animations/data')"
 	>
 		@icon("material-symbols:delete")
 		Fade out then delete on click
@@ -47,7 +47,7 @@ templ animationsFadeMeIn(shouldBeShown bool) {
 		class={ "btn btn-success",
 			templ.KV("transition-all duration-1000", shouldBeShown),
 			templ.KV("opacity-0", !shouldBeShown) }
-		data-on-click="$get('/examples/animations/data/fade_me_in')"
+		data-on-click="@get('/examples/animations/data/fade_me_in')"
 	>
 		@icon("material-symbols:add")
 		Fade me in on click
@@ -86,7 +86,7 @@ templ animationsRequestInFlight() {
 		<button
 			id="submit_request_in_flight"
 			class="btn btn-success"
-			data-on-click="$post('/examples/animations/data/request_in_flight')"
+			data-on-click="@post('/examples/animations/data/request_in_flight')"
 			data-indicator="fetching"
 		>
 			@icon("material-symbols:person-add")

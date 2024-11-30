@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-	data-store="{duration:0, lastRenderTime:Date.now()}"
+	data-merge-signals="{duration:0, lastRenderTime:Date.now()}"
   data-on-raf="
     const now = Date.now()
 	const delta = now - $lastRenderTime
@@ -18,7 +18,7 @@
 
 ```html
 <div
-  data-store="{duration:0, lastRenderTime:Date.now()}"
+  data-merge-signals="{duration:0, lastRenderTime:Date.now()}"
   data-on-raf="
     const now = Date.now()
     const delta = now - $lastRenderTime

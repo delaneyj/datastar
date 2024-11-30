@@ -8,5 +8,5 @@ sse.MergeFragments(
     `<div id="question">What do you put in a toaster?</div>`
 )
 
-// Merges signals into the store.
+// Merges signals into the signals.
 sse.MergeSignals(`{response: '', answer: 'bread'}`)

@@ -10,7 +10,7 @@ open Microsoft.Net.Http.Headers
 type IServerSentEventHandler =
     interface
         inherit ISendServerEvent
-        inherit IReadRawSignalsStore
+        inherit IReadRawSignals
     end
 
 type  ServerSentEventHttpHandler(httpContext:HttpContext) =
@@ -28,7 +28,7 @@ type  ServerSentEventHttpHandler(httpContext:HttpContext) =
 
     member _.HttpContext = httpContext
 
-    static member ReadRawSignalStore (httpRequest:HttpRequest) : ValueTask<Result<string, exn>> =
+    static member ReadRawSignals (httpRequest:HttpRequest) : ValueTask<Result<string, exn>> =
         let retrieveTask =
             match httpRequest.Method with
             | System.Net.WebRequestMethods.Http.Get ->
@@ -56,5 +56,5 @@ type  ServerSentEventHttpHandler(httpContext:HttpContext) =
             let bytes = Encoding.UTF8.GetBytes(event)
             this.HttpContext.Response.BodyWriter.WriteAsync(bytes).AsTask()
 
-    interface IReadRawSignalsStore with
-        member this.ReadRawSignalStore () = ServerSentEventHttpHandler.ReadRawSignalStore(this.HttpContext.Request)
+    interface IReadRawSignals with
+        member this.ReadRawSignals () = ServerSentEventHttpHandler.ReadRawSignals(this.HttpContext.Request)

@@ -1,29 +1,28 @@
 // Authors: Delaney Gillilan
 // Icon: material-symbols:settings-input-antenna
-// Slug: Merge fine grain signals store data from a server using the Datastar SDK interface
-// Description: Merge store data from a server using the Datastar SDK interface
+// Slug: Remove signals using a Server-Sent Event
+// Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { EventTypes } from "../../../../engine/consts";
+import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 import { WatcherPlugin } from "../../../../engine/types";
 import { datastarSSEEventWatcher } from "./sseShared";
 
 export const RemoveSignals: WatcherPlugin = {
-    pluginType: "watcher",
-    name: EventTypes.RemoveSignals,
-    onGlobalInit: async (ctx) => {
-        datastarSSEEventWatcher(
-            EventTypes.RemoveSignals,
-            ({ paths: pathsRaw = "" }) => {
-                // replace all whitespace with a single space
-                pathsRaw = pathsRaw.replaceAll(/\s+/g, " ");
-                if (!!!pathsRaw?.length) {
-                    // No paths provided for remove-signals
-                    throw ERR_BAD_ARGS;
-                }
-                const paths = pathsRaw.split(" ");
-                ctx.removeSignals(...paths);
-            },
-        );
-    },
+  pluginType: PluginType.Watcher,
+  name: EventTypes.RemoveSignals,
+  onGlobalInit: async (ctx) => {
+    datastarSSEEventWatcher(
+      EventTypes.RemoveSignals,
+      ({ paths: pathsRaw = "" }) => {
+        const paths = pathsRaw.split("\n").map((p) => p.trim());
+        if (!!!paths?.length) {
+          // No paths provided for remove-signals
+          throw ERR_BAD_ARGS;
+        }
+        ctx.removeSignals(...paths);
+      }
+    );
+  },
 };

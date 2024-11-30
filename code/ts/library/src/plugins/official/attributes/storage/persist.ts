@@ -5,11 +5,12 @@
 
 import { AttributePlugin } from "../../../../engine";
 import { DATASTAR, DATASTAR_EVENT } from "../../../../engine/consts";
+import { PluginType } from "../../../../engine/enums";
 import { remoteSignals } from "../../../../utils/signals";
 import { DatastarSSEEvent } from "../../watchers/backend/sseShared";
 
 export const Persist: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType:PluginType.Attribute,
     name: "persist",
     allowedModifiers: new Set(["local", "session", "remote"]),
     onLoad: (ctx) => {
@@ -29,66 +30,66 @@ export const Persist: AttributePlugin = {
         const storageType = ctx.modifiers.has("session") ? "session" : "local";
         const useRemote = ctx.modifiers.has("remote");
 
-        const storeUpdateHandler = ((_: CustomEvent<DatastarSSEEvent>) => {
-            let store = ctx.store();
+        const signalsUpdateHandler = ((_: CustomEvent<DatastarSSEEvent>) => {
+            let signals = ctx.signals();
             if (useRemote) {
-                store = remoteSignals(store);
+                signals = remoteSignals(signals);
             }
             if (keys.size > 0) {
-                const newStore: Record<string, any> = {};
+                const newSignals: Record<string, any> = {};
                 for (const key of keys) {
                     const parts = key.split(".");
-                    let newSubstore = newStore;
-                    let subStore = store;
+                    let newSubSignals = newSignals;
+                    let subSignals = signals;
                     for (let i = 0; i < parts.length - 1; i++) {
                         const part = parts[i];
-                        if (!newSubstore[part]) {
-                            newSubstore[part] = {};
+                        if (!newSubSignals[part]) {
+                            newSubSignals[part] = {};
                         }
-                        newSubstore = newSubstore[part];
-                        subStore = subStore[part];
+                        newSubSignals = newSubSignals[part];
+                        subSignals = subSignals[part];
                     }
 
                     const lastPart = parts[parts.length - 1];
-                    newSubstore[lastPart] = subStore[lastPart];
+                    newSubSignals[lastPart] = subSignals[lastPart];
                 }
-                store = newStore;
+                signals = newSignals;
             }
 
-            const marshalledStore = JSON.stringify(store);
+            const marshalledSignals = JSON.stringify(signals);
 
-            if (marshalledStore === lastMarshalled) {
+            if (marshalledSignals === lastMarshalled) {
                 return;
             }
 
             if (storageType === "session") {
-                window.sessionStorage.setItem(key, marshalledStore);
+                window.sessionStorage.setItem(key, marshalledSignals);
             } else {
-                window.localStorage.setItem(key, marshalledStore);
+                window.localStorage.setItem(key, marshalledSignals);
             }
 
-            lastMarshalled = marshalledStore;
+            lastMarshalled = marshalledSignals;
         }) as EventListener;
 
-        window.addEventListener(DATASTAR_EVENT, storeUpdateHandler);
+        window.addEventListener(DATASTAR_EVENT, signalsUpdateHandler);
 
-        let marshalledStore: string | null;
+        let marshalledSignals: string | null;
 
         if (storageType === "session") {
-            marshalledStore = window.sessionStorage.getItem(key);
+            marshalledSignals = window.sessionStorage.getItem(key);
         } else {
-            marshalledStore = window.localStorage.getItem(key);
+            marshalledSignals = window.localStorage.getItem(key);
         }
 
-        if (!!marshalledStore) {
-            const store = JSON.parse(marshalledStore);
-            for (const key in store) {
-                ctx.upsertSignal(key, store[key]);
+        if (!!marshalledSignals) {
+            const signals = JSON.parse(marshalledSignals);
+            for (const key in signals) {
+                ctx.upsertSignal(key, signals[key]);
             }
         }
 
         return () => {
-            window.removeEventListener(DATASTAR_EVENT, storeUpdateHandler);
+            window.removeEventListener(DATASTAR_EVENT, signalsUpdateHandler);
         };
     },
 };

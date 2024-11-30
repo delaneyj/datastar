@@ -4,9 +4,10 @@
 // Description: Sage advice for the weary traveler
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const Star: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType:PluginType.Attribute,
     name: "star",
     onLoad: () => {
         alert("YOU ARE PROBABLY OVERCOMPLICATING IT");

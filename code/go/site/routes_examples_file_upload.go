@@ -17,13 +17,13 @@ import (
 func setupExamplesFileUpload(examplesRouter chi.Router) error {
 
 	examplesRouter.Get("/file_upload/data", func(w http.ResponseWriter, r *http.Request) {
-		store := &FileUploadStore{
+		signals := &FileUploadSignals{
 			FilesBase64: []string{},
 			FileMimes:   []string{},
 			FileNames:   []string{},
 		}
 		sse := datastar.NewSSE(w, r)
-		sse.MergeFragmentTempl(FileUploadView(store))
+		sse.MergeFragmentTempl(FileUploadView(signals))
 	})
 
 	examplesRouter.Post("/file_upload/upload", func(w http.ResponseWriter, r *http.Request) {
@@ -41,14 +41,14 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 		}
 
 		sse := datastar.NewSSE(w, r)
-		store := &FileUploadStore{}
-		if err := json.Unmarshal(data, store); err != nil {
+		signals := &FileUploadSignals{}
+		if err := json.Unmarshal(data, signals); err != nil {
 			sse.ConsoleError(fmt.Errorf("error unmarshalling json: %w", err))
 			return
 		}
 
-		files := make([][]byte, len(store.FilesBase64))
-		for i, file := range store.FilesBase64 {
+		files := make([][]byte, len(signals.FilesBase64))
+		for i, file := range signals.FilesBase64 {
 			data, err := base64.StdEncoding.DecodeString(file)
 			if err != nil {
 				http.Error(w, err.Error(), http.StatusBadRequest)
@@ -65,7 +65,7 @@ func setupExamplesFileUpload(examplesRouter chi.Router) error {
 			humainzeByteCount[i] = humanize.Bytes(uint64(len(file)))
 		}
 
-		sse.MergeFragmentTempl(FileUploadResults(store, humainzeByteCount, humanizedHashes))
+		sse.MergeFragmentTempl(FileUploadResults(signals, humainzeByteCount, humanizedHashes))
 	})
 
 	return nil

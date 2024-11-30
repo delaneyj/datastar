@@ -48,26 +48,26 @@ def page_footer():
     Div("FastHTML - DataStar", id="footer")
   )
 
-def page_main(store):
+def page_main(signals):
   return Main(
   Div(
     Input(type="text", placeholder="Send to server...", data_model="input"),
-    Button("Send State Roundtrip", data_on_click='$get("/get")'),
-    Button("Target HTML Element", data_on_click='$get("/target")'),
+    Button("Send State Roundtrip", data_on_click='@get("/get")'),
+    Button("Target HTML Element", data_on_click='@get("/target")'),
     Button("Toggle Feed", data_on_click="$show=!$show"),
     Div(id="output", data_text="$output"),
     Div(id=f"{target}"),
     Div(
       Span("Feed from server: "),
-      Span(id="feed", **{'data-on-load':"$get('/feed')"}),
+      Span(id="feed", **{'data-on-load':"@get('/feed')"}),
       **{"data-show.duration_500ms":"$show"},
     ),
   ),
   id="main",
-  data_store=f'{json.dumps(store)}'
+  data_signals=f'{json.dumps(signals)}'
   )
 
-def page(store):
+def page(signals):
   return Html(
     Head(
         Title("FastHTML - DataStar"),
@@ -78,7 +78,7 @@ def page(store):
       ),
     Body(
         page_header(),
-        page_main(store),
+        page_main(signals),
         page_footer(),
       )
     )
@@ -153,17 +153,17 @@ class SingleDatastarEventMessage:
 # Routes
 @rt('/')
 async def get():
-  store = {'input': '', 'output': '', 'show': True}
+  signals = {'input': '', 'output': '', 'show': True}
 
-  return page(store)
+  return page(signals)
 
 @app.get("/get")
 async def get(req):
   query_params = req.query_params.get('datastar')
-  store = json.loads(query_params)
-  store['output'] = f"Your input: {store['input']}, is {len(store['input'])} long."
-  event_data = json.dumps(store)
-  fragment = f"<div id='main' data-store='{event_data}'></div>"
+  signals = json.loads(query_params)
+  signals['output'] = f"Your input: {signals['input']}, is {len(signals['input'])} long."
+  event_data = json.dumps(signals)
+  fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
 
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")

@@ -4,6 +4,7 @@
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 import { argsHas, argsToMs } from "../../../../utils/arguments";
 import { remoteSignals } from "../../../../utils/signals";
@@ -21,11 +22,11 @@ const knownOnModifiers = new Set([
     "outside",
 ]);
 
-let lastStoreMarshalled = "";
+let lastSignalsMarshalled = "";
 
 // Sets the event listener of the element
 export const On: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "on",
     mustNotEmptyKey: true,
     mustNotEmptyExpression: true,
@@ -118,16 +119,16 @@ export const On: AttributePlugin = {
                     if (rafId) cancelAnimationFrame(rafId);
                 };
 
-            case "store-change":
+            case "signals-change":
                 return ctx.reactivity.effect(() => {
-                    const store = ctx.store();
-                    let storeValue = store.value;
+                    const signals = ctx.signals();
+                    let signalsValue = signals.value;
                     if (ctx.modifiers.has("remote")) {
-                        storeValue = remoteSignals(storeValue);
+                        signalsValue = remoteSignals(signalsValue);
                     }
-                    const current = JSON.stringify(storeValue);
-                    if (lastStoreMarshalled !== current) {
-                        lastStoreMarshalled = current;
+                    const current = JSON.stringify(signalsValue);
+                    if (lastSignalsMarshalled !== current) {
+                        lastSignalsMarshalled = current;
                         callback();
                     }
                 });

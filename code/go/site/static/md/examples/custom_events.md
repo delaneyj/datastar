@@ -2,7 +2,7 @@
 
 ## Demo
 
-<div data-store="{eventCount:0,eventDetails:''}">
+<div data-merge-signals="{eventCount:0,eventDetails:''}">
      <div id="foo" data-on-myevent="$eventDetails=evt.detail;$eventCount++">
           <div>Event count: <span data-text="$eventCount">EventCount</span></div>
           <div>Last Event Details: <span data-text="$eventDetails">EventTime</span></div>
@@ -22,7 +22,7 @@
 ## Explanation
 
 ```html
-<div data-store="{eventCount:0,eventDetails:''}">
+<div data-merge-signals="{eventCount:0,eventDetails:''}">
   <div id="foo" data-on-myevent="$eventCount++; $eventDetails=evt.detail">
     <div>Event count: <span data-text="$eventCount">EventCount</span></div>
     <div>
@@ -46,7 +46,7 @@
 </div>
 ```
 
-Datastar `data-on-*` plugin can listen to any event, including custom events. In this example, we are listening to a custom event `myevent` on the `foo` element. When the event is triggered, the event details are stored in the `eventDetails` store and the `eventCount` store is incremented. The event is triggered every second using `setInterval` in the script tag.
+Datastar `data-on-*` plugin can listen to any event, including custom events. In this example, we are listening to a custom event `myevent` on the `foo` element. When the event is triggered, the event details are signalsd in the `eventDetails` signals and the `eventCount` signals is incremented. The event is triggered every second using `setInterval` in the script tag.
 
 This is primarily used when interacting with Web Components or other custom elements that emit custom events.
 

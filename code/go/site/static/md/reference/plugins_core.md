@@ -6,23 +6,23 @@ These are the only plugins that are required in order to have a working system. 
 
 ## Attributes Plugins
 
-### Store
+### Signals
 
 ```html
-<div data-store="{foo:1234}"></div>
+<div data-merge-signals="{foo:1234}"></div>
 ```
 
-Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It then merges the contents into the store. This can be used anywhere as the store is a global singleton. All keys are converted into signals, works with nested objects.
+Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It then merges the contents into the signals. This can be used anywhere as the signals is a global singleton. All keys are converted into signals, works with nested objects.
 
 <div class="alert alert-info">
     <div>
-        Note that `value` and `peek` are reserved words (imposed by the signals library) and cannot be used as store names.
+        Note that `value` and `peek` are reserved words (imposed by the signals library) and cannot be used as signals names.
     </div>
 </div>
 
 #### Modifiers
 
-- `.ifmissing` - Only set the store if the key does not exist. This is useful for setting defaults without overwriting existing values.
+- `.ifmissing` - Only set the signals if the key does not exist. This is useful for setting defaults without overwriting existing values.
 
 ### Computed
 
@@ -30,7 +30,7 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 <div data-computed-blinker="$count % 2 === 0"></div>
 ```
 
-Allows you to define a computed store value that automatically updates its value based on an expression. This can be used to drive other reactive behaviors, such as updating classes or text content in the DOM.
+Allows you to define a computed signals value that automatically updates its value based on an expression. This can be used to drive other reactive behaviors, such as updating classes or text content in the DOM.
 
 ### Ref
 
@@ -38,18 +38,14 @@ Allows you to define a computed store value that automatically updates its value
 <div data-ref="foo"></div>
 ```
 
-Makes an element available as a signal in the store.
+Makes an element available as a signal in the signals.
 
-## Preprocessor Plugins
+## Macro Plugins
 
-### SignalProcessor
+### SignalMacro
 
-Takes a `$var` and converts into a `ctx.store().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
+Takes a `$var` and converts into a `ctx.signals().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
 
-### ActionProcessor
+### ActionMacro
 
 Takes a `$fn('foo','bar',1234)` and converts into a `ctx.actions.fn('foo','bar',1234()`. This is used to trigger actions plugins.
-
-### RefProcessor
-
-Takes a `~foo` and converts into a `ctx.refs.foo`. This is used to access refs similar to how you would in a Vue or Svelte components.

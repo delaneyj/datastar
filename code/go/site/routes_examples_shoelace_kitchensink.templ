@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-type ShoelaceKitchensinkStore struct {
+type ShoelaceKitchensinkSignals struct {
 	Nested *ShoelaceKitchensinkNested `json:"nested"`
 }
 
@@ -20,16 +20,16 @@ type ShoelaceKitchensinkOption struct {
 	Value uint32 `json:"value"`
 }
 
-templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOption, store *ShoelaceKitchensinkStore) {
+templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOption, signals *ShoelaceKitchensinkSignals) {
 	<div
 		id="shoelace_kitchensink"
 		class="flex flex-col gap-4 sl-theme-dark"
-		data-store={ templ.JSONString(store) }
+		data-merge-signals={ templ.JSONString(signals) }
 	>
-		<sl-input label="Label" data-model="nested.label"></sl-input>
+		<sl-input label="Label" data-bind="nested.label"></sl-input>
 		<sl-select
 			label="Select"
-			data-model="nested.selection"
+			data-bind="nested.selection"
 			data-on-sl-change="console.log('change')"
 		>
 			for _, o := range options {
@@ -41,10 +41,10 @@ templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOpti
 				<sl-radio value={ fmt.Sprint(o.Value) }>{ o.Label } ({ fmt.Sprint(o.Value) })</sl-radio>
 			}
 		</sl-radio-group>
-		<sl-checkbox data-model="nested.isChecked">Checkbox</sl-checkbox>
+		<sl-checkbox data-bind="nested.isChecked">Checkbox</sl-checkbox>
 		<sl-button
 			variant="primary"
-			data-on-click={ fmt.Sprintf("$post('%s')", r.URL.Path) }
+			data-on-click={ fmt.Sprintf("@post('%s')", r.URL.Path) }
 		>Submit</sl-button>
 	</div>
 }

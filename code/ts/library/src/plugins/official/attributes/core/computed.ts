@@ -4,20 +4,21 @@
 // Description: This attribute creates a computed signal that updates when its dependencies change.
 
 import { AttributePlugin } from "../../../../engine";
+import { PluginType } from "../../../../engine/enums";
 
 export const Computed: AttributePlugin = {
-    pluginType: "attribute",
+    pluginType: PluginType.Attribute,
     name: "computed",
     mustNotEmptyKey: true,
     onLoad: (ctx) => {
-        const store = ctx.store();
-        store[ctx.key] = ctx.reactivity.computed(() => {
+        const signals = ctx.signals();
+        signals[ctx.key] = ctx.reactivity.computed(() => {
             return ctx.expressionFn(ctx);
         });
 
         return () => {
-            const store = ctx.store();
-            delete store[ctx.key];
+            const signals = ctx.signals();
+            delete signals[ctx.key];
         };
     },
 };

@@ -6,7 +6,7 @@
 
 <div
     id="progress_bar"
-    data-on-load="$get('/examples/progress_bar/data')"
+    data-on-load="@get('/examples/progress_bar/data')"
 >
 </div>
 

@@ -253,7 +253,7 @@ templ SidebarPrevNextLinks(essayGroups []*SidebarGroup, current *SidebarLink) {
 templ codeSnippetFragment(block CodeSnippetBlock) {
 	<div
 		class="flex flex-col gap-2"
-		data-store="{language:'go'}"
+		data-merge-signals="{language:'go'}"
 	>
 		<div class="flex justify-end -mb-8">
 			<div class="join">
@@ -281,9 +281,9 @@ templ codeSnippetFragment(block CodeSnippetBlock) {
 	</div>
 }
 
-templ templStoreJSON() {
+templ templSignalsJSON() {
 	<div>
-		<pre data-text="JSON.stringify(ctx.store(),null,2)"></pre>
+		<pre data-text="JSON.stringify(ctx.signals(),null,2)"></pre>
 	</div>
 }
 
