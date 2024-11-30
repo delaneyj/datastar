@@ -39,7 +39,7 @@
     ...
   </div>
   <code>
-    <pre data-text="JSON.stringify(ctx.signals,null,2)"></pre>
+    <pre data-text="ctx.signals.JSON()"></pre>
   </code>
 </div>
 ```
