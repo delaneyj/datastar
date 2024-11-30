@@ -1,7 +1,5 @@
 import { consistentUniqID } from "../utils/dom";
-import { DeepSignal, deepSignal, DeepState } from "../vendored/deepsignal";
 import { computed, effect, Signal, signal } from "../vendored/preact-core";
-import { apply } from "../vendored/ts-merge-patch";
 import { PluginType } from "./enums";
 
 import {
@@ -36,11 +34,9 @@ const isAttributePlugin = (p: DatastarPlugin): p is AttributePlugin =>
 const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
   p.pluginType === PluginType.Action;
 
-export * from "./enums";
-
 export class Engine {
   plugins: AttributePlugin[] = [];
-  signals: DeepSignal<any> = deepSignal({});
+  signals: any = {};
   macros = new Array<MacroPlugin>();
   actions: ActionPlugins = {};
   watchers = new Array<WatcherPlugin>();
@@ -126,64 +122,75 @@ export class Engine {
     }
   }
 
-  lastMarshalledSignals = "";
-  private mergeSignals<T extends object>(mergeSignals: T) {
+  lastMarshalledStore = "";
+  private mergeSignals<T extends object>(signalsToMerge: T) {
     this.mergeRemovals.forEach((removal) => removal());
     this.mergeRemovals = this.mergeRemovals.slice(0);
 
-    const revisedSignals = apply(this.signals.value, mergeSignals) as DeepState;
-    this.signals = deepSignal(revisedSignals);
+    // Dot notation to object
+    const objectToKeys = (obj: any, prefix = "") => {
+      const keys: { k: string; v: any }[] = [];
+      Object.entries(obj).forEach(([k, v]) => {
+        k = prefix ? `${prefix}.${k}` : k;
+        if (typeof v === "object") {
+          keys.push(...objectToKeys(v, k));
+        } else {
+          keys.push({ k, v });
+        }
+      });
+      return keys;
+    };
+    objectToKeys(signalsToMerge).forEach(({ k, v }) => this.upsertSignal(k, v));
 
-    const marshalledSignals = JSON.stringify(this.signals.value);
-    if (marshalledSignals === this.lastMarshalledSignals) return;
+    const marshalledStore = JSON.stringify(this.signals);
+    if (marshalledStore === this.lastMarshalledStore) return;
+    this.lastMarshalledStore = marshalledStore;
   }
 
   private removeSignals(...keys: string[]) {
-    const revisedSignals = { ...this.signals.value };
+    const revisedStore = { ...this.signals };
     let found = false;
     for (const key of keys) {
       const parts = key.split(".");
       let currentID = parts[0];
-      let subSignals = revisedSignals;
+      let subStore = revisedStore;
+
       for (let i = 1; i < parts.length; i++) {
         const part = parts[i];
-        if (!subSignals[currentID]) {
-          subSignals[currentID] = {};
-        }
-        subSignals = subSignals[currentID];
         currentID = part;
+        subStore = subStore[currentID];
       }
-      delete subSignals[currentID];
+      delete subStore[currentID];
       found = true;
     }
     if (!found) return;
-    this.signals = deepSignal(revisedSignals);
+    this.signals = revisedStore;
     this.applyPlugins(document.body);
   }
 
   private upsertSignal<T>(path: string, value: T) {
     const parts = path.split(".");
-    let subSignals = this.signals as any;
+    let subStore = this.signals;
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!subSignals[part]) {
-        subSignals[part] = {};
+      if (!subStore[part]) {
+        subStore[part] = {};
       }
-      subSignals = subSignals[part];
+      subStore = subStore[part];
     }
     const last = parts[parts.length - 1];
 
-    const current = subSignals[last];
+    const current = subStore[last];
     if (!!current) return current;
 
     const signal = this.reactivity.signal(value);
-    subSignals[last] = signal;
+    subStore[last] = signal;
 
     return signal;
   }
 
   private applyPlugins(rootElement: Element) {
-    const appliedProcessors = new Set<MacroPlugin>();
+    const appliedMacros = new Set<MacroPlugin>();
 
     this.plugins.forEach((p, pi) => {
       this.walkDownDOM(rootElement, (el) => {
@@ -199,7 +206,7 @@ export class Engine {
             el.id = consistentUniqID(el);
           }
 
-          appliedProcessors.clear();
+          appliedMacros.clear();
 
           if (p.allowedTagRegexps) {
             const lowerCaseTag = el.tagName.toLowerCase();
@@ -266,8 +273,8 @@ export class Engine {
             ...(p.macros?.post || []),
           ];
           for (const processor of processors) {
-            if (appliedProcessors.has(processor)) continue;
-            appliedProcessors.add(processor);
+            if (appliedMacros.has(processor)) continue;
+            appliedMacros.add(processor);
 
             const expressionParts = expression.split(splitRegex);
             const revisedParts: string[] = [];
