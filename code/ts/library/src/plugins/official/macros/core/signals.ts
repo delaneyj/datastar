@@ -2,7 +2,7 @@ import { MacroPlugin, RegexpGroups } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 import { wholePrefixSuffix } from "../../../../utils/regex";
 
-// Replacing $signal with ctx.store.signal.value`
+// Replacing $signal with ctx.signals.signal.value`
 export const SignalsMacro: MacroPlugin = {
   name: "signal",
   pluginType: PluginType.Macro,

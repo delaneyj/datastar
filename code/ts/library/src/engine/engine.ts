@@ -41,11 +41,7 @@ export class Engine {
   actions: ActionPlugins = {};
   watchers = new Array<WatcherPlugin>();
   refs: Record<string, HTMLElement> = {};
-  reactivity: Reactivity = {
-    signal,
-    computed,
-    effect,
-  };
+  reactivity: Reactivity = { signal, computed, effect };
   removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>();
   mergeRemovals = new Array<OnRemovalFn>();
 
@@ -95,7 +91,7 @@ export class Engine {
 
       if (globalInitializer) {
         globalInitializer({
-          signals: this.signals,
+          signals: this.signals.bind(this),
           upsertSignal: this.upsertSignal.bind(this),
           mergeSignals: this.mergeSignals.bind(this),
           removeSignals: this.removeSignals.bind(this),
@@ -122,7 +118,7 @@ export class Engine {
     }
   }
 
-  lastMarshalledStore = "";
+  lastMarshalledSignals = "";
   private mergeSignals<T extends object>(signalsToMerge: T) {
     this.mergeRemovals.forEach((removal) => removal());
     this.mergeRemovals = this.mergeRemovals.slice(0);
@@ -142,49 +138,49 @@ export class Engine {
     };
     objectToKeys(signalsToMerge).forEach(({ k, v }) => this.upsertSignal(k, v));
 
-    const marshalledStore = JSON.stringify(this.signals);
-    if (marshalledStore === this.lastMarshalledStore) return;
-    this.lastMarshalledStore = marshalledStore;
+    const marshalledSignals = JSON.stringify(this.signals);
+    if (marshalledSignals === this.lastMarshalledSignals) return;
+    this.lastMarshalledSignals = marshalledSignals;
   }
 
   private removeSignals(...keys: string[]) {
-    const revisedStore = { ...this.signals };
+    const revisedSignals = { ...this.signals };
     let found = false;
     for (const key of keys) {
       const parts = key.split(".");
       let currentID = parts[0];
-      let subStore = revisedStore;
+      let subSignals = revisedSignals;
 
       for (let i = 1; i < parts.length; i++) {
         const part = parts[i];
         currentID = part;
-        subStore = subStore[currentID];
+        subSignals = subSignals[currentID];
       }
-      delete subStore[currentID];
+      delete subSignals[currentID];
       found = true;
     }
     if (!found) return;
-    this.signals = revisedStore;
+    this.signals = revisedSignals;
     this.applyPlugins(document.body);
   }
 
   private upsertSignal<T>(path: string, value: T) {
     const parts = path.split(".");
-    let subStore = this.signals;
+    let subSignals = this.signals;
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
-      if (!subStore[part]) {
-        subStore[part] = {};
+      if (!subSignals[part]) {
+        subSignals[part] = {};
       }
-      subStore = subStore[part];
+      subSignals = subSignals[part];
     }
     const last = parts[parts.length - 1];
 
-    const current = subStore[last];
+    const current = subSignals[last];
     if (!!current) return current;
 
     const signal = this.reactivity.signal(value);
-    subStore[last] = signal;
+    subSignals[last] = signal;
 
     return signal;
   }
