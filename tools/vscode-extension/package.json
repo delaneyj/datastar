@@ -1,0 +1,32 @@
+{
+  "name": "datastar-vscode-support",
+  "version": "1.0.0",
+  "displayName": "Datastar Support",
+  "description": "Adds autocomplete support for Datastar to Visual Studio Code.",
+  "author": "Ben Croker",
+  "publisher": "starfederation",
+  "license": "MIT",
+  "repository": "https://github.com/starfederation/datastar-vscode-support",
+  "icon": "./src/icon.png",
+  "galleryBanner": {
+    "color": "#bee3f8",
+    "theme": "light"
+  },
+  "engines": {
+    "vscode": "^1.63.0"
+  },
+  "contributes": {
+    "html": {
+      "customData": [
+        "./src/datastar-support.json"
+      ]
+    }
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^2.19.0"
+  },
+  "scripts": {
+    "build": "npm exec vsce package",
+    "publish": "npm exec vsce publish $npm_package_version"
+  }
+}
