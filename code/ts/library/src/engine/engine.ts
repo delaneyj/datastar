@@ -36,7 +36,7 @@ const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
 
 export class Engine {
   plugins: AttributePlugin[] = [];
-  signals: any = {};
+  private _signals: any = {};
   macros = new Array<MacroPlugin>();
   actions: ActionPlugins = {};
   watchers = new Array<WatcherPlugin>();
@@ -90,8 +90,11 @@ export class Engine {
       }
 
       if (globalInitializer) {
+        const { _signals } = this;
         globalInitializer({
-          signals: this.signals.bind(this),
+          get signals() {
+            return _signals;
+          },
           upsertSignal: this.upsertSignal.bind(this),
           mergeSignals: this.mergeSignals.bind(this),
           removeSignals: this.removeSignals.bind(this),
@@ -138,13 +141,13 @@ export class Engine {
     };
     objectToKeys(signalsToMerge).forEach(({ k, v }) => this.upsertSignal(k, v));
 
-    const marshalledSignals = JSON.stringify(this.signals);
+    const marshalledSignals = JSON.stringify(this._signals);
     if (marshalledSignals === this.lastMarshalledSignals) return;
     this.lastMarshalledSignals = marshalledSignals;
   }
 
   private removeSignals(...keys: string[]) {
-    const revisedSignals = { ...this.signals };
+    const revisedSignals = { ...this._signals };
     let found = false;
     for (const key of keys) {
       const parts = key.split(".");
@@ -160,13 +163,13 @@ export class Engine {
       found = true;
     }
     if (!found) return;
-    this.signals = revisedSignals;
+    this._signals = revisedSignals;
     this.applyPlugins(document.body);
   }
 
   private upsertSignal<T>(path: string, value: T) {
     const parts = path.split(".");
-    let subSignals = this.signals;
+    let subSignals = this._signals;
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i];
       if (!subSignals[part]) {
@@ -293,8 +296,11 @@ export class Engine {
             expression = revisedParts.join("; ");
           }
 
+          const { _signals } = this;
           const ctx: AttributeContext = {
-            signals: () => this.signals,
+            get signals() {
+              return _signals;
+            },
             mergeSignals: this.mergeSignals.bind(this),
             upsertSignal: this.upsertSignal.bind(this),
             removeSignals: this.removeSignals.bind(this),
@@ -385,7 +391,7 @@ export class Engine {
   }
 
   private walkMySignals(callback: (name: string, signal: Signal<any>) => void) {
-    this.walkSignals(this.signals, callback);
+    this.walkSignals(this._signals, callback);
   }
 
   private walkDownDOM(

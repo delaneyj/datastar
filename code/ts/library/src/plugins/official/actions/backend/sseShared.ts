@@ -42,8 +42,7 @@ export function sendSSERequest(method: string): ActionMethod {
       },
       args?.headers
     );
-    const currentSignals = ctx.signals.value;
-    let signals = Object.assign({}, currentSignals);
+    let signals = Object.assign({}, ctx.signals);
     if (onlyRemoteSignals) {
       signals = remoteSignals(signals);
     }
