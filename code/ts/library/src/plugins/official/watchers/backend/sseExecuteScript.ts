@@ -6,9 +6,9 @@
 import { WatcherPlugin } from "../../../../engine/types";
 
 import {
-  DefaultExecuteScriptAttributes,
-  DefaultExecuteScriptAutoRemove,
   EventTypes,
+  executeScriptAttributes,
+  executeScriptAutoRemove,
 } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
@@ -22,8 +22,8 @@ export const ExecuteScript: WatcherPlugin = {
     datastarSSEEventWatcher(
       EventTypes.ExecuteScript,
       ({
-        autoRemove: autoRemoveRaw = `${DefaultExecuteScriptAutoRemove}`,
-        attributes: attributesRaw = DefaultExecuteScriptAttributes,
+        autoRemove: autoRemoveRaw = `${executeScriptAutoRemove}`,
+        attributes: attributesRaw = executeScriptAttributes,
         script,
       }) => {
         const autoRemove = isBoolString(autoRemoveRaw);
@@ -43,7 +43,7 @@ export const ExecuteScript: WatcherPlugin = {
         if (autoRemove) {
           scriptEl.remove();
         }
-      },
+      }
     );
   },
 };

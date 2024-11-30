@@ -8,18 +8,22 @@ import { DATASTAR, DATASTAR_EVENT } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
 import { DatastarSSEEvent } from "../../watchers/backend/sseShared";
 
+const SESSION = "session";
+const LOCAL = "local";
+const REMOTE = "remote";
+
 export const Persist: AttributePlugin = {
   type: PluginType.Attribute,
   name: "persist",
-  allowedModifiers: new Set(["local", "session", "remote"]),
+  onlyMods: new Set([LOCAL, SESSION, REMOTE]),
   onLoad: (ctx) => {
-    const { signals, expressionFn } = ctx;
+    const { signals, expr } = ctx;
     const key = ctx.key || DATASTAR;
-    const expression = ctx.expression;
+    const expression = ctx.value;
     const keys = new Set<string>();
 
     if (expression.trim() !== "") {
-      const value = expressionFn(ctx);
+      const value = expr(ctx);
       const parts = value.split(" ");
       for (const part of parts) {
         keys.add(part);
@@ -27,8 +31,8 @@ export const Persist: AttributePlugin = {
     }
 
     let lastMarshalled = "";
-    const storageType = ctx.modifiers.has("session") ? "session" : "local";
-    const useRemote = ctx.modifiers.has("remote");
+    const storageType = ctx.mods.has(SESSION) ? SESSION : LOCAL;
+    const useRemote = ctx.mods.has(REMOTE);
 
     const signalsUpdateHandler = ((_: CustomEvent<DatastarSSEEvent>) => {
       const marshalled = signals.subset(...keys).JSON(false, useRemote);
@@ -37,7 +41,7 @@ export const Persist: AttributePlugin = {
         return;
       }
 
-      if (storageType === "session") {
+      if (storageType === SESSION) {
         window.sessionStorage.setItem(key, marshalled);
       } else {
         window.localStorage.setItem(key, marshalled);
@@ -50,7 +54,7 @@ export const Persist: AttributePlugin = {
 
     let marshalledSignals: string | null;
 
-    if (storageType === "session") {
+    if (storageType === SESSION) {
       marshalledSignals = window.sessionStorage.getItem(key);
     } else {
       marshalledSignals = window.localStorage.getItem(key);

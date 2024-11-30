@@ -10,5 +10,5 @@ import { sendSSERequest } from "./sseShared";
 export const PatchSSE: ActionPlugin = {
   type: PluginType.Action,
   name: "patch",
-  method: sendSSERequest("patch"),
+  fn: sendSSERequest("patch"),
 };

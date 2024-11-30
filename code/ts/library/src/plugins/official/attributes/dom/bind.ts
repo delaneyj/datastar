@@ -21,8 +21,8 @@ export const Bind: AttributePlugin = {
   onLoad: (ctx) => {
     const {
       el,
-      expression,
-      expressionFn,
+      value,
+      expr,
       key,
       signals,
       reactivity: { effect },
@@ -35,10 +35,10 @@ export const Bind: AttributePlugin = {
 
     if (isTwoWayBinding) {
       // I better be tied to a signal
-      if (typeof expression !== "string") {
+      if (typeof value !== "string") {
         throw new Error("Invalid expression");
       }
-      if (expression.includes("$")) {
+      if (value.includes("$")) {
         throw new Error("Not an expression");
       }
 
@@ -46,8 +46,8 @@ export const Bind: AttributePlugin = {
       let signalDefault: string | boolean | number | File = "";
       const isInput = tnl.includes("input");
       const type = el.getAttribute("type");
-      const isCheckbox = tnl.includes("checkbox") ||
-        (isInput && type === "checkbox");
+      const isCheckbox =
+        tnl.includes("checkbox") || (isInput && type === "checkbox");
       if (isCheckbox) {
         signalDefault = false;
       }
@@ -64,14 +64,11 @@ export const Bind: AttributePlugin = {
       if (isRadio) {
         const name = el.getAttribute("name");
         if (!name?.length) {
-          el.setAttribute("name", expression);
+          el.setAttribute("name", value);
         }
       }
 
-      const signal: Signal<any> = signals.upsert(
-        expression,
-        signalDefault,
-      );
+      const signal: Signal<any> = signals.upsert(value, signalDefault);
 
       setFromSignal = () => {
         const hasValue = "value" in el;
@@ -139,13 +136,13 @@ export const Bind: AttributePlugin = {
                 reader.onloadend = () => resolve(void 0);
                 reader.readAsDataURL(f);
               });
-            }),
+            })
           );
 
           signal.value = allContents.join(",");
           const { signals } = ctx;
-          const mimeName = `${expression}Mimes`,
-            nameName = `${expression}Names`;
+          const mimeName = `${value}Mimes`,
+            nameName = `${value}Names`;
           if (mimeName in signals) {
             signals.upsert(mimeName, allMimes);
           }
@@ -164,8 +161,8 @@ export const Bind: AttributePlugin = {
           signal.value = input.value || input.getAttribute("value") || "";
         } else if (typeof current === "boolean") {
           if (isCheckbox) {
-            signal.value = input.checked ||
-              input.getAttribute("checked") === "true";
+            signal.value =
+              input.checked || input.getAttribute("checked") === "true";
           } else {
             signal.value = Boolean(input.value || input.getAttribute("value"));
           }
@@ -190,7 +187,7 @@ export const Bind: AttributePlugin = {
       // tied to an attribute
       const kebabKey = kebabize(key);
       setFromSignal = () => {
-        const value = expressionFn(ctx);
+        const value = expr(ctx);
         let v: string;
         if (typeof value === "string") {
           v = value;

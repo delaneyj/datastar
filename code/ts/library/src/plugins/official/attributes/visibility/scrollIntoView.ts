@@ -27,46 +27,46 @@ const NEAREST = "nearest";
 
 // Scrolls the element into view
 export const ScrollIntoView: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "scrollIntoView",
-    mustHaveEmptyKey: true,
-    mustHaveEmptyExpression: true,
-    allowedModifiers: new Set([
-        SMOOTH,
-        INSTANT,
-        AUTO,
-        HSTART,
-        HCENTER,
-        HEND,
-        HNEAREST,
-        VSTART,
-        VCENTER,
-        VEND,
-        VNEAREST,
-        FOCUS,
-    ]),
+  type: PluginType.Attribute,
+  name: "scrollIntoView",
+  noKey: true,
+  noVal: true,
+  onlyMods: new Set([
+    SMOOTH,
+    INSTANT,
+    AUTO,
+    HSTART,
+    HCENTER,
+    HEND,
+    HNEAREST,
+    VSTART,
+    VCENTER,
+    VEND,
+    VNEAREST,
+    FOCUS,
+  ]),
 
-    onLoad: ({ el, modifiers, rawKey }: AttributeContext) => {
-        if (!el.tabIndex) el.setAttribute("tabindex", "0");
-        const opts: ScrollIntoViewOptions = {
-            behavior: SMOOTH,
-            block: CENTER,
-            inline: CENTER,
-        };
-        if (modifiers.has(SMOOTH)) opts.behavior = SMOOTH;
-        if (modifiers.has(INSTANT)) opts.behavior = INSTANT;
-        if (modifiers.has(AUTO)) opts.behavior = AUTO;
-        if (modifiers.has(HSTART)) opts.inline = START;
-        if (modifiers.has(HCENTER)) opts.inline = CENTER;
-        if (modifiers.has(HEND)) opts.inline = END;
-        if (modifiers.has(HNEAREST)) opts.inline = NEAREST;
-        if (modifiers.has(VSTART)) opts.block = START;
-        if (modifiers.has(VCENTER)) opts.block = CENTER;
-        if (modifiers.has(VEND)) opts.block = END;
-        if (modifiers.has(VNEAREST)) opts.block = NEAREST;
+  onLoad: ({ el, mods, rawKey }: AttributeContext) => {
+    if (!el.tabIndex) el.setAttribute("tabindex", "0");
+    const opts: ScrollIntoViewOptions = {
+      behavior: SMOOTH,
+      block: CENTER,
+      inline: CENTER,
+    };
+    if (mods.has(SMOOTH)) opts.behavior = SMOOTH;
+    if (mods.has(INSTANT)) opts.behavior = INSTANT;
+    if (mods.has(AUTO)) opts.behavior = AUTO;
+    if (mods.has(HSTART)) opts.inline = START;
+    if (mods.has(HCENTER)) opts.inline = CENTER;
+    if (mods.has(HEND)) opts.inline = END;
+    if (mods.has(HNEAREST)) opts.inline = NEAREST;
+    if (mods.has(VSTART)) opts.block = START;
+    if (mods.has(VCENTER)) opts.block = CENTER;
+    if (mods.has(VEND)) opts.block = END;
+    if (mods.has(VNEAREST)) opts.block = NEAREST;
 
-        scrollIntoView(el, opts, modifiers.has("focus"));
-        delete el.dataset[rawKey];
-        return () => {};
-    },
+    scrollIntoView(el, opts, mods.has("focus"));
+    delete el.dataset[rawKey];
+    return () => {};
+  },
 };

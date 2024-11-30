@@ -27,10 +27,10 @@ export type AttributeContext = InitContext & {
   el: Readonly<HTMLorSVGElement>; // The element the attribute is on
   key: Readonly<string>; // data-* key without the prefix or modifiers
   rawKey: Readonly<string>; // raw data-* key
-  rawExpression: Readonly<string>; // before any macros run, what the user wrote
-  expression: Readonly<string>; // what the user wrote after any macros run
-  expressionFn: AttribtueExpressionFunction; // the function constructed from the expression
-  modifiers: Map<string, string[]>; // the modifiers and their arguments
+  rawValue: Readonly<string>; // before any macros run, what the user wrote
+  value: Readonly<string>; // what the user wrote after any macros run
+  expr: AttribtueExpressionFunction; // a reactive function
+  mods: Map<string, string[]>; // the modifiers and their arguments
 };
 
 export type OnRemovalFn = () => void;
@@ -46,20 +46,19 @@ export interface AttributePlugin extends DatastarPlugin {
   type: PluginType;
   onGlobalInit?: (ctx: InitContext) => void; // Called once on registration of the plugin
   onLoad: (ctx: AttributeContext) => OnRemovalFn | void; // Return a function to be called on removal
-  allowedModifiers?: Set<string>; // If not provided, all modifiers are allowed
-  mustHaveEmptyExpression?: boolean; // The contents of the data-* attribute must be empty
-  mustNotEmptyExpression?: boolean; // The contents of the data-* attribute must not be empty
-  mustHaveEmptyKey?: boolean; // The key of the data-* attribute must be empty after the prefix
-  mustNotEmptyKey?: boolean; // The key of the data-* attribute must not be empty after the prefix
-  allowedTagRegexps?: Set<string>; // If not provided, all tags are allowed
-  disallowedTags?: Set<string>; // If not provided, no tags are disallowed
+  onlyMods?: Set<string>; // If not provided, all modifiers are allowed
+  noVal?: boolean; // The contents of the data-* attribute must be empty
+  mustValue?: boolean; // The contents of the data-* attribute must not be empty
+  noKey?: boolean; // The key of the data-* attribute must be empty after the prefix
+  mustKey?: boolean; // The key of the data-* attribute must not be empty after the prefix
+  tags?: Set<string>; // If not provided, all tags are allowed
+  badTags?: Set<string>; // If not provided, no tags are disallowed
   macros?: {
     pre?: MacroPlugin[];
     post?: MacroPlugin[];
   };
-  removeNewLines?: boolean; // If true, the expression is not split by commas
-  bypassExpressionFunctionCreation?: (ctx: AttributeContext) => boolean; // If true, the expression function is not created
-  argumentNames?: Readonly<string[]>; // The names of the arguments passed to the expression function
+  noGenExpr?: (ctx: AttributeContext) => boolean; // If true, the expression function is not created
+  argNames?: Readonly<string[]>; // The names of the arguments passed to the expression function
 }
 
 export type RegexpGroups = Record<string, string>;
@@ -68,7 +67,7 @@ export type RegexpGroups = Record<string, string>;
 export interface MacroPlugin extends DatastarPlugin {
   type: PluginType.Macro;
   regexp: RegExp;
-  replacer: (groups: RegexpGroups) => string;
+  alter: (groups: RegexpGroups) => string;
 }
 
 export type MacrosPlugins = Record<string, MacroPlugin>;
@@ -77,7 +76,7 @@ export type ActionMethod = (ctx: AttributeContext, ...args: any[]) => any;
 
 export interface ActionPlugin extends DatastarPlugin {
   type: PluginType.Action;
-  method: ActionMethod;
+  fn: ActionMethod;
 }
 
 export type ActionPlugins = Record<string, ActionPlugin>;

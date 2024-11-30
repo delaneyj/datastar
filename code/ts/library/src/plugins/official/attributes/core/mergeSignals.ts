@@ -16,12 +16,11 @@ const IF_MISSING = "ifmissing";
 export const MergeSignals: AttributePlugin = {
   type: PluginType.Attribute,
   name: "mergeSignals",
-  removeNewLines: true,
-  allowedModifiers: new Set([IF_MISSING]),
+  onlyMods: new Set([IF_MISSING]),
   onLoad: (ctx: AttributeContext) => {
-    const { el, expressionFn, modifiers } = ctx;
-    const possibleMergeValues: NestedValues = expressionFn(ctx);
-    ctx.signals.merge(possibleMergeValues, modifiers.has(IF_MISSING));
+    const { el, expr, mods } = ctx;
+    const possibleMergeValues: NestedValues = expr(ctx);
+    ctx.signals.merge(possibleMergeValues, mods.has(IF_MISSING));
     delete el.dataset[ctx.rawKey];
   },
 };

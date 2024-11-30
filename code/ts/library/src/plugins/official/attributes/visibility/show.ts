@@ -10,22 +10,26 @@ const NONE = "none";
 const DISPLAY = "display";
 
 export const Show: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "show",
-    mustHaveEmptyKey: true,
-    mustNotEmptyExpression: true,
+  type: PluginType.Attribute,
+  name: "show",
+  noKey: true,
+  mustValue: true,
 
-    onLoad: (ctx) => {
-        const { expressionFn, el: { style: s }, reactivity: { effect } } = ctx;
-        return effect(async () => {
-            const shouldShow: boolean = expressionFn(ctx);
-            if (shouldShow) {
-                if (s.display === NONE) {
-                    s.removeProperty(DISPLAY);
-                }
-            } else {
-                s.setProperty(DISPLAY, NONE);
-            }
-        });
-    },
+  onLoad: (ctx) => {
+    const {
+      expr,
+      el: { style: s },
+      reactivity: { effect },
+    } = ctx;
+    return effect(async () => {
+      const shouldShow: boolean = expr(ctx);
+      if (shouldShow) {
+        if (s.display === NONE) {
+          s.removeProperty(DISPLAY);
+        }
+      } else {
+        s.setProperty(DISPLAY, NONE);
+      }
+    });
+  },
 };

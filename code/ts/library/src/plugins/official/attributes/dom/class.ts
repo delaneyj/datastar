@@ -7,22 +7,22 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const Class: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "class",
-    mustHaveEmptyKey: true,
-    mustNotEmptyExpression: true,
+  type: PluginType.Attribute,
+  name: "class",
+  noKey: true,
+  mustValue: true,
 
-    onLoad: (ctx) => {
-        return ctx.reactivity.effect(() => {
-            const classes: Object = ctx.expressionFn(ctx);
-            for (const [k, v] of Object.entries(classes)) {
-                const classNames = k.split(" ");
-                if (v) {
-                    ctx.el.classList.add(...classNames);
-                } else {
-                    ctx.el.classList.remove(...classNames);
-                }
-            }
-        });
-    },
+  onLoad: (ctx) => {
+    return ctx.reactivity.effect(() => {
+      const classes: Object = ctx.expr(ctx);
+      for (const [k, v] of Object.entries(classes)) {
+        const classNames = k.split(" ");
+        if (v) {
+          ctx.el.classList.add(...classNames);
+        } else {
+          ctx.el.classList.remove(...classNames);
+        }
+      }
+    });
+  },
 };

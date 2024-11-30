@@ -5,11 +5,11 @@
 
 import { InitContext, WatcherPlugin } from "../../../../engine";
 import {
-  DefaultFragmentMergeMode,
-  DefaultFragmentsUseViewTransitions,
-  DefaultSettleDurationMs,
   EventTypes,
+  fragmentMergeMode,
   FragmentMergeModes,
+  fragmentsUseViewTransitions,
+  settleDurationMs,
 } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
@@ -35,10 +35,10 @@ export const MergeFragments: WatcherPlugin = {
       ({
         fragments: fragmentsRaw = "<div></div>",
         selector = "",
-        mergeMode = DefaultFragmentMergeMode,
-        settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
-        useViewTransition: useViewTransitionRaw =
-          `${DefaultFragmentsUseViewTransitions}`,
+        mergeMode = fragmentMergeMode,
+        settleDuration: settleDurationRaw = `${settleDurationMs}`,
+        useViewTransition:
+          useViewTransitionRaw = `${fragmentsUseViewTransitions}`,
       }) => {
         const settleDuration = parseInt(settleDurationRaw);
         const useViewTransition = isBoolString(useViewTransitionRaw);
@@ -66,7 +66,7 @@ export const MergeFragments: WatcherPlugin = {
                 mergeMode,
                 settleDuration,
                 fragment,
-                allTargets,
+                allTargets
               )
             );
           } else {
@@ -75,11 +75,11 @@ export const MergeFragments: WatcherPlugin = {
               mergeMode,
               settleDuration,
               fragment,
-              allTargets,
+              allTargets
             );
           }
         });
-      },
+      }
     );
   },
 };
@@ -89,7 +89,7 @@ function applyToTargets(
   mergeMode: string,
   settleDuration: number,
   fragment: Element,
-  capturedTargets: Element[],
+  capturedTargets: Element[]
 ) {
   for (const initialTarget of capturedTargets) {
     initialTarget.classList.add(SWAPPING_CLASS);

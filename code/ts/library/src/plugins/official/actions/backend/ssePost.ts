@@ -10,5 +10,5 @@ import { sendSSERequest } from "./sseShared";
 export const PostSSE: ActionPlugin = {
   type: PluginType.Action,
   name: "post",
-  method: sendSSERequest("post"),
+  fn: sendSSERequest("post"),
 };

@@ -10,5 +10,5 @@ import { sendSSERequest } from "./sseShared";
 export const DeleteSSE: ActionPlugin = {
   type: PluginType.Action,
   name: "delete",
-  method: sendSSERequest("delete"),
+  fn: sendSSERequest("delete"),
 };

@@ -10,17 +10,17 @@ import { Computed as ComputedType } from "../../../../vendored";
 export const Computed: AttributePlugin = {
   type: PluginType.Attribute,
   name: "computed",
-  mustNotEmptyKey: true,
+  mustKey: true,
   onLoad: (ctx) => {
     const {
       signals,
       key,
-      expressionFn,
+      expr,
       reactivity: { computed },
     } = ctx;
 
     const c = computed(() => {
-      return expressionFn(ctx);
+      return expr(ctx);
     }) as ComputedType;
     signals.add(key, c);
 

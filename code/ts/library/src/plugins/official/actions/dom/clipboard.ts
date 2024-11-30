@@ -8,13 +8,13 @@ import { PluginType } from "../../../../engine/enums";
 import { ERR_NOT_ALLOWED } from "../../../../engine/errors";
 
 export const Clipboard: ActionPlugin = {
-    type: PluginType.Action,
-    name: "clipboard",
-    method: (_, text) => {
-        if (!navigator.clipboard) {
-            // Clipboard API not available
-            throw ERR_NOT_ALLOWED;
-        }
-        navigator.clipboard.writeText(text);
-    },
+  type: PluginType.Action,
+  name: "clipboard",
+  fn: (_, text) => {
+    if (!navigator.clipboard) {
+      // Clipboard API not available
+      throw ERR_NOT_ALLOWED;
+    }
+    navigator.clipboard.writeText(text);
+  },
 };

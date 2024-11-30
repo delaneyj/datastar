@@ -6,7 +6,7 @@ export const SignalsGetMacro: MacroPlugin = {
   name: "get$",
   type: PluginType.Macro,
   regexp: /(?<whole>\$(?<key>\w*))/gm,
-  replacer: (groups: RegexpGroups) => {
+  alter: (groups: RegexpGroups) => {
     const { key } = groups;
     return `ctx.signals.value('${key}')`;
   },
@@ -16,7 +16,7 @@ export const SignalsSetMacro: MacroPlugin = {
   name: "set$",
   type: PluginType.Macro,
   regexp: /(?<whole>\$(?<key>\w*)\s*=\s*(?<value>\w*))/gm,
-  replacer: ({ key, value }) => {
+  alter: ({ key, value }) => {
     return `ctx.signals.set("${key}", ${value})`;
   },
 };

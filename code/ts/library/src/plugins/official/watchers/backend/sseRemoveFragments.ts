@@ -5,9 +5,9 @@
 
 import { WatcherPlugin } from "../../../../engine";
 import {
-  DefaultFragmentsUseViewTransitions,
-  DefaultSettleDurationMs,
   EventTypes,
+  fragmentsUseViewTransitions,
+  settleDurationMs,
 } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
@@ -26,9 +26,9 @@ export const RemoveFragments: WatcherPlugin = {
       EventTypes.RemoveFragments,
       ({
         selector,
-        settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
-        useViewTransition: useViewTransitionRaw =
-          `${DefaultFragmentsUseViewTransitions}`,
+        settleDuration: settleDurationRaw = `${settleDurationMs}`,
+        useViewTransition:
+          useViewTransitionRaw = `${fragmentsUseViewTransitions}`,
       }) => {
         if (!!!selector.length) {
           // No selector provided for remove-fragments
@@ -56,7 +56,7 @@ export const RemoveFragments: WatcherPlugin = {
         } else {
           applyToTargets();
         }
-      },
+      }
     );
   },
 };

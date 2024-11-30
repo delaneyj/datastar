@@ -14,7 +14,7 @@ export const VERSION = "{%s data.Version %}";
 
 {%- for _, d := range data.DefaultDurations -%}
 // {%s= d.Description %}
-export const Default{%s d.Name.Pascal %}Ms = {%d durationToMs(d.Duration) %};
+export const {%s d.Name.Camel %}Ms = {%d durationToMs(d.Duration) %};
 {%- endfor -%}
 
 // #endregion
@@ -24,7 +24,7 @@ export const Default{%s d.Name.Pascal %}Ms = {%d durationToMs(d.Duration) %};
 
 {%- for _, s := range data.DefaultStrings -%}
 // {%s= s.Description %}
-export const Default{%s s.Name.Pascal %} = "{%s s.Value %}";
+export const {%s s.Name.Camel %} = "{%s s.Value %}";
 {%- endfor -%}
 
 // #endregion
@@ -34,7 +34,7 @@ export const Default{%s s.Name.Pascal %} = "{%s s.Value %}";
 
 {%- for _, b := range data.DefaultBools -%}
 // {%s= b.Description %}
-export const Default{%s b.Name.Pascal %} = {%v b.Value %};
+export const {%s b.Name.Camel %} = {%v b.Value %};
 
 {%- endfor -%}
 // #endregion
@@ -53,7 +53,7 @@ export const {%s enum.Name.Pascal %}s = {
 {%- if enum.Default != nil -%}
 
 // Default value for {%s enum.Name.Pascal %}
-export const Default{%s enum.Name.Pascal %} = {%s enum.Name.Pascal %}s.{%s enum.Default.Name.Pascal %};
+export const {%s enum.Name.Camel %} = {%s enum.Name.Pascal %}s.{%s enum.Default.Name.Pascal %};
 
 {%- endif -%}
 {%- endfor -%}

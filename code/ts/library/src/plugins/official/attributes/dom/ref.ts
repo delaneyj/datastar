@@ -8,13 +8,13 @@ import { PluginType } from "../../../../engine/enums";
 
 // Sets the value of the element
 export const Ref: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "ref",
-    mustHaveEmptyKey: true,
-    mustNotEmptyExpression: true,
-    bypassExpressionFunctionCreation: () => true,
-    onLoad: ({ el, expression, signals }) => {
-        signals.upsert(expression, el);
-        return () => signals.remove(expression);
-    },
+  type: PluginType.Attribute,
+  name: "ref",
+  noKey: true,
+  mustValue: true,
+  noGenExpr: () => true,
+  onLoad: ({ el, value, signals }) => {
+    signals.upsert(value, el);
+    return () => signals.remove(value);
+  },
 };

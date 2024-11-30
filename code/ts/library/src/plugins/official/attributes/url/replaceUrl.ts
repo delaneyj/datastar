@@ -7,19 +7,22 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const ReplaceUrl: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "replaceUrl",
-    mustHaveEmptyKey: true,
-    mustNotEmptyExpression: true,
+  type: PluginType.Attribute,
+  name: "replaceUrl",
+  noKey: true,
+  mustValue: true,
 
-    onLoad: (ctx) => {
-        const { expressionFn, reactivity: { effect } } = ctx;
-        return effect(() => {
-            const value = expressionFn(ctx);
-            const baseUrl = window.location.href;
-            const url = new URL(value, baseUrl).toString();
+  onLoad: (ctx) => {
+    const {
+      expr,
+      reactivity: { effect },
+    } = ctx;
+    return effect(() => {
+      const value = expr(ctx);
+      const baseUrl = window.location.href;
+      const url = new URL(value, baseUrl).toString();
 
-            window.history.replaceState({}, "", url);
-        });
-    },
+      window.history.replaceState({}, "", url);
+    });
+  },
 };

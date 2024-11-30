@@ -5,8 +5,8 @@
 
 import { InitExpressionFunction, WatcherPlugin } from "../../../../engine";
 import {
-  DefaultMergeSignalsOnlyIfMissing,
   EventTypes,
+  mergeSignalsOnlyIfMissing,
 } from "../../../../engine/consts";
 import { PluginType } from "../../../../engine/enums";
 import { isBoolString } from "../../../../utils/text";
@@ -20,7 +20,7 @@ export const MergeSignals: WatcherPlugin = {
       EventTypes.MergeSignals,
       ({
         signals: raw = "{}",
-        onlyIfMissing: onlyIfMissingRaw = `${DefaultMergeSignalsOnlyIfMissing}`,
+        onlyIfMissing: onlyIfMissingRaw = `${mergeSignalsOnlyIfMissing}`,
       }) => {
         const { signals } = ctx;
         const onlyIfMissing = isBoolString(onlyIfMissingRaw);
@@ -35,7 +35,7 @@ export const MergeSignals: WatcherPlugin = {
           console.error(e);
           debugger;
         }
-      },
+      }
     );
   },
 };

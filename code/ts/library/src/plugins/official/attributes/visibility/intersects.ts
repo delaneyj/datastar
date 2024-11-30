@@ -12,29 +12,29 @@ const FULL = "full";
 
 // Run expression when element intersects with viewport
 export const Intersection: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "intersects",
-    allowedModifiers: new Set([ONCE, HALF, FULL]),
-    mustHaveEmptyKey: true,
-    onLoad: (ctx) => {
-        const { modifiers } = ctx;
-        const options = { threshold: 0 };
-        if (modifiers.has(FULL)) options.threshold = 1;
-        else if (modifiers.has(HALF)) options.threshold = 0.5;
+  type: PluginType.Attribute,
+  name: "intersects",
+  onlyMods: new Set([ONCE, HALF, FULL]),
+  noKey: true,
+  onLoad: (ctx) => {
+    const { mods } = ctx;
+    const options = { threshold: 0 };
+    if (mods.has(FULL)) options.threshold = 1;
+    else if (mods.has(HALF)) options.threshold = 0.5;
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                    ctx.expressionFn(ctx);
-                    if (modifiers.has(ONCE)) {
-                        observer.disconnect();
-                        delete ctx.el.dataset[ctx.rawKey];
-                    }
-                }
-            });
-        }, options);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          ctx.expr(ctx);
+          if (mods.has(ONCE)) {
+            observer.disconnect();
+            delete ctx.el.dataset[ctx.rawKey];
+          }
+        }
+      });
+    }, options);
 
-        observer.observe(ctx.el);
-        return () => observer.disconnect();
-    },
+    observer.observe(ctx.el);
+    return () => observer.disconnect();
+  },
 };

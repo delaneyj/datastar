@@ -7,18 +7,18 @@ import { ActionPlugin, AttributeContext } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const FitInt: ActionPlugin = {
-    type: PluginType.Action,
-    name: "fitInt",
-    method: (
-        _: AttributeContext,
-        v: number,
-        oldMin: number,
-        oldMax: number,
-        newMin: number,
-        newMax: number,
-    ) => {
-        return Math.round(
-            ((v - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin,
-        );
-    },
+  type: PluginType.Action,
+  name: "fitInt",
+  fn: (
+    _: AttributeContext,
+    v: number,
+    oldMin: number,
+    oldMax: number,
+    newMin: number,
+    newMax: number
+  ) => {
+    return Math.round(
+      ((v - oldMin) / (oldMax - oldMin)) * (newMax - newMin) + newMin
+    );
+  },
 };

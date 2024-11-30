@@ -27,22 +27,22 @@ let lastSignalsMarshalled = "";
 export const On: AttributePlugin = {
   type: PluginType.Attribute,
   name: "on",
-  mustNotEmptyKey: true,
-  mustNotEmptyExpression: true,
-  argumentNames: ["evt"],
+  mustKey: true,
+  mustValue: true,
+  argNames: ["evt"],
   onLoad: (ctx) => {
-    const { el, key, expressionFn } = ctx;
+    const { el, key, expr } = ctx;
 
     let target: Element | Window | Document = ctx.el;
-    if (ctx.modifiers.get("window")) {
+    if (ctx.mods.get("window")) {
       target = window;
     }
 
     let callback = (evt?: Event) => {
-      expressionFn(ctx, evt);
+      expr(ctx, evt);
     };
 
-    const debounceArgs = ctx.modifiers.get("debounce");
+    const debounceArgs = ctx.mods.get("debounce");
     if (debounceArgs) {
       const wait = argsToMs(debounceArgs);
       const leading = argsHas(debounceArgs, "leading", false);
@@ -50,7 +50,7 @@ export const On: AttributePlugin = {
       callback = debounce(callback, wait, leading, trailing);
     }
 
-    const throttleArgs = ctx.modifiers.get("throttle");
+    const throttleArgs = ctx.mods.get("throttle");
     if (throttleArgs) {
       const wait = argsToMs(throttleArgs);
       const leading = argsHas(throttleArgs, "noLead", true);
@@ -63,16 +63,16 @@ export const On: AttributePlugin = {
       passive: false,
       once: false,
     };
-    if (!ctx.modifiers.has("capture")) evtListOpts.capture = false;
-    if (ctx.modifiers.has("passive")) evtListOpts.passive = true;
-    if (ctx.modifiers.has("once")) evtListOpts.once = true;
+    if (!ctx.mods.has("capture")) evtListOpts.capture = false;
+    if (ctx.mods.has("passive")) evtListOpts.passive = true;
+    if (ctx.mods.has("once")) evtListOpts.once = true;
 
-    const unknownModifierKeys = [...ctx.modifiers.keys()].filter(
-      (key) => !knownOnModifiers.has(key),
+    const unknownModifierKeys = [...ctx.mods.keys()].filter(
+      (key) => !knownOnModifiers.has(key)
     );
 
     unknownModifierKeys.forEach((attrName) => {
-      const eventValues = ctx.modifiers.get(attrName) || [];
+      const eventValues = ctx.mods.get(attrName) || [];
       const cb = callback;
       const revisedCallback = () => {
         const evt = event as any;
@@ -120,7 +120,7 @@ export const On: AttributePlugin = {
 
       case "signals-change":
         return ctx.reactivity.effect(() => {
-          const onlyRemoteSignals = ctx.modifiers.has("remote");
+          const onlyRemoteSignals = ctx.mods.has("remote");
           const current = ctx.signals.JSON(false, onlyRemoteSignals);
           if (lastSignalsMarshalled !== current) {
             lastSignalsMarshalled = current;
@@ -129,7 +129,7 @@ export const On: AttributePlugin = {
         });
 
       default:
-        const testOutside = ctx.modifiers.has("outside");
+        const testOutside = ctx.mods.has("outside");
         if (testOutside) {
           target = document;
           const cb = callback;

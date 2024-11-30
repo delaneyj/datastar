@@ -10,39 +10,35 @@ import { supportsViewTransitions } from "../../../../utils/view-transitions";
 const VIEW_TRANSITION = "view-transition";
 
 export const ViewTransition: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: VIEW_TRANSITION,
-    onGlobalInit() {
-        let hasViewTransitionMeta = false;
-        document.head.childNodes.forEach((node) => {
-            if (
-                node instanceof HTMLMetaElement &&
-                node.name === VIEW_TRANSITION
-            ) {
-                hasViewTransitionMeta = true;
-            }
-        });
+  type: PluginType.Attribute,
+  name: VIEW_TRANSITION,
+  onGlobalInit() {
+    let hasViewTransitionMeta = false;
+    document.head.childNodes.forEach((node) => {
+      if (node instanceof HTMLMetaElement && node.name === VIEW_TRANSITION) {
+        hasViewTransitionMeta = true;
+      }
+    });
 
-        if (!hasViewTransitionMeta) {
-            const meta = document.createElement("meta");
-            meta.name = VIEW_TRANSITION;
-            meta.content = "same-origin";
-            document.head.appendChild(meta);
-        }
-    },
-    onLoad: (ctx) => {
-        if (!supportsViewTransitions) {
-            console.error("Browser does not support view transitions");
-            return;
-        }
+    if (!hasViewTransitionMeta) {
+      const meta = document.createElement("meta");
+      meta.name = VIEW_TRANSITION;
+      meta.content = "same-origin";
+      document.head.appendChild(meta);
+    }
+  },
+  onLoad: (ctx) => {
+    if (!supportsViewTransitions) {
+      console.error("Browser does not support view transitions");
+      return;
+    }
 
-        return ctx.reactivity.effect(() => {
-            const { el, expressionFn } = ctx;
-            let name = expressionFn(ctx);
-            if (!name) return;
-
-            const elVTASTyle = el.style as unknown as CSSStyleDeclaration;
-            elVTASTyle.viewTransitionName = name;
-        });
-    },
+    return ctx.reactivity.effect(() => {
+      const { el, expr } = ctx;
+      let name = expr(ctx);
+      if (!name) return;
+      const elVTASTyle = el.style as unknown as CSSStyleDeclaration;
+      elVTASTyle.viewTransitionName = name;
+    });
+  },
 };

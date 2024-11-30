@@ -8,18 +8,22 @@ import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 
 export const Text: AttributePlugin = {
-    type: PluginType.Attribute,
-    name: "text",
-    mustHaveEmptyKey: true,
-    onLoad: (ctx) => {
-        const { el, expressionFn, reactivity: { effect } } = ctx;
-        if (!(el instanceof HTMLElement)) {
-            // Element is not HTMLElement
-            throw ERR_BAD_ARGS;
-        }
-        return effect(() => {
-            const res = expressionFn(ctx);
-            el.textContent = `${res}`;
-        });
-    },
+  type: PluginType.Attribute,
+  name: "text",
+  noKey: true,
+  onLoad: (ctx) => {
+    const {
+      el,
+      expr,
+      reactivity: { effect },
+    } = ctx;
+    if (!(el instanceof HTMLElement)) {
+      // Element is not HTMLElement
+      throw ERR_BAD_ARGS;
+    }
+    return effect(() => {
+      const res = expr(ctx);
+      el.textContent = `${res}`;
+    });
+  },
 };

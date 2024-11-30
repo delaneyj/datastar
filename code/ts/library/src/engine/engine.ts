@@ -36,15 +36,13 @@ const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
   p.type === PluginType.Action;
 
 export class Engine {
-  plugins: AttributePlugin[] = [];
   private _signals = new SignalsRoot(this);
-  macros = new Array<MacroPlugin>();
-  actions: ActionPlugins = {};
-  watchers = new Array<WatcherPlugin>();
-  refs: Record<string, HTMLElement> = {};
-  reactivity: Reactivity = { signal, computed, effect };
-  removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>();
-  mergeRemovals = new Array<OnRemovalFn>();
+  private plugins: AttributePlugin[] = [];
+  private macros: MacroPlugin[] = [];
+  private actions: ActionPlugins = {};
+  private watchers: WatcherPlugin[] = [];
+  private reactivity: Reactivity = { signal, computed, effect };
+  private removals = new Map<Element, { id: string; set: Set<OnRemovalFn> }>();
 
   get version() {
     return VERSION;
@@ -91,14 +89,11 @@ export class Engine {
       }
 
       if (globalInitializer) {
-        const that = this;
+        const that = this; // I hate javascript
         globalInitializer({
           get signals() {
             return that._signals;
           },
-          // upsertSignal: this.upsertSignal.bind(this),
-          // mergeSignals: this.mergeSignals.bind(this),
-          // removeSignals: this.removeSignals.bind(this),
           actions: this.actions,
           reactivity: this.reactivity,
           applyPlugins: this.applyPlugins.bind(this),
@@ -130,8 +125,8 @@ export class Engine {
         if (!pi) this.cleanup(el);
 
         for (const rawKey in el.dataset) {
-          const rawExpression = `${el.dataset[rawKey]}` || "";
-          let expression = rawExpression;
+          const rawValue = `${el.dataset[rawKey]}` || "";
+          let valueRevised = rawValue;
 
           if (!rawKey.startsWith(p.name)) continue;
 
@@ -141,11 +136,9 @@ export class Engine {
 
           appliedMacros.clear();
 
-          if (p.allowedTagRegexps) {
+          if (p.tags) {
             const lowerCaseTag = el.tagName.toLowerCase();
-            const allowed = [...p.allowedTagRegexps].some((r) =>
-              lowerCaseTag.match(r)
-            );
+            const allowed = [...p.tags].some((r) => lowerCaseTag.match(r));
             if (!allowed) {
               throw ERR_NOT_ALLOWED;
             }
@@ -153,11 +146,11 @@ export class Engine {
 
           let keyRaw = rawKey.slice(p.name.length);
           let [key, ...modifiersWithArgsArr] = keyRaw.split(".");
-          if (p.mustHaveEmptyKey && key.length > 0) {
+          if (p.noKey && key.length > 0) {
             // must have empty key
             throw ERR_BAD_ARGS;
           }
-          if (p.mustNotEmptyKey && key.length === 0) {
+          if (p.mustKey && key.length === 0) {
             // must have non-empty key
             throw ERR_BAD_ARGS;
           }
@@ -169,36 +162,29 @@ export class Engine {
             const [label, ...args] = m.split("_");
             return { label, args };
           });
-          if (p.allowedModifiers) {
+          if (p.onlyMods) {
             for (const modifier of modifiersArr) {
-              if (!p.allowedModifiers.has(modifier.label)) {
+              if (!p.onlyMods.has(modifier.label)) {
                 // modifier not allowed
                 throw ERR_NOT_ALLOWED;
               }
             }
           }
-          const modifiers = new Map<string, string[]>();
+          const mods = new Map<string, string[]>();
           for (const modifier of modifiersArr) {
-            modifiers.set(modifier.label, modifier.args);
+            mods.set(modifier.label, modifier.args);
           }
 
-          if (p.mustHaveEmptyExpression && expression.length) {
+          if (p.noVal && valueRevised.length) {
             // must have empty expression
             throw ERR_BAD_ARGS;
           }
-          if (p.mustNotEmptyExpression && !expression.length) {
+          if (p.mustValue && !valueRevised.length) {
             // must have non-empty expression
             throw ERR_BAD_ARGS;
           }
 
           const splitRegex = /;|\n/;
-
-          if (p.removeNewLines) {
-            expression = expression
-              .split("\n")
-              .map((p: string) => p.trim())
-              .join(" ");
-          }
 
           const macros = [
             ...(p.macros?.pre || []),
@@ -209,7 +195,7 @@ export class Engine {
             if (appliedMacros.has(macro)) continue;
             appliedMacros.add(macro);
 
-            const expressionParts = expression.split(splitRegex);
+            const expressionParts = valueRevised.split(splitRegex);
             const revisedParts: string[] = [];
 
             expressionParts.forEach((exp) => {
@@ -220,14 +206,13 @@ export class Engine {
                   if (!match.groups) continue;
                   const { groups } = match;
                   const { whole } = groups;
-                  revised = revised.replace(whole, macro.replacer(groups));
+                  revised = revised.replace(whole, macro.alter(groups));
                 }
               }
               revisedParts.push(revised);
             });
-            // })
 
-            expression = revisedParts.join("; ");
+            valueRevised = revisedParts.join(";\n");
           }
 
           const that = this; // I hate javascript
@@ -242,20 +227,16 @@ export class Engine {
             el,
             rawKey,
             key,
-            rawExpression,
-            expression,
-            expressionFn: () => {
+            rawValue: rawValue,
+            value: valueRevised,
+            expr: () => {
               throw ERR_METHOD_NOT_ALLOWED;
             },
-            modifiers,
+            mods: mods,
           };
 
-          if (
-            !p.bypassExpressionFunctionCreation?.(ctx) &&
-            !p.mustHaveEmptyExpression &&
-            expression.length
-          ) {
-            const statements = expression
+          if (!p.noGenExpr?.(ctx) && !p.noVal && valueRevised.length) {
+            const statements = valueRevised
               .split(splitRegex)
               .map((s) => s.trim())
               .filter((s) => s.length);
@@ -263,25 +244,18 @@ export class Engine {
               statements[statements.length - 1]
             }`;
             const j = statements.map((s) => `  ${s}`).join(";\n");
-            const fnContent = `
-try{
-  ${j}
-}catch(e){
-  console.error(\`Error evaluating Datastar expression:
-  ${j.replaceAll("`", "\\`")}
-
-  Error: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());
-  debugger;
-}
-`;
+            const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll(
+              "`",
+              "\\`"
+            )}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
             try {
-              const argumentNames = p.argumentNames || [];
+              const argumentNames = p.argNames || [];
               const fn = new Function(
                 "ctx",
                 ...argumentNames,
-                fnContent,
+                fnContent
               ) as AttribtueExpressionFunction;
-              ctx.expressionFn = fn;
+              ctx.expr = fn;
             } catch (e) {
               const err = new Error(`${e}\nwith\n${fnContent}`);
               console.error(err);
@@ -307,7 +281,7 @@ try{
   private walkDownDOM(
     element: Element | null,
     callback: (el: HTMLorSVGElement) => void,
-    siblingOffset = 0,
+    siblingOffset = 0
   ) {
     if (
       !element ||
