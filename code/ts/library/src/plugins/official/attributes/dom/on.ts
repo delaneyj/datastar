@@ -25,7 +25,7 @@ let lastSignalsMarshalled = "";
 
 // Sets the event listener of the element
 export const On: AttributePlugin = {
-  pluginType: PluginType.Attribute,
+  type: PluginType.Attribute,
   name: "on",
   mustNotEmptyKey: true,
   mustNotEmptyExpression: true,

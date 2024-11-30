@@ -16,7 +16,7 @@ const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateModelEvents = ["change", "input", "keydown"];
 
 export const Bind: AttributePlugin = {
-  pluginType: PluginType.Attribute,
+  type: PluginType.Attribute,
   name: "bind",
   onLoad: (ctx) => {
     const {

@@ -13,7 +13,7 @@ import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "./sseShared";
 
 export const MergeSignals: WatcherPlugin = {
-  pluginType: PluginType.Watcher,
+  type: PluginType.Watcher,
   name: EventTypes.MergeSignals,
   onGlobalInit: async (ctx) => {
     datastarSSEEventWatcher(

@@ -26,7 +26,7 @@ import {
 } from "./sseShared";
 
 export const MergeFragments: WatcherPlugin = {
-  pluginType: PluginType.Watcher,
+  type: PluginType.Watcher,
   name: EventTypes.MergeFragments,
   onGlobalInit: async (ctx) => {
     const fragmentContainer = document.createElement("template");
@@ -37,8 +37,8 @@ export const MergeFragments: WatcherPlugin = {
         selector = "",
         mergeMode = DefaultFragmentMergeMode,
         settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
-        useViewTransition:
-          useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
+        useViewTransition: useViewTransitionRaw =
+          `${DefaultFragmentsUseViewTransitions}`,
       }) => {
         const settleDuration = parseInt(settleDurationRaw);
         const useViewTransition = isBoolString(useViewTransitionRaw);
@@ -66,7 +66,7 @@ export const MergeFragments: WatcherPlugin = {
                 mergeMode,
                 settleDuration,
                 fragment,
-                allTargets
+                allTargets,
               )
             );
           } else {
@@ -75,11 +75,11 @@ export const MergeFragments: WatcherPlugin = {
               mergeMode,
               settleDuration,
               fragment,
-              allTargets
+              allTargets,
             );
           }
         });
-      }
+      },
     );
   },
 };
@@ -89,7 +89,7 @@ function applyToTargets(
   mergeMode: string,
   settleDuration: number,
   fragment: Element,
-  capturedTargets: Element[]
+  capturedTargets: Element[],
 ) {
   for (const initialTarget of capturedTargets) {
     initialTarget.classList.add(SWAPPING_CLASS);

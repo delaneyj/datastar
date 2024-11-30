@@ -36,14 +36,14 @@ export type AttributeContext = InitContext & {
 export type OnRemovalFn = () => void;
 
 export interface DatastarPlugin {
-  pluginType: PluginType; // The type of plugin
+  type: PluginType; // The type of plugin
   name: string; // The name of the plugin
   requiredPlugins?: Set<DatastarPlugin>; // If not provided, no plugins are required
 }
 
 // A plugin accesible via a `data-${name}` attribute on an element
 export interface AttributePlugin extends DatastarPlugin {
-  pluginType: PluginType;
+  type: PluginType;
   onGlobalInit?: (ctx: InitContext) => void; // Called once on registration of the plugin
   onLoad: (ctx: AttributeContext) => OnRemovalFn | void; // Return a function to be called on removal
   allowedModifiers?: Set<string>; // If not provided, all modifiers are allowed
@@ -66,7 +66,7 @@ export type RegexpGroups = Record<string, string>;
 
 // A plugin that runs on the global scope that can effect the contents of a Datastar expression
 export interface MacroPlugin extends DatastarPlugin {
-  pluginType: PluginType.Macro;
+  type: PluginType.Macro;
   regexp: RegExp;
   replacer: (groups: RegexpGroups) => string;
 }
@@ -76,7 +76,7 @@ export type MacrosPlugins = Record<string, MacroPlugin>;
 export type ActionMethod = (ctx: AttributeContext, ...args: any[]) => any;
 
 export interface ActionPlugin extends DatastarPlugin {
-  pluginType: PluginType.Action;
+  type: PluginType.Action;
   method: ActionMethod;
 }
 
@@ -84,7 +84,7 @@ export type ActionPlugins = Record<string, ActionPlugin>;
 
 // A plugin that runs on the global scope of the DastaStar instance
 export interface WatcherPlugin extends DatastarPlugin {
-  pluginType: PluginType.Watcher;
+  type: PluginType.Watcher;
   onGlobalInit?: (ctx: InitContext) => void;
 }
 

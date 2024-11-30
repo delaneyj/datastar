@@ -27,13 +27,13 @@ import {
 import { VERSION } from "./version";
 
 const isMacroPlugin = (p: DatastarPlugin): p is MacroPlugin =>
-  p.pluginType === PluginType.Macro;
+  p.type === PluginType.Macro;
 const isWatcherPlugin = (p: DatastarPlugin): p is WatcherPlugin =>
-  p.pluginType === PluginType.Watcher;
+  p.type === PluginType.Watcher;
 const isAttributePlugin = (p: DatastarPlugin): p is AttributePlugin =>
-  p.pluginType === PluginType.Attribute;
+  p.type === PluginType.Attribute;
 const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
-  p.pluginType === PluginType.Action;
+  p.type === PluginType.Action;
 
 export class Engine {
   plugins: AttributePlugin[] = [];

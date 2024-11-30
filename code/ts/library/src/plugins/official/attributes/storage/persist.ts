@@ -9,7 +9,7 @@ import { PluginType } from "../../../../engine/enums";
 import { DatastarSSEEvent } from "../../watchers/backend/sseShared";
 
 export const Persist: AttributePlugin = {
-  pluginType: PluginType.Attribute,
+  type: PluginType.Attribute,
   name: "persist",
   allowedModifiers: new Set(["local", "session", "remote"]),
   onLoad: (ctx) => {

@@ -8,7 +8,7 @@ import { PluginType } from "../../../../engine/enums";
 import { Computed as ComputedType } from "../../../../vendored";
 
 export const Computed: AttributePlugin = {
-  pluginType: PluginType.Attribute,
+  type: PluginType.Attribute,
   name: "computed",
   mustNotEmptyKey: true,
   onLoad: (ctx) => {

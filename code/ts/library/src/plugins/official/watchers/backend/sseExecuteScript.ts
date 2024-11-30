@@ -16,7 +16,7 @@ import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "./sseShared";
 
 export const ExecuteScript: WatcherPlugin = {
-  pluginType: PluginType.Watcher,
+  type: PluginType.Watcher,
   name: EventTypes.ExecuteScript,
   onGlobalInit: async () => {
     datastarSSEEventWatcher(

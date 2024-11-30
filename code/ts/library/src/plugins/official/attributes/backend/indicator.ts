@@ -17,7 +17,7 @@ export const INDICATOR_CLASS = `${DATASTAR}-indicator`;
 export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 
 export const Indicator: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "indicator",
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {

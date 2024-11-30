@@ -10,7 +10,7 @@ import { WatcherPlugin } from "../../../../engine/types";
 import { datastarSSEEventWatcher } from "./sseShared";
 
 export const RemoveSignals: WatcherPlugin = {
-  pluginType: PluginType.Watcher,
+  type: PluginType.Watcher,
   name: EventTypes.RemoveSignals,
   onGlobalInit: async (ctx) => {
     datastarSSEEventWatcher(

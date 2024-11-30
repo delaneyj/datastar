@@ -14,7 +14,7 @@ const IF_MISSING = "ifmissing";
 
 // Merge into singleton signals
 export const MergeSignals: AttributePlugin = {
-  pluginType: PluginType.Attribute,
+  type: PluginType.Attribute,
   name: "mergeSignals",
   removeNewLines: true,
   allowedModifiers: new Set([IF_MISSING]),

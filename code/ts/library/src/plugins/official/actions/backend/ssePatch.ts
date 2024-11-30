@@ -8,7 +8,7 @@ import { PluginType } from "../../../../engine/enums";
 import { sendSSERequest } from "./sseShared";
 
 export const PatchSSE: ActionPlugin = {
-  pluginType: PluginType.Action,
+  type: PluginType.Action,
   name: "patch",
   method: sendSSERequest("patch"),
 };

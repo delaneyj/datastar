@@ -8,7 +8,7 @@ import { PluginType } from "../../../../engine/enums";
 import { ERR_BAD_ARGS } from "../../../../engine/errors";
 
 export const Text: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "text",
     mustHaveEmptyKey: true,
     onLoad: (ctx) => {

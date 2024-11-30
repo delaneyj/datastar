@@ -27,7 +27,7 @@ const NEAREST = "nearest";
 
 // Scrolls the element into view
 export const ScrollIntoView: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "scrollIntoView",
     mustHaveEmptyKey: true,
     mustHaveEmptyExpression: true,

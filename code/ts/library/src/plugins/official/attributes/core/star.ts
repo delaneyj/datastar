@@ -7,7 +7,7 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const Star: AttributePlugin = {
-    pluginType:PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "star",
     onLoad: () => {
         alert("YOU ARE PROBABLY OVERCOMPLICATING IT");

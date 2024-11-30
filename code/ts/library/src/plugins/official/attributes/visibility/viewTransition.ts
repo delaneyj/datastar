@@ -10,7 +10,7 @@ import { supportsViewTransitions } from "../../../../utils/view-transitions";
 const VIEW_TRANSITION = "view-transition";
 
 export const ViewTransition: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: VIEW_TRANSITION,
     onGlobalInit() {
         let hasViewTransitionMeta = false;

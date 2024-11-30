@@ -19,7 +19,7 @@ import {
 import { datastarSSEEventWatcher, SWAPPING_CLASS } from "./sseShared";
 
 export const RemoveFragments: WatcherPlugin = {
-  pluginType: PluginType.Watcher,
+  type: PluginType.Watcher,
   name: EventTypes.RemoveFragments,
   onGlobalInit: async () => {
     datastarSSEEventWatcher(
@@ -27,8 +27,8 @@ export const RemoveFragments: WatcherPlugin = {
       ({
         selector,
         settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
-        useViewTransition:
-          useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
+        useViewTransition: useViewTransitionRaw =
+          `${DefaultFragmentsUseViewTransitions}`,
       }) => {
         if (!!!selector.length) {
           // No selector provided for remove-fragments
@@ -56,7 +56,7 @@ export const RemoveFragments: WatcherPlugin = {
         } else {
           applyToTargets();
         }
-      }
+      },
     );
   },
 };

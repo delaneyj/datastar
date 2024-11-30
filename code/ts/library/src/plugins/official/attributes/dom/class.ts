@@ -7,7 +7,7 @@ import { AttributePlugin } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const Class: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "class",
     mustHaveEmptyKey: true,
     mustNotEmptyExpression: true,

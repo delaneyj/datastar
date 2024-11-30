@@ -7,7 +7,7 @@ import { ActionPlugin, AttributeContext } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const Fit: ActionPlugin = {
-    pluginType: PluginType.Action,
+    type: PluginType.Action,
     name: "fit",
     method: (
         _: AttributeContext,

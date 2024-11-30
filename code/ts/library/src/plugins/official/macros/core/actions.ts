@@ -5,7 +5,7 @@ import { wholePrefixSuffix } from "../../../../utils/regex";
 // Replacing $action(args) with ctx.actions.action(ctx, args)
 export const ActionsMacro: MacroPlugin = {
     name: "action",
-    pluginType: PluginType.Macro,
+    type: PluginType.Macro,
     regexp: wholePrefixSuffix(
         "@",
         "action",

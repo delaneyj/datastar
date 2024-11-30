@@ -8,7 +8,7 @@ import { PluginType } from "../../../../engine/enums";
 import { ERR_NOT_ALLOWED } from "../../../../engine/errors";
 
 export const Clipboard: ActionPlugin = {
-    pluginType: PluginType.Action,
+    type: PluginType.Action,
     name: "clipboard",
     method: (_, text) => {
         if (!navigator.clipboard) {

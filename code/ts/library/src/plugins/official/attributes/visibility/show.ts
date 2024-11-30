@@ -10,7 +10,7 @@ const NONE = "none";
 const DISPLAY = "display";
 
 export const Show: AttributePlugin = {
-    pluginType: PluginType.Attribute,
+    type: PluginType.Attribute,
     name: "show",
     mustHaveEmptyKey: true,
     mustNotEmptyExpression: true,

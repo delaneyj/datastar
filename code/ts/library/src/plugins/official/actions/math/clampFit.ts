@@ -7,7 +7,7 @@ import { ActionPlugin, AttributeContext } from "../../../../engine";
 import { PluginType } from "../../../../engine/enums";
 
 export const ClampFit: ActionPlugin = {
-    pluginType: PluginType.Action,
+    type: PluginType.Action,
     name: "clampFit",
     method: (
         _: AttributeContext,
