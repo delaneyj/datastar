@@ -131,7 +131,7 @@ tasks:
     deps:
       - support
     cmds:
-      - fly deploy --local-only
+      - flyctl deploy --local-only
 
   test:
     dir: code/go/site/smoketests
