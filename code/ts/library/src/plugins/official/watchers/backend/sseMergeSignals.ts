@@ -3,7 +3,7 @@
 // Slug: Merge signals using a Server-Sent Event
 // // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
-import { InitExpressionFunction, WatcherPlugin } from "../../../../engine";
+import { WatcherPlugin } from "../../../../engine";
 import {
   EventTypes,
   mergeSignalsOnlyIfMissing,
@@ -24,17 +24,10 @@ export const MergeSignals: WatcherPlugin = {
       }) => {
         const { signals } = ctx;
         const onlyIfMissing = isBoolString(onlyIfMissingRaw);
-        const fnContents = ` return Object.assign({...ctx.signals}, ${raw})`;
-        try {
-          const fn = new Function("ctx", fnContents) as InitExpressionFunction;
-          const possibleMergeSignals = fn(ctx);
-          signals.merge(possibleMergeSignals, onlyIfMissing);
-          ctx.applyPlugins(document.body);
-        } catch (e) {
-          console.log(fnContents);
-          console.error(e);
-          debugger;
-        }
+        const fn = new Function(`return Object.assign({}, ${raw})`);
+        const possibleMergeSignals = fn();
+        signals.merge(possibleMergeSignals, onlyIfMissing);
+        ctx.applyPlugins(document.body);
       }
     );
   },

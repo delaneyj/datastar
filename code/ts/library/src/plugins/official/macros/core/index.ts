@@ -33,7 +33,7 @@ export const ActionsMacro: MacroPlugin = {
   name: "action",
   type: PluginType.Macro,
   regexp: new RegExp(
-    `(?<whole>@(?<method>${validJSIdentifier})\\((?<args>.*)\\))`,
+    `(?<whole>@(?<action>${validJSIdentifier})\\((?<args>.*)\\))`,
     "gm"
   ),
   alter: ({ action, args }: RegexpGroups) => {
