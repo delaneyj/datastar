@@ -1,7 +1,7 @@
 {
   "version": 3,
   "sources": ["../library/src/engine/index.ts", "../library/src/bundles/datastar-core.ts"],
-  "sourcesContent": ["export class Engine {\n}\n\nexport const Datastar = new Engine();\n", "import { Datastar } from \"../engine\";\n\nDatastar.load();\n"],
-  "mappings": "mBAAO,IAAMA,EAAN,KAAa,CACpB,EAEaC,EAAW,IAAID,ECD5BE,EAAS,KAAK",
+  "sourcesContent": ["export class Engine {\n    public load() {\n    }\n}\n\nexport const Datastar = new Engine();\n", "import { Datastar } from \"../engine\";\n\nDatastar.load();\n"],
+  "mappings": "mBAAO,IAAMA,EAAN,KAAa,CACT,MAAO,CACd,CACJ,EAEaC,EAAW,IAAID,ECH5BE,EAAS,KAAK",
   "names": ["Engine", "Datastar", "Datastar"]
 }
