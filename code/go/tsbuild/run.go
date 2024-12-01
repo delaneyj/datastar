@@ -42,7 +42,7 @@ func extractVersion() (string, error) {
 	version := strings.TrimSpace(string(versionBytes))
 
 	// Write out the version to the version file.
-	versionPath := "code/ts/library/src/engine/version.ts"
+	versionPath := "library/src/engine/version.ts"
 	versionContents := fmt.Sprintf("export const VERSION = '%s';\n", version)
 	if err := os.WriteFile(versionPath, []byte(versionContents), 0644); err != nil {
 		return "", fmt.Errorf("error writing version file: %w", err)
@@ -60,8 +60,8 @@ func createBundles() error {
 
 	result := api.Build(api.BuildOptions{
 		EntryPoints: []string{
-			"code/ts/library/src/bundles/datastar-core.ts",
-			"code/ts/library/src/bundles/datastar.ts",
+			"library/src/bundles/datastar-core.ts",
+			"library/src/bundles/datastar.ts",
 		},
 		Outdir:            outDir,
 		Bundle:            true,
@@ -128,10 +128,10 @@ func writeOutConsts(version string) error {
 
 	templates := map[string]func(data *ConstTemplateData) string{
 		"README.md":                                    datastarREADME,
-		"code/ts/library/README.md":                    datastarREADME,
-		"code/ts/library/src/engine/consts.ts":         datastarClientConsts,
-		"code/ts/library/package.json":                 datastarClientPackageJSON,
-		"code/go/sdk/consts.go":                        goConsts,
+		"library/README.md":                            datastarREADME,
+		"library/src/engine/consts.ts":                 datastarClientConsts,
+		"library/package.json":                         datastarClientPackageJSON,
+		"sdk/go/consts.go":                             goConsts,
 		"code/dotnet/sdk/src/Consts.fs":                dotnetConsts,
 		"code/php/sdk/src/Consts.php":                  phpConsts,
 		"code/php/sdk/src/enums/EventType.php":         phpEventType,

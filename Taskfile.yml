@@ -50,11 +50,11 @@ tasks:
     cmds:
       - go run code/go/cmd/tsbuild/main.go
       - cp -r bundles/* code/go/site/static/js/
-      - mkdir -p code/ts/library/dist/
-      - cp -r bundles/* code/ts/library/dist/
+      - mkdir -p library/dist/
+      - cp -r bundles/* library/dist/
       - mkdir -p code/go/site/static/librarySource
       - rm -rf code/go/site/static/librarySource/*
-      - cp -r code/ts/library/src/* code/go/site/static/librarySource/
+      - cp -r library/src/* code/go/site/static/librarySource/
 
   libpub:
     dir: code/ts/library
@@ -70,7 +70,7 @@ tasks:
       - pnpm build
       - npm publish --access public
       - curl https://purge.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js
-      - git push origin --tags
+      - git push origin --tagsb
       - GOPROXY=proxy.golang.org go list -m github.com/starfederation/datastar@v{{.VERSION}}
       - task: deploy
 
