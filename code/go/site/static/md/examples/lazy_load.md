@@ -18,7 +18,7 @@
 This example shows how to lazily load an element on a page. We start with an initial state that looks like this:
 
 ```html
-<div data-fetch-url="" data-on-load="@get('/examples/lazy_load/graph')">
+<div data-on-load="@get('/examples/lazy_load/graph')">
   Loading...
 </div>
 ```

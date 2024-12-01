@@ -4,7 +4,7 @@
 
 ### Changed
 
-- Changed the `$` prefix for action plugins to `@`.
+- Changed the action plugin prefix from `$` to `@`.
 - Renamed the `data-store` attribute to `data-merge-signals`.
 - Renamed the `data-model` attribute to `data-bind`.
 
