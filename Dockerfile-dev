@@ -39,11 +39,6 @@ RUN apt update && sudo apt upgrade \
     && \
     go install github.com/valyala/quicktemplate/qtc@latest \
     && \
-    # Install flyctl cli \
-    curl -L https://fly.io/install.sh | sh \
-    && \
-    ln -s /root/.fly/bin/flyctl /usr/local/bin/fly \
-    && \
     # Make this a safe .git directory
     git config --global --add safe.directory /app
 
