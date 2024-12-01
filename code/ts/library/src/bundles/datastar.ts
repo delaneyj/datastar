@@ -5,6 +5,7 @@ import { PatchSSE } from "../plugins/official/actions/backend/ssePatch";
 import { PostSSE } from "../plugins/official/actions/backend/ssePost";
 import { PutSSE } from "../plugins/official/actions/backend/ssePut";
 import { Clipboard } from "../plugins/official/actions/dom/clipboard";
+import { Increment } from "../plugins/official/actions/logic/increment";
 import { SetAll } from "../plugins/official/actions/logic/setAll";
 import { ToggleAll } from "../plugins/official/actions/logic/toggleAll";
 import { ClampFit } from "../plugins/official/actions/math/clampFit";
@@ -50,6 +51,7 @@ Datastar.load(
   PostSSE,
   PutSSE,
   Clipboard,
+  Increment,
   SetAll,
   ToggleAll,
   ClampFit,

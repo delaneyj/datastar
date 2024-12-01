@@ -36,7 +36,7 @@ const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
   p.type === PluginType.Action;
 
 export class Engine {
-  private _signals = new SignalsRoot(this);
+  private _signals = new SignalsRoot();
   private plugins: AttributePlugin[] = [];
   private macros: MacroPlugin[] = [];
   private actions: ActionPlugins = {};

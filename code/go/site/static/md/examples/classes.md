@@ -4,7 +4,7 @@
 
 <div
     data-merge-signals="{count:0}"
-    data-on-raf.throttle_500ms="$count++"
+    data-on-raf.throttle_500ms="@increment('count',1)"
     data-computed-blinker="$count % 2 === 0"
 >
     <div data-text="$count">Count</div>
@@ -17,14 +17,14 @@
 
 ```html
 <div
-    data-merge-signals="{count:0}"
-    data-on-raf.throttle_500ms="$count++"
-    data-computed-blinker="$count % 2 === 0"
+  data-merge-signals="{count:0}"
+  data-on-raf.throttle_500ms="@increment('count',1)"
+  data-computed-blinker="$count % 2 === 0"
 >
-    <div data-text="$count">Count</div>
-    <div data-class="{'text-primary':$blinker,'font-bold':$blinker}">
-        Remake blink tag
-    </div>
+  <div data-text="$count">Count</div>
+  <div data-class="{'text-primary':$blinker,'font-bold':$blinker}">
+    Remake blink tag
+  </div>
 </div>
 ```
 

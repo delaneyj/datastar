@@ -1,5 +1,4 @@
 import { Signal } from "../vendored";
-import { Engine } from "./engine";
 import { NestedSignal, NestedValues } from "./types";
 
 // If onlyPublic is true, only signals not starting with an underscore are included
@@ -94,7 +93,7 @@ function nestedSubset(original: NestedValues, ...keys: string[]): NestedValues {
 export class SignalsRoot {
   private _signals: NestedSignal = {};
 
-  constructor(private engine: Engine) {}
+  constructor() {}
 
   exists(dotDelimitedPath: string): boolean {
     return !!this.signal(dotDelimitedPath);
@@ -160,7 +159,6 @@ export class SignalsRoot {
   }
 
   remove(...dotDelimitedPaths: string[]) {
-    let hadChanges = false;
     for (const path of dotDelimitedPaths) {
       const parts = path.split(".");
       let subSignals = this._signals;
@@ -173,11 +171,6 @@ export class SignalsRoot {
       }
       const last = parts[parts.length - 1];
       delete subSignals[last];
-      hadChanges = true;
-    }
-
-    if (hadChanges) {
-      this.engine.applyPlugins(document.body);
     }
   }
 
