@@ -2,7 +2,7 @@
   "name": "@starfederation/datastar",
   "author": "Delaney Gillilan",
   "description": "Hypermedia first SPA replacement framework",
-  "version": "0.20.1",
+  "version": "0.21.0",
   "license": "MIT",
   "private": false,
   "homepage": "https://data-star.dev",
