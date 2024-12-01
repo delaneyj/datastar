@@ -23,8 +23,8 @@ import (
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
 	"github.com/starfederation/datastar/code/go/tsbuild"
+	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/valyala/bytebufferpool"
 )
 

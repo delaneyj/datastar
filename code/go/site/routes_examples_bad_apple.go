@@ -10,7 +10,7 @@ import (
 	"github.com/CAFxX/httpcompression"
 	"github.com/go-chi/chi/v5"
 	"github.com/klauspost/compress/zstd"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 type AsciiAnimation struct {

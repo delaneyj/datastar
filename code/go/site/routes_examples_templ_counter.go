@@ -7,7 +7,7 @@ import (
 	"github.com/Jeffail/gabs/v2"
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 func setupExamplesTemplCounter(examplesRouter chi.Router, sessionSignals sessions.Store) error {

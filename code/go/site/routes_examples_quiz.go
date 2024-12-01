@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/gorilla/sessions"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 type QA struct {
@@ -54,8 +54,8 @@ func setupExamplesQuiz(examplesRouter chi.Router, signals sessions.Store) error 
 		QA := qaList[questionID]
 		sse.MergeFragments(fmt.Sprintf(`<div id="question2">%s</div>`, QA.Question))
 		sse.MarshalAndMergeSignals(map[string]any{
-			"response2":      "",
-			"answer2":        QA.Answer,
+			"response2":       "",
+			"answer2":         QA.Answer,
 			"lastQuestionId1": questionID,
 		})
 	})

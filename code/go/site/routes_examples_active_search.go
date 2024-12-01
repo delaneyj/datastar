@@ -10,7 +10,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-faker/faker/v4"
 	"github.com/lithammer/fuzzysearch/fuzzy"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 func setupExamplesActiveSearch(examplesRouter chi.Router) error {

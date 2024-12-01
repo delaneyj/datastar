@@ -1,4 +1,4 @@
-import (datastar "github.com/starfederation/datastar/code/go/sdk")
+import (datastar "github.com/starfederation/datastar/sdk/go")
 
 // Creates a new `ServerSentEventGenerator` instance.
 sse := datastar.NewSSE(w,r)

@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/go-rod/rod"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -6,7 +6,7 @@ import (
 
 	lorem "github.com/drhodes/golorem"
 	"github.com/go-chi/chi/v5"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 func setupExamplesScrollIntoView(examplesRouter chi.Router) error {

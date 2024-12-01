@@ -19,7 +19,7 @@ import (
 	"github.com/evanw/esbuild/pkg/api"
 	"github.com/go-chi/chi/v5"
 	"github.com/segmentio/encoding/json"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/valyala/bytebufferpool"
 	"github.com/zeebo/xxh3"
 )

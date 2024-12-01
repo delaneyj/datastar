@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/goccy/go-json"
 	"github.com/nats-io/nats.go/jetstream"
-	datastar "github.com/starfederation/datastar/code/go/sdk"
+	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/zeebo/xxh3"
 )
 
