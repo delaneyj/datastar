@@ -247,7 +247,7 @@ export class Engine {
             const fnContent = `try{${j}}catch(e){console.error(\`Error evaluating Datastar expression:\n${j.replaceAll(
               "`",
               "\\`"
-            )}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());debugger}`;
+            )}\n\nError: \${e.message}\n\nCheck if the expression is valid before raising an issue.\`.trim());\ndebugger\n}`;
             try {
               const argumentNames = p.argNames || [];
               const fn = new Function(
