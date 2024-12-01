@@ -10,7 +10,6 @@ import {
   ERR_METHOD_NOT_ALLOWED,
 } from "../../../../engine/errors";
 import { kebabize } from "../../../../utils/text";
-import { Signal } from "../../../../vendored";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateModelEvents = ["change", "input", "keydown"];
@@ -34,11 +33,13 @@ export const Bind: AttributePlugin = {
     const isTwoWayBinding = key === "";
 
     if (isTwoWayBinding) {
+      const signalName = value;
+
       // I better be tied to a signal
-      if (typeof value !== "string") {
+      if (typeof signalName !== "string") {
         throw new Error("Invalid expression");
       }
-      if (value.includes("$")) {
+      if (signalName.includes("$")) {
         throw new Error("Not an expression");
       }
 
@@ -64,15 +65,15 @@ export const Bind: AttributePlugin = {
       if (isRadio) {
         const name = el.getAttribute("name");
         if (!name?.length) {
-          el.setAttribute("name", value);
+          el.setAttribute("name", signalName);
         }
       }
 
-      const signal: Signal<any> = signals.upsert(value, signalDefault);
+      signals.upsert(signalName, signalDefault);
 
       setFromSignal = () => {
         const hasValue = "value" in el;
-        const v = signal.value;
+        const v = signals.value(signalName);
         const vStr = `${v}`;
         if (isCheckbox || isRadio) {
           const input = el as HTMLInputElement;
@@ -90,12 +91,12 @@ export const Bind: AttributePlugin = {
           if (select.multiple) {
             Array.from(select.options).forEach((opt) => {
               if (opt?.disabled) return;
-              if (typeof v === "string") {
+              if (Array.isArray(v) || typeof v === "string") {
                 opt.selected = v.includes(opt.value);
               } else if (typeof v === "number") {
                 opt.selected = v === Number(opt.value);
               } else {
-                opt.selected = v;
+                opt.selected = v as boolean;
               }
             });
           } else {
@@ -139,10 +140,9 @@ export const Bind: AttributePlugin = {
             })
           );
 
-          signal.value = allContents.join(",");
-          const { signals } = ctx;
-          const mimeName = `${value}Mimes`,
-            nameName = `${value}Names`;
+          signals.set(signalName, allContents);
+          const mimeName = `${signalName}Mimes`,
+            nameName = `${signalName}Names`;
           if (mimeName in signals) {
             signals.upsert(mimeName, allMimes);
           }
@@ -152,19 +152,22 @@ export const Bind: AttributePlugin = {
           return;
         }
 
-        const current = signal.value;
+        const current = signals.value(signalName);
         const input = (el as HTMLInputElement) || (el as HTMLElement);
 
         if (typeof current === "number") {
-          signal.value = Number(input.value || input.getAttribute("value"));
+          const v = Number(input.value || input.getAttribute("value"));
+          signals.set(signalName, v);
         } else if (typeof current === "string") {
-          signal.value = input.value || input.getAttribute("value") || "";
+          const v = input.value || input.getAttribute("value") || "";
+          signals.set(signalName, v);
         } else if (typeof current === "boolean") {
           if (isCheckbox) {
-            signal.value =
-              input.checked || input.getAttribute("checked") === "true";
+            const v = input.checked || input.getAttribute("checked") === "true";
+            signals.set(signalName, v);
           } else {
-            signal.value = Boolean(input.value || input.getAttribute("value"));
+            const v = Boolean(input.value || input.getAttribute("value"));
+            signals.set(signalName, v);
           }
         } else if (typeof current === "undefined") {
         } else if (Array.isArray(current)) {
@@ -172,10 +175,14 @@ export const Bind: AttributePlugin = {
           if (isSelect) {
             const select = el as HTMLSelectElement;
             const selectedOptions = [...select.selectedOptions];
-            const selectedValues = selectedOptions.map((opt) => opt.value);
-            signal.value = selectedValues;
+            const selectedValues = selectedOptions
+              .filter((opt) => opt.selected)
+              .map((opt) => opt.value);
+            signals.set(signalName, selectedValues);
           } else {
-            signal.value = JSON.parse(input.value).split(",");
+            // assume it's a comma-separated string
+            const v = JSON.stringify(input.value.split(","));
+            signals.set(signalName, v);
           }
           console.log(input.value);
         } else {
