@@ -1,5 +1,5 @@
 import { elUniqId } from "../utils/dom";
-import { computed, effect, signal } from "../vendored/preact-core";
+import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
 import { dsErr } from "./errors";
 import { SignalsRoot } from "./nestedSignals";
@@ -14,7 +14,6 @@ import {
     Modifiers,
     OnRemovalFn,
     PluginType,
-    Reactivity,
     RuntimeContext,
     RuntimeExpressionFunction,
     WatcherPlugin,
@@ -35,7 +34,6 @@ export class Engine {
     private macros: MacroPlugin[] = [];
     private actions: ActionPlugins = {};
     private watchers: WatcherPlugin[] = [];
-    private reactivity: Reactivity = { signal, computed, effect };
     private removals = new Map<
         Element,
         { id: string; set: Set<OnRemovalFn> }
@@ -91,8 +89,8 @@ export class Engine {
                     get signals() {
                         return that._signals;
                     },
+                    effect: (cb: () => void): OnRemovalFn => effect(cb),
                     actions: this.actions,
-                    reactivity: this.reactivity,
                     apply: this.apply.bind(this),
                     cleanup: this.cleanup.bind(this),
                 });
@@ -194,7 +192,6 @@ export class Engine {
 
                     const {
                         actions,
-                        reactivity,
                         apply,
                         cleanup,
                     } = this;
@@ -203,11 +200,11 @@ export class Engine {
                         get signals() {
                             return that._signals;
                         },
+                        effect: (cb: () => void): OnRemovalFn => effect(cb),
                         apply: apply.bind(this),
                         cleanup: cleanup.bind(this),
                         rx: reactiveExpression,
                         actions,
-                        reactivity,
                         el,
                         rawKey,
                         rawValue,

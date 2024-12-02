@@ -14,14 +14,7 @@ export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
     onLoad: (ctx) => {
-        const {
-            el,
-            value,
-            rx,
-            key,
-            signals,
-            reactivity: { effect },
-        } = ctx;
+        const { el, value, rx, key, signals, effect } = ctx;
 
         let setFromSignal = () => {};
         let fromElementToSignal = () => {};

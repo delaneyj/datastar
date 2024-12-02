@@ -1,12 +1,7 @@
-import { ReadonlySignal, Signal } from "../vendored/preact-core";
+import { EffectFn, Signal } from "../vendored/preact-core";
 import { SignalsRoot } from "./nestedSignals";
 
 export type OnRemovalFn = () => void;
-export type Reactivity = {
-    signal: <T>(value: T) => Signal<T>;
-    computed: <T>(fn: () => T) => ReadonlySignal<T>;
-    effect: (cb: () => void) => OnRemovalFn;
-};
 
 export enum PluginType {
     Macro,
@@ -58,8 +53,8 @@ export interface ActionPlugin extends DatastarPlugin {
 
 export type InitContext = {
     signals: SignalsRoot;
+    effect: (fn: EffectFn) => OnRemovalFn;
     actions: Readonly<ActionPlugins>;
-    reactivity: Reactivity;
     apply: (target: Element) => void;
     cleanup: (el: Element) => void;
 };
@@ -68,7 +63,7 @@ export type HTMLorSVGElement = Element & (HTMLElement | SVGElement);
 export type Modifiers = Map<string, Set<string>>;
 
 export type RuntimeContext = InitContext & {
-    el: Readonly<HTMLorSVGElement>; // The element the attribute is on
+    el: HTMLorSVGElement; // The element the attribute is on
     rawKey: Readonly<string>; // no parsing data-* key
     rawValue: Readonly<string>; // no parsing data-* value
     value: Readonly<string>; // what the user wrote after any macros run

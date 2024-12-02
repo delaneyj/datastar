@@ -1,23 +1,26 @@
-import { dsErr } from "../../../../engine/errors";
+import { walkNestedValues } from "../../../../engine/nestedSignals";
 import {
     AttributePlugin,
     NestedValues,
     PluginType,
 } from "../../../../engine/types";
-import { Computed as PreactComputed } from "../../../../vendored/preact-core";
+import { computed } from "../../../../vendored/preact-core";
 
 const name = "computed";
 export const Computed: AttributePlugin = {
     type: PluginType.Attribute,
     name,
     purge: true,
-    onLoad: ({ key, signals, rx, reactivity: { computed } }) => {
-        if (!key) {
-            throw dsErr("must have a key", { name });
+    onLoad: ({ key, signals, rx }) => {
+        if (key.length) {
+            signals.setComputed(key, rx);
+        } else {
+            computed(() => {
+                const vals = rx<NestedValues>();
+                walkNestedValues(vals, (path, value) => {
+                    signals.setComputed(path, () => value);
+                });
+            });
         }
-        const signal = computed(() => {
-            return rx<NestedValues>();
-        }) as PreactComputed;
-        signals.setSignal(key, signal);
     },
 };

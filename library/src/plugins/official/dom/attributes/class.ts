@@ -9,7 +9,7 @@ import { kebabize } from "../../../../utils/text";
 export const Class: AttributePlugin = {
     type: PluginType.Attribute,
     name: "class",
-    onLoad: ({ key, el, rx, reactivity: { effect } }) => {
+    onLoad: ({ key, el, rx, effect }) => {
         const cl = el.classList;
         return effect(() => {
             if (key === "") {

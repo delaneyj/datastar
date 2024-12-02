@@ -1,4 +1,4 @@
-import { Signal } from "../vendored/preact-core";
+import { Computed, computed, Signal } from "../vendored/preact-core";
 import { NestedSignal, NestedValues } from "./types";
 
 // If onlyPublic is true, only signals not starting with an underscore are included
@@ -50,9 +50,9 @@ function mergeNested(
     }
 }
 
-function walkNested(
+function walkNestedSignal(
     signal: NestedSignal,
-    cb: (name: string, signal: Signal<any>) => void,
+    cb: (dotDeliminatedB: string, signal: Signal<any>) => void,
 ): void {
     for (const key in signal) {
         if (signal.hasOwnProperty(key)) {
@@ -60,7 +60,7 @@ function walkNested(
             if (value instanceof Signal) {
                 cb(key, value);
             } else {
-                walkNested(value as NestedSignal, cb);
+                walkNestedSignal(value as NestedSignal, cb);
             }
         }
     }
@@ -88,6 +88,25 @@ function nestedSubset(original: NestedValues, ...keys: string[]): NestedValues {
         subSubset[last] = subOriginal[last];
     }
     return subset;
+}
+
+// Recursively walk a NestedValue with a callback and dot-delimited path
+export function walkNestedValues(
+    nv: NestedValues,
+    cb: (path: string, value: any) => void,
+) {
+    for (const key in nv) {
+        if (nv.hasOwnProperty(key)) {
+            const value = nv[key];
+            if (value instanceof Object && !Array.isArray(value)) {
+                walkNestedValues(value, (path, value) => {
+                    cb(`${key}.${path}`, value);
+                });
+            } else {
+                cb(key, value);
+            }
+        }
+    }
 }
 
 export class SignalsRoot {
@@ -125,6 +144,11 @@ export class SignalsRoot {
         }
         const last = parts[parts.length - 1];
         subSignals[last] = signal;
+    }
+
+    setComputed<T>(dotDelimitedPath: string, fn: () => T) {
+        const signal = computed(() => fn()) as Computed;
+        this.setSignal(dotDelimitedPath, signal);
     }
 
     value<T>(dotDelimitedPath: string): T {
@@ -183,7 +207,7 @@ export class SignalsRoot {
     }
 
     walk(cb: (name: string, signal: Signal<any>) => void) {
-        walkNested(this._signals, cb);
+        walkNestedSignal(this._signals, cb);
     }
 
     values(onlyPublic = false): NestedValues {

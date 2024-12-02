@@ -1,6 +1,7 @@
 // An named symbol/brand for detecting Signal instances even when they weren't
 
 import { dsErr } from "../engine/errors";
+import { OnRemovalFn } from "../engine/types";
 
 // created using the same signals library version.
 const BRAND_SYMBOL = Symbol.for("preact-signals");
@@ -737,7 +738,7 @@ function endEffect(this: Effect, prevContext?: Computed | Effect) {
     endBatch();
 }
 
-type EffectFn = () => void | (() => void);
+export type EffectFn = () => OnRemovalFn | void | Promise<OnRemovalFn | void>;
 
 declare class Effect {
     _fn?: EffectFn;
