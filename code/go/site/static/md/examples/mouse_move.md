@@ -33,12 +33,13 @@ package site
 
 import (
 	"fmt"
+	datastar "github.com/starfederation/datastar/go/sdk"
 )
 
 templ MouseMouseUI(id string, collection *MouseXYCollection)  {
 	<div
 	id="container"
-			data-on-signals-change.throttle_10ms="@put('/examples/mouse_move/updates')"
+			data-on-signals-change.throttle_10ms={datastar.PutSSE("/examples/mouse_move/updates")}
 			data-signals={fmt.Sprintf("{id:'%s',x:0,y:0}", id)}
 	>
 		<div>My ID: {id}</div>

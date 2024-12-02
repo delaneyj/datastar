@@ -1,6 +1,9 @@
 package site
 
-import "fmt"
+import (
+	"fmt"
+	datastar "github.com/starfederation/datastar/sdk/go"
+)
 
 type ScrollIntoViewSignals struct {
 	Behavior string `json:"behavior"`
@@ -35,7 +38,7 @@ templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, signa
 			<button
 				id="scrollIntoViewButton"
 				class="btn btn-accent"
-				data-on-click="@put('/examples/scroll_into_view/data')"
+				data-on-click={ datastar.PutSSE("/examples/scroll_into_view/data") }
 			>Scroll into view</button>
 		</div>
 		{{ middle := len(paragraphs) / 2 }}

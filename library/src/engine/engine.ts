@@ -247,7 +247,9 @@ export class Engine {
             const fn = new Function("ctx", ...argumentNames, fnContentWithCtx);
             return (...args: any[]) => fn(ctx, ...args);
         } catch (err) {
-            throw dsErr("ExpressionGeneration", { err, fnContent });
+            const args = { err, fnContent };
+            console.error(args);
+            throw dsErr("ExpressionGeneration", args);
         }
     }
 

@@ -38,7 +38,7 @@ Finally, here is what the row looks like when the data is being edited:
   </td>
   <td>
     <button data-on-click="sse('/examples/edit_row/data')">Cancel</button>
-    <button data-on-click="@patch('/examples/edit_row/edit')">Save</button>
+    <button data-on-click="sse('/examples/edit_row/edit',{method:'patch'})">Save</button>
   </td>
 </tr>
 ```

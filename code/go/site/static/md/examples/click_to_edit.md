@@ -58,7 +58,7 @@ This returns a form that can be used to edit the contact
     <input type="text" data-bind="email" />
   </div>
   <div>
-    <button data-on-click="@put('/examples/click_to_edit/contact/1')">
+    <button data-on-click="sse('/examples/click_to_edit/contact/1',{method:'put'})">
       Save
     </button>
     <button data-on-click="sse('/examples/click_to_edit/contact/1')">

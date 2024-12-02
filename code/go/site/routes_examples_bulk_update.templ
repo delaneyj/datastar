@@ -61,14 +61,14 @@ templ bulkUpdateContacts(signals *BulkUpdateSelectionSignals, contacts []*Contac
 		</table>
 		<div class="flex gap-2">
 			<button
-				data-on-click="@put('/examples/bulk_update/data/activate'); $selections.all = false; setAll('contact_', $selections.all)"
+				data-on-click="sse('/examples/bulk_update/data/activate'. {method:'put'}); $selections.all = false; setAll('contact_', $selections.all)"
 				class="btn btn-success"
 			>
 				@icon("material-symbols:account-circle")
 				Activate
 			</button>
 			<button
-				data-on-click="@put('/examples/bulk_update/data/deactivate'); $selections.all = false; setAll('contact_', $selections.all)"
+				data-on-click="sse('/examples/bulk_update/data/deactivate'. {method:'put'}); $selections.all = false; setAll('contact_', $selections.all)"
 				class="btn btn-error"
 			>
 				@icon("material-symbols:account-circle-off")
