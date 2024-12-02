@@ -28,26 +28,31 @@ function dispatchSSE(type: string, argsRaw: Record<string, string>) {
 
 const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`);
 
+export type SSEArgs = {
+    method: METHOD;
+    headers?: Record<string, string>;
+    onlyRemote?: boolean;
+};
+
 export const ServerSentEvents: ActionPlugin = {
     type: PluginType.Action,
     name: "sse",
     fn: async (
-        { el: { id: elId }, signals },
+        ctx,
         url: string,
-        { method = "GET", headers = {}, onlyRemote = true }: {
-            method: METHOD;
-            headers?: Record<string, string>;
-            onlyRemote?: boolean;
-        },
+        args: SSEArgs = { method: "GET", headers: {}, onlyRemote: true },
     ) => {
+        const { el: { id: elId }, signals } = ctx;
+        const { headers: userHeaders, onlyRemote } = args;
+        const method = args.method.toUpperCase();
         try {
             dispatchSSE(STARTED, { elId });
             if (!!!url?.length) throw dsErr("NO URL");
 
-            headers = Object.assign({
+            const headers = Object.assign({
                 "Content-Type": "application/json",
                 [DATASTAR_REQUEST]: true,
-            }, headers);
+            }, userHeaders);
 
             const req: FetchEventSourceInit = {
                 method,

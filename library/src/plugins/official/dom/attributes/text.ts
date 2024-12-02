@@ -10,7 +10,8 @@ export const Text: AttributePlugin = {
     type: PluginType.Attribute,
     name: "text",
     onLoad: (ctx) => {
-        const { el, rx, effect } = ctx;
+        const { el, genRX, effect } = ctx;
+        const rx = genRX();
         if (!(el instanceof HTMLElement)) {
             dsErr("Element is not HTMLElement");
         }

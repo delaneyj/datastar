@@ -55,10 +55,11 @@ export const MergeFragments: WatcherPlugin = {
 
                     const selectorOrID = selector ||
                         `#${fragment.getAttribute("id")}`;
-                    const targets = document.querySelectorAll(selectorOrID) ||
-                        [];
-                    const allTargets = [...targets];
-                    if (!allTargets.length) {
+                    const targets = [
+                        ...document.querySelectorAll(selectorOrID) ||
+                            [],
+                    ];
+                    if (!targets.length) {
                         throw dsErr("NoTargetsFound", { selectorOrID });
                     }
 
@@ -69,7 +70,7 @@ export const MergeFragments: WatcherPlugin = {
                                 mergeMode,
                                 settleDuration,
                                 fragment,
-                                allTargets,
+                                targets,
                             )
                         );
                     } else {
@@ -78,7 +79,7 @@ export const MergeFragments: WatcherPlugin = {
                             mergeMode,
                             settleDuration,
                             fragment,
-                            allTargets,
+                            targets,
                         );
                     }
                 });

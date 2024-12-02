@@ -114,7 +114,6 @@ export class Engine {
 
     private apply(rootElement: Element) {
         const appliedMacros = new Set<MacroPlugin>();
-
         this.plugins.forEach((p, pi) => {
             this.walkDownDOM(rootElement, (el) => {
                 if (!pi) this.cleanup(el);
@@ -153,43 +152,6 @@ export class Engine {
                         value = macro.fn(value);
                     }
 
-                    const reactiveExpression = (...args: any[]) => {
-                        const { value } = ctx;
-                        // Make sure to add a return statement to the end of the function
-                        const statements = value
-                            .split(/;|\n/)
-                            .map((s) => s.trim())
-                            .filter((s) => s.length);
-                        const lastIdx = statements.length - 1;
-                        const RETURN = "return";
-                        const last = statements[lastIdx];
-                        if (!last.startsWith(RETURN)) {
-                            statements[lastIdx] = `${RETURN} ${
-                                statements[lastIdx]
-                            }`;
-                        }
-                        // put back together
-                        const fnContent = statements.map((s) => `  ${s}`).join(
-                            ";\n",
-                        );
-
-                        let fn: RuntimeExpressionFunction;
-                        try {
-                            const argumentNames = p.argNames || [];
-                            fn = new Function(
-                                "ctx",
-                                ...argumentNames,
-                                fnContent,
-                            ) as RuntimeExpressionFunction;
-                            return fn(ctx, ...args);
-                        } catch (err) {
-                            throw dsErr("Expression generation", {
-                                err,
-                                fnContent,
-                            });
-                        }
-                    };
-
                     const {
                         actions,
                         apply,
@@ -203,14 +165,22 @@ export class Engine {
                         effect: (cb: () => void): OnRemovalFn => effect(cb),
                         apply: apply.bind(this),
                         cleanup: cleanup.bind(this),
-                        rx: reactiveExpression,
                         actions,
+                        genRX: () => {
+                            throw dsErr("NotImplemented");
+                        },
                         el,
                         rawKey,
                         rawValue,
                         key,
                         value,
                         mods,
+                    };
+                    ctx.genRX = () => {
+                        return this.generateReactiveExpression(
+                            ctx,
+                            ...p.argNames || [],
+                        );
                     };
 
                     const removal = p.onLoad(ctx);
@@ -231,6 +201,54 @@ export class Engine {
                 }
             });
         });
+    }
+
+    private generateReactiveExpression(
+        ctx: RuntimeContext,
+        ...argNames: string[]
+    ): RuntimeExpressionFunction {
+        const statements = ctx.value
+            .split(/;|\n/)
+            .map((s) => s.trim())
+            .filter((s) => s.length);
+        const lastIdx = statements.length - 1;
+        const RETURN = "return";
+        const last = statements[lastIdx];
+        if (!last.startsWith(RETURN)) {
+            statements[lastIdx] = `${RETURN} ${statements[lastIdx]};`;
+        }
+        const userExpression = statements.join(";\n");
+
+        const fnCall = /(\w*)\(/gm;
+        const matches = userExpression.matchAll(fnCall);
+        const methodsCalled = new Set<string>();
+        for (const match of matches) {
+            methodsCalled.add(match[1]);
+        }
+        // Action names
+        const an = Object.keys(this.actions).filter((i) =>
+            methodsCalled.has(i)
+        );
+        // Action lines
+        const al = an.map((a) => `const ${a} = ctx.actions.${a}.fn;`);
+        const fnContent = `${al.join("\n")}\n${userExpression}`;
+
+        // Add ctx to action calls
+        let fnContentWithCtx = fnContent;
+        an.forEach((a) => {
+            fnContentWithCtx = fnContentWithCtx.replaceAll(
+                a + "(",
+                a + "(ctx,",
+            );
+        });
+
+        try {
+            const argumentNames = argNames || [];
+            const fn = new Function("ctx", ...argumentNames, fnContentWithCtx);
+            return (...args: any[]) => fn(ctx, ...args);
+        } catch (err) {
+            throw dsErr("ExpressionGeneration", { err, fnContent });
+        }
     }
 
     private walkDownDOM(

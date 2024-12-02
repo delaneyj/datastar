@@ -8,7 +8,8 @@ export const Signals: AttributePlugin = {
     type: PluginType.Attribute,
     name: "signals",
     purge: true,
-    onLoad: ({ key, signals, rx }) => {
+    onLoad: ({ key, signals, genRX }) => {
+        const rx = genRX();
         const toMerge = rx<NestedValues>();
         if (key) {
             signals.setValue(key, toMerge);

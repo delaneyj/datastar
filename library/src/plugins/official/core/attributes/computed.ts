@@ -11,7 +11,8 @@ export const Computed: AttributePlugin = {
     type: PluginType.Attribute,
     name,
     purge: true,
-    onLoad: ({ key, signals, rx }) => {
+    onLoad: ({ key, signals, genRX }) => {
+        const rx = genRX();
         if (key.length) {
             signals.setComputed(key, rx);
         } else {

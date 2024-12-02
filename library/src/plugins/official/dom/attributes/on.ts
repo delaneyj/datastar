@@ -24,7 +24,8 @@ export const On: AttributePlugin = {
     type: PluginType.Attribute,
     name: "on",
     argNames: ["evt"],
-    onLoad: ({ el, key, rx, mods, signals, effect }) => {
+    onLoad: ({ el, key, genRX, mods, signals, effect }) => {
+        const rx = genRX();
         let target: Element | Window | Document = el;
         if (mods.has("window")) {
             target = window;

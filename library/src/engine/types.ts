@@ -69,7 +69,7 @@ export type RuntimeContext = InitContext & {
     value: Readonly<string>; // what the user wrote after any macros run
     key: Readonly<string>; // data-* key without the prefix or modifiers
     mods: Modifiers; // the modifiers and their arguments
-    rx: <T>(...args: any[]) => T; // a reactive expression
+    genRX: () => <T>(...args: any[]) => T; // a reactive expression
 };
 
 export type NestedValues = { [key: string]: NestedValues | any };

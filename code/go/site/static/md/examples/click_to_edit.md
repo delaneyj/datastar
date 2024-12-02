@@ -6,7 +6,7 @@
 
 <div
     id="contact_1"
-    data-on-load="@get('/examples/click_to_edit/contact/1')"
+    data-on-load="sse('/examples/click_to_edit/contact/1')"
 >
 
 </div>

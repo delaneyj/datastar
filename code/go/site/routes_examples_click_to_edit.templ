@@ -1,6 +1,9 @@
 package site
 
-import goaway "github.com/TwiN/go-away"
+import (
+	goaway "github.com/TwiN/go-away"
+	datastar "github.com/starfederation/datastar/sdk/go"
+)
 
 type ClickToEditContactSignals struct {
 	FirstName string `json:"firstName,omitempty" san:"trim,xss,max=128"`
@@ -16,13 +19,13 @@ templ setupExamplesClickToEditUserComponent(signals *ClickToEditContactSignals) 
 		<div class="flex gap-4">
 			<button
 				class="btn btn-primary"
-				data-on-click="@get('/examples/click_to_edit/contact/1/edit')"
+				data-on-click={ datastar.GetSSE("/examples/click_to_edit/contact/1/edit") }
 			>
 				Edit
 			</button>
 			<button
 				class="btn btn-secondary"
-				data-on-click="@patch('/examples/click_to_edit/contact/1/reset')"
+				data-on-click={ datastar.PatchSSE("/examples/click_to_edit/contact/1/reset") }
 			>
 				Reset
 			</button>
@@ -31,7 +34,7 @@ templ setupExamplesClickToEditUserComponent(signals *ClickToEditContactSignals) 
 }
 
 templ setupExamplesClickToEditUserEdit(signals *ClickToEditContactSignals) {
-	<div id="contact_1" class="flex flex-col gap-2" data-merge-signals={ templ.JSONString(signals) }>
+	<div id="contact_1" class="flex flex-col gap-2" data-signals={ templ.JSONString(signals) }>
 		<label class="flex items-center gap-2 input input-bordered">
 			First Name
 			<input type="text" class="grow" data-bind="firstName"/>
@@ -47,13 +50,13 @@ templ setupExamplesClickToEditUserEdit(signals *ClickToEditContactSignals) {
 		<div class="flex gap-4">
 			<button
 				class="btn btn-primary"
-				data-on-click="@put('/examples/click_to_edit/contact/1')"
+				data-on-click={ datastar.PutSSE("/examples/click_to_edit/contact/1") }
 			>
 				Save
 			</button>
 			<button
 				class="btn btn-secondary"
-				data-on-click="@get('/examples/click_to_edit/contact/1')"
+				data-on-click={ datastar.GetSSE("/examples/click_to_edit/contact/1") }
 			>
 				Cancel
 			</button>

@@ -28,12 +28,12 @@ export const ViewTransition: AttributePlugin = {
             document.head.appendChild(meta);
         }
     },
-    onLoad: ({ effect, el, rx }) => {
+    onLoad: ({ effect, el, genRX }) => {
         if (!supportsViewTransitions) {
             console.error("Browser does not support view transitions");
             return;
         }
-
+        const rx = genRX();
         return effect(() => {
             const name = rx<string>();
             if (!name?.length) return;

@@ -9,8 +9,9 @@ import { kebabize } from "../../../../utils/text";
 export const Class: AttributePlugin = {
     type: PluginType.Attribute,
     name: "class",
-    onLoad: ({ key, el, rx, effect }) => {
+    onLoad: ({ key, el, genRX, effect }) => {
         const cl = el.classList;
+        const rx = genRX();
         return effect(() => {
             if (key === "") {
                 const classes: Object = rx<Record<string, boolean>>();
