@@ -6,7 +6,7 @@
 
 <div
     id="value_select"
-    data-on-load="@get('/examples/value_select/data')"
+    data-on-load="sse('/examples/value_select/data')"
 >
 </div>
 
@@ -19,9 +19,9 @@ To begin we start with a default value for the make select: Audi. We render the 
 Here is the code:
 
 ```html
-<div id="value_select" data-merge-signals='{"make":"","model":""}'>
+<div id="value_select" data-signals='{"make":"","model":""}'>
   <div>Pick a Make / Model</div>
-  <select data-bind="make" data-on-change="@get('/examples/value_select/data')">
+  <select data-bind="make" data-on-change="sse('/examples/value_select/data')">
     <option disabled>Select a Make</option>
     <option value="HYAABHANLTMQC">Audi</option>
     <option value="HZAABHANLTMQC">Toyota</option>
@@ -33,9 +33,9 @@ Here is the code:
 When a request is made to the /models end point, we return the models for that make:
 
 ```html
-<div id="value_select" data-merge-signals='{"make":"HZAABHANLTMQC","model":""}'>
+<div id="value_select" data-signals='{"make":"HZAABHANLTMQC","model":""}'>
   <div>Pick a Make / Model</div>
-  <select data-bind="make" data-on-change="@get('/examples/value_select/data')">
+  <select data-bind="make" data-on-change="sse('/examples/value_select/data')">
     <option disabled>Select a Make</option>
     <option value="HYAABHANLTMQC">Audi</option>
     <option value="HZAABHANLTMQC">Toyota</option>
@@ -43,7 +43,7 @@ When a request is made to the /models end point, we return the models for that m
   </select>
   <select
     data-bind="model"
-    data-on-change="@get('/examples/value_select/data')"
+    data-on-change="sse('/examples/value_select/data')"
   >
     <option disabled="" selected="" value="">Select a Model</option>
     <option value="HZIABHANLTMQC">Land Cruiser</option>

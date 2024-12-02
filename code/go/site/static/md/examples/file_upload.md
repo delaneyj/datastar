@@ -6,7 +6,7 @@
 
 <div
     id="file_upload"
-    data-on-load="@get('/examples/file_upload/data')"
+    data-on-load="sse('/examples/file_upload/data')"
 >
 </div>
 
@@ -17,8 +17,8 @@ In this example we show how to create a file upload form that will be submitted 
 ```html
 <!-- Removed styling for brevity -->
 <div
-  id="file_upload" data-on-load="@get('/examples/file_upload/data')"
-  data-merge-signals="{"files": [],"filesMimes": [],"filesNames": []}"
+  id="file_upload" data-on-load="sse('/examples/file_upload/data')"
+  data-signals="{"files": [],"filesMimes": [],"filesNames": []}"
 >
   <div>
     <label>

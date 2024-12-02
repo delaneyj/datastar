@@ -13,7 +13,7 @@ tr.datastar-swapping td {
 
 <div
     id="delete_row"
-    data-on-load="@get('/examples/delete_row/data')"
+    data-on-load="sse('/examples/delete_row/data')"
 >
 </div>
 

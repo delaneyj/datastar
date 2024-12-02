@@ -6,7 +6,7 @@
 
 <div
     id="dialogs"
-    data-on-load="@get('/examples/dialogs_browser/data')"
+    data-on-load="sse('/examples/dialogs_browser/data')"
 >
 </div>
 
@@ -17,8 +17,8 @@ Dialogs can be triggered with the standard browser `prompt` and `confirm` within
 ```html
 <button
   id="dialogs"
-  data-merge-signals="{prompt:'foo',confirm:false}"
-  data-on-click="$prompt=prompt('Enter a string',$prompt);$confirm=confirm('Are you sure?');$confirm && @get('/examples/dialogs___browser/sure')"
+  data-signals="{prompt:'foo',confirm:false}"
+  data-on-click="$prompt=prompt('Enter a string',$prompt);$confirm=confirm('Are you sure?');$confirm && sse('/examples/dialogs___browser/sure')"
 >
   Click Me
 </button>

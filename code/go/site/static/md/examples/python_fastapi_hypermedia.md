@@ -151,19 +151,19 @@ def render_main_partial(signals):
   return Div(
     Div(
       Input(type="text", placeholder="Send to server...", **{"data-bind":"input"}),
-      Button("Send State Roundtrip", **{"data-on-click":'@get("/get")'}),
-      Button("Target HTML Element", **{"data-on-click":'@get("/target")'}),
+      Button("Send State Roundtrip", **{"data-on-click":'sse("/get")'}),
+      Button("Target HTML Element", **{"data-on-click":'sse("/target")'}),
       Button("Toggle Feed", **{"data-on-click":'$show=!$show'}),
       Div(id="output", **{"data-text":"$output"}),
       Div(id=f"{target}"),
       Div(
         Span("Feed from server: "),
-        Span(id="feed", **{"data-on-load":'@get("/feed")'}),
+        Span(id="feed", **{"data-on-load":'sse("/feed")'}),
         **{"$data-show.duration_500ms":"$show"}
         ),
     ),
     id="main",
-    **{"data-merge-signals":f'{json.dumps(signals)}'}
+    **{"data-signals":f'{json.dumps(signals)}'}
   )
 
 
@@ -191,7 +191,7 @@ async def get_data(request: Request):
   signals = json.loads(query_params)
   signals['output'] = f"Your input: {signals['input']}, is {len(signals['input'])} long."
   event_data = json.dumps(signals)
-  fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
+  fragment = f"<div id='main' data-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")
 

@@ -24,7 +24,7 @@ templ ShoelaceKitchensinkView(r *http.Request, options []ShoelaceKitchensinkOpti
 	<div
 		id="shoelace_kitchensink"
 		class="flex flex-col gap-4 sl-theme-dark"
-		data-merge-signals={ templ.JSONString(signals) }
+		data-signals={ templ.JSONString(signals) }
 	>
 		<sl-input label="Label" data-bind="nested.label"></sl-input>
 		<sl-select

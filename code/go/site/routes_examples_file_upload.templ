@@ -10,7 +10,7 @@ templ FileUploadView(signals *FileUploadSignals) {
 	<div
 		id="file_upload"
 		class="flex flex-col gap-4"
-		data-merge-signals={ templ.JSONString(signals) }
+		data-signals={ templ.JSONString(signals) }
 	>
 		<div class="flex flex-col gap-2">
 			<label

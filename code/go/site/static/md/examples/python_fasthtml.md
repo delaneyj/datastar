@@ -52,14 +52,14 @@ def page_main(signals):
   return Main(
   Div(
     Input(type="text", placeholder="Send to server...", data_model="input"),
-    Button("Send State Roundtrip", data_on_click='@get("/get")'),
-    Button("Target HTML Element", data_on_click='@get("/target")'),
+    Button("Send State Roundtrip", data_on_click='sse("/get")'),
+    Button("Target HTML Element", data_on_click='sse("/target")'),
     Button("Toggle Feed", data_on_click="$show=!$show"),
     Div(id="output", data_text="$output"),
     Div(id=f"{target}"),
     Div(
       Span("Feed from server: "),
-      Span(id="feed", **{'data-on-load':"@get('/feed')"}),
+      Span(id="feed", **{'data-on-load':"sse('/feed')"}),
       **{"data-show.duration_500ms":"$show"},
     ),
   ),
@@ -163,7 +163,7 @@ async def get(req):
   signals = json.loads(query_params)
   signals['output'] = f"Your input: {signals['input']}, is {len(signals['input'])} long."
   event_data = json.dumps(signals)
-  fragment = f"<div id='main' data-merge-signals='{event_data}'></div>"
+  fragment = f"<div id='main' data-signals='{event_data}'></div>"
   sse = SingleDatastarEventMessage(fragment=fragment, merge=FragmentMergeType.UPSERT_ATTRIBUTES)
 
   return StreamingResponse(sse.single_event_generator(), media_type="text/event-stream")

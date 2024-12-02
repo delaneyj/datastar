@@ -2,7 +2,7 @@
 
 ## Demo
 
-<div data-merge-signals="{currentTime:Date.now()}" data-on-raf="$currentTime = Date.now()">
+<div data-signals="{currentTime:Date.now()}" data-on-raf="$currentTime = Date.now()">
   <div id="time">Current Time: <span data-text="new Date($currentTime).toLocaleString()">will be replaced by current time</span></div>
   <pre data-text="JSON.stringify(ctx.signals().value, null,2)"></pre>
 </div>
@@ -13,7 +13,7 @@ In the [Title Update Backend](/examples/title_update_backend) example we showed 
 
 ```html
 <div
-  data-merge-signals="{currentTime:Date.now()}"
+  data-signals="{currentTime:Date.now()}"
   data-on-raf="$currentTime = Date.now()"
 >
   <div id="time">

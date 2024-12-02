@@ -14,7 +14,7 @@ templ mergeOptionsView() {
 				<button
 					id={ string(mergeMode) }
 					class="btn btn-accent"
-					data-on-click={ fmt.Sprintf("@get('/examples/merge_options/%s')", mergeMode) }
+					data-on-click={ datastar.GetSSE("/examples/merge_options/%s", mergeMode) }
 				>
 					{ string(mergeMode) }
 				</button>
@@ -22,7 +22,7 @@ templ mergeOptionsView() {
 		</div>
 		<button
 			class="btn btn-warning"
-			data-on-click="@get('/examples/merge_options/reset')"
+			data-on-click={ datastar.GetSSE("/examples/merge_options/reset") }
 		>
 			Reset
 		</button>

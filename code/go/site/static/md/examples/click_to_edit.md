@@ -22,10 +22,10 @@ The click to edit pattern provides a way to offer inline editing of all or part 
   <label>Last Name: Doe</label>
   <label>Email: joe@blow.com</label>
   <div>
-    <button data-on-click="@get('/examples/click_to_edit/contact/1/edit')">
+    <button data-on-click="sse('/examples/click_to_edit/contact/1/edit')">
       Edit
     </button>
-    <button data-on-click="@get('/examples/click_to_edit/contact/1/reset')">
+    <button data-on-click="sse('/examples/click_to_edit/contact/1/reset')">
       Reset
     </button>
   </div>
@@ -38,7 +38,7 @@ This returns a form that can be used to edit the contact
 <!-- Removed styling and escaping for brevity -->
 <div
   id="contact_1"
-  data-merge-signals="{
+  data-signals="{
         id: 1,
         firstName: 'John',
         lastName: 'Doe',
@@ -61,7 +61,7 @@ This returns a form that can be used to edit the contact
     <button data-on-click="@put('/examples/click_to_edit/contact/1')">
       Save
     </button>
-    <button data-on-click="@get('/examples/click_to_edit/contact/1')">
+    <button data-on-click="sse('/examples/click_to_edit/contact/1')">
       Cancel
     </button>
   </div>

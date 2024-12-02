@@ -2,14 +2,14 @@
 
 ## Demo
 
-<div id="container" data-on-load="@get('/examples/model_binding/data')"></div>
+<div id="container" data-on-load="sse('/examples/model_binding/data')"></div>
 
 ## Explanation
 
 ```html
 <div
   id="container"
-  data-merge-signals="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
+  data-signals="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
 >
   <input type="text" data-bind="bindText" />
   <input type="number" data-bind="bindNumber" />

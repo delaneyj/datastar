@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-    data-merge-signals="{page:0}"
+    data-signals="{page:0}"
     data-on-raf.throttle_1s="$page = $page + 1"
     data-replace-url="'/examples/replace_url_from_signals?page=' + $page"
 >
@@ -13,7 +13,7 @@
 
 ```html
 <div
-    data-merge-signals="{page:0}"
+    data-signals="{page:0}"
     data-on-raf.throttle_1s="$page = $page + 1"
     data-replace-url="'/examples/replace_url_from_signals?page=' + $page"
 >

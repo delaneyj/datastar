@@ -2,7 +2,7 @@
 
 ## Demo
 
-<div data-merge-signals="{
+<div data-signals="{
     foo:1234,
     bar:'bar'
 }">
@@ -25,7 +25,7 @@
 
 ```html
 <div
-  data-merge-signals="{
+  data-signals="{
     foo:1234,
     bar:'bar'
 }"
@@ -35,4 +35,4 @@
 </div>
 ```
 
-The `data-merge-signals` attribute is used to define a signals object. The signals object is a JS object. 
+The `data-signals` attribute is used to define a signals object. The signals object is a JS object.

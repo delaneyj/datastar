@@ -29,7 +29,7 @@ On the [click to edit example](/examples/click_to_edit) when you first load the 
 ```html
 <div
   id="contact_1"
-  data-on-load="@get('/examples/click_to_edit/contact/1')"
+  data-on-load="sse('/examples/click_to_edit/contact/1')"
 ></div>
 ```
 

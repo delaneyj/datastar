@@ -3,6 +3,7 @@ package site
 import (
 	"fmt"
 	"github.com/delaneyj/toolbelt"
+	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
 type infiniteScrollSignals struct {
@@ -15,9 +16,9 @@ templ infiniteScrollMore(signals *infiniteScrollSignals) {
 		id="loading_message"
 		class="alert alert-info"
 		data-intersects={ fmt.Sprintf(
-			"$offset=%d;$limit=%d;@get('/examples/infinite_scroll/data')",
-			signals.Offset+signals.Limit,
-			signals.Limit,
+			"$offset=%d;$limit=%d;%s",
+			signals.Offset+signals.Limit,signals.Limit,
+			datastar.GetSSE("/examples/infinite_scroll/data"),
 		) }
 	>
 		@icon("svg-spinners:blocks-wave")
@@ -36,7 +37,7 @@ templ infiniteScrollAgent(i int) {
 templ infiniteScrollAgents(signals *infiniteScrollSignals) {
 	<div
 		id="infinite_scroll"
-		data-merge-signals={ templ.JSONString(signals) }
+		data-signals={ templ.JSONString(signals) }
 		class="flex flex-col gap-2"
 	>
 		<table class="table w-full table-zebra">

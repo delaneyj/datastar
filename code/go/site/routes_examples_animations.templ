@@ -1,6 +1,9 @@
 package site
 
-import "fmt"
+import (
+	"fmt"
+	datastar "github.com/starfederation/datastar/sdk/go"
+)
 
 type AnimationsRestoreSignals struct {
 	ShouldRestore bool `json:"shouldRestore"`
@@ -9,12 +12,12 @@ type AnimationsRestoreSignals struct {
 templ animationsViewTransition(signals *AnimationsRestoreSignals) {
 	<div
 		id="view_transition"
-		data-merge-signals={ templ.JSONString(signals) }
+		data-signals={ templ.JSONString(signals) }
 		class="slide-it"
 	>
 		<button
 			class="btn btn-primary btn-lg"
-			data-on-click="@get('/examples/animations/data/view_transition') "
+			data-on-click={ datastar.GetSSE("/examples/animations/data/view_transition") }
 		>
 			if signals.ShouldRestore {
 				@icon("material-symbols:arrow-left")
@@ -47,7 +50,7 @@ templ animationsFadeMeIn(shouldBeShown bool) {
 		class={ "btn btn-success",
 			templ.KV("transition-all duration-1000", shouldBeShown),
 			templ.KV("opacity-0", !shouldBeShown) }
-		data-on-click="@get('/examples/animations/data/fade_me_in')"
+		data-on-click={ datastar.GetSSE("/examples/animations/data/fade_me_in") }
 	>
 		@icon("material-symbols:add")
 		Fade me in on click
@@ -86,7 +89,7 @@ templ animationsRequestInFlight() {
 		<button
 			id="submit_request_in_flight"
 			class="btn btn-success"
-			data-on-click="@post('/examples/animations/data/request_in_flight')"
+			data-on-click={ datastar.PostSSE("/examples/animations/data/request_in_flight") }
 			data-indicator="fetching"
 		>
 			@icon("material-symbols:person-add")

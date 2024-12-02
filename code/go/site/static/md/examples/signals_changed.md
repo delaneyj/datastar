@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-  data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change.remote="@post('/examples/signals_changed/updates')"
   >
     <div class="flex gap-4">
@@ -31,7 +31,7 @@
 
 ```html
 <div
-  data-merge-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change.remote="@post('/examples/signals_changed/updates')"
 >
   <div>

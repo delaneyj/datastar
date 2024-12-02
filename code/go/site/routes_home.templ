@@ -101,7 +101,10 @@ templ Home() {
 					We are by far the smallest and fastest full-featured framework, even with everything included.  But don't fret, we provide a “pay what for what you use” bundling system for when you want a custom build.
 				</p>
 				<img class="w-full" src="/chart"/>
-				<div id="todosMVC" data-on-load="@get('/api/todos')">
+				<div
+					id="todosMVC"
+					data-on-load={ datastar.GetSSE("/api/todos") }
+				>
 					<p>Todos Example</p>
 					<p>If you are seeing this message, please clear your cookies and refresh the page.</p>
 					<p>We recently updated the site and the old cookies are causing issues.</p>
@@ -153,7 +156,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 		<div class="card-body">
 			<div
 				class="flex flex-col w-full gap-4"
-				data-merge-signals={ fmt.Sprintf("{input:'%s'}", input) }
+				data-signals={ fmt.Sprintf("{input:'%s'}", input) }
 			>
 				<p class="text-sm">
 					This mini application is driven by a
@@ -178,7 +181,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										data-on-click="@post('/api/todos/-1/toggle')"
 										data-testid="toggle_all_todos"
 										data-indicator="toggleAllFetching"
-										data-bind-disabled="@toggleAllFetching"
+										data-bind-disabled="toggleAllFetching"
 									>
 										@icon("material-symbols:checklist")
 									</button>

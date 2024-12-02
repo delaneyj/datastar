@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-    data-merge-signals="{count:0}"
+    data-signals="{count:0}"
     data-on-raf.throttle_500ms="$count++"
     data-computed-blinker="$count % 2 === 0"
 >
@@ -17,7 +17,7 @@
 
 ```html
 <div
-    data-merge-signals="{count:0}"
+    data-signals="{count:0}"
     data-on-raf.throttle_500ms="$count++"
     data-computed-blinker="$count % 2 === 0"
 >

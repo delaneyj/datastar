@@ -9,7 +9,7 @@ A set of plugins that allow for the integration of any backend service that supp
 ### `@get`, `@post`, `@put`, `@patch`, `@delete`
 
 ```html
-<div data-on-click="@get('/examples/click_to_edit/contact/1')"></div>
+<div data-on-click="sse('/examples/click_to_edit/contact/1')"></div>
 ```
 
 Makes an HTML_VERB request to the server and merges the response with the current DOM and signals. The URL can be any valid URL but the response must be a Datastar formatted SSE event.
@@ -25,7 +25,7 @@ The `onlyRemoteSignals` option determines whether to only send remotely viewable
 The `headers` option is an object containing headers to send with the request.
 
 ```html
-<div data-on-click="@get('/examples/click_to_edit/contact/1', {
+<div data-on-click="sse('/examples/click_to_edit/contact/1', {
   onlyRemoteSignals: false,
   headers: {
     'X-Csrf-Token': 'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg==',
@@ -78,7 +78,7 @@ data: onlyIfMissing false
 data: signals {foo: 1234}
 ```
 
-The `datastar-merge-signals` event is used to update the signals with new values. The `onlyIfMissing` line determines whether to update the signals with new values only if the key does not exist. The `signals` line should be a valid `data-merge-signals` attribute. This will get merged into the signals.
+The `datastar-merge-signals` event is used to update the signals with new values. The `onlyIfMissing` line determines whether to update the signals with new values only if the key does not exist. The `signals` line should be a valid `data-signals` attribute. This will get merged into the signals.
 
 #### `datastar-remove-fragments`
 
@@ -115,7 +115,7 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 ```html
 <svg data-show="$fetching">Spinner</svg>
 <button
-  data-on-click="@get('/examples/click_to_edit/contact/1')"
+  data-on-click="sse('/examples/click_to_edit/contact/1')"
   data-indicator="fetching"
   data-bind-disabled="$fetching"
 ></button>

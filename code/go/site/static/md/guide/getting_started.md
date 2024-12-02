@@ -211,24 +211,24 @@ This results in the button being given the `disabled` attribute whenever the inp
     </button>
 </div>
 
-### `data-merge-signals`
+### `data-signals`
 
 So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a **signals** that is accessible from anywhere in the DOM.
 
-We can merge signals into the signals using the [`data-merge-signals`](/reference/plugins_core#signals) attribute.
+We can merge signals into the signals using the [`data-signals`](/reference/plugins_core#signals) attribute.
 
 ```html
-<div data-merge-signals="{input: ''}"></div>
+<div data-signals="{input: ''}"></div>
 ```
 
-The `data-merge-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
+The `data-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
 
-Adding `data-merge-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
+Adding `data-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
 
 Signals are nestable, which can be useful for namespacing.
 
 ```html
-<div data-merge-signals="{primary: {input: ''}, secondary: {input: '' }}"></div>
+<div data-signals="{primary: {input: ''}, secondary: {input: '' }}"></div>
 ```
 
 ### `data-on-*`
@@ -262,7 +262,7 @@ See if you can follow the code below _before_ trying the demo.
 
 ```html
 <div
-  data-merge-signals="{response: '', answer: 'bread'}"
+  data-signals="{response: '', answer: 'bread'}"
   data-computed-correct="$response.toLowerCase() == $answer"
 >
   <div id="question">What do you put in a toaster?</div>
@@ -279,7 +279,7 @@ See if you can follow the code below _before_ trying the demo.
 </div>
 ```
 
-<div data-merge-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="space-y-3">
         <div id="question1">
             What do you put in a toaster?
@@ -313,15 +313,15 @@ The `mergeFragments()` method merges the provided HTML fragment into the DOM, re
 
 The `mergeSignals()` method merges the `response` and `answer` signals into the frontend signals.
 
-With our backend in place, we can now use the `data-on-click` attribute to trigger the `@get()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
+With our backend in place, we can now use the `data-on-click` attribute to trigger the `sse()` action, which sends a `GET` request to the `/actions/quiz` endpoint on the server when a button is clicked.
 
 ```html
 <div
-  data-merge-signals="{response: '', answer: '', correct: false}"
+  data-signals="{response: '', answer: '', correct: false}"
   data-computed-correct="$response.toLowerCase() == $answer"
 >
   <div id="question"></div>
-  <button data-on-click="@get('/actions/quiz')">Fetch a question</button>
+  <button data-on-click="sse('/actions/quiz')">Fetch a question</button>
   <button
     data-show="$answer != ''"
     data-on-click="$response = prompt('Answer:') ?? ''"
@@ -340,7 +340,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 Now when the `Fetch a question` button is clicked, the server will respond with an event to modify the `question` element in the DOM and an event to modify the `response` and `answer` signals. We're driving state from the backend!
 
-<div data-merge-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="pb-3 space-y-3">
         <div id="question2"></div>
         <div data-show="$response2 != ''">
@@ -350,7 +350,7 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
                 The correct answer is “<span data-text="$answer2"></span>” 🤷
             </span>
         </div>
-        <button data-on-click="@get('/examples/quiz/data')" class="btn btn-secondary">
+        <button data-on-click="sse('/examples/quiz/data')" class="btn btn-secondary">
             Fetch a question
         </button>
     </div>
@@ -370,7 +370,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
 <div data-class="{loading: $fetching}" class="indicator"></div>
 <button
   id="fetch-a-question"
-  data-on-click="@get('/actions/quiz')"
+  data-on-click="sse('/actions/quiz')"
   data-indicator="fetching"
 >
   Fetch a question
@@ -381,7 +381,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
     <div class="pb-3 space-y-3">
         <div id="question3"></div>
         <div class="flex items-center gap-2">
-            <button id="fetch-a-question" data-on-click="@get('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
+            <button id="fetch-a-question" data-on-click="sse('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
                 Fetch a question
             </button>
             <div data-class="{loading: $fetching}" class="indicator"></div>
@@ -389,7 +389,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
     </div>
 </div>
 
-We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `@get()`, `@post()`, `@put()`, `@patch()` and `@delete()` actions, respectively.
+We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `sse()`, `@post()`, `@put()`, `@patch()` and `@delete()` actions, respectively.
 
 Here's how we could send an answer to the server for processing, using a `POST` request.
 
@@ -405,12 +405,12 @@ One of the benefits of using SSE is that we can send multiple events (HTML fragm
 
 Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `@get` action above. Here are a few other common actions.
 
-### `@setAll()`
+### `setAll()`
 
-The `@setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
+The `setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
 
 ```html
-<button data-on-click="@setAll('form_', true)"></button>
+<button data-on-click="setAll('form_', true)"></button>
 ```
 
 This sets the values of all signals containing `form_` to `true`, which could be useful for enabling input fields in a form.
@@ -419,7 +419,7 @@ This sets the values of all signals containing `form_` to `true`, which could be
 <input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
 <input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
 <input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
-<button data-on-click="@setAll('checkbox_', true)">Check All</button>
+<button data-on-click="setAll('checkbox_', true)">Check All</button>
 ```
 
 <div class="flex flex-col items-start gap-2 p-8 alert">
@@ -441,17 +441,17 @@ This sets the values of all signals containing `form_` to `true`, which could be
             <input type="checkbox" class="toggle" data-bind="checkbox_1_3"/>
         </label>
     </div>
-    <button data-on-click="@setAll('checkbox_1_', true)" class="mt-4 btn btn-secondary">
+    <button data-on-click="setAll('checkbox_1_', true)" class="mt-4 btn btn-secondary">
         Check All
     </button>
 </div>
 
-### `@toggleAll()`
+### `toggleAll()`
 
-The `@toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
+The `toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
 
 ```html
-<button data-on-click="@toggleAll('form_')"></button>
+<button data-on-click="toggleAll('form_')"></button>
 ```
 
 This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
@@ -460,7 +460,7 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 <input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
 <input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
 <input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
-<button data-on-click="@toggleAll('checkbox_')">Toggle All</button>
+<button data-on-click="toggleAll('checkbox_')">Toggle All</button>
 ```
 
 <div class="flex flex-col items-start gap-2 p-8 alert">
@@ -482,7 +482,7 @@ This toggles the values of all signals containing `form_` (to either `true` or `
             <input type="checkbox" class="toggle" data-bind="checkbox_2_3"/>
         </label>
     </div>
-    <button data-on-click="@toggleAll('checkbox_2_')" class="mt-4 btn btn-secondary">
+    <button data-on-click="toggleAll('checkbox_2_')" class="mt-4 btn btn-secondary">
         Toggle All
     </button>
 </div>
@@ -497,8 +497,8 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Show or hide an element using an expression: `data-show="$foo"
 - Modify the classes on an element: `data-class="{'font-bold': $foo}"`
 - Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
-- Merge signals into the signals: `data-merge-signals="{foo: ''}"`
-- Execute an expression on an event: `data-on-click="@get(/endpoint)"`
+- Merge signals into the signals: `data-signals="{foo: ''}"`
+- Execute an expression on an event: `data-on-click="sse(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
 - Replace the URL: `data-replace-url="'/page1'"`
 - Persist all signals in local storage: `data-persist`

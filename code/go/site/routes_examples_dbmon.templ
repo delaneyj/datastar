@@ -2,6 +2,7 @@ package site
 
 import (
 	"fmt"
+	datastar "github.com/starfederation/datastar/sdk/go"
 	"time"
 )
 
@@ -9,8 +10,8 @@ templ pageDBmon(dbs []*DbmonDatabase, mutationRate float64, renderTime time.Dura
 	<div
 		id="contents"
 		class="flex flex-col gap-4 p-4 w-full"
-		data-merge-signals={ fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate)) }
-		data-on-load="@get('/examples/dbmon/updates')"
+		data-signals={ fmt.Sprintf("{mutationRate: %d}", int(100*mutationRate)) }
+		data-on-load={ datastar.GetSSE("/examples/dbmon/updates") }
 	>
 		@dbmonFPS(renderTime)
 		<div style="display: flex;">
@@ -21,7 +22,7 @@ templ pageDBmon(dbs []*DbmonDatabase, mutationRate float64, renderTime time.Dura
 				min="1"
 				max="100"
 				data-bind="mutationRate"
-				data-on-click="@post('/examples/dbmon/inputs')"
+				data-on-click={ datastar.PostSSE("/examples/dbmon/inputs") }
 			/>
 		</div>
 		<div id="dbmon">

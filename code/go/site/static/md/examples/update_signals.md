@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-     data-merge-signals='{"existingSignals":"this already exists"}'
+     data-signals='{"existingSignals":"this already exists"}'
 >
      <button
           class="btn btn-success"
@@ -34,7 +34,7 @@ This example demonstrates how to update the signals using an SSE event.
 event: datastar-merge-signals,
 data: signals { HYAAA4BK7IFQE: "2024-05-23T10:33:14.167189214-07:00", existingSignals: "this already exists"}
 ```
-It will accept anything that is also accepted by the `data-merge-signals` attribute.
+It will accept anything that is also accepted by the `data-signals` attribute.
 
 The removal event looks like this:
 

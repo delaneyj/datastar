@@ -17,10 +17,10 @@
     }
 </style>
 
-<div id="container" data-merge-signals="{shouldDisable:false}">
+<div id="container" data-signals="{shouldDisable:false}">
   <button
     id="target"
-    data-on-click="$shouldDisable = true;@get('/examples/disable_button/data')"
+    data-on-click="$shouldDisable = true;sse('/examples/disable_button/data')"
     data-bind-disabled="$shouldDisable"
   >Click Me</button>
 </div>
@@ -28,10 +28,10 @@
 ## Explanation
 
 ```html
-<div id="container" data-merge-signals="{shouldDisable:false}">
+<div id="container" data-signals="{shouldDisable:false}">
   <button
     id="target"
-    data-on-click="$shouldDisable = true;@get('/examples/disable_button/data')"
+    data-on-click="$shouldDisable = true;sse('/examples/disable_button/data')"
     data-bind-disabled="$shouldDisable"
   >
     Click Me

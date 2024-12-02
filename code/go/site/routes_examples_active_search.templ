@@ -1,6 +1,9 @@
 package site
 
-import "fmt"
+import (
+	"fmt"
+	datastar "github.com/starfederation/datastar/sdk/go"
+)
 
 type ActiveSearchSignals struct {
 	Search string `json:"search"`
@@ -17,7 +20,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 	<div
 		id="active_search"
 		class="flex flex-col gap-4"
-		data-merge-signals={ templ.JSONString(signals) }
+		data-signals={ templ.JSONString(signals) }
 	>
 		<div class="flex">
 			<input
@@ -26,7 +29,7 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				type="text"
 				placeholder="Search..."
 				data-bind="search"
-				data-on-input.debounce_500ms="@get('/examples/active_search/updates')"
+				data-on-input.debounce_500ms={ datastar.GetSSE("/examples/active_search/updates") }
 				data-indicator="fetching"
 			/>
 			@sseIndicator("fetching")

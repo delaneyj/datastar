@@ -2,7 +2,7 @@
 
 ## Demo
 
-<div data-merge-signals="{cars:[]}">
+<div data-signals="{cars:[]}">
   <label class="w-full max-w-xs form-control">
     <div class="label label-text">What's your favorite car?</div>
     <select class="select select-bordered select-lg" name="cars" data-bind="cars" multiple>
@@ -19,7 +19,7 @@
 ## Explanation
 
 ```html
-<div data-merge-signals="{cars:[]}">
+<div data-signals="{cars:[]}">
   <select data-bind="cars" multiple>
     <option value="volvo">Volvo</option>
     <option value="saab">Saab</option>

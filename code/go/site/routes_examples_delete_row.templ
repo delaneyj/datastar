@@ -46,7 +46,7 @@ templ deleteRowContacts(contacts []*ContactActive) {
 		<div>
 			<button
 				class="btn btn-primary"
-				data-on-click="@get('/examples/delete_row/data/reset')"
+				data-on-click={ datastar.GetSSE("/examples/delete_row/data/reset") }
 			>
 				@icon("material-symbols:refresh")
 				Reset

@@ -16,4 +16,4 @@ Sometimes a backend framework need to set a header.  Normally you should be usin
 
 ## Demo
 
-<div id="update_me" data-on-load="@get('/examples/csrf/data')">Update Me</div>
+<div id="update_me" data-on-load="sse('/examples/csrf/data')">Update Me</div>

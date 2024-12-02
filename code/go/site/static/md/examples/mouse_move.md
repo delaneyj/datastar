@@ -2,7 +2,7 @@
 
 ## Demo
 
-<div data-merge-signals="{id:'unknown',x:0,y:0}" data-on-load="@get('/examples/mouse_move/updates')">
+<div data-signals="{id:'unknown',x:0,y:0}" data-on-load="sse('/examples/mouse_move/updates')">
     <div>
         X: <span data-text="$x"></span>
         Y: <span data-text="$y"></span>
@@ -14,8 +14,8 @@
 
 ```html
 <div
-    data-merge-signals="{id:'unknown',x:0,y:0}"
-    data-on-load="@get('/examples/mouse_move/updates')">
+    data-signals="{id:'unknown',x:0,y:0}"
+    data-on-load="sse('/examples/mouse_move/updates')">
     <div>
         X: <span data-text="$x"></span>
         Y: <span data-text="$y"></span>
@@ -39,7 +39,7 @@ templ MouseMouseUI(id string, collection *MouseXYCollection)  {
 	<div
 	id="container"
 			data-on-signals-change.throttle_10ms="@put('/examples/mouse_move/updates')"
-			data-merge-signals={fmt.Sprintf("{id:'%s',x:0,y:0}", id)}
+			data-signals={fmt.Sprintf("{id:'%s',x:0,y:0}", id)}
 	>
 		<div>My ID: {id}</div>
 	@cursorSVG( collection.Positions)

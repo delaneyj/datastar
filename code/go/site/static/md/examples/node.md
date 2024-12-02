@@ -19,11 +19,11 @@ function indexPage() {
         <script type="module" src="https://cdn.jsdelivr.net/npm/@starfederation/datastar"></script></head>
       <body>
         <h2>Node/Express + Datastar Example</h2>
-        <main class="container" id="main" data-merge-signals='{ input: "", show: false }'>
+        <main class="container" id="main" data-signals='{ input: "", show: false }'>
         <input type="text" placeholder="Type here!" data-bind="input" />
         <button data-on-click="@put('/put')">Send State</button>
         <div id="output"></div>
-        <button data-on-click="@get('/get')">Get Backend State</button>
+        <button data-on-click="sse('/get')">Get Backend State</button>
         <div id="output2"></div>
         <button data-on-click="$show=!$show">Toggle</button>
         <div data-show="$show">
@@ -31,7 +31,7 @@ function indexPage() {
         </div>
         <div>
           <span>Feed from server: </span>
-          <span id="feed" data-on-load="@get('/feed')"></span>
+          <span id="feed" data-on-load="sse('/feed')"></span>
         </div>
       </body>
     </html>`;
