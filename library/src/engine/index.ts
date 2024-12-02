@@ -1,6 +1,14 @@
-export class Engine {
-    public load() {
-    }
-}
+import { Computed } from "../plugins/official/core/attributes/computed";
+import { Signals } from "../plugins/official/core/attributes/signals";
+import { Star } from "../plugins/official/core/attributes/star";
+import { SignalValueMacro } from "../plugins/official/core/macros/signals";
+import { Engine } from "./engine";
 
-export const Datastar = new Engine();
+const ds = new Engine();
+ds.load(
+    Star,
+    SignalValueMacro,
+    Signals,
+    Computed,
+);
+export const Datastar = ds;

@@ -113,7 +113,7 @@ export class SignalsRoot {
         return subSignals[last] as Signal<any>;
     }
 
-    add<T extends Signal>(dotDelimitedPath: string, signal: T) {
+    setSignal<T extends Signal<T>>(dotDelimitedPath: string, signal: T) {
         const parts = dotDelimitedPath.split(".");
         let subSignals = this._signals;
         for (let i = 0; i < parts.length - 1; i++) {
@@ -132,7 +132,7 @@ export class SignalsRoot {
         return signal?.value;
     }
 
-    set<T>(dotDelimitedPath: string, value: T) {
+    setValue<T>(dotDelimitedPath: string, value: T) {
         const s = this.upsert(dotDelimitedPath, value);
         s.value = value;
     }

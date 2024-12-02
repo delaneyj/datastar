@@ -26,27 +26,26 @@ export interface MacroPlugin extends DatastarPlugin {
     fn: (original: string) => string;
 }
 
-export type ModifierDefinition = {
-    name: string;
-    args: Record<
-        string,
-        | { type: "string"; default: string }
-        | { type: "number"; default: number }
-        | { type: "boolean"; default: boolean }
-    >;
-};
-export type ModifierArgs = Record<string, string | number | boolean>;
+export type AllowedModifiers = Set<string>;
 
 // A plugin accesible via a `data-${name}` attribute on an element
 export interface AttributePlugin extends DatastarPlugin {
-    type: PluginType;
+    type: PluginType.Attribute;
     onGlobalInit?: (ctx: InitContext) => void; // Called once on registration of the plugin
     onLoad: (ctx: RuntimeContext) => OnRemovalFn | void; // Return a function to be called on removal
-    mods?: Set<ModifierDefinition>; // If not provided, all modifiers are allowed
+    mods?: AllowedModifiers; // If not provided, all modifiers are allowed
+    purge?: boolean; // If true, the attribute is removed after onLoad
     macros?: {
         pre?: MacroPlugin[];
         post?: MacroPlugin[];
     };
+    argNames?: string[]; // argument names for the reactive expression
+}
+
+// A plugin that runs on the global scope of the DastaStar instance
+export interface WatcherPlugin extends DatastarPlugin {
+    type: PluginType.Watcher;
+    onGlobalInit?: (ctx: InitContext) => void;
 }
 
 export type ActionPlugins = Record<string, ActionPlugin>;
@@ -61,26 +60,29 @@ export type InitContext = {
     signals: SignalsRoot;
     actions: Readonly<ActionPlugins>;
     reactivity: Reactivity;
-    applyPlugins: (target: Element) => void;
+    apply: (target: Element) => void;
     cleanup: (el: Element) => void;
 };
 
 export type HTMLorSVGElement = Element & (HTMLElement | SVGElement);
-
-export type RuntimeExpressionFunction = (
-    ctx: RuntimeContext,
-    ...args: any
-) => any;
+export type Modifiers = Map<string, Set<string>>;
 
 export type RuntimeContext = InitContext & {
     el: Readonly<HTMLorSVGElement>; // The element the attribute is on
-    key: Readonly<string>; // data-* key without the prefix or modifiers
     rawKey: Readonly<string>; // no parsing data-* key
     rawValue: Readonly<string>; // no parsing data-* value
     value: Readonly<string>; // what the user wrote after any macros run
-    genExpr: () => RuntimeExpressionFunction; // a reactive function
-    mods: ModifierArgs; // the modifiers and their arguments
+    key: Readonly<string>; // data-* key without the prefix or modifiers
+    mods: Modifiers; // the modifiers and their arguments
+    rx: <T>(...args: any[]) => T; // a reactive expression
 };
 
 export type NestedValues = { [key: string]: NestedValues | any };
-export type NestedSignal = { [key: string]: NestedSignal | Signal<any> };
+export type NestedSignal = {
+    [key: string]: NestedSignal | Signal<any>;
+};
+
+export type RuntimeExpressionFunction = (
+    ctx: RuntimeContext,
+    ...args: any[]
+) => any;
