@@ -1,5 +1,7 @@
 package site
 
+import datastar "github.com/starfederation/datastar/sdk/go"
+
 type RedirectsSignals struct {
 	RedirectTo string `json:"redirectTo"`
 }
@@ -10,6 +12,11 @@ templ redirectsView(signals *RedirectsSignals) {
 			<span>Redirect to: </span>
 			<input data-bind="redirectTo" class="flex-1 input input-bordered"/>
 		</label>
-		<button class="btn btn-success" data-on-click="@post('/examples/redirects/data')">Redirect</button>
+		<button
+			class="btn btn-success"
+			data-on-click={ datastar.PostSSE("/examples/redirects/data") }
+		>
+			Redirect
+		</button>
 	</div>
 }

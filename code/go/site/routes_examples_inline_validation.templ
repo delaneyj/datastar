@@ -39,7 +39,7 @@ templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFir
 		<button
 			class="btn btn-success"
 			disabled?={ !isValid }
-			data-on-click="@post('/examples/inline_validation/data')"
+			data-on-click={ datastar.PostSSE("/examples/inline_validation/data") }
 			data-testid="submit_button"
 		>
 			@icon("material-symbols:person-add")

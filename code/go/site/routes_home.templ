@@ -68,7 +68,7 @@ templ Home() {
 						<div class="flex items-center gap-4">
 							<button
 								class="btn btn-primary btn-ghost"
-								data-on-click={ fmt.Sprintf("@clipboard('%s')", cdnText) }
+								data-on-click={ fmt.Sprintf("clipboard('%s')", cdnText) }
 							>
 								@icon("material-symbols:content-copy")
 							</button>
@@ -98,7 +98,7 @@ templ Home() {
 					</a>
 				</div>
 				<p>
-					We are by far the smallest and fastest full-featured framework, even with everything included.  But don't fret, we provide a “pay what for what you use” bundling system for when you want a custom build.
+					We are by far the smallest and fastest full-featured framework, even with everything included.  But no worries, we provide a “pay what for what you use” bundling system for when you want a custom build.''
 				</p>
 				<img class="w-full" src="/chart"/>
 				<div
@@ -178,7 +178,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<button
 										id="toggleAll"
 										class="btn btn-lg"
-										data-on-click="@post('/api/todos/-1/toggle')"
+										data-on-click={ datastar.PostSSE("/api/todos/-1/toggle") }
 										data-testid="toggle_all_todos"
 										data-indicator="toggleAllFetching"
 										data-bind-disabled="toggleAllFetching"
@@ -219,7 +219,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									} else {
 										<button
 											class="btn btn-xs join-item"
-											data-on-click={ fmt.Sprintf("@put('/api/todos/mode/%d')", i) }
+											data-on-click={ datastar.PutSSE("/api/todos/mode/%d", i) }
 											data-testid={ TodoViewModeStrings[i] + "_mode" }
 										>
 											{ TodoViewModeStrings[i] }
@@ -232,7 +232,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 									<div class="tooltip" data-tip={ fmt.Sprintf("clear %d completed todos", completed) }>
 										<button
 											class="btn btn-error btn-xs join-item"
-											data-on-click="@delete('/api/todos/-1')"
+											data-on-click={ datastar.DeleteSSE("/api/todos/-1") }
 											data-testid="clear_todos"
 										>
 											@icon("material-symbols:delete")
@@ -242,7 +242,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 								<div class="tooltip" data-tip="Reset list">
 									<button
 										class="btn btn-warning btn-xs join-item"
-										data-on-click="@put('/api/todos/reset')"
+										data-on-click={ datastar.PutSSE("/api/todos/reset") }
 										data-testid="reset_todos"
 									>
 										@icon("material-symbols:delete-sweep")
@@ -269,7 +269,7 @@ templ TodoInput(i int) {
 		data-bind="input"
 		data-on-keypress={ fmt.Sprintf(`
 			if (event.key === 'Enter' && $input.trim().length) {
-				@put('/api/todos/%d/edit');
+				sse('/api/todos/%d/edit', {method:'put'});
 				$input = '';
 			}
 		`, i) }

@@ -6,7 +6,7 @@ A set of plugins that allow for the integration of any backend service that supp
 
 ## Action Plugins
 
-### `@get`, `@post`, `@put`, `@patch`, `@delete`
+### `sse`
 
 ```html
 <div data-on-click="sse('/examples/click_to_edit/contact/1')"></div>
@@ -14,7 +14,7 @@ A set of plugins that allow for the integration of any backend service that supp
 
 Makes an HTML_VERB request to the server and merges the response with the current DOM and signals. The URL can be any valid URL but the response must be a Datastar formatted SSE event.
 
-Every request will be sent with a `{datastar: *}` object containing the current signals (except for signals keys beginning with an underscore). When using `@get` the signals will be sent as a query parameter, otherwise it will be sent as a JSON body.
+Every request will be sent with a `{datastar: *}` object containing the current signals (except for signals keys beginning with an underscore). When using `sse` the signals will be sent as a query parameter, otherwise it will be sent as a JSON body.
 
 #### Options
 

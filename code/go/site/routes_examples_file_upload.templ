@@ -1,5 +1,7 @@
 package site
 
+import datastar "github.com/starfederation/datastar/sdk/go"
+
 type FileUploadSignals struct {
 	FilesBase64 []string `json:"files"`
 	FileMimes   []string `json:"filesMimes"`
@@ -29,7 +31,7 @@ templ FileUploadView(signals *FileUploadSignals) {
 		</div>
 		<button
 			class="btn btn-primary"
-			data-on-click="@post('/examples/file_upload/upload')"
+			data-on-click={ datastar.PostSSE("/examples/file_upload/upload") }
 			data-show="!!$files?.length"
 		>
 			Submit

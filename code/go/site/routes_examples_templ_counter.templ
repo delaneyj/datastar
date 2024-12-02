@@ -1,5 +1,7 @@
 package site
 
+import datastar "github.com/starfederation/datastar/sdk/go"
+
 type TemplCounterSignals struct {
 	Global uint32 `json:"global"`
 	User   uint32 `json:"user"`
@@ -9,13 +11,13 @@ templ templCounterExampleButtons() {
 	<div class="flex justify-around gap-4">
 		<button
 			class="btn btn-info"
-			data-on-click="@post('/examples/templ_counter/increment/global')"
+			data-on-click={ datastar.PostSSE("/examples/templ_counter/increment/global") }
 		>
 			Increment Global
 		</button>
 		<button
 			class="btn btn-success"
-			data-on-click="@post('/examples/templ_counter/increment/user')"
+			data-on-click={ datastar.PostSSE("/examples/templ_counter/increment/user") }
 		>
 			Increment User
 		</button>

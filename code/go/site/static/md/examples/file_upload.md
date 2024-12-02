@@ -26,7 +26,7 @@ In this example we show how to create a file upload form that will be submitted 
     </label>
     <input type="file" data-bind="files" multiple>
     <button
-      data-on-click="@post('/upload')">
+      data-on-click="sse('/upload', {method: 'post'})"
       Submit
     </button>
   </div>

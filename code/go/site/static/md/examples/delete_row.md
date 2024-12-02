@@ -39,7 +39,7 @@ table body:
       <td>Active</td>
       <td>
         <button
-          data-on-click="confirm('Are you sure?') && @delete('/examples/delete_row/data/0')"
+          data-on-click="confirm('Are you sure?') && sse('/examples/delete_row/data/0', {method: 'delete'})"
         >
           Delete
         </button>

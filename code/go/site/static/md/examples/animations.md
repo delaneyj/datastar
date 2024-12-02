@@ -70,7 +70,7 @@ One of the nice features for reactivity is to show a spinner when a request is i
 <div data-show="$fetching">Spinner</div>
 <button
   id="submit_request_in_flight"
-  data-on-click="@post('/examples/animations/data/request_in_flight')"
+  data-on-click="sse('/examples/animations/data/request_in_flight', {method:'post'})"
   data-indicator="fetching"
 >
   Submit

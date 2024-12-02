@@ -389,12 +389,13 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
     </div>
 </div>
 
-We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `sse()`, `@post()`, `@put()`, `@patch()` and `@delete()` actions, respectively.
+We're not limited to just `GET` requests. We can also send `GET`, `POST`, `PUT`, `PATCH` and `DELETE` requests, using the `sse()` with a `method:'post'` for example.
+
 
 Here's how we could send an answer to the server for processing, using a `POST` request.
 
 ```html
-<button data-on-click="@post('/actions/quiz')">Submit answer</button>
+<button data-on-click="sse('/actions/quiz', {method:'post'})">Submit answer</button>
 ```
 
 One of the benefits of using SSE is that we can send multiple events (HTML fragments, signal updates, etc.) in a single response.
@@ -403,7 +404,7 @@ One of the benefits of using SSE is that we can send multiple events (HTML fragm
 
 ## Actions
 
-Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `$actionName()`. We already saw the `@get` action above. Here are a few other common actions.
+Actions in Datastar are helper functions that are available in `data-*` attributes and have the syntax `actionName()`. We already saw the `sse` action above. Here are a few other common actions.
 
 ### `setAll()`
 
@@ -505,4 +506,4 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Create a reference to an element: `data-ref="alert"`
 - Check for intersection with the viewport: `data-intersect="alert('visible')"`
 - Scroll programmatically: `data-scroll-into-view`
-- Interact with the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API): `data-transition="slide"`
+- Interact with the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API): `data-view-transition="slide"`

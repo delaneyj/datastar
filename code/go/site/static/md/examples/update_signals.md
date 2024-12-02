@@ -7,13 +7,13 @@
 >
      <button
           class="btn btn-success"
-          data-on-click="@post('/examples/update_signals/data/patch')"
+          data-on-click="sset('/examples/update_signals/data/patch', {method:'post'})"
      >
           Apply random signal
      </button>
      <button
           class="btn btn-error"
-          data-on-click="@delete('/examples/update_signals/data/patch')"
+          data-on-click="sset('/examples/update_signals/data/patch', {method:'delete'})"
      >
           Remove 2 random signals
      </button>
