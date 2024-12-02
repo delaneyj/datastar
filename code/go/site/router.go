@@ -34,6 +34,10 @@ func staticAbsolutePath(path string) string {
 	return "https://data-star.dev/" + staticSys.HashName("static/"+path)
 }
 
+func canonicalUrl(uri string) string {
+	return "https://data-star.dev" + uri
+}
+
 func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 	return func(ctx context.Context) error {
 

@@ -8,17 +8,18 @@ import (
 	"strings"
 )
 
-templ Page(title, description string) {
+templ Page(title, description string, uri string) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
 			<title>{ title }</title>
 			<meta name="description" content={ description }/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<link href={ staticPath("css/site.css") } rel="stylesheet" type="text/css"/>
+			<link rel="canonical" href={ canonicalUrl(uri) }/>
+			<link rel="stylesheet" href={ staticPath("css/site.css") } type="text/css"/>
 			<link rel="preconnect" href="https://fonts.googleapis.com"/>
 			<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-			<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap" rel="stylesheet"/>
+			<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap"/>
 			<link rel="apple-touch-icon" sizes="180x180" href={ staticPath("favicon/apple-touch-icon.png") }/>
 			<link rel="icon" type="image/png" sizes="32x32" href={ staticPath("favicon/favicon-32x32.png") }/>
 			<link rel="icon" type="image/png" sizes="16x16" href={ staticPath("favicon/favicon-16x16.png") }/>
@@ -154,7 +155,7 @@ templ SidebarPage(
 	r *http.Request, sidebarGroups []*SidebarGroup, current *SidebarLink,
 	title, description, contents string,
 ) {
-	@Page(title, description) {
+	@Page(title, description, r.URL.String()) {
 		@highlightCSS
 		<div class="drawer">
 			<input id="sidebar-drawer" type="checkbox" class="drawer-toggle"/>
