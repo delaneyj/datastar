@@ -73,7 +73,7 @@ templ cursorSVG( cursors map[string]MouseXY){
 			</text>
 		}
 		<g id="myPosition">
-			<circle data-bind-cx="x.value" data-bind-cy="y.value" r="10" fill="red"></circle>
+			<circle data-attributes-cx="x.value" data-attributes-cy="y.value" r="10" fill="red"></circle>
 		</g>
 	</svg>
 }

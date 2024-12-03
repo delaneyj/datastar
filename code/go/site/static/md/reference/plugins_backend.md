@@ -117,7 +117,7 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 <button
   data-on-click="sse('/examples/click_to_edit/contact/1')"
   data-indicator="fetching"
-  data-bind-disabled="fetching.value"
+  data-attributes-disabled="fetching.value"
 ></button>
 ```
 

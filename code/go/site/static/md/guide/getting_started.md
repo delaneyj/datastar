@@ -185,12 +185,12 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!in
     </button>
 </div>
 
-### `data-bind-*`
+### `data-attributes-*`
 
-The `data-bind-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute. The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
+The `data-attributes-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute. The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
 
 ```html
-<button data-bind-disabled="input.value == ''">Save</button>
+<button data-attributes-disabled="input.value == ''">Save</button>
 ```
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
@@ -206,7 +206,7 @@ This results in the button being given the `disabled` attribute whenever the inp
             <div data-text="input6.value" class="output"></div>
         </div>
     </div>
-    <button data-bind-disabled="input6.value == ''" class="btn btn-primary">
+    <button data-attributes-disabled="input6.value == ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -497,7 +497,7 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Create a computed signal: `data-computed-foo="bar.value + 1"`
 - Show or hide an element using an expression: `data-show="foo.value"
 - Modify the classes on an element: `data-class="{'font-bold': foo.value}"`
-- Bind an expression to an HTML attribute: `data-bind-disabled="foo.value == ''"`
+- Bind an expression to an HTML attribute: `data-attributes-disabled="foo.value == ''"`
 - Merge signals into the signals: `data-signals="{foo: ''}"`
 - Execute an expression on an event: `data-on-click="sse(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`
