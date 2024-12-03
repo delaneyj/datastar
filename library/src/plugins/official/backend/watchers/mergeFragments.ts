@@ -9,7 +9,7 @@ import {
     EventTypes,
     FragmentMergeModes,
 } from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import {
     InitContext,
     PluginType,
@@ -50,7 +50,7 @@ export const MergeFragments: WatcherPlugin = {
                 const fragments = [...fragmentContainer.content.children];
                 fragments.forEach((fragment) => {
                     if (!(fragment instanceof Element)) {
-                        throw dsErr("NoFragmentsFound");
+                        throw dsErr(ErrorCodes.NoFragmentsFound);
                     }
 
                     const selectorOrID = selector ||
@@ -60,7 +60,7 @@ export const MergeFragments: WatcherPlugin = {
                             [],
                     ];
                     if (!targets.length) {
-                        throw dsErr("NoTargetsFound", { selectorOrID });
+                        throw dsErr(ErrorCodes.NoTargetsFound, { selectorOrID });
                     }
 
                     if (supportsViewTransitions && useViewTransition) {
@@ -110,7 +110,7 @@ function applyToTargets(
                     },
                 });
                 if (!result?.length) {
-                    throw dsErr("MorphFailed");
+                    throw dsErr(ErrorCodes.MorphFailed);
                 }
                 modifiedTarget = result[0] as Element;
                 break;
@@ -146,7 +146,7 @@ function applyToTargets(
                 });
                 break;
             default:
-                throw dsErr("UnknownMergeType", { mergeMode });
+                throw dsErr(ErrorCodes.InvalidMergeMode, { mergeMode });
         }
         ctx.cleanup(modifiedTarget);
 

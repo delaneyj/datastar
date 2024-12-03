@@ -1,5 +1,4 @@
 import { DATASTAR } from "../engine/consts";
-import { dsErr } from "../engine/errors";
 
 export function elUniqId(el: Element) {
     if (el.id) return el.id;
@@ -32,18 +31,4 @@ export function elUniqId(el: Element) {
         el = el.parentNode as Element;
     }
     return DATASTAR + hash;
-}
-
-export function scrollIntoView(
-    el: HTMLElement | SVGElement,
-    opts: ScrollIntoViewOptions,
-    shouldFocus = true,
-) {
-    if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
-        throw dsErr("NotHTMLElement", el);
-    }
-    if (!el.tabIndex) el.setAttribute("tabindex", "0");
-
-    el.scrollIntoView(opts);
-    if (shouldFocus) el.focus();
 }

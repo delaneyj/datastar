@@ -1,6 +1,6 @@
 // An named symbol/brand for detecting Signal instances even when they weren't
 
-import { dsErr } from "../engine/errors";
+import { dsErr, ErrorCodes } from "../engine/errors";
 import { OnRemovalFn } from "../engine/types";
 
 // created using the same signals library version.
@@ -79,7 +79,7 @@ function endBatch() {
     batchDepth--;
 
     if (hasError) {
-        throw dsErr("HadError", error);
+        throw dsErr(ErrorCodes.BatchError, error);
     }
 }
 
@@ -367,7 +367,7 @@ Object.defineProperty(Signal.prototype, "value", {
     set(this: Signal, value) {
         if (value !== this._value) {
             if (batchIteration > 100) {
-                throw dsErr("Signal cycle detected");
+                throw dsErr(ErrorCodes.SignalCycleDetected);
             }
 
             this._value = value;
@@ -645,7 +645,7 @@ Object.defineProperty(Computed.prototype, "value", {
     get(this: Computed) {
         if (this._flags & RUNNING) {
             // Cycle detected
-            throw dsErr("Signal cycle detected");
+            throw dsErr(ErrorCodes.SignalCycleDetected);
         }
         const node = addDependency(this);
         this._refresh();
@@ -653,7 +653,7 @@ Object.defineProperty(Computed.prototype, "value", {
             node._version = this._version;
         }
         if (this._flags & HAS_ERROR) {
-            throw this._value;
+            throw dsErr(ErrorCodes.GetError, { value: this._value });
         }
         return this._value;
     },
@@ -698,11 +698,11 @@ function cleanupEffect(effect: Effect) {
         evalContext = undefined;
         try {
             cleanup!();
-        } catch (err) {
+        } catch (error) {
             effect._flags &= ~RUNNING;
             effect._flags |= DISPOSED;
             disposeEffect(effect);
-            throw err;
+            throw dsErr(ErrorCodes.CleanupEffectError, { error });
         } finally {
             evalContext = prevContext;
             endBatch();
@@ -726,7 +726,7 @@ function disposeEffect(effect: Effect) {
 
 function endEffect(this: Effect, prevContext?: Computed | Effect) {
     if (evalContext !== this) {
-        throw dsErr("Effect out of order");
+        throw dsErr(ErrorCodes.EndEffectError);
     }
     cleanupSources(this);
     evalContext = prevContext;
@@ -780,7 +780,7 @@ Effect.prototype._callback = function () {
 
 Effect.prototype._start = function () {
     if (this._flags & RUNNING) {
-        throw dsErr("Signal cycle detected");
+        throw dsErr(ErrorCodes.SignalCycleDetected);
     }
     this._flags |= RUNNING;
     this._flags &= ~DISPOSED;
@@ -826,9 +826,9 @@ function effect(fn: EffectFn): () => void {
     const effect = new Effect(fn);
     try {
         effect._callback();
-    } catch (err) {
+    } catch (error) {
         effect._dispose();
-        throw err;
+        throw dsErr(ErrorCodes.EffectError, { error });
     }
     // Return a bound function instead of a wrapper like `() => effect._dispose()`,
     // because bound functions seem to be just as fast and take up a lot less memory.

@@ -1,5 +1,5 @@
 import { FragmentMergeModes } from "../engine/consts";
-import { dsErr } from "../engine/errors";
+import { dsErr, ErrorCodes } from "../engine/errors";
 
 const generatedByIdiomorphId = new WeakSet();
 
@@ -64,7 +64,7 @@ function morphNormalizedContent(
         // into either side of the best match
         const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx);
         if (!bestMatch) {
-            throw dsErr("NoBestMatch", {
+            throw dsErr(ErrorCodes.NoBestMatchFound, {
                 old: oldNode,
                 new: normalizedNewContent,
             });
@@ -86,7 +86,7 @@ function morphNormalizedContent(
             return [];
         }
     } else {
-        throw dsErr("UnknownMorphStyle", { style: ctx.morphStyle });
+        throw dsErr(ErrorCodes.InvalidMorphStyle, { style: ctx.morphStyle });
     }
 }
 
@@ -110,7 +110,7 @@ function morphOldNodeTo(oldNode: Element, newContent: Element, ctx: any) {
         if (ctx.callbacks.beforeNodeAdded(newContent) === false) return;
 
         if (!oldNode.parentElement) {
-            throw dsErr("NoParent", { oldNode });
+            throw dsErr(ErrorCodes.NoParentElementFound, { oldNode });
         }
         oldNode.parentElement.replaceChild(newContent, oldNode);
         ctx.callbacks.afterNodeAdded(newContent);
@@ -385,7 +385,7 @@ function handleHeadElement(
             newNode.outerHTML,
         ).firstChild as Element | null;
         if (!newElt) {
-            throw dsErr("NoNewElement", { newNode });
+            throw dsErr(ErrorCodes.NewElementCouldNotBeCreated, { newNode });
         }
         // console.log(newElt)
         if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
@@ -425,7 +425,7 @@ function handleHeadElement(
 //=============================================================================
 // Misc
 //=============================================================================
-function noOp() {}
+function noOp() { }
 
 function createMorphContext(
     oldNode: Element,
@@ -492,7 +492,7 @@ function removeNodesBetween(
         const tempNode = startInclusive;
         startInclusive = startInclusive?.nextSibling as Element;
         if (!tempNode) {
-            throw dsErr("NoTempNode", { startInclusive, endExclusive });
+            throw dsErr(ErrorCodes.NoTemporaryNodeFound, { startInclusive, endExclusive });
         }
         removeNode(tempNode, ctx);
     }
@@ -642,7 +642,7 @@ function parseContent(newContent: string) {
         );
         const content = responseDoc.body.querySelector("template")?.content;
         if (!content) {
-            throw dsErr("NoContent", { newContent });
+            throw dsErr(ErrorCodes.NoContentFound, { newContent });
         }
         generatedByIdiomorphId.add(content);
         return content;
