@@ -160,13 +160,13 @@ This results in the button being visible only when the input is _not_ empty.
 The [`data-class`](/reference/plugins_attributes#class) attribute allows us to add or remove classes from an element using a set of key-value pairs that map to the class name and expression.
 
 ```html
-<button data-class="{hidden: input.value == ''}">Save</button>
+<button data-class-hidden="input.value == ''">Save</button>
 ```
 
 Since the expression evaluates to `true` or `false`, we can rewrite this as `!input.value`.
 
 ```html
-<button data-class="{hidden: !input.value}">Save</button>
+<button data-class-hidden="!input.value">Save</button>
 ```
 
 <div class="flex items-start justify-between p-8 alert">
@@ -180,7 +180,7 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!in
             <div data-text="input5.value" class="output"></div>
         </div>
     </div>
-    <button data-class="{hidden: !input5.value}" class="btn btn-primary">
+    <button data-class-hidden="!input5.value" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -206,7 +206,7 @@ This results in the button being given the `disabled` attribute whenever the inp
             <div data-text="input6.value" class="output"></div>
         </div>
     </div>
-    <button data-attributes-disabled="input6.value == ''" class="btn btn-primary">
+    <button data-attributes-disabled="!!!input6.value" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -241,7 +241,8 @@ The [`data-on-*`](/reference/plugins_attributes#on) attribute can be used to exe
 
 This results in the `input.value` signal being set to an empty string when the button element is clicked. If the `input.value` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
 
-<div class="flex items-start justify-between p-8 alert">
+<div class="flex items-start justify-between p-8 alert" >
+    <div data-text="ctx.signals.JSON()">foo</div>
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>

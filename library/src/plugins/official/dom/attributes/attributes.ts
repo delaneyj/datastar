@@ -25,7 +25,10 @@ export const Attributes: AttributePlugin = {
         } else {
             key = kebabize(key);
             return effect(async () => {
-                const value = rx();
+                let value = false;
+                try {
+                    value = rx();
+                } catch (e) {} //
                 let v: string;
                 if (typeof value === "string") {
                     v = value;
