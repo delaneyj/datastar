@@ -5,7 +5,7 @@
     data-signals="{id:237, min: 1, max: 1024}"
 >
     <img class="rounded ring-4 ring-accent" data-attributes-src="`https://picsum.photos/id/${id.value}/640/320`" />
-    <input class="input input-bordered" type="number" step="1" data-attributes="{min:'min', max: 'max'}" data-bind="id">
+    <input class="input input-bordered" type="number" step="1"  data-attributes="{min: min.value, max: max.value}" data-bind="id">
     <button class="btn btn-primary" data-on-click="id.value = fit(Math.random(), 0, 1, min.value, max.value, true, true)">Random</button>
 </div>
 
@@ -17,8 +17,8 @@
   <input
     type="number"
     step="1"
+    data-on-click="sse('arstasrt', {method: 'post'})"
     data-attributes="{min: min.value, max: max.value}"
-    data-class="{'}"
     data-bind="id"
   />
   <button data-on-click="id.value = fit(Math.random(), 0, 1, min.value, max.value, true, true)">
