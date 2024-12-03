@@ -13,7 +13,6 @@ export enum PluginType {
 export interface DatastarPlugin {
     type: PluginType; // The type of plugin
     name: string; // The name of the plugin
-    requires?: Set<DatastarPlugin>; // If not provided, no plugins are required
 }
 
 export interface MacroPlugin extends DatastarPlugin {
@@ -50,6 +49,9 @@ export interface ActionPlugin extends DatastarPlugin {
     type: PluginType.Action;
     fn: ActionMethod;
 }
+
+export type GlobalInitializer = (ctx: InitContext) => void;
+export type RemovalEntry = { id: string; set: Set<OnRemovalFn> };
 
 export type InitContext = {
     signals: SignalsRoot;
