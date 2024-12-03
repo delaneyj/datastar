@@ -68,7 +68,7 @@ export enum ErrorCodes {
     // Preact Core (vendored)
     BatchError = "Z1",
     SignalCycleDetected = "Z2",
-    GetError = "Z3",
+    GetComputedError = "Z3",
     CleanupEffectError = "Z4",
     EndEffectError = "Z5",
     EffectError = "Z6",

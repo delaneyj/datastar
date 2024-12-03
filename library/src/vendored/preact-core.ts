@@ -653,7 +653,7 @@ Object.defineProperty(Computed.prototype, "value", {
             node._version = this._version;
         }
         if (this._flags & HAS_ERROR) {
-            throw dsErr(ErrorCodes.GetError, { value: this._value });
+            throw dsErr(ErrorCodes.GetComputedError, { value: this._value });
         }
         return this._value;
     },
