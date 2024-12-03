@@ -19,6 +19,7 @@ export const RemoveSignals: WatcherPlugin = {
                     throw dsErr(ErrorCodes.NoPathsProvided);
                 }
                 ctx.signals.remove(...paths);
+                ctx.apply(document.body);
             },
         );
     },

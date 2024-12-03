@@ -122,7 +122,7 @@ export class Engine {
 
                     const { actions, apply, cleanup } = this;
                     const that = this; // I hate javascript
-                    let ctx: RuntimeContext; // need access in genRx
+                    let ctx: RuntimeContext;
                     ctx = {
                         get signals() {
                             return that._signals;
@@ -161,17 +161,15 @@ export class Engine {
         ctx: RuntimeContext,
         ...argNames: string[]
     ): RuntimeExpressionFunction {
-        const statements = ctx.value
-            .split(/;|\n/)
-            .map((s) => s.trim())
-            .filter((s) => s.length);
-        const lastIdx = statements.length - 1;
-        const RETURN = "return";
-        const last = statements[lastIdx];
-        if (!last.startsWith(RETURN)) {
-            statements[lastIdx] = `${RETURN} ${statements[lastIdx]};`;
+        const stmts = ctx.value.split(/;|\n/).map((s) => s.trim()).filter((s) =>
+            s != ""
+        );
+        const lastIdx = stmts.length - 1;
+        const last = stmts[lastIdx];
+        if (!last.startsWith("return")) {
+            stmts[lastIdx] = `return ${stmts[lastIdx]};`;
         }
-        const userExpression = statements.join(";\n");
+        const userExpression = stmts.join("\n");
 
         const fnCall = /(\w*)\(/gm;
         const matches = userExpression.matchAll(fnCall);
@@ -188,17 +186,14 @@ export class Engine {
         const fnContent = `${al.join("\n")}\n${userExpression}`;
 
         // Add ctx to action calls
-        let fnContentWithCtx = fnContent;
+        let fnWithCtx = fnContent.trim();
         an.forEach((a) => {
-            fnContentWithCtx = fnContentWithCtx.replaceAll(
-                a + "(",
-                a + "(ctx,",
-            );
+            fnWithCtx = fnWithCtx.replaceAll(a + "(", a + "(ctx,");
         });
 
         try {
             const argumentNames = argNames || [];
-            const fn = new Function("ctx", ...argumentNames, fnContentWithCtx);
+            const fn = new Function("ctx", ...argumentNames, fnWithCtx);
             return (...args: any[]) => fn(ctx, ...args);
         } catch (error) {
             throw dsErr(ErrorCodes.GeneratingExpressionFailed, {
@@ -215,12 +210,8 @@ export class Engine {
         if (
             !element ||
             !(element instanceof HTMLElement || element instanceof SVGElement)
-        ) {
-            return null;
-        }
-
+        ) return null;
         callback(element);
-
         element = element.firstElementChild;
         while (element) {
             this.walkDownDOM(element, callback);
