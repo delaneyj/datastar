@@ -7,7 +7,7 @@
     <div class="h-16 alert">
         <span data-text="reversed.value"></span>
     </div>
-    <reverse-component data-bind-name="name.value" data-on-reverse="reversed.value = event.detail.value"></reverse-component>
+    <reverse-component data-bind-name="name.value" data-on-reverse="reversed.value = evt.detail.reversed"></reverse-component>
     <script type="module" src="/static/js/web_component.js"></script>
 </div>
 
@@ -21,7 +21,7 @@ This is an example of two-way binding with a web component that reverses a strin
   <span data-text="reversed.value"></span>
   <reverse-component
     data-bind-name="name.value"
-    data-on-reverse="reversed.value = event.detail.value"
+    data-on-reverse="reversed.value = evt.detail.value"
   ></reverse-component>
 </div>
 <script type="module" src="/static/js/web_component.js"></script>

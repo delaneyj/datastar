@@ -1,21 +1,23 @@
-## Replace URL from Backend
+## Replace URL from signals
 
 ## Demo
 
 <div
     data-signals="{page:0}"
-    data-on-raf.throttle_1s="page.value = page.value 1"
-    data-replace-url="'/examples/replace_url_from_signals?page=' + page.value
+    data-on-raf.throttle_1s="page.value++"
+    data-replace-url="'/examples/replace_url_from_signals?page=' + page.value"
 >
 </div>
+
+# Look at the URL in the browser address bar!
 
 ## Explanation
 
 ```html
 <div
     data-signals="{page:0}"
-    data-on-raf.throttle_1s="page.value = page.value 1"
-    data-replace-url="'/examples/replace_url_from_signals?page=' + page.value
+    data-on-raf.throttle_1s="page.value++"
+    data-replace-url="'/examples/replace_url_from_signals?page=' + page.value"
 >
 </div>
 ```

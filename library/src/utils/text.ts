@@ -5,3 +5,7 @@ export const kebabize = (str: string) =>
         /[A-Z]+(?![a-z])|[A-Z]/g,
         ($, ofs) => (ofs ? "-" : "") + $.toLowerCase(),
     );
+
+export const jsStrToObject = (raw: string) => {
+    return (new Function(`return Object.assign({}, ${raw})`))();
+};

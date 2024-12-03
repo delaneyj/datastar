@@ -8,25 +8,17 @@ import {
     ActionPlugins,
     AttributePlugin,
     DatastarPlugin,
+    GlobalInitializer,
     HTMLorSVGElement,
-    InitContext,
     MacroPlugin,
     Modifiers,
     OnRemovalFn,
     PluginType,
+    RemovalEntry,
     RuntimeContext,
     RuntimeExpressionFunction,
     WatcherPlugin,
 } from "./types";
-
-const isMacroPlugin = (p: DatastarPlugin): p is MacroPlugin =>
-    p.type === PluginType.Macro;
-const isWatcherPlugin = (p: DatastarPlugin): p is WatcherPlugin =>
-    p.type === PluginType.Watcher;
-const isAttributePlugin = (p: DatastarPlugin): p is AttributePlugin =>
-    p.type === PluginType.Attribute;
-const isActionPlugin = (p: DatastarPlugin): p is ActionPlugin =>
-    p.type === PluginType.Action;
 
 export class Engine {
     private _signals = new SignalsRoot();
@@ -34,54 +26,38 @@ export class Engine {
     private macros: MacroPlugin[] = [];
     private actions: ActionPlugins = {};
     private watchers: WatcherPlugin[] = [];
-    private removals = new Map<
-        Element,
-        { id: string; set: Set<OnRemovalFn> }
-    >();
+    private removals = new Map<Element, RemovalEntry>();
 
     get version() {
         return VERSION;
     }
 
     public load(...pluginsToLoad: DatastarPlugin[]) {
-        const allLoadedPlugins = new Set<DatastarPlugin>(this.plugins);
-
         pluginsToLoad.forEach((plugin) => {
-            if (!!plugin.requires?.size) {
-                for (const requiredPluginType of plugin?.requires) {
-                    if (!allLoadedPlugins.has(requiredPluginType)) {
-                        throw dsErr(ErrorCodes.RequiredPluginNotLoaded,);
-                    }
-                }
+            let globalInitializer: GlobalInitializer | undefined;
+            switch (plugin.type) {
+                case PluginType.Macro:
+                    this.macros.push(plugin as MacroPlugin);
+                    break;
+                case PluginType.Watcher:
+                    const wp = plugin as WatcherPlugin;
+                    this.watchers.push(wp);
+                    globalInitializer = wp.onGlobalInit;
+                    break;
+                case PluginType.Action:
+                    this.actions[plugin.name] = plugin as ActionPlugin;
+                    break;
+                case PluginType.Attribute:
+                    const ap = plugin as AttributePlugin;
+                    this.plugins.push(ap);
+                    globalInitializer = ap.onGlobalInit;
+                    break;
+                default:
+                    throw dsErr(ErrorCodes.InvalidPluginType, {
+                        name: plugin.name,
+                        type: plugin.type,
+                    });
             }
-
-            let globalInitializer: ((ctx: InitContext) => void) | undefined;
-            if (isMacroPlugin(plugin)) {
-                if (this.macros.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
-                }
-                this.macros.push(plugin);
-            } else if (isWatcherPlugin(plugin)) {
-                if (this.watchers.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
-                }
-                this.watchers.push(plugin);
-                globalInitializer = plugin.onGlobalInit;
-            } else if (isActionPlugin(plugin)) {
-                if (!!this.actions[plugin.name]) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
-                }
-                this.actions[plugin.name] = plugin;
-            } else if (isAttributePlugin(plugin)) {
-                if (this.plugins.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
-                }
-                this.plugins.push(plugin);
-                globalInitializer = plugin.onGlobalInit;
-            } else {
-                throw dsErr(ErrorCodes.InvalidPluginType, { name: plugin.name, type: plugin.type });
-            }
-
             if (globalInitializer) {
                 const that = this; // I hate javascript
                 globalInitializer({
@@ -94,10 +70,7 @@ export class Engine {
                     cleanup: this.cleanup.bind(this),
                 });
             }
-
-            allLoadedPlugins.add(plugin);
         });
-
         this.apply(document.body);
     }
 
@@ -122,13 +95,9 @@ export class Engine {
                     let value = rawValue;
 
                     if (!rawKey.startsWith(p.name)) continue;
-
-                    if (!el.id.length) {
-                        el.id = elUniqId(el);
-                    }
+                    if (!el.id.length) el.id = elUniqId(el);
 
                     appliedMacros.clear();
-
                     const keyRaw = rawKey.slice(p.name.length);
                     let [key, ...modifiersWithArgsArr] = keyRaw.split(".");
                     if (key.length) {
@@ -151,13 +120,10 @@ export class Engine {
                         value = macro.fn(value);
                     }
 
-                    const {
-                        actions,
-                        apply,
-                        cleanup,
-                    } = this;
+                    const { actions, apply, cleanup } = this;
                     const that = this; // I hate javascript
-                    const ctx: RuntimeContext = {
+                    let ctx: RuntimeContext;
+                    ctx = {
                         get signals() {
                             return that._signals;
                         },
@@ -165,9 +131,7 @@ export class Engine {
                         apply: apply.bind(this),
                         cleanup: cleanup.bind(this),
                         actions,
-                        genRX: () => {
-                            throw dsErr(ErrorCodes.GenRXFunctionNotImplemented, { name: p.name });
-                        },
+                        genRX: () => this.genRX(ctx, ...p.argNames || []),
                         el,
                         rawKey,
                         rawValue,
@@ -175,15 +139,8 @@ export class Engine {
                         value,
                         mods,
                     };
-                    ctx.genRX = () => {
-                        return this.generateReactiveExpression(
-                            ctx,
-                            ...p.argNames || [],
-                        );
-                    };
 
                     const removal = p.onLoad(ctx);
-
                     if (removal) {
                         if (!this.removals.has(el)) {
                             this.removals.set(el, {
@@ -194,29 +151,25 @@ export class Engine {
                         this.removals.get(el)!.set.add(removal);
                     }
 
-                    if (!!p?.purge) {
-                        delete el.dataset[rawKey];
-                    }
+                    if (!!p?.purge) delete el.dataset[rawKey];
                 }
             });
         });
     }
 
-    private generateReactiveExpression(
+    private genRX(
         ctx: RuntimeContext,
         ...argNames: string[]
     ): RuntimeExpressionFunction {
-        const statements = ctx.value
-            .split(/;|\n/)
-            .map((s) => s.trim())
-            .filter((s) => s.length);
-        const lastIdx = statements.length - 1;
-        const RETURN = "return";
-        const last = statements[lastIdx];
-        if (!last.startsWith(RETURN)) {
-            statements[lastIdx] = `${RETURN} ${statements[lastIdx]};`;
+        const stmts = ctx.value.split(/;|\n/).map((s) => s.trim()).filter((s) =>
+            s != ""
+        );
+        const lastIdx = stmts.length - 1;
+        const last = stmts[lastIdx];
+        if (!last.startsWith("return")) {
+            stmts[lastIdx] = `return ${stmts[lastIdx]};`;
         }
-        const userExpression = statements.join(";\n");
+        const userExpression = stmts.join("\n");
 
         const fnCall = /(\w*)\(/gm;
         const matches = userExpression.matchAll(fnCall);
@@ -233,20 +186,20 @@ export class Engine {
         const fnContent = `${al.join("\n")}\n${userExpression}`;
 
         // Add ctx to action calls
-        let fnContentWithCtx = fnContent;
+        let fnWithCtx = fnContent.trim();
         an.forEach((a) => {
-            fnContentWithCtx = fnContentWithCtx.replaceAll(
-                a + "(",
-                a + "(ctx,",
-            );
+            fnWithCtx = fnWithCtx.replaceAll(a + "(", a + "(ctx,");
         });
 
         try {
             const argumentNames = argNames || [];
-            const fn = new Function("ctx", ...argumentNames, fnContentWithCtx);
+            const fn = new Function("ctx", ...argumentNames, fnWithCtx);
             return (...args: any[]) => fn(ctx, ...args);
         } catch (error) {
-            throw dsErr(ErrorCodes.GeneratingExpressionFailed, { error, fnContent });
+            throw dsErr(ErrorCodes.GeneratingExpressionFailed, {
+                error,
+                fnContent,
+            });
         }
     }
 
@@ -257,12 +210,8 @@ export class Engine {
         if (
             !element ||
             !(element instanceof HTMLElement || element instanceof SVGElement)
-        ) {
-            return null;
-        }
-
+        ) return null;
         callback(element);
-
         element = element.firstElementChild;
         while (element) {
             this.walkDownDOM(element, callback);

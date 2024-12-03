@@ -27,27 +27,23 @@ export const On: AttributePlugin = {
     onLoad: ({ el, key, genRX, mods, signals, effect }) => {
         const rx = genRX();
         let target: Element | Window | Document = el;
-        if (mods.has("window")) {
-            target = window;
-        }
+        if (mods.has("window")) target = window;
 
-        let callback = (evt?: Event) => {
-            rx(evt);
-        };
+        let callback = (evt?: Event) => rx(evt);
 
         const debounceArgs = mods.get("debounce");
         if (debounceArgs) {
             const wait = argsMs(debounceArgs);
             const leading = argsHas(debounceArgs, "leading", false);
-            const trailing = argsHas(debounceArgs, "noTrail", true);
+            const trailing = !argsHas(debounceArgs, "noTrail", false);
             callback = debounce(callback, wait, leading, trailing);
         }
 
         const throttleArgs = mods.get("throttle");
         if (throttleArgs) {
             const wait = argsMs(throttleArgs);
-            const leading = argsHas(throttleArgs, "noLead", true);
-            const trailing = argsHas(throttleArgs, "noTrail", false);
+            const leading = !argsHas(throttleArgs, "noLeading", false);
+            const trailing = argsHas(throttleArgs, "trail", false);
             callback = throttle(callback, wait, leading, trailing);
         }
 

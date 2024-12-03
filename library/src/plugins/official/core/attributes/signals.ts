@@ -3,18 +3,20 @@ import {
     NestedValues,
     PluginType,
 } from "../../../../engine/types";
+import { jsStrToObject } from "../../../../utils/text";
 
 export const Signals: AttributePlugin = {
     type: PluginType.Attribute,
     name: "signals",
     purge: true,
-    onLoad: ({ key, signals, genRX }) => {
-        const rx = genRX();
-        const toMerge = rx<NestedValues>();
-        if (key) {
-            signals.setValue(key, toMerge);
+    onLoad: (ctx) => {
+        const { key, genRX, signals } = ctx;
+        if (key != "") {
+            signals.setValue(key, genRX()());
         } else {
-            signals.merge(toMerge);
+            const obj = jsStrToObject(ctx.value);
+            ctx.value = JSON.stringify(obj);
+            signals.merge(genRX()<NestedValues>());
         }
     },
 };

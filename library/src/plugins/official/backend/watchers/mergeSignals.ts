@@ -7,7 +7,7 @@ import {
     EventTypes,
 } from "../../../../engine/consts";
 import { PluginType, WatcherPlugin } from "../../../../engine/types";
-import { isBoolString } from "../../../../utils/text";
+import { isBoolString, jsStrToObject } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "../shared";
 
 export const MergeSignals: WatcherPlugin = {
@@ -23,9 +23,7 @@ export const MergeSignals: WatcherPlugin = {
             }) => {
                 const { signals } = ctx;
                 const onlyIfMissing = isBoolString(onlyIfMissingRaw);
-                const fn = new Function(`return Object.assign({}, ${raw})`);
-                const possibleMergeSignals = fn();
-                signals.merge(possibleMergeSignals, onlyIfMissing);
+                signals.merge(jsStrToObject(raw), onlyIfMissing);
                 ctx.apply(document.body);
             },
         );

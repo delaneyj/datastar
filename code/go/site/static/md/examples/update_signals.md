@@ -7,20 +7,20 @@
 >
      <button
           class="btn btn-success"
-          data-on-click="sset('/examples/update_signals/data/patch', {method:'post'})"
+          data-on-click="sse('/examples/update_signals/data', {method:'post'})"
      >
-          Apply random signal
+          Apply random signals
      </button>
      <button
           class="btn btn-error"
-          data-on-click="sset('/examples/update_signals/data/patch', {method:'delete'})"
+          data-on-click="sse('/examples/update_signals/data', {method:'delete'})"
      >
           Remove 2 random signals
      </button>
 
      <pre
           class="border-2 border-accent bg-base-200 text-accent text-sm rounded-lg focus:ring-primary focus:border-primary block w-full p-2.5"
-          data-text="JSON.stringify(ctx.signals(),null,2)"
+          data-text="ctx.signals.JSON()"
      >
           Stuff in signals
      </pre>
