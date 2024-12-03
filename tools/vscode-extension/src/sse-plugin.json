@@ -1,27 +1,27 @@
 {
   "sse": {
     "prefix": "sse",
-    "body": "sse('${1:url}')",
+    "body": "sse(`${1:url}`${2})",
     "description": "Makes a GET request to the provided URL."
   },
   "ssePost": {
     "prefix": "ssePost",
-    "body": "sse('${1:url}', {method: 'post'})",
+    "body": "sse(`${1:url}`, {method: 'post'${2}})",
     "description": "Makes a POST request to the provided URL."
   },
   "ssePut": {
     "prefix": "ssePut",
-    "body": "sse('${1:url}', {method: 'put'})",
+    "body": "sse(`${1:url}`, {method: 'put'${2}})",
     "description": "Makes a PUT request to the provided URL."
   },
   "ssePatch": {
     "prefix": "ssePatch",
-    "body": "sse('${1:url}', {method: 'patch'})",
+    "body": "sse(`${1:url}`, {method: 'patch'${2}})",
     "description": "Makes a PATCH request to the provided URL."
   },
   "sseDelete": {
     "prefix": "sseDelete",
-    "body": "sse('${1:url}', {method: 'delete'})",
+    "body": "sse(`${1:url}`, {method: 'delete'${2}})",
     "description": "Makes a DELETE request to the provided URL."
   }
 }
