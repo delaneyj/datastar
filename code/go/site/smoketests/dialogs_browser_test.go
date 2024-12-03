@@ -20,8 +20,6 @@ func TestExampleDialogsBrowser(t *testing.T) {
 		go btn.MustClick()
 
 		wait()
-
-		page.MustWaitIdle()
 		handle(true, "test")
 		handle(true, "")
 		page.MustWaitIdle()

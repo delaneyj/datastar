@@ -15,7 +15,7 @@ func TestExampleUpdateSignals(t *testing.T) {
 	t.Run("apply random signal patch", func(t *testing.T) {
 		initial := page.MustElement("pre").MustHTML()
 
-		page.MustElementR("button", "Apply random signal patch").MustClick()
+		page.MustElementR("button", "Apply random signals").MustClick()
 
 		result := page.MustElement("pre").MustHTML()
 
