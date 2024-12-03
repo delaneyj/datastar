@@ -12,8 +12,9 @@ templ Home() {
 		cdnText := `<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>`
 	}}
 	@Page(
-		"A real-time hypermedia framework",
+		"Datastar - A real-time hypermedia framework",
 		"Datastar helps you build real-time web applications with the simplicity of server-side rendering and the power of a full-stack SPA framework.",
+		"/",
 	) {
 		<div class="flex flex-col w-full min-h-screen bg-base-200 md:bg-gradient-to-br md:items-center from-base-300 to-base-100">
 			<div class="flex flex-col items-stretch gap-7 p-4 md:pt-8 md:max-w-3xl max-w-none">
@@ -181,7 +182,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										data-on-click={ datastar.PostSSE("/api/todos/-1/toggle") }
 										data-testid="toggle_all_todos"
 										data-indicator="toggleAllFetching"
-										data-bind-disabled="toggleAllFetching"
+										data-attrs-disabled="toggleAllFetching"
 									>
 										@icon("material-symbols:checklist")
 									</button>
@@ -318,7 +319,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-on-click={ datastar.DeleteSSE("/api/todos/%d", i) }
 				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 				data-indicator={ fetchingSignalName }
-				data-disabled={ fetchingSignalName + ".value" }
+				data-attrs-disabled={ fetchingSignalName + ".value" }
 			>
 				@icon("material-symbols:close")
 			</button>
