@@ -23,6 +23,10 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Deploy to fly.io
         uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - run: |
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'git lfs fetch --all && git lfs pull && git lfs checkout'
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task tools'
+          docker container run --rm -t -v "${{ github.workspace }}":/app -v go-modules:/go/pkg/mod ghcr.io/starfederation/datastar-dev -c 'task support'
+          flyctl deploy --local-only
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

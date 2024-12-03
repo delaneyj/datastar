@@ -10,7 +10,7 @@ import (
 )
 
 templ PageBundler(r *http.Request, manifest PluginManifest, signals *BundlerSignals) {
-	@Page("Bundler", "Bundle only the plugins you need to reduce the size of Datastar even further.") {
+	@Page("Bundler", "Bundle only the plugins you need to reduce the size of Datastar even further.", "/bundler") {
 		@header(r)
 		<div data-signals={ templ.JSONString(signals) } class="p-8 flex flex-col gap-4">
 			<div>
