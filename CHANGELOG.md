@@ -10,6 +10,7 @@ We’ve doubled down on the mantra that “Datastar makes nestable signals decla
 - Added the ability to use dot-delimited paths to denote nested signals in applicable attribute keys (`data-signals-foo.bar="value"`).
 - Added the ability to use multiple attributes using the syntax `data-attrs="{attrName1: value1, atattrName2: value2}"`.
 - Added the ability to use a single class using the syntax `data-class-hidden="foo.value"`.
+- Added links to error descriptions in the console for every error thrown.
 
 ### Changed
 
