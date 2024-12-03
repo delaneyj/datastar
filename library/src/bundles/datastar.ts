@@ -23,30 +23,31 @@ import { SetAll } from "../plugins/official/logic/actions/setAll";
 import { ToggleAll } from "../plugins/official/logic/actions/toggleAll";
 
 Datastar.load(
-    // browser
-    Clipboard,
-    Intersects,
-    Persist,
-    ReplaceUrl,
-    ScrollIntoView,
-    Show,
-    ViewTransition,
-    // dom
+    // Plugins that can create signals must be loaded first
     Bind,
+    Indicator,
+    Ref,
+    // DOM
     Class,
     On,
-    Ref,
+    Show,
     Text,
-    // logic
-    Fit,
-    SetAll,
-    ToggleAll,
-    // backend
+    // Backend
     SSE,
-    Indicator,
     MergeFragments,
     MergeSignals,
     RemoveFragments,
     RemoveSignals,
     ExecuteScript,
+    // Browser
+    Clipboard,
+    Intersects,
+    Persist,
+    ReplaceUrl,
+    ScrollIntoView,
+    ViewTransition,
+    // Logic
+    Fit,
+    SetAll,
+    ToggleAll,
 );
