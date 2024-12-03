@@ -2,7 +2,7 @@
 
 ## 0.21.0 - Unreleased
 
-We’ve doubled down on the mantra that “Datastar makes nestable signals declarative” in v0.21.0. To that end, we’ve removed special characters and made the API more explicit and consistent. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
+We’ve doubled down on the mantra that “Datastar makes nestable signals declarative” in v0.21.0. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
 
 ### Added
 
