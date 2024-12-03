@@ -48,7 +48,7 @@ export const ScrollIntoView: AttributePlugin = {
             throw dsErr(ErrorCodes.ScrollIntoViewKeyNotAllowed);
         }
         if (value.length) {
-            throw dsErr(ErrorCodes.ScrollIntoViewValueNotProvided);
+            throw dsErr(ErrorCodes.ScrollIntoViewValueNotAllowed);
         }
 
         if (!el.tabIndex) el.setAttribute("tabindex", "0");

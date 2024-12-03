@@ -50,7 +50,7 @@ export class Engine {
             if (!!plugin.requires?.size) {
                 for (const requiredPluginType of plugin?.requires) {
                     if (!allLoadedPlugins.has(requiredPluginType)) {
-                        throw dsErr(ErrorCodes.RequiredPluginNotLoaded);
+                        throw dsErr(ErrorCodes.RequiredPluginNotLoaded,);
                     }
                 }
             }
@@ -58,28 +58,28 @@ export class Engine {
             let globalInitializer: ((ctx: InitContext) => void) | undefined;
             if (isMacroPlugin(plugin)) {
                 if (this.macros.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
                 }
                 this.macros.push(plugin);
             } else if (isWatcherPlugin(plugin)) {
                 if (this.watchers.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
                 }
                 this.watchers.push(plugin);
                 globalInitializer = plugin.onGlobalInit;
             } else if (isActionPlugin(plugin)) {
                 if (!!this.actions[plugin.name]) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
                 }
                 this.actions[plugin.name] = plugin;
             } else if (isAttributePlugin(plugin)) {
                 if (this.plugins.includes(plugin)) {
-                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded, { name: plugin.name });
                 }
                 this.plugins.push(plugin);
                 globalInitializer = plugin.onGlobalInit;
             } else {
-                throw dsErr(ErrorCodes.InvalidPluginType);
+                throw dsErr(ErrorCodes.InvalidPluginType, { name: plugin.name, type: plugin.type });
             }
 
             if (globalInitializer) {
@@ -166,7 +166,7 @@ export class Engine {
                         cleanup: cleanup.bind(this),
                         actions,
                         genRX: () => {
-                            throw dsErr(ErrorCodes.GenRXFunctionNotImplemented);
+                            throw dsErr(ErrorCodes.GenRXFunctionNotImplemented, { name: p.name });
                         },
                         el,
                         rawKey,
@@ -245,10 +245,8 @@ export class Engine {
             const argumentNames = argNames || [];
             const fn = new Function("ctx", ...argumentNames, fnContentWithCtx);
             return (...args: any[]) => fn(ctx, ...args);
-        } catch (err) {
-            const args = { err, fnContent };
-            console.error(args);
-            throw dsErr(ErrorCodes.ExpressionGenerationFailed, args);
+        } catch (error) {
+            throw dsErr(ErrorCodes.GeneratingExpressionFailed, { error, fnContent });
         }
     }
 

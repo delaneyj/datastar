@@ -19,9 +19,13 @@ export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
     name: "indicator",
     onLoad: ({ value, signals, el, key }) => {
-        if (!!key.length) {
+        if (key.length) {
             throw dsErr(ErrorCodes.IndicatorKeyNotAllowed);
         }
+        if (!value.length) {
+            throw dsErr(ErrorCodes.IndicatorValueNotProvided);
+        }
+
         const signal = signals.upsert(value, false);
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {
             const {

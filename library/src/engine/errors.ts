@@ -11,13 +11,14 @@ export enum ErrorCodes {
     PluginAlreadyLoaded = "A2",
     InvalidPluginType = "A3",
     GenRXFunctionNotImplemented = "A4",
-    ExpressionGenerationFailed = "A5",
+    GeneratingExpressionFailed = "A5",
     // ServerSentEvents
     NoUrlProvided = "B1",
-    WrongContentType = "B2",
+    InvalidContentType = "B2",
     SseFailed = "B3",
     // Indicator
     IndicatorKeyNotAllowed = "C1",
+    IndicatorValueNotProvided = "C2",
     // ExecuteScript
     NoScriptProvided = "D1",
     // MergeFragments
@@ -40,7 +41,7 @@ export enum ErrorCodes {
     ReplaceUrlValueNotProvided = "L2",
     // ScrollIntoView
     ScrollIntoViewKeyNotAllowed = "M1",
-    ScrollIntoViewValueNotProvided = "M2",
+    ScrollIntoViewValueNotAllowed = "M2",
     NotHtmlSvgElement = "M3",
     // Show
     ShowKeyNotAllowed = "N1",
@@ -49,9 +50,9 @@ export enum ErrorCodes {
     ComputedKeyNotProvided = "P1",
     // Bind
     InvalidExpression = "Q1",
-    InvalidResultType = "Q2",
+    InvalidFileResultType = "Q2",
     InvalidDataUri = "Q3",
-    UnsupportedType = "Q4",
+    UnsupportedSignalType = "Q4",
     // On
     InvalidValue = "R1",
     // Ref

@@ -19,6 +19,7 @@ export const Intersects: AttributePlugin = {
         if (key.length) {
             throw dsErr(ErrorCodes.IntersectsKeyNotAllowed);
         }
+        
         const options = { threshold: 0 };
         if (mods.has(FULL)) options.threshold = 1;
         else if (mods.has(HALF)) options.threshold = 0.5;

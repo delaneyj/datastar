@@ -16,8 +16,8 @@ export const Bind: AttributePlugin = {
     onLoad: (ctx) => {
         const { el, value, genRX, key, signals, effect } = ctx;
 
-        let setFromSignal = () => {};
-        let fromElementToSignal = () => {};
+        let setFromSignal = () => { };
+        let fromElementToSignal = () => { };
 
         const isTwoWayBinding = key === "";
 
@@ -109,8 +109,8 @@ export const Bind: AttributePlugin = {
                                 const reader = new FileReader();
                                 reader.onload = () => {
                                     if (typeof reader.result !== "string") {
-                                        throw dsErr(ErrorCodes.InvalidResultType, {
-                                            resultType: typeof reader.result,
+                                        throw dsErr(ErrorCodes.InvalidFileResultType, {
+                                            type: typeof reader.result,
                                         });
                                     }
                                     const match = reader.result.match(
@@ -182,7 +182,7 @@ export const Bind: AttributePlugin = {
                     }
                     console.log(input.value);
                 } else {
-                    throw dsErr(ErrorCodes.UnsupportedType, { current: typeof current });
+                    throw dsErr(ErrorCodes.UnsupportedSignalType, { current: typeof current });
                 }
             };
         } else {

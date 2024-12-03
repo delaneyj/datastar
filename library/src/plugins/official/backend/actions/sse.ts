@@ -88,14 +88,14 @@ export const ServerSentEvents: ActionPlugin = {
                     // document.addEventListener("datastar-sse",(e) => console.log(e));
                     dispatchSSE(type, argsRaw);
                 },
-                onerror: (err) => {
-                    if (isWrongContent(err)) {
+                onerror: (error) => {
+                    if (isWrongContent(error)) {
                         // don't retry if the content-type is wrong
-                        throw dsErr(ErrorCodes.WrongContentType, { url, err });
+                        throw dsErr(ErrorCodes.InvalidContentType, { url, error });
                     }
                     // do nothing and it will retry
-                    if (err) {
-                        console.error(err.message);
+                    if (error) {
+                        console.error(error.message);
                     }
                 },
             };
@@ -112,9 +112,9 @@ export const ServerSentEvents: ActionPlugin = {
 
             try {
                 await fetchEventSource(urlInstance.toString(), req);
-            } catch (err) {
-                if (!isWrongContent(err)) {
-                    throw dsErr(ErrorCodes.SseFailed, { url, err });
+            } catch (error) {
+                if (!isWrongContent(error)) {
+                    throw dsErr(ErrorCodes.SseFailed, { method, url, error });
                 }
                 // exit gracefully and do nothing if the content-type is wrong
                 // this can happen if the client is sending a request
