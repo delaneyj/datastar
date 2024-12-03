@@ -3,7 +3,7 @@
 // Description: must be a valid signal name
 
 import { DATASTAR } from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 import {
     DATASTAR_SSE_EVENT,
@@ -15,13 +15,12 @@ import {
 export const INDICATOR_CLASS = `${DATASTAR}-indicator`;
 export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 
-const name = "indicator";
 export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
-    name,
+    name: "indicator",
     onLoad: ({ value, signals, el, key }) => {
         if (!!key.length) {
-            throw dsErr("must have no key", { name });
+            throw dsErr(ErrorCodes.IndicatorKeyNotAllowed);
         }
         const signal = signals.upsert(value, false);
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {

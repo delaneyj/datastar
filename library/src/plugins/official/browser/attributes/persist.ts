@@ -3,6 +3,7 @@
 // Slug: Persist data to local storage or session storage
 // Description: This plugin allows you to persist data to local storage or session storage.  Once you add this attribute the data will be persisted to local storage or session storage.
 
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 const SESSION = "session";
@@ -14,6 +15,6 @@ export const Persist: AttributePlugin = {
     name: "persist",
     mods: new Set([LOCAL, SESSION, REMOTE]),
     onLoad: () => {
-        throw new Error("Not implemented");
+        throw dsErr(ErrorCodes.NotImplementedError);
     },
 };

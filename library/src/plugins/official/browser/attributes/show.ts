@@ -3,6 +3,7 @@
 // Slug: Show or hide an element
 // Description: This attribute shows or hides an element based on the value of the expression. If the expression is true, the element is shown. If the expression is false, the element is hidden. The element is hidden by setting the display property to none.
 
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 const NONE = "none";
@@ -14,8 +15,13 @@ export const Show: AttributePlugin = {
     onLoad: (
         { el: { style: s }, key, value, genRX, effect },
     ) => {
-        if (key.length) throw new Error("No key allowed");
-        if (!value.length) throw new Error("No value provided");
+        if (key.length) {
+            throw dsErr(ErrorCodes.ShowKeyNotAllowed);
+        }
+        if (!value.length) {
+            throw dsErr(ErrorCodes.ShowValueNotProvided);
+        }
+
         const rx = genRX();
         return effect(async () => {
             const shouldShow = rx<boolean>();

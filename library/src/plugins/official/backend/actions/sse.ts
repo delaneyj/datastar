@@ -3,7 +3,7 @@
 // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { DATASTAR, DATASTAR_REQUEST } from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { ActionPlugin, PluginType } from "../../../../engine/types";
 import {
     fetchEventSource,
@@ -47,7 +47,9 @@ export const ServerSentEvents: ActionPlugin = {
         const method = args.method.toUpperCase();
         try {
             dispatchSSE(STARTED, { elId });
-            if (!!!url?.length) throw dsErr("NO URL");
+            if (!!!url?.length) {
+                throw dsErr(ErrorCodes.NoUrlProvided);
+            }
 
             const headers = Object.assign({
                 "Content-Type": "application/json",
@@ -89,7 +91,7 @@ export const ServerSentEvents: ActionPlugin = {
                 onerror: (err) => {
                     if (isWrongContent(err)) {
                         // don't retry if the content-type is wrong
-                        throw dsErr("SSE content-type is wrong", { url, err });
+                        throw dsErr(ErrorCodes.WrongContentType, { url, err });
                     }
                     // do nothing and it will retry
                     if (err) {
@@ -112,7 +114,7 @@ export const ServerSentEvents: ActionPlugin = {
                 await fetchEventSource(urlInstance.toString(), req);
             } catch (err) {
                 if (!isWrongContent(err)) {
-                    throw dsErr("SSE failed", { url, err });
+                    throw dsErr(ErrorCodes.SseFailed, { url, err });
                 }
                 // exit gracefully and do nothing if the content-type is wrong
                 // this can happen if the client is sending a request

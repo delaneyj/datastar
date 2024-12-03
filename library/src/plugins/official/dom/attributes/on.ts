@@ -3,7 +3,7 @@
 // Slug: Add an event listener to an element
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
-import { dsErr } from "../../../../engine/errors";
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 import { argsHas, argsMs } from "../../../../utils/arguments";
 import { kebabize } from "../../../../utils/text";
@@ -81,7 +81,7 @@ export const On: AttributePlugin = {
                     const expr = [...eventValues].join("").toLowerCase().trim();
                     valid = lowerAttr === expr;
                 } else {
-                    throw dsErr("Invalid value", { attrName, key, el });
+                    throw dsErr(ErrorCodes.InvalidValue, { attrName, key, el });
                 }
 
                 if (valid) {

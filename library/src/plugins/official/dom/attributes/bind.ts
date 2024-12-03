@@ -3,7 +3,7 @@
 // Slug: Bind attributes to expressions
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
-import { dsErr } from "../../../../engine/errors";
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 import { kebabize } from "../../../../utils/text";
 
@@ -26,10 +26,7 @@ export const Bind: AttributePlugin = {
 
             // I better be tied to a signal
             if (typeof signalName !== "string") {
-                throw new Error("Invalid expression");
-            }
-            if (signalName.includes("$")) {
-                throw new Error("Not an expression");
+                throw dsErr(ErrorCodes.InvalidExpression);
             }
 
             const tnl = el.tagName.toLowerCase();
@@ -112,7 +109,7 @@ export const Bind: AttributePlugin = {
                                 const reader = new FileReader();
                                 reader.onload = () => {
                                     if (typeof reader.result !== "string") {
-                                        throw dsErr("InvalidResultType", {
+                                        throw dsErr(ErrorCodes.InvalidResultType, {
                                             resultType: typeof reader.result,
                                         });
                                     }
@@ -120,7 +117,7 @@ export const Bind: AttributePlugin = {
                                         dataURIRegex,
                                     );
                                     if (!match?.groups) {
-                                        throw dsErr("InvalidDataURI", {
+                                        throw dsErr(ErrorCodes.InvalidDataUri, {
                                             result: reader.result,
                                         });
                                     }
@@ -185,7 +182,7 @@ export const Bind: AttributePlugin = {
                     }
                     console.log(input.value);
                 } else {
-                    throw dsErr("UnsupportedType", { current: typeof current });
+                    throw dsErr(ErrorCodes.UnsupportedType, { current: typeof current });
                 }
             };
         } else {

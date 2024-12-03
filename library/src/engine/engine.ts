@@ -1,7 +1,7 @@
 import { elUniqId } from "../utils/dom";
 import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
-import { dsErr } from "./errors";
+import { dsErr, ErrorCodes } from "./errors";
 import { SignalsRoot } from "./nestedSignals";
 import {
     ActionPlugin,
@@ -50,8 +50,7 @@ export class Engine {
             if (!!plugin.requires?.size) {
                 for (const requiredPluginType of plugin?.requires) {
                     if (!allLoadedPlugins.has(requiredPluginType)) {
-                        // requires other plugin to be loaded
-                        throw dsErr("Plugin dependency not met");
+                        throw dsErr(ErrorCodes.RequiredPluginNotLoaded);
                     }
                 }
             }
@@ -59,28 +58,28 @@ export class Engine {
             let globalInitializer: ((ctx: InitContext) => void) | undefined;
             if (isMacroPlugin(plugin)) {
                 if (this.macros.includes(plugin)) {
-                    throw dsErr("Plugin already exists");
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
                 }
                 this.macros.push(plugin);
             } else if (isWatcherPlugin(plugin)) {
                 if (this.watchers.includes(plugin)) {
-                    throw dsErr("Plugin already exists");
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
                 }
                 this.watchers.push(plugin);
                 globalInitializer = plugin.onGlobalInit;
             } else if (isActionPlugin(plugin)) {
                 if (!!this.actions[plugin.name]) {
-                    throw dsErr("Plugin already exists");
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
                 }
                 this.actions[plugin.name] = plugin;
             } else if (isAttributePlugin(plugin)) {
                 if (this.plugins.includes(plugin)) {
-                    throw dsErr("Plugin already exists");
+                    throw dsErr(ErrorCodes.PluginAlreadyLoaded);
                 }
                 this.plugins.push(plugin);
                 globalInitializer = plugin.onGlobalInit;
             } else {
-                throw dsErr("Plugin already exists");
+                throw dsErr(ErrorCodes.InvalidPluginType);
             }
 
             if (globalInitializer) {
@@ -167,7 +166,7 @@ export class Engine {
                         cleanup: cleanup.bind(this),
                         actions,
                         genRX: () => {
-                            throw dsErr("NotImplemented");
+                            throw dsErr(ErrorCodes.GenRXFunctionNotImplemented);
                         },
                         el,
                         rawKey,
@@ -249,7 +248,7 @@ export class Engine {
         } catch (err) {
             const args = { err, fnContent };
             console.error(args);
-            throw dsErr("ExpressionGeneration", args);
+            throw dsErr(ErrorCodes.ExpressionGenerationFailed, args);
         }
     }
 

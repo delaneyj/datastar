@@ -3,8 +3,8 @@
 // Slug: Scroll an element into view
 // Description: This attribute scrolls the element into view.
 
+import { dsErr, ErrorCodes } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
-import { scrollIntoView } from "../../../../utils/dom";
 
 const SMOOTH = "smooth";
 const INSTANT = "instant";
@@ -44,8 +44,12 @@ export const ScrollIntoView: AttributePlugin = {
     ]),
 
     onLoad: ({ el, mods, key, value, rawKey }) => {
-        if (key.length) throw new Error("No key allowed");
-        if (value.length) throw new Error("No value allowed");
+        if (key.length) {
+            throw dsErr(ErrorCodes.ScrollIntoViewKeyNotAllowed);
+        }
+        if (value.length) {
+            throw dsErr(ErrorCodes.ScrollIntoViewValueNotProvided);
+        }
 
         if (!el.tabIndex) el.setAttribute("tabindex", "0");
         const opts: ScrollIntoViewOptions = {
@@ -65,8 +69,19 @@ export const ScrollIntoView: AttributePlugin = {
         if (mods.has(VEND)) opts.block = END;
         if (mods.has(VNEAREST)) opts.block = NEAREST;
 
-        scrollIntoView(el, opts, mods.has("focus"));
+        if (!(el instanceof HTMLElement || el instanceof SVGElement)) {
+            throw dsErr(ErrorCodes.NotHtmlSvgElement, el);
+        }
+        if (!el.tabIndex) {
+            el.setAttribute("tabindex", "0");
+        }
+
+        el.scrollIntoView(opts);
+        if (mods.has("focus")) {
+            el.focus();
+        }
+
         delete el.dataset[rawKey];
-        return () => {};
+        return () => { };
     },
 };
