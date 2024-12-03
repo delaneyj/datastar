@@ -49,10 +49,11 @@ export enum ErrorCodes {
     // Computed
     ComputedKeyNotProvided = "P1",
     // Bind
-    InvalidExpression = "Q1",
-    InvalidFileResultType = "Q2",
-    InvalidDataUri = "Q3",
-    UnsupportedSignalType = "Q4",
+    BindKeyNotAllowed = "Q1",
+    InvalidExpression = "Q2",
+    InvalidFileResultType = "Q3",
+    InvalidDataUri = "Q4",
+    UnsupportedSignalType = "Q5",
     // On
     InvalidValue = "R1",
     // Ref
