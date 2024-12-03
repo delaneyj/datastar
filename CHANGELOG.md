@@ -8,7 +8,7 @@ We’ve doubled down on the mantra that “Datastar makes nestable signals decla
 
 - Added the ability to merge one-off signals using the syntax `data-signals-signalname="value"`.
 - Added the ability to use dot-delimited paths to denote nested signals in applicable attribute keys (`data-signals-foo.bar="value"`).
-- Added the ability to use multiple attributes using the syntax `data-attrs="{attrName1: value1, atattrName2: value2}"`.
+- Added the ability to use multiple attributes using the syntax `data-attributes="{attrName1: value1, atattrName2: value2}"`.
 - Added the ability to use a single class using the syntax `data-class-hidden="foo.value"`.
 - Added links to error descriptions in the console for every error thrown.
 
@@ -17,7 +17,7 @@ We’ve doubled down on the mantra that “Datastar makes nestable signals decla
 - Signals no longer have the `$` prefix and must be acessed using a `.value` suffix (`signalName.value`). 
 - Action plugins no longer have the `$` prefix.
 - Renamed the `data-store` attribute to `data-signals`.
-- Renamed the `data-bind` attribute to `data-attrs`.
+- Renamed the `data-bind` attribute to `data-attributes`.
 - Renamed the `data-model` attribute to `data-bind`.
 - Changed the `data-*` attribute modifier delimiter from `.` to `?` and `&` (`data-on-keydown?debounce_100ms&throttle_lead="value"`).
 - The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method="get"})`).
