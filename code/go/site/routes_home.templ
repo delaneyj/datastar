@@ -182,7 +182,7 @@ templ TodosMVCView(mvc *TodoMVC) {
 										data-on-click={ datastar.PostSSE("/api/todos/-1/toggle") }
 										data-testid="toggle_all_todos"
 										data-indicator="toggleAllFetching"
-										data-bind-disabled="toggleAllFetching"
+										data-attrs-disabled="toggleAllFetching"
 									>
 										@icon("material-symbols:checklist")
 									</button>
@@ -319,7 +319,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-on-click={ datastar.DeleteSSE("/api/todos/%d", i) }
 				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 				data-indicator={ fetchingSignalName }
-				data-disabled={ "".value + fetchingSignalName }
+				data-attrs-disabled={ fetchingSignalName + ".value" }
 			>
 				@icon("material-symbols:close")
 			</button>
