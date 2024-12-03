@@ -1,5 +1,7 @@
 # Expressions
 
+# TODO: BEN! $
+
 Expressions are the building blocks of Datastar. In fact, Datastar started as just a way to take `data-*` attributes and turn them into expressions. For exact `data-*` attribute found
 
 1. All `macro` plugins are run. This allows for a custom DSL. The included plugins use `$` for signals, `@` for actions. The plugins check for regular expressions and replace them with the appropriate value. Some plugins will setup extra state on load like adding CSS classes or setting up event listeners.

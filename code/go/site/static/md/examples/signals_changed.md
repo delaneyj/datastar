@@ -10,12 +10,12 @@
       <button
         id="increment"
         class="btn btn-success"
-        data-on-click="$clicks++"
+        data-on-click="clicks.value++"
         >Click Me</button>
       <button
         id="clear"
         class="btn btn-warning"
-        data-on-click="$clicks=0; sse('/examples/signals_changed/updates', {method:'delete'})"
+        data-on-click="clicks.value=0; sse('/examples/signals_changed/updates', {method:'delete'})"
       >Clear Local & Server</button>
       <button
         id="reload"
@@ -23,7 +23,7 @@
         data-on-click="window.location.reload()"
       >Reload Page</button>
     </div>
-    <div id="local_clicks">Local Clicks: <span data-text="$clicks"></span></div>
+    <div id="local_clicks">Local Clicks: <span data-text="clicks.value"></span></div>
     <div id="from_server"></div>
 </div>
 
@@ -35,10 +35,10 @@
   data-on-signals-change.remote="sse('/examples/signals_changed/updates', {method:'post'})"
 >
   <div>
-    <button id="increment" data-on-click="$clicks++">Click Me</button>
+    <button id="increment" data-on-click="clicks.value++">Click Me</button>
     <button
       id="clear"
-      data-on-click="$clicks=0; sse('/examples/signals_changed/updates', {method:'delete'})"
+      data-on-click="clicks.value=0; sse('/examples/signals_changed/updates', {method:'delete'})"
     >
       Clear Local & Server
     </button>
@@ -46,7 +46,7 @@
       Reload Page
     </button>
   </div>
-  <div>Local Clicks: <span data-text="$clicks"></span></div>
+  <div>Local Clicks: <span data-text="clicks.value"></span></div>
   <div id="from_server"></div>
 </div>
 ```

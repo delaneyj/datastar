@@ -18,7 +18,7 @@ Here’s what frontend reactivity looks like using Datastar:
 
 ```html
 <input data-bind="input" type="text">
-<div data-text="$input.toUpperCase()"></div>
+<div data-text="input.value.toUpperCase()"></div>
 <button data-on-click="sse('/endpoint', {method: 'post'})">Save</button>
 ```
 

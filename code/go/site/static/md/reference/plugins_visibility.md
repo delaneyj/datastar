@@ -9,7 +9,7 @@ Focused on showing and hiding elements based on signals. Most of the time you wa
 ### Show
 
 ```html
-<div data-show="$showMe"></div>
+<div data-show="showMe.value"></div>
 ```
 
 Shows the element when the expression is true. For anything custom, use `data-class` instead.

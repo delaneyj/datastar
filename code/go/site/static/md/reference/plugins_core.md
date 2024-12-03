@@ -27,7 +27,7 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 ### Computed
 
 ```html
-<div data-computed-blinker="$count % 2 === 0"></div>
+<div data-computed-blinker="count.value % 2 === 0"></div>
 ```
 
 Allows you to define a computed signals value that automatically updates its value based on an expression. This can be used to drive other reactive behaviors, such as updating classes or text content in the DOM.
@@ -41,6 +41,8 @@ Allows you to define a computed signals value that automatically updates its val
 Makes an element available as a signal in the signals.
 
 ## Macro Plugins
+
+# TODO: BEN! WAT
 
 ### SignalMacro
 

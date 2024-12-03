@@ -16,10 +16,10 @@ This example displays how to toggle visibility using the `data-show` attribute.
 >
   <button
     class="btn btn-primary"
-    data-on-click="$bindBool=!$bindBool">
+    data-on-click="bindBool.value=!bindBool.value">
     Toggle
   </button>
-    <div data-show="$bindBool">
+    <div data-show="bindBool.value">
     Hello!
   </div>
 </div>

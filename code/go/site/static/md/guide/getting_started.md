@@ -62,7 +62,7 @@ This creates a new signal called `input`, and binds it to the element's value. I
 To see this in action, we can use the [`data-text`](/reference/plugins_attributes#text) attribute.
 
 ```html
-<div data-text="$input">
+<div data-text="input.value">
   I will get replaced with the contents of the input signal
 </div>
 ```
@@ -75,17 +75,17 @@ To see this in action, we can use the [`data-text`](/reference/plugins_attribute
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input1" class="output"></div>
+            <div data-text="input1.value" class="output"></div>
         </div>
     </div>
 </div>
 
-This sets the text content of an element to the value of the signal `$input`. The `$` is required to denote a signal in the expression.
+This sets the text content of an element to the value of the signal `input.value`. The `.value` is required to denote a the use of a signal's *contents* in the expression.
 
 The value of the `data-text` attribute is an expression that is evaluated, meaning that we can use JavaScript in it.
 
 ```html
-<div data-text="$input.toUpperCase()">
+<div data-text="input.value.toUpperCase()">
   Will be replaced with the uppercase contents of the input signal
 </div>
 ```
@@ -98,7 +98,7 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input2.toUpperCase()" class="output"></div>
+            <div data-text="input2.value.toUpperCase()" class="output"></div>
         </div>
     </div>
 </div>
@@ -108,15 +108,15 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
 The `data-computed-*` attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
 
 ```html
-<div data-computed-repeated="$input.repeat(2)">
+<div data-computed-repeated="input.value.repeat(2)">
   <input data-bind="input" type="text" />
-  <div data-text="$repeated">
+  <div data-text="repeated.value">
     Will be replaced with the contents of the repeated signal
   </div>
 </div>
 ```
 
-<div data-computed-repeated="$input3.repeat(2)" class="flex items-start justify-between p-8 alert">
+<div data-computed-repeated="input3.value.repeat(2)" class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
@@ -124,7 +124,7 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$repeated" class="output"></div>
+            <div data-text="repeated.value" class="output"></div>
         </div>
     </div>
 </div>
@@ -134,7 +134,7 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
 The `data-show` attribute can be used to show or hide an element based on whether a JavaScript expression evaluates to `true` or `false`.
 
 ```html
-<button data-show="$input != ''">Save</button>
+<button data-show="input.value != ''">Save</button>
 ```
 
 This results in the button being visible only when the input is _not_ empty.
@@ -147,10 +147,10 @@ This results in the button being visible only when the input is _not_ empty.
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input4" class="output"></div>
+            <div data-text="input4.value" class="output"></div>
         </div>
     </div>
-    <button data-show="$input4 != ''" class="btn btn-primary">
+    <button data-show="input4.value != ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -160,13 +160,13 @@ This results in the button being visible only when the input is _not_ empty.
 The [`data-class`](/reference/plugins_attributes#class) attribute allows us to add or remove classes from an element using a set of key-value pairs that map to the class name and expression.
 
 ```html
-<button data-class="{hidden: $input == ''}">Save</button>
+<button data-class="{hidden: input.value == ''}">Save</button>
 ```
 
-Since the expression evaluates to `true` or `false`, we can rewrite this as `!$input`.
+Since the expression evaluates to `true` or `false`, we can rewrite this as `!input.value`.
 
 ```html
-<button data-class="{hidden: !$input}">Save</button>
+<button data-class="{hidden: !input.value}">Save</button>
 ```
 
 <div class="flex items-start justify-between p-8 alert">
@@ -177,10 +177,10 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!$i
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input5" class="output"></div>
+            <div data-text="input5.value" class="output"></div>
         </div>
     </div>
-    <button data-class="{hidden: !$input5}" class="btn btn-primary">
+    <button data-class="{hidden: !input5.value}" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -190,7 +190,7 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!$i
 The `data-bind-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute. The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
 
 ```html
-<button data-bind-disabled="$input == ''">Save</button>
+<button data-bind-disabled="input.value == ''">Save</button>
 ```
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
@@ -203,10 +203,10 @@ This results in the button being given the `disabled` attribute whenever the inp
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input6" class="output"></div>
+            <div data-text="input6.value" class="output"></div>
         </div>
     </div>
-    <button data-bind-disabled="$input6 == ''" class="btn btn-primary">
+    <button data-bind-disabled="input6.value == ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -236,10 +236,10 @@ Signals are nestable, which can be useful for namespacing.
 The [`data-on-*`](/reference/plugins_attributes#on) attribute can be used to execute a JavaScript expression whenever an event is triggered on an element.
 
 ```html
-<button data-on-click="$input=''">Reset</button>
+<button data-on-click="input.value=''">Reset</button>
 ```
 
-This results in the `$input` signal being set to an empty string when the button element is clicked. If the `$input` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
+This results in the `input.value` signal being set to an empty string when the button element is clicked. If the `input.value` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
 
 <div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
@@ -249,10 +249,10 @@ This results in the `$input` signal being set to an empty string when the button
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
-            <div data-text="$input7" class="output"></div>
+            <div data-text="input7.value" class="output"></div>
         </div>
     </div>
-    <button data-on-click="$input7 = ''" class="btn btn-secondary">
+    <button data-on-click="input7.value = ''" class="btn btn-secondary">
         Reset
     </button>
 </div>
@@ -263,36 +263,36 @@ See if you can follow the code below _before_ trying the demo.
 ```html
 <div
   data-signals="{response: '', answer: 'bread'}"
-  data-computed-correct="$response.toLowerCase() == $answer"
+  data-computed-correct="response.value.toLowerCase() == answer.value"
 >
   <div id="question">What do you put in a toaster?</div>
-  <button data-on-click="$response = prompt('Answer:')">BUZZ</button>
-  <div data-show="$response != ''">
-    You answered “<span data-text="$response"></span>”.
-    <span data-show="$correct">That is correct ✅</span>
-    <span data-show="!$correct">
+  <button data-on-click="response.value = prompt('Answer:')">BUZZ</button>
+  <div data-show="response.value != ''">
+    You answered “<span data-text="response.value"></span>”.
+    <span data-show="correct.value">That is correct ✅</span>
+    <span data-show="!correct.value">
       The correct answer is “
-      <span data-text="$answer"></span>
+      <span data-text="answer.value"></span>
       ” 🤷
     </span>
   </div>
 </div>
 ```
 
-<div data-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="$response1.toLowerCase() == $answer1" class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response1: '', answer1: 'bread'}" data-computed-correct1="response1.value.toLowerCase() == answer1.value" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="space-y-3">
         <div id="question1">
             What do you put in a toaster?
         </div>
-        <div data-show="$response1 != ''">
-            You answered “<span data-text="$response1"></span>”.
-            <span data-show="$correct1">That is correct ✅</span>
-            <span data-show="!$correct1">
-                The correct answer is “<span data-text="$answer1"></span>” 🤷
+        <div data-show="response1.value != ''">
+            You answered “<span data-text="response1.value"></span>”.
+            <span data-show="correct1.value">That is correct ✅</span>
+            <span data-show="!correct1.value">
+                The correct answer is “<span data-text="answer1.value"></span>” 🤷
             </span>
         </div>
     </div>
-    <button data-on-click="$response1 = prompt('Answer:')" class="btn btn-primary">
+    <button data-on-click="response1.value = prompt('Answer:')" class="btn btn-primary">
         BUZZ
     </button>
 </div>
@@ -318,21 +318,21 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 ```html
 <div
   data-signals="{response: '', answer: '', correct: false}"
-  data-computed-correct="$response.toLowerCase() == $answer"
+  data-computed-correct="response.value.toLowerCase() == answer.value"
 >
   <div id="question"></div>
   <button data-on-click="sse('/actions/quiz')">Fetch a question</button>
   <button
-    data-show="$answer != ''"
-    data-on-click="$response = prompt('Answer:') ?? ''"
+    data-show="answer.value != ''"
+    data-on-click="response.value = prompt('Answer:') ?? ''"
   >
     BUZZ
   </button>
-  <div data-show="$response != ''">
-    You answered “<span data-text="$response"></span>”.
-    <span data-show="$correct">That is correct ✅</span>
-    <span data-show="!$correct">
-      The correct answer is “<span data-text="$answer2"></span>” 🤷
+  <div data-show="response.value != ''">
+    You answered “<span data-text="response.value"></span>”.
+    <span data-show="correct.value">That is correct ✅</span>
+    <span data-show="!correct.value">
+      The correct answer is “<span data-text="answer2.value"></span>” 🤷
     </span>
   </div>
 </div>
@@ -340,21 +340,21 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 Now when the `Fetch a question` button is clicked, the server will respond with an event to modify the `question` element in the DOM and an event to modify the `response` and `answer` signals. We're driving state from the backend!
 
-<div data-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="$response2.toLowerCase() == $answer2" class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="response2.value.toLowerCase() == answer2.value" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="pb-3 space-y-3">
         <div id="question2"></div>
-        <div data-show="$response2 != ''">
-            You answered “<span data-text="$response2"></span>”.
-            <span data-show="$correct2">That is correct ✅</span>
-            <span data-show="!$correct2">
-                The correct answer is “<span data-text="$answer2"></span>” 🤷
+        <div data-show="response2.value != ''">
+            You answered “<span data-text="response2.value"></span>”.
+            <span data-show="correct2.value">That is correct ✅</span>
+            <span data-show="!correct2.value">
+                The correct answer is “<span data-text="answer2.value"></span>” 🤷
             </span>
         </div>
         <button data-on-click="sse('/examples/quiz/data')" class="btn btn-secondary">
             Fetch a question
         </button>
     </div>
-    <button data-show="$answer2 != ''" data-on-click="$response2 = prompt('Answer:') ?? ''" class="btn btn-primary">
+    <button data-show="answer2.value != ''" data-on-click="response2.value = prompt('Answer:') ?? ''" class="btn btn-primary">
         BUZZ
     </button>
 </div>
@@ -367,7 +367,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
 
 ```html
 <div id="question"></div>
-<div data-class="{loading: $fetching}" class="indicator"></div>
+<div data-class="{loading: fetching.value}" class="indicator"></div>
 <button
   id="fetch-a-question"
   data-on-click="sse('/actions/quiz')"
@@ -384,7 +384,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
             <button id="fetch-a-question" data-on-click="sse('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
                 Fetch a question
             </button>
-            <div data-class="{loading: $fetching}" class="indicator"></div>
+            <div data-class="{loading: fetching.value}" class="indicator"></div>
         </div>
     </div>
 </div>
@@ -493,11 +493,11 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes, you can introduce reactive state to your frontend and access it anywhere in the DOM and in your backend. You can set up events that trigger requests to backend endpoints that respond with HTML fragment and signal updates.
 
 - Bind element values to signals: `data-bind="foo"`
-- Set the text content of an element to an expression.: `data-text="$foo"`
-- Create a computed signal: `data-computed-foo="$bar + 1"`
-- Show or hide an element using an expression: `data-show="$foo"
-- Modify the classes on an element: `data-class="{'font-bold': $foo}"`
-- Bind an expression to an HTML attribute: `data-bind-disabled="$foo == ''"`
+- Set the text content of an element to an expression.: `data-text="foo.value"`
+- Create a computed signal: `data-computed-foo="bar.value + 1"`
+- Show or hide an element using an expression: `data-show="foo.value"
+- Modify the classes on an element: `data-class="{'font-bold': foo.value}"`
+- Bind an expression to an HTML attribute: `data-bind-disabled="foo.value == ''"`
 - Merge signals into the signals: `data-signals="{foo: ''}"`
 - Execute an expression on an event: `data-on-click="sse(/endpoint)"`
 - Use signals to track in flight backend requests: `data-indicator="fetching"`

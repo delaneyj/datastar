@@ -18,7 +18,7 @@ Dialogs can be triggered with the standard browser `prompt` and `confirm` within
 <button
   id="dialogs"
   data-signals="{prompt:'foo',confirm:false}"
-  data-on-click="$prompt=prompt('Enter a string',$prompt);$confirm=confirm('Are you sure?');$confirm && sse('/examples/dialogs___browser/sure')"
+  data-on-click="prompt.value=prompt('Enter a string',prompt.value);confirm.value=confirm('Are you sure?');confirm.value && sse('/examples/dialogs___browser/sure')"
 >
   Click Me
 </button>

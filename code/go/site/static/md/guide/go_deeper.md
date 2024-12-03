@@ -111,10 +111,12 @@ Now we want to update the label relationship.
 
 ```html
 <div data-signals="{value:'hello world'}">
-  <label data-text="$value"></label>
+  <label data-text="value.value"></label>
   <input data-bind="value" />
 </div>
 ```
+
+# TODO: BEN! $
 
 Here we've added another attribute `data-text` but the content has a `$` prefix. Remember that `data-*` attributes _are just strings_, which means we can give any semantics we want as long as it's consistent. It this case we are designating the use of a signal by adding a `$` prefix. Now went the `value` signal updates, so will the `innerHTML` of the label. Pretty neat.
 
@@ -122,7 +124,7 @@ However, it doesn't yet match the original intent, which was to make it uppercas
 
 ```html
 <div data-signals="{value:'hello world'}">
-  <label data-text="$value.toUpperCase()"></label>
+  <label data-text="value.value.toUpperCase()"></label>
   <input data-bind="value" />
 </div>
 ```

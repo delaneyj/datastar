@@ -10,21 +10,21 @@ Let’s focus on the final row (or the last element of your content):
 
 ```html
 <div
-  data-intersects="$offset=0;$limit=10;sse('/examples/infinite_scroll/data')"
+  data-intersects="offset.value=0;limit.value=10;sse('/examples/infinite_scroll/data')"
   id="more_btn"
 >
   <div>Loading...</div>
 </div>
 ```
 
-This last element contains a listener which, when scrolled into view, will trigger a request. The result is then appended after it. The last element of the results will itself contain the listener to load the next page of results, and so on. `data-intersects` is a custom attribute that triggers a request when the element is scrolled into view. The `$offset` and `$limit` parameters are used to control the pagination of the results. The server sends back a new `more_btn` element with a new offset and the results to be appended.
+This last element contains a listener which, when scrolled into view, will trigger a request. The result is then appended after it. The last element of the results will itself contain the listener to load the next page of results, and so on. `data-intersects` is a custom attribute that triggers a request when the element is scrolled into view. The `offset` and `limit` parameters are used to control the pagination of the results. The server sends back a new `more_btn` element with a new offset and the results to be appended.
 
 ```bash
 event: datastar-merge-fragments
 data: selector #more_btn
 data: mergeMode morph
 data: settleDuration 500
-data: fragments <div data-intersects="$offset=10;$limit=10;sse('/examples/infinite_scroll/data')" id="more_btn"><div>Loading...</div></div>
+data: fragments <div data-intersects="offset.value=10;limit.value=10;sse('/examples/infinite_scroll/data')" id="more_btn"><div>Loading...</div></div>
 
 event: datastar-merge-fragments
 data: selector #click_to_load_rows

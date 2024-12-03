@@ -23,4 +23,4 @@ The interesting part is the input field:
 />
 ```
 
-The input issues a `GET` to `/active_search/data` with the input value bound to `$search`. The `debounce_1000ms` modifier ensures that the search is not issued on every keystroke, but only after the user has stopped typing for 1 second. This modifiers will be covered in more detail in the [reference section](/reference).
+The input issues a `GET` to `/active_search/data` with the input value bound to `search`. The `debounce_1000ms` modifier ensures that the search is not issued on every keystroke, but only after the user has stopped typing for 1 second. This modifiers will be covered in more detail in the [reference section](/reference).

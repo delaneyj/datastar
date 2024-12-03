@@ -113,11 +113,11 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 ### `data-indicator`
 
 ```html
-<svg data-show="$fetching">Spinner</svg>
+<svg data-show="fetching.value">Spinner</svg>
 <button
   data-on-click="sse('/examples/click_to_edit/contact/1')"
   data-indicator="fetching"
-  data-bind-disabled="$fetching"
+  data-bind-disabled="fetching.value"
 ></button>
 ```
 
@@ -137,6 +137,6 @@ Replaces the URL in the browser without reloading the page. The value can be a r
 
 ```html
 <div
-  data-replace-url="`/page{$page}`">
+  data-replace-url="`/page${page.value}`">
 </div>
 ```

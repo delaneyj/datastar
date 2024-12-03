@@ -39,7 +39,6 @@ templ PageBundler(r *http.Request, manifest PluginManifest, signals *BundlerSign
 						{{
 						signal := fmt.Sprintf("includedPlugins.%s", plugin.Key)
 						pluginDir := filepath.Dir(plugin.Path[11:])
-						// cls := fmt.Sprintf("{'bg-base-200':!$%s, 'bg-success text-success-content': $%s}", signal, signal)
 						}}
 						if currentPath != pluginDir {
 							<div class="divider w-full font-mono text-neutral">{ pluginDir }</div>

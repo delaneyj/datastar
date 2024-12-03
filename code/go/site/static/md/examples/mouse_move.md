@@ -4,8 +4,8 @@
 
 <div data-signals="{id:'unknown',x:0,y:0}" data-on-load="sse('/examples/mouse_move/updates')">
     <div>
-        X: <span data-text="$x"></span>
-        Y: <span data-text="$y"></span>
+        X: <span data-text="x.value"></span>
+        Y: <span data-text="y.value"></span>
     </div>
     <div id="container"></div>
 </div>
@@ -17,8 +17,8 @@
     data-signals="{id:'unknown',x:0,y:0}"
     data-on-load="sse('/examples/mouse_move/updates')">
     <div>
-        X: <span data-text="$x"></span>
-        Y: <span data-text="$y"></span>
+        X: <span data-text="x.value"></span>
+        Y: <span data-text="y.value"></span>
     </div>
     <div id="container"></div>
 </div>
@@ -53,7 +53,7 @@ templ cursorSVG( cursors map[string]MouseXY){
 		width="512"
 		height="512"
 		style="background-color: goldenrod"
-		data-on-mousemove="$x=evt.offsetX; $y=evt.offsetY"
+		data-on-mousemove="x.value=evt.offsetX; y.value=evt.offsetY"
 	>
 		for id, cursor := range cursors {
 			{{
@@ -73,7 +73,7 @@ templ cursorSVG( cursors map[string]MouseXY){
 			</text>
 		}
 		<g id="myPosition">
-			<circle data-bind-cx="$x" data-bind-cy="$y" r="10" fill="red"></circle>
+			<circle data-bind-cx="x.value" data-bind-cy="y.value" r="10" fill="red"></circle>
 		</g>
 	</svg>
 }
