@@ -15,10 +15,12 @@ export const Bind: AttributePlugin = {
     onLoad: (ctx) => {
         const { el, value, key, signals, effect } = ctx;
 
-        if (key != "") throw dsErr(ErrorCodes.RefKeyNotAllowed); // BEN!
+        if (key.length) {
+            throw dsErr(ErrorCodes.BindKeyNotAllowed);
+        }
 
-        let setFromSignal = () => {};
-        let el2sig = () => {};
+        let setFromSignal = () => { };
+        let el2sig = () => { };
 
         const signalName = value;
 
