@@ -3,25 +3,24 @@
 // Slug: Bind attributes to expressions
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import {
+    AttributePlugin,
+    NestedValues,
+    PluginType,
+} from "../../../../engine/types";
 import { kebabize } from "../../../../utils/text";
 
 export const Attributes: AttributePlugin = {
     type: PluginType.Attribute,
     name: "attributes",
-    onLoad: ({ el, genRX, key, effect, signals }) => {
+    onLoad: ({ el, genRX, key, effect }) => {
         const rx = genRX();
-
         if (key === "") {
-            const binds = rx<Record<string, string>>();
-
-            Object.keys(binds).forEach((key) => signals.upsert(key, ""));
-
             return effect(async () => {
-                for (const [attr, path] of Object.entries(binds)) {
-                    const val = signals.signal(path)!.value;
+                const binds = rx<NestedValues>();
+                Object.entries(binds).forEach(([attr, val]) => {
                     el.setAttribute(attr, val);
-                }
+                });
             });
         } else {
             key = kebabize(key);
