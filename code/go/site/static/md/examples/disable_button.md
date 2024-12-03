@@ -20,7 +20,7 @@
 <div id="container" data-signals="{shouldDisable:false}">
   <button
     id="target"
-    data-on-click="shouldDisable.value = true;sse('/examples/disable_button/data')"
+    data-on-click="shouldDisable.value=true ; sse('/examples/disable_button/data')"
     data-bind-disabled="shouldDisable.value"
   >Click Me</button>
 </div>

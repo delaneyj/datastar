@@ -318,7 +318,7 @@ templ TodoRow(mode TodoViewMode, todo *Todo, i int, isEditing bool) {
 				data-on-click={ datastar.DeleteSSE("/api/todos/%d", i) }
 				data-testid={ fmt.Sprintf("delete_todo%d", i) }
 				data-indicator={ fetchingSignalName }
-				data-disabled={ "".value + fetchingSignalName }
+				data-disabled={ fetchingSignalName + ".value" }
 			>
 				@icon("material-symbols:close")
 			</button>

@@ -14,7 +14,7 @@ export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
     onLoad: (ctx) => {
-        const { el, value, genRX: rx, key, signals, effect } = ctx;
+        const { el, value, genRX, key, signals, effect } = ctx;
 
         let setFromSignal = () => {};
         let fromElementToSignal = () => {};
@@ -191,6 +191,7 @@ export const Bind: AttributePlugin = {
         } else {
             // tied to an attribute
             const kebabKey = kebabize(key);
+            const rx = genRX();
             setFromSignal = () => {
                 const value = rx();
                 let v: string;

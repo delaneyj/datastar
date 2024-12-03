@@ -14,12 +14,13 @@ export const Intersects: AttributePlugin = {
     type: PluginType.Attribute,
     name: "intersects",
     mods: new Set([ONCE, HALF, FULL]),
-    onLoad: ({ el, key, rawKey, mods, genRX: rx }) => {
+    onLoad: ({ el, key, rawKey, mods, genRX }) => {
         if (key.length) throw new Error("No key allowed");
         const options = { threshold: 0 };
         if (mods.has(FULL)) options.threshold = 1;
         else if (mods.has(HALF)) options.threshold = 0.5;
 
+        const rx = genRX();
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
