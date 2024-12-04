@@ -183,7 +183,6 @@ export const Bind: AttributePlugin = {
                     const v = JSON.stringify(input.value.split(","));
                     signals.setValue(signalName, v);
                 }
-                console.log(input.value);
             } else {
                 throw dsErr("UnsupportedSignalType", {
                     current: typeof current,

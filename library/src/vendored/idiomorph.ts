@@ -376,18 +376,15 @@ function handleHeadElement(
     // Push the remaining new head elements in the Map into the
     // nodes to append to the head tag
     nodesToAppend.push(...srcToNewHeadNodes.values());
-    // console.log('to append: ', nodesToAppend)
 
     const promises = [];
     for (const newNode of nodesToAppend) {
-        // console.log('adding: ', newNode)
         const newElt = document.createRange().createContextualFragment(
             newNode.outerHTML,
         ).firstChild as Element | null;
         if (!newElt) {
             throw dsErr("NewElementCouldNotBeCreated", { newNode });
         }
-        // console.log(newElt)
         if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
             if (newElt.hasAttribute("href") || newElt.hasAttribute("src")) {
                 let resolver: (value: unknown) => void;

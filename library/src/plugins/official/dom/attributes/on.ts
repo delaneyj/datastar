@@ -140,7 +140,6 @@ export const On: AttributePlugin = {
 
                 target.addEventListener(eventName, callback, evtListOpts);
                 return () => {
-                    // console.log(`Removing event listener for ${eventName} on ${el}`)
                     target.removeEventListener(eventName, callback);
                 };
         }
