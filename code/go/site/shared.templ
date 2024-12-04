@@ -190,7 +190,7 @@ templ sidebarPageContents(sidebarGroups []*SidebarGroup, current *SidebarLink, c
 		<div class="flex flex-col w-full gap-16 p-4 lg:items-center lg:p-16">
 			@SidebarPrevNextLinks(sidebarGroups, current)
 			<article
-				class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary max-w-none lg:max-w-prose"
+				class="flex flex-col flex-1 p-1 prose prose-primary lg:prose-lg prose-a:link-primary max-w-none lg:max-w-prose w-full"
 			>
 				@templ.Raw(contents)
 			</article>
@@ -200,10 +200,10 @@ templ sidebarPageContents(sidebarGroups []*SidebarGroup, current *SidebarLink, c
 }
 
 templ SidebarContents(sidebarGroups []*SidebarGroup, current *SidebarLink) {
-	<div class="flex flex-col gap-8 uppercase">
+	<div class="flex flex-col gap-8">
 		for i, grp := range sidebarGroups {
 			<div class="flex flex-col gap-2">
-				<h3 class="text-xs font-bold text-primary">{ grp.Label }</h3>
+				<h3 class="text-xs font-bold text-primary uppercase">{ grp.Label }</h3>
 				for _, link := range grp.Links {
 					if link.IsDisabled {
 						<div class="opacity-25">{ link.Label }</div>

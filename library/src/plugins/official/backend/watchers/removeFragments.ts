@@ -7,7 +7,7 @@ import {
     DefaultSettleDurationMs,
     EventTypes,
 } from "../../../../engine/consts";
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { PluginType, WatcherPlugin } from "../../../../engine/types";
 import { isBoolString } from "../../../../utils/text";
 import {
@@ -28,7 +28,7 @@ export const RemoveFragments: WatcherPlugin = {
                 useViewTransition: useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
             }) => {
                 if (!!!selector.length) {
-                    throw dsErr(ErrorCodes.NoSelectorProvided);
+                    throw dsErr("NoSelectorProvided");
                 }
 
                 const settleDuration = parseInt(settleDurationRaw);

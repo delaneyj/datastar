@@ -3,7 +3,7 @@
 // Slug: Create a reference to an element
 // Description: This attribute creates a reference to an element that can be used in other expressions.
 
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 // Sets the value of the element
@@ -12,10 +12,10 @@ export const Ref: AttributePlugin = {
     name: "ref",
     onLoad: ({ el, key, value, signals }) => {
         if (key.length) {
-            throw dsErr(ErrorCodes.RefKeyNotAllowed);
+            throw dsErr("RefKeyNotAllowed");
         }
         if (!value.length) {
-            throw dsErr(ErrorCodes.RefValueNotProvided);
+            throw dsErr("RefValueNotProvided");
         }
 
         signals.upsert(value, el);

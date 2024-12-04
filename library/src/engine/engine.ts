@@ -1,7 +1,7 @@
 import { elUniqId } from "../utils/dom";
 import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
-import { dsErr, ErrorCodes } from "./errors";
+import { dsErr } from "./errors";
 import { SignalsRoot } from "./nestedSignals";
 import {
     ActionPlugin,

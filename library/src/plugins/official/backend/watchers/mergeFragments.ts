@@ -9,7 +9,7 @@ import {
     EventTypes,
     FragmentMergeModes,
 } from "../../../../engine/consts";
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import {
     InitContext,
     PluginType,
@@ -39,9 +39,9 @@ export const MergeFragments: WatcherPlugin = {
                 selector = "",
                 mergeMode = DefaultFragmentMergeMode,
                 settleDuration: settleDurationRaw =
-                    `${DefaultSettleDurationMs}`,
+                `${DefaultSettleDurationMs}`,
                 useViewTransition: useViewTransitionRaw =
-                    `${DefaultFragmentsUseViewTransitions}`,
+                `${DefaultFragmentsUseViewTransitions}`,
             }) => {
                 const settleDuration = parseInt(settleDurationRaw);
                 const useViewTransition = isBoolString(useViewTransitionRaw);
@@ -50,17 +50,17 @@ export const MergeFragments: WatcherPlugin = {
                 const fragments = [...fragmentContainer.content.children];
                 fragments.forEach((fragment) => {
                     if (!(fragment instanceof Element)) {
-                        throw dsErr(ErrorCodes.NoFragmentsFound);
+                        throw dsErr("NoFragmentsFound");
                     }
 
                     const selectorOrID = selector ||
                         `#${fragment.getAttribute("id")}`;
                     const targets = [
                         ...document.querySelectorAll(selectorOrID) ||
-                            [],
+                        [],
                     ];
                     if (!targets.length) {
-                        throw dsErr(ErrorCodes.NoTargetsFound, { selectorOrID });
+                        throw dsErr("NoTargetsFound", { selectorOrID });
                     }
 
                     if (supportsViewTransitions && useViewTransition) {
@@ -110,7 +110,7 @@ function applyToTargets(
                     },
                 });
                 if (!result?.length) {
-                    throw dsErr(ErrorCodes.MorphFailed);
+                    throw dsErr("MorphFailed");
                 }
                 modifiedTarget = result[0] as Element;
                 break;
@@ -146,7 +146,7 @@ function applyToTargets(
                 });
                 break;
             default:
-                throw dsErr(ErrorCodes.InvalidMergeMode, { mergeMode });
+                throw dsErr("InvalidMergeMode", { mergeMode });
         }
         ctx.cleanup(modifiedTarget);
 

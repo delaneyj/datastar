@@ -3,7 +3,7 @@
 // Slug: Copy text to the clipboard
 // Description: This action copies text to the clipboard using the Clipboard API.
 
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { ActionPlugin, PluginType } from "../../../../engine/types";
 
 export const Clipboard: ActionPlugin = {
@@ -11,7 +11,7 @@ export const Clipboard: ActionPlugin = {
     name: "clipboard",
     fn: (_, text) => {
         if (!navigator.clipboard) {
-            throw dsErr(ErrorCodes.ClipboardNotAvailable);
+            throw dsErr("ClipboardNotAvailable");
         }
         navigator.clipboard.writeText(text);
     },

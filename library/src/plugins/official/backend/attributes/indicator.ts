@@ -3,7 +3,7 @@
 // Description: must be a valid signal name
 
 import { DATASTAR } from "../../../../engine/consts";
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 import {
     DATASTAR_SSE_EVENT,
@@ -20,10 +20,10 @@ export const Indicator: AttributePlugin = {
     name: "indicator",
     onLoad: ({ value, signals, el, key }) => {
         if (key.length) {
-            throw dsErr(ErrorCodes.IndicatorKeyNotAllowed);
+            throw dsErr("IndicatorKeyNotAllowed");
         }
         if (!value.length) {
-            throw dsErr(ErrorCodes.IndicatorValueNotProvided);
+            throw dsErr("IndicatorValueNotProvided");
         }
 
         const signal = signals.upsert(value, false);
