@@ -3,7 +3,7 @@
 // Slug: Bind attributes to expressions
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
@@ -16,7 +16,7 @@ export const Bind: AttributePlugin = {
         const { el, value, key, signals, effect } = ctx;
 
         if (key.length) {
-            throw dsErr(ErrorCodes.BindKeyNotAllowed);
+            throw dsErr("BindKeyNotAllowed");
         }
 
         let setFromSignal = () => { };
@@ -26,7 +26,7 @@ export const Bind: AttributePlugin = {
 
         // I better be tied to a signal
         if (typeof signalName !== "string") {
-            throw dsErr(ErrorCodes.InvalidExpression);
+            throw dsErr("InvalidExpression");
         }
 
         const tnl = el.tagName.toLowerCase();
@@ -120,7 +120,7 @@ export const Bind: AttributePlugin = {
                                     dataURIRegex,
                                 );
                                 if (!match?.groups) {
-                                    throw dsErr(ErrorCodes.InvalidDataUri, {
+                                    throw dsErr("InvalidDataUri", {
                                         result: reader.result,
                                     });
                                 }
@@ -183,9 +183,8 @@ export const Bind: AttributePlugin = {
                     const v = JSON.stringify(input.value.split(","));
                     signals.setValue(signalName, v);
                 }
-                console.log(input.value);
             } else {
-                throw dsErr(ErrorCodes.UnsupportedSignalType, {
+                throw dsErr("UnsupportedSignalType", {
                     current: typeof current,
                 });
             }

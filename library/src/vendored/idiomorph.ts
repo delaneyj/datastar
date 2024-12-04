@@ -1,5 +1,5 @@
 import { FragmentMergeModes } from "../engine/consts";
-import { dsErr, ErrorCodes } from "../engine/errors";
+import { dsErr } from "../engine/errors";
 
 const generatedByIdiomorphId = new WeakSet();
 
@@ -64,7 +64,7 @@ function morphNormalizedContent(
         // into either side of the best match
         const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx);
         if (!bestMatch) {
-            throw dsErr(ErrorCodes.NoBestMatchFound, {
+            throw dsErr("NoBestMatchFound", {
                 old: oldNode,
                 new: normalizedNewContent,
             });
@@ -86,7 +86,7 @@ function morphNormalizedContent(
             return [];
         }
     } else {
-        throw dsErr(ErrorCodes.InvalidMorphStyle, { style: ctx.morphStyle });
+        throw dsErr("InvalidMorphStyle", { style: ctx.morphStyle });
     }
 }
 
@@ -110,7 +110,7 @@ function morphOldNodeTo(oldNode: Element, newContent: Element, ctx: any) {
         if (ctx.callbacks.beforeNodeAdded(newContent) === false) return;
 
         if (!oldNode.parentElement) {
-            throw dsErr(ErrorCodes.NoParentElementFound, { oldNode });
+            throw dsErr("NoParentElementFound", { oldNode });
         }
         oldNode.parentElement.replaceChild(newContent, oldNode);
         ctx.callbacks.afterNodeAdded(newContent);
@@ -376,18 +376,15 @@ function handleHeadElement(
     // Push the remaining new head elements in the Map into the
     // nodes to append to the head tag
     nodesToAppend.push(...srcToNewHeadNodes.values());
-    // console.log('to append: ', nodesToAppend)
 
     const promises = [];
     for (const newNode of nodesToAppend) {
-        // console.log('adding: ', newNode)
         const newElt = document.createRange().createContextualFragment(
             newNode.outerHTML,
         ).firstChild as Element | null;
         if (!newElt) {
-            throw dsErr(ErrorCodes.NewElementCouldNotBeCreated, { newNode });
+            throw dsErr("NewElementCouldNotBeCreated", { newNode });
         }
-        // console.log(newElt)
         if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
             if (newElt.hasAttribute("href") || newElt.hasAttribute("src")) {
                 let resolver: (value: unknown) => void;
@@ -492,7 +489,7 @@ function removeNodesBetween(
         const tempNode = startInclusive;
         startInclusive = startInclusive?.nextSibling as Element;
         if (!tempNode) {
-            throw dsErr(ErrorCodes.NoTemporaryNodeFound, { startInclusive, endExclusive });
+            throw dsErr("NoTemporaryNodeFound", { startInclusive, endExclusive });
         }
         removeNode(tempNode, ctx);
     }
@@ -642,7 +639,7 @@ function parseContent(newContent: string) {
         );
         const content = responseDoc.body.querySelector("template")?.content;
         if (!content) {
-            throw dsErr(ErrorCodes.NoContentFound, { newContent });
+            throw dsErr("NoContentFound", { newContent });
         }
         generatedByIdiomorphId.add(content);
         return content;

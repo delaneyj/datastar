@@ -1,7 +1,7 @@
 import { elUniqId } from "../utils/dom";
 import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
-import { dsErr, ErrorCodes } from "./errors";
+import { dsErr } from "./errors";
 import { SignalsRoot } from "./nestedSignals";
 import {
     ActionPlugin,
@@ -53,7 +53,7 @@ export class Engine {
                     globalInitializer = ap.onGlobalInit;
                     break;
                 default:
-                    throw dsErr(ErrorCodes.InvalidPluginType, {
+                    throw dsErr("InvalidPluginType", {
                         name: plugin.name,
                         type: plugin.type,
                     });
@@ -196,7 +196,7 @@ export class Engine {
             const fn = new Function("ctx", ...argumentNames, fnWithCtx);
             return (...args: any[]) => fn(ctx, ...args);
         } catch (error) {
-            throw dsErr(ErrorCodes.GeneratingExpressionFailed, {
+            throw dsErr("GeneratingExpressionFailed", {
                 error,
                 fnContent,
             });

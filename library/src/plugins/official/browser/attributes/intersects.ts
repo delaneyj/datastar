@@ -3,7 +3,7 @@
 // Slug: Run expression when element intersects with viewport
 // Description: An attribute that runs an expression when the element intersects with the viewport.
 
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 const ONCE = "once";
@@ -17,9 +17,9 @@ export const Intersects: AttributePlugin = {
     mods: new Set([ONCE, HALF, FULL]),
     onLoad: ({ el, key, rawKey, mods, genRX }) => {
         if (key.length) {
-            throw dsErr(ErrorCodes.IntersectsKeyNotAllowed);
+            throw dsErr("IntersectsKeyNotAllowed");
         }
-        
+
         const options = { threshold: 0 };
         if (mods.has(FULL)) options.threshold = 1;
         else if (mods.has(HALF)) options.threshold = 0.5;

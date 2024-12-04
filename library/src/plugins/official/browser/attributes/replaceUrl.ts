@@ -3,7 +3,7 @@
 // Slug: Replace the current URL with a new URL
 // Description: This plugin allows you to replace the current URL with a new URL.  Once you add this attribute the current URL will be replaced with the new URL.
 
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 export const ReplaceUrl: AttributePlugin = {
@@ -11,10 +11,10 @@ export const ReplaceUrl: AttributePlugin = {
     name: "replaceUrl",
     onLoad: ({ key, value, effect, genRX }) => {
         if (key.length) {
-            throw dsErr(ErrorCodes.ReplaceUrlKeyNotAllowed);
+            throw dsErr("ReplaceUrlKeyNotAllowed");
         }
         if (!value.length) {
-            throw dsErr(ErrorCodes.ReplaceUrlValueNotProvided);
+            throw dsErr("ReplaceUrlValueNotProvided");
         }
         const rx = genRX();
         return effect(() => {

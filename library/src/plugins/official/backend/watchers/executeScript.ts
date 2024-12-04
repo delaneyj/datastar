@@ -7,7 +7,7 @@ import {
     DefaultExecuteScriptAutoRemove,
     EventTypes,
 } from "../../../../engine/consts";
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { PluginType, WatcherPlugin } from "../../../../engine/types";
 import { isBoolString } from "../../../../utils/text";
 import { datastarSSEEventWatcher } from "../shared";
@@ -25,7 +25,7 @@ export const ExecuteScript: WatcherPlugin = {
             }) => {
                 const autoRemove = isBoolString(autoRemoveRaw);
                 if (!script?.length) {
-                    throw dsErr(ErrorCodes.NoScriptProvided);
+                    throw dsErr("NoScriptProvided");
                 }
                 const scriptEl = document.createElement("script");
                 attributesRaw.split("\n").forEach((attr) => {

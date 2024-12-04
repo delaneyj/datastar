@@ -3,7 +3,7 @@
 // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import { DATASTAR, DATASTAR_REQUEST } from "../../../../engine/consts";
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { ActionPlugin, PluginType } from "../../../../engine/types";
 import {
     fetchEventSource,
@@ -48,7 +48,7 @@ export const ServerSentEvents: ActionPlugin = {
         try {
             dispatchSSE(STARTED, { elId });
             if (!!!url?.length) {
-                throw dsErr(ErrorCodes.NoUrlProvided);
+                throw dsErr("NoUrlProvided");
             }
 
             const headers = Object.assign({
@@ -91,7 +91,7 @@ export const ServerSentEvents: ActionPlugin = {
                 onerror: (error) => {
                     if (isWrongContent(error)) {
                         // don't retry if the content-type is wrong
-                        throw dsErr(ErrorCodes.InvalidContentType, { url, error });
+                        throw dsErr("InvalidContentType", { url, error });
                     }
                     // do nothing and it will retry
                     if (error) {
@@ -114,7 +114,7 @@ export const ServerSentEvents: ActionPlugin = {
                 await fetchEventSource(urlInstance.toString(), req);
             } catch (error) {
                 if (!isWrongContent(error)) {
-                    throw dsErr(ErrorCodes.SseFailed, { method, url, error });
+                    throw dsErr("SseFetchFailed", { method, url, error });
                 }
                 // exit gracefully and do nothing if the content-type is wrong
                 // this can happen if the client is sending a request

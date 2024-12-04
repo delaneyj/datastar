@@ -1,4 +1,4 @@
-import { dsErr, ErrorCodes } from "../../../../engine/errors";
+import { dsErr } from "../../../../engine/errors";
 import { AttributePlugin, PluginType } from "../../../../engine/types";
 
 const name = "computed";
@@ -9,7 +9,7 @@ export const Computed: AttributePlugin = {
     onLoad: ({ key, signals, genRX }) => {
         const rx = genRX();
         if (!key.length) {
-            throw dsErr(ErrorCodes.ComputedKeyNotProvided);
+            throw dsErr("ComputedKeyNotProvided");
         }
         signals.setComputed(key, rx);
     },
