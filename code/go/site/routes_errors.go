@@ -81,7 +81,7 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 	lo.ForEach(sidebarGroups, func(group *SidebarGroup, grpIdx int) {
 		lo.ForEach(group.Links, func(link *SidebarLink, linkIdx int) {
 			link.URL = templ.SafeURL("/errors/" + link.ID)
-			link.Label = strings.ToUpper(strings.ReplaceAll(link.ID, "_", " "))
+			link.Label = link.ID
 
 			if linkIdx > 0 {
 				link.Prev = group.Links[linkIdx-1]
