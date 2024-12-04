@@ -10,9 +10,14 @@ import { AttributePlugin, PluginType } from "../../../../engine/types";
 export const Ref: AttributePlugin = {
     type: PluginType.Attribute,
     name: "ref",
-    mustHaveValue: true,
-    onLoad: ({ el, value, signals }) => {
-        signals.upsert(value, el);
-        return () => signals.remove(value);
+    onLoad: ({ el, key, value, signals }) => {
+        const hasKey = key.length > 0;
+        const hasValue = value.length > 0;
+        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
+            throw dsErr("XORKeyAndValue");
+        }
+        const signalName = hasKey ? key : value;
+        signals.upsert(signalName, el);
+        return () => signals.setValue(signalName, null);
     },
 };

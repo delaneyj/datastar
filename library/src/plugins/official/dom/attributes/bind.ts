@@ -12,13 +12,17 @@ const updateEvents = ["change", "input", "keydown"];
 export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
-    mustHaveValue: true,
     onLoad: (ctx) => {
-        const { el, value, signals, effect } = ctx;
-        let setFromSignal = () => { };
-        let el2sig = () => { };
+        const { el, value, key, signals, effect } = ctx;
+        const hasKey = key.length > 0;
+        const hasValue = value.length > 0;
+        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
+            throw dsErr("XORKeyAndValue");
+        }
+        const signalName = hasKey ? key : value;
 
-        const signalName = value;
+        let setFromSignal = () => {};
+        let el2sig = () => {};
 
         // I better be tied to a signal
         if (typeof signalName !== "string") {
