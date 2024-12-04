@@ -120,7 +120,7 @@ export const Bind: AttributePlugin = {
                                     dataURIRegex,
                                 );
                                 if (!match?.groups) {
-                                    throw dsErr(ErrorCodes.InvalidDataUri, {
+                                    throw dsErr("InvalidDataUri", {
                                         result: reader.result,
                                     });
                                 }
@@ -185,7 +185,7 @@ export const Bind: AttributePlugin = {
                 }
                 console.log(input.value);
             } else {
-                throw dsErr(ErrorCodes.UnsupportedSignalType, {
+                throw dsErr("UnsupportedSignalType", {
                     current: typeof current,
                 });
             }

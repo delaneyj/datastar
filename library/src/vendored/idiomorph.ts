@@ -64,7 +64,7 @@ function morphNormalizedContent(
         // into either side of the best match
         const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx);
         if (!bestMatch) {
-            throw dsErr(ErrorCodes.NoBestMatchFound, {
+            throw dsErr("NoBestMatchFound", {
                 old: oldNode,
                 new: normalizedNewContent,
             });
