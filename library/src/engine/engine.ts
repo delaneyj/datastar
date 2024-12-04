@@ -183,7 +183,7 @@ export class Engine {
         );
         // Action lines
         const al = an.map((a) => `const ${a} = ctx.actions.${a}.fn;`);
-        const fnContent = `${al.join("\n")}\n${userExpression}`;
+        const fnContent = `${al.join("\n")}return (()=> {${userExpression}})()`;
 
         // Add ctx to action calls
         let fnWithCtx = fnContent.trim();

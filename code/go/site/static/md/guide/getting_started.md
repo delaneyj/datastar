@@ -195,7 +195,7 @@ The `data-attributes-*` attribute can be used to bind a JavaScript expression to
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
 
-<div class="flex items-start justify-between p-8 alert">
+<div class="flex items-start justify-between p-8 alert" data-signals-input6="''">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
@@ -242,7 +242,6 @@ The [`data-on-*`](/reference/plugins_attributes#on) attribute can be used to exe
 This results in the `input.value` signal being set to an empty string when the button element is clicked. If the `input.value` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
 
 <div class="flex items-start justify-between p-8 alert" >
-    <div data-text="ctx.signals.JSON()">foo</div>
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>

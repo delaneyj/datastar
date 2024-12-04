@@ -3,7 +3,7 @@
 export const DATASTAR = "datastar";
 export const DATASTAR_EVENT = "datastar-event";
 export const DATASTAR_REQUEST = "Datastar-Request";
-export const VERSION = "0.20.1";
+export const VERSION = "0.21.0-beta1";
 
 // #region Defaults
 
