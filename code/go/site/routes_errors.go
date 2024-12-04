@@ -25,28 +25,62 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 	}
 
 	sidebarGroups := []*SidebarGroup{
-		// {
-		// 	Label: "2024",
-		// 	Links: []*SidebarLink{
-		// 		{ID: "htmx_sucks"},
-		// 		{ID: "another_dependency"},
-		// 		{ID: "event_streams_all_the_way_down"},
-		// 	},
-		// },
-		// {
-		// 	Label: "2023",
-		// 	Links: []*SidebarLink{
-		// 		{ID: "i_am_a_teapot"},
-		// 		{ID: "grugs_around_fire"},
-		// 		{ID: "haikus"},
-		// 		{ID: "yes_you_want_a_build_step"},
-		// 		{ID: "why_another_framework"},
-		// 	},
-		// },
+		{
+			Label: "Errors",
+			Links: []*SidebarLink{
+				{ID: "A1"},
+				{ID: "A2"},
+				{ID: "A3"},
+				{ID: "B1"},
+				{ID: "B2"},
+				{ID: "B3"},
+				{ID: "C1"},
+				{ID: "C2"},
+				{ID: "D1"},
+				{ID: "E1"},
+				{ID: "E2"},
+				{ID: "E3"},
+				{ID: "E4"},
+				{ID: "E5"},
+				{ID: "F1"},
+				{ID: "G1"},
+				{ID: "H1"},
+				{ID: "J1"},
+				{ID: "K1"},
+				{ID: "L1"},
+				{ID: "L2"},
+				{ID: "M1"},
+				{ID: "M2"},
+				{ID: "M3"},
+				{ID: "N1"},
+				{ID: "N2"},
+				{ID: "P1"},
+				{ID: "Q1"},
+				{ID: "Q2"},
+				{ID: "Q3"},
+				{ID: "Q4"},
+				{ID: "Q5"},
+				{ID: "R1"},
+				{ID: "S1"},
+				{ID: "S2"},
+				{ID: "Y1"},
+				{ID: "Y2"},
+				{ID: "Y3"},
+				{ID: "Y4"},
+				{ID: "Y5"},
+				{ID: "Y6"},
+				{ID: "Z1"},
+				{ID: "Z2"},
+				{ID: "Z3"},
+				{ID: "Z4"},
+				{ID: "Z5"},
+				{ID: "Z6"},
+			},
+		},
 	}
 	lo.ForEach(sidebarGroups, func(group *SidebarGroup, grpIdx int) {
 		lo.ForEach(group.Links, func(link *SidebarLink, linkIdx int) {
-			link.URL = templ.SafeURL("/essays/" + link.ID)
+			link.URL = templ.SafeURL("/errors/" + link.ID)
 			link.Label = strings.ToUpper(strings.ReplaceAll(link.ID, "_", " "))
 
 			if linkIdx > 0 {
@@ -78,21 +112,28 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 				return
 			}
 
-			// var currentLink *SidebarLink
-			// for _, group := range sidebarGroups {
-			// 	for _, link := range group.Links {
-			// 		if link.ID == name {
-			// 			currentLink = link
-			// 			break
-			// 		}
-			// 	}
-			// }
+			var currentLink *SidebarLink
+			for _, group := range sidebarGroups {
+				for _, link := range group.Links {
+					if link.ID == name {
+						currentLink = link
+						break
+					}
+				}
+			}
+
 			params, err := url.ParseQuery(r.URL.RawQuery)
 			if err != nil {
 				http.Error(w, "bad request", http.StatusBadRequest)
 				return
 			}
-			ErrorPage(mdData.Title, mdData.Description, mdData.Contents, params).Render(r.Context(), w)
+
+			contents := mdData.Contents
+			for key, values := range params {
+				contents = strings.ReplaceAll(contents, "{ "+key+" }", strings.Join(values, ","))
+			}
+
+			SidebarPage(r, sidebarGroups, currentLink, mdData.Title, mdData.Description, contents).Render(r.Context(), w)
 		})
 	})
 

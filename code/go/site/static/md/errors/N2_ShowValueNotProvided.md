@@ -1,3 +1,5 @@
+# Error N2: Show Value Not Provided
+
 No value was provided to the `data-show` attribute. The `data-show` attribute must have a value, representing an expression evaluating to `true` or `false`, which determines whether to show or hide the element, respectively.
 
 Example:

@@ -8,10 +8,8 @@ export const hasValNonExpr = /([\w0-9.]+)\.value/gm;
 export enum ErrorCodes {
     // Engine
     RequiredPluginNotLoaded = "A1",
-    PluginAlreadyLoaded = "A2",
-    InvalidPluginType = "A3",
-    GenRXFunctionNotImplemented = "A4",
-    GeneratingExpressionFailed = "A5",
+    InvalidPluginType = "A2",
+    GeneratingExpressionFailed = "A3",
     // ServerSentEvents
     NoUrlProvided = "B1",
     InvalidContentType = "B2",
@@ -77,8 +75,8 @@ export enum ErrorCodes {
 
 export const dsErr = (code: ErrorCodes, args?: any) => {
     const e = new Error();
-    e.name = `${DATASTAR}${code}`;
+    e.name = `Datastar error ${code}`;
     const fullURL = `${url}/${code}?${new URLSearchParams(args)}`;
-    e.message = `${DATASTAR}${code}, for more info see ${fullURL}`;
+    e.message = `for more info see ${fullURL}`;
     return e;
 };

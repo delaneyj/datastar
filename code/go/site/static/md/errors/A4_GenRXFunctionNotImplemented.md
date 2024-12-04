@@ -1,1 +1,0 @@
-The GenRXFunctionNotImplemented`{ name }` plugin has an invalid type `{ type }`. Plugin types must be one of `Macro`, `Attribute`, `Watcher`, `Action`.

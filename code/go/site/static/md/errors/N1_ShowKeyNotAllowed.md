@@ -1,3 +1,5 @@
+# Error N1: Show Key Not Allowed
+
 A key was provided to the `data-show` attribute, which is not allowed. The `data-show` attribute only takes a value, representing an expression evaluating to `true` or `false`, which determines whether to show or hide the element, respectively.
 
 Example:

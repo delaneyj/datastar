@@ -1,3 +1,5 @@
+# Error P1: Computed Key Not Provided
+
 No key was provided to the `data-computed` attribute. The `data-computed` attribute must have a key, representing the signal name to create.
 
 Example:

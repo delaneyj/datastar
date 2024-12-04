@@ -1,3 +1,5 @@
+# Error Q2: Invalid Expression
+
 An invalid value was provided to the `data-bind` attribute. The `data-bind` value must be a string, representing the signal name to create and attach two-way binding with the element.
 
 Example:

@@ -1,3 +1,5 @@
+# Error B1: No URL Provided
+
 No URL was provided to the `sse()` action. A valid URL must be provided as the first argument.
 
 Example:

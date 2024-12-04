@@ -1,3 +1,5 @@
+# Error M1: Scroll Into View Key Not Allowed
+
 A key was provided to the `data-scroll-into-view` attribute, which is not allowed. 
 
 Example:

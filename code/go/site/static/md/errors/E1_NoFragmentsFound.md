@@ -1,3 +1,5 @@
+# Error E1: No Fragments Found
+
 No fragments were found in the `merge-fragments` SSE event. At least one fragment to merge must be provided.
 
 Example:

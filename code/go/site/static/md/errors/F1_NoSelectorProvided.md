@@ -1,3 +1,5 @@
+# Error F1: No Selector Provided
+
 No selector was provided to the `remove-fragments` SSE event. A selector must be provided.
 
 Example:

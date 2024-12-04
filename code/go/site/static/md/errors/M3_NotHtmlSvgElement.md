@@ -1,3 +1,5 @@
+# Error M3: Not an HTML or SVG Element
+
 The `data-scroll-into-view` was placed on an invalid element. It may only be placed on an HTML or SVG element.
 
 Example:

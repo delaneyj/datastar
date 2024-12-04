@@ -1,3 +1,5 @@
+# Error G1: No Paths Provided
+
 No paths were provided to the `remove-signals` SSE event. At least one path must be provided.
 
 Example:

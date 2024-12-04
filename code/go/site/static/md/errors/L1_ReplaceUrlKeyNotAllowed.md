@@ -1,3 +1,5 @@
+# Error L1: Replace URL Key Not Allowed
+
 A key was provided to the `data-replace-url` attribute, which is not allowed. The `data-replace-url` attribute only takes a value, representing an expression evaluating to the URL to replace in the browser without reloading the page.
 
 Example:

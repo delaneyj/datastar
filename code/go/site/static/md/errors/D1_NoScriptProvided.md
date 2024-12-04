@@ -1,3 +1,5 @@
+# Error D1: No Script Provided
+
 No script was provided to the `execute-script` SSE event. A script to execute must be provided.
 
 Example:

@@ -1,3 +1,5 @@
+# Error S2: Ref Value Not Provided
+
 No value was provided to the `data-ref` attribute. The `data-ref` attribute must have a value, representing the name of a signal. The signal will be assigned the element as its value.
 
 Example:

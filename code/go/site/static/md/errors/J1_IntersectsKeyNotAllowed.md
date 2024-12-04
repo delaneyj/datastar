@@ -1,3 +1,5 @@
+# Error J1: Intersects Key Not Allowed
+
 A key was provided to the `data-intersects` attribute, which is not allowed. The `data-intersects` attribute only takes a value, representing an expression to run when the element intersects with the viewport.
 
 Example:
