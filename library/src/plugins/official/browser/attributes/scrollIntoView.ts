@@ -4,7 +4,7 @@
 // Description: This attribute scrolls the element into view.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 const SMOOTH = "smooth";
 const INSTANT = "instant";
@@ -28,6 +28,7 @@ const NEAREST = "nearest";
 export const ScrollIntoView: AttributePlugin = {
     type: PluginType.Attribute,
     name: "scrollIntoView",
+    keyValRule: KeyValRules.KeyNotAllowed_ValueNotAllowed,
     mods: new Set([
         SMOOTH,
         INSTANT,

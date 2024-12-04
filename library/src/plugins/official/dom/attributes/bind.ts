@@ -4,7 +4,7 @@
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateEvents = ["change", "input", "keydown"];
@@ -12,6 +12,7 @@ const updateEvents = ["change", "input", "keydown"];
 export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
+    keyValRule: KeyValRules.KeyRequired_Xor_ValueRequired,
     onLoad: (ctx) => {
         const { el, value, key, signals, effect } = ctx;
         const hasKey = key.length > 0;

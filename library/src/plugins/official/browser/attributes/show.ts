@@ -3,8 +3,7 @@
 // Slug: Show or hide an element
 // Description: This attribute shows or hides an element based on the value of the expression. If the expression is true, the element is shown. If the expression is false, the element is hidden. The element is hidden by setting the display property to none.
 
-import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 const NONE = "none";
 const DISPLAY = "display";
@@ -12,7 +11,7 @@ const DISPLAY = "display";
 export const Show: AttributePlugin = {
     type: PluginType.Attribute,
     name: "show",
-    mustHaveValue: true,
+    keyValRule: KeyValRules.KeyNotAllowed_ValueRequired,
     onLoad: (
         { el: { style: s }, genRX, effect },
     ) => {

@@ -4,12 +4,12 @@
 // Description: This attribute sets the text content of an element to the result of the expression.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 export const Text: AttributePlugin = {
     type: PluginType.Attribute,
     name: "text",
-    mustHaveValue: true,
+    keyValRule: KeyValRules.KeyNotAllowed_ValueRequired,
     onLoad: (ctx) => {
         const { el, genRX, effect } = ctx;
         const rx = genRX();

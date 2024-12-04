@@ -5,6 +5,7 @@
 
 import {
     AttributePlugin,
+    KeyValRules,
     NestedValues,
     PluginType,
 } from "../../../../engine/types";
@@ -13,6 +14,7 @@ import { kebabize } from "../../../../utils/text";
 export const Attributes: AttributePlugin = {
     type: PluginType.Attribute,
     name: "attributes",
+    keyValRule: KeyValRules.KeyAllowed_ValueRequired,
     canHaveKey: true,
     mustHaveValue: true,
     onLoad: ({ el, genRX, key, effect }) => {

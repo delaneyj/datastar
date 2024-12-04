@@ -3,13 +3,12 @@
 // Slug: Replace the current URL with a new URL
 // Description: This plugin allows you to replace the current URL with a new URL.  Once you add this attribute the current URL will be replaced with the new URL.
 
-import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 export const ReplaceUrl: AttributePlugin = {
     type: PluginType.Attribute,
     name: "replaceUrl",
-    mustHaveValue: true,
+    keyValRule: KeyValRules.KeyNotAllowed_ValueRequired,
     onLoad: ({ effect, genRX }) => {
         const rx = genRX();
         return effect(() => {

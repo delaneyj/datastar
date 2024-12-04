@@ -4,12 +4,13 @@
 // Description: This attribute creates a reference to an element that can be used in other expressions.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 // Sets the value of the element
 export const Ref: AttributePlugin = {
     type: PluginType.Attribute,
     name: "ref",
+    keyValRule: KeyValRules.KeyRequired_Xor_ValueRequired,
     onLoad: ({ el, key, value, signals }) => {
         const hasKey = key.length > 0;
         const hasValue = value.length > 0;

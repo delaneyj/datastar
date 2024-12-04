@@ -1,6 +1,6 @@
-# Error: ComputedKeyNotProvided
+# Error: ComputedKeyRequired
 
-No key was provided to the `data-computed` attribute. The `data-computed` attribute must have a key, representing the signal name to create.
+No key was provided to the `data-computed` attribute. The `data-computed` attribute _must_ have a key, representing the signal name to create.
 
 Example:
 

@@ -1,18 +1,13 @@
-import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 
 const name = "computed";
 export const Computed: AttributePlugin = {
     type: PluginType.Attribute,
     name,
-    mustHaveKey: true,
-    mustHaveValue: true,
-    purge: true,
+    keyValRule: KeyValRules.KeyRequired_ValueRequired,
+    removeOnLoad: true,
     onLoad: ({ key, signals, genRX }) => {
         const rx = genRX();
-        if (!key.length) {
-            throw dsErr("ComputedKeyNotProvided");
-        }
         signals.setComputed(key, rx);
     },
 };

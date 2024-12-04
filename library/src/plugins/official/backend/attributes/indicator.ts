@@ -4,7 +4,7 @@
 
 import { DATASTAR } from "../../../../engine/consts";
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 import {
     DATASTAR_SSE_EVENT,
     DatastarSSEEvent,
@@ -18,6 +18,7 @@ export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
     name: "indicator",
+    keyValRule: KeyValRules.KeyRequired_Xor_ValueRequired,
     onLoad: ({ value, signals, el, key }) => {
         const hasKey = key.length > 0;
         const hasValue = value.length > 0;

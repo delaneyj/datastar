@@ -3,14 +3,13 @@
 // Slug: Add or remove classes from an element reactively
 // Description: This action adds or removes classes from an element reactively based on the expression provided. The expression should be an object where the keys are the class names and the values are booleans. If the value is true, the class is added. If the value is false, the class is removed.
 
-import { AttributePlugin, PluginType } from "../../../../engine/types";
+import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
 import { kebabize } from "../../../../utils/text";
 
 export const Class: AttributePlugin = {
     type: PluginType.Attribute,
-    name: "class",
-    canHaveKey: true,
-    mustHaveValue: true,
+    name: "class",  
+    keyValRule: KeyValRules.KeyAllowed_ValueRequired,
     onLoad: ({ key, el, genRX, effect }) => {
         const cl = el.classList;
         const rx = genRX();

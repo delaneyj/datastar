@@ -11,6 +11,8 @@ import {
     DatastarPlugin,
     GlobalInitializer,
     HTMLorSVGElement,
+    KeyValRequirement,
+    KeyValRules,
     MacroPlugin,
     Modifiers,
     OnRemovalFn,
@@ -95,22 +97,40 @@ export class Engine {
                     const rawValue = `${el.dataset[rawKey]}` || "";
                     if (!rawKey.startsWith(p.name)) continue;
 
+                    const keyRaw = rawKey.slice(p.name.length);
+                    let [key, ...rawModifiers] = keyRaw.split(":");
+                    const keyRequirement = this.getKeyRequirement(p.keyValRule);
+                    if (key.length) {
+                        if (keyRequirement === KeyValRequirement.NotAllowed) {
+                            throw dsErr(p.name + "KeyNotAllowed");
+                        };
+                        key = key[0].toLowerCase() + key.slice(1);
+                    } else if (keyRequirement === KeyValRequirement.Required) {
+                        throw dsErr(p.name + "KeyRequired");
+                    }
+
                     let value = rawValue;
-                    if (p.mustHaveValue && !value.length) {
-                        throw dsErr(p.name + "ValueNotProvided");
-                    };
+                    const valueRequirement = this.getValueRequirement(p.keyValRule);
+                    if (value.length) {
+                        if (valueRequirement === KeyValRequirement.NotAllowed) {
+                            throw dsErr(p.name + "ValueNotAllowed");
+                        }
+                    }
+                    else if (valueRequirement === KeyValRequirement.Required) {
+                        throw dsErr(p.name + "ValueRequired");
+                    }
+
+                    if (p.keyValRule === KeyValRules.KeyRequired_Xor_ValueRequired) {
+                        if (key.length && value.length) {
+                            throw dsErr(p.name + "KeyAndValueProvided");
+                        } else if (!key.length && !value.length) {
+                            throw dsErr(p.name + "KeyOrValueRequired");
+                        }
+                    }
 
                     if (!el.id.length) el.id = elUniqId(el);
 
                     appliedMacros.clear();
-                    const keyRaw = rawKey.slice(p.name.length);
-                    let [key, ...rawModifiers] = keyRaw.split(":");
-                    if (key.length) {
-                        if (!p.canHaveKey) continue;
-                        key = key[0].toLowerCase() + key.slice(1);
-                    } else if (p.mustHaveKey) {
-                        throw dsErr(p.name + "KeyNotProvided");
-                    }
 
                     const mods: Modifiers = new Map<string, Set<string>>();
                     rawModifiers.forEach((m) => {
@@ -160,7 +180,7 @@ export class Engine {
                         this.removals.get(el)!.set.add(removal);
                     }
 
-                    if (!!p?.purge) delete el.dataset[rawKey];
+                    if (!!p?.removeOnLoad) delete el.dataset[rawKey];
                 }
             });
         });
@@ -226,5 +246,15 @@ export class Engine {
             this.walkDownDOM(element, callback);
             element = element.nextElementSibling;
         }
+    }
+
+    private getKeyRequirement(rule: KeyValRules | undefined): number {
+        rule = rule ?? KeyValRules.KeyAllowed_ValueAllowed;
+        return rule >> 2;
+    }
+
+    private getValueRequirement(rule: KeyValRules | undefined): number {
+        rule = rule ?? KeyValRules.KeyAllowed_ValueAllowed;
+        return rule & 3;
     }
 }

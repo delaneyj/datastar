@@ -10,6 +10,26 @@ export enum PluginType {
     Action,
 }
 
+export enum KeyValRequirement {
+    Allowed = 0,
+    NotAllowed = 1,
+    Required = 2,
+    Xor = 3
+}
+
+export enum KeyValRules {
+    KeyAllowed_ValueAllowed = KeyValRequirement.Allowed << 2 | KeyValRequirement.Allowed,
+    KeyAllowed_ValueNotAllowed = KeyValRequirement.Allowed << 2 | KeyValRequirement.NotAllowed,
+    KeyAllowed_ValueRequired = KeyValRequirement.Allowed << 2 | KeyValRequirement.Required,
+    KeyNotAllowed_ValueAllowed = KeyValRequirement.NotAllowed << 2 | KeyValRequirement.Allowed,
+    KeyNotAllowed_ValueNotAllowed = KeyValRequirement.NotAllowed << 2 | KeyValRequirement.NotAllowed,
+    KeyNotAllowed_ValueRequired = KeyValRequirement.NotAllowed << 2 | KeyValRequirement.Required,
+    KeyRequired_ValueAllowed = KeyValRequirement.Required << 2 | KeyValRequirement.Allowed,
+    KeyRequired_ValueNotAllowed = KeyValRequirement.Required << 2 | KeyValRequirement.NotAllowed,
+    KeyRequired_ValueRequired = KeyValRequirement.Required << 2 | KeyValRequirement.Required,
+    KeyRequired_Xor_ValueRequired = KeyValRequirement.Xor << 2 | KeyValRequirement.Xor,
+}
+
 export interface DatastarPlugin {
     type: PluginType; // The type of plugin
     name: string; // The name of the plugin
@@ -31,7 +51,8 @@ export interface AttributePlugin extends DatastarPlugin {
     mustHaveKey?: boolean; // Whether the plugin must have a key
     mustHaveValue?: boolean; // Whether the plugin must have a value
     mods?: AllowedModifiers; // If not provided, all modifiers are allowed
-    purge?: boolean; // If true, the attribute is removed after onLoad (useful for plugins you don’t want reapplied)
+    keyValRule?: KeyValRules; // The rules for the key and value requirements
+    removeOnLoad?: boolean; // If true, the attribute is removed after onLoad (useful for plugins you don’t want reapplied)
     macros?: {
         pre?: MacroPlugin[];
         post?: MacroPlugin[];
