@@ -1,6 +1,6 @@
-# Error: NotanHTMLorSVGElement
+# Error: NotHtmlSvgElement
 
-The `data-scroll-into-view` was placed on an invalid element. It may only be placed on an HTML or SVG element.
+The `data-scroll-into-view` attribute was placed on an invalid element. It may only be placed on an HTML or SVG element.
 
 Example:
 

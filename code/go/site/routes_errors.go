@@ -54,6 +54,7 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 				{ID: "NoTargetsFound"},
 				{ID: "NoTemporaryNodeFound"},
 				{ID: "NoUrlProvided"},
+				{ID: "NotHtmlElement"},
 				{ID: "NotHtmlSvgElement"},
 				{ID: "RefKeyNotAllowed"},
 				{ID: "RefValueNotProvided"},
