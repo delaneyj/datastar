@@ -195,7 +195,7 @@ The `data-attributes-*` attribute can be used to bind a JavaScript expression to
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
 
-<div class="flex items-start justify-between p-8 alert" data-signals-input6="''">
+<div class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
@@ -284,6 +284,7 @@ See if you can follow the code below _before_ trying the demo.
         <div id="question1">
             What do you put in a toaster?
         </div>
+    Correct:  <span data-text="correct.value"></span>
         <div data-show="response1.value != ''">
             You answered “<span data-text="response1.value"></span>”.
             <span data-show="correct1.value">That is correct ✅</span>

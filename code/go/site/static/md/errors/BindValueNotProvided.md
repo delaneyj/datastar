@@ -1,0 +1,11 @@
+# Error: BindValueNotProvided
+
+No value was provided to the `data-bind` attribute. The `data-bind` attribute must have a value, representing the signal name to create and enable two-way binding with the element’s value.
+
+Example:
+
+```html
+<input data-bind="signalName"/>
+```
+
+See the docs on the [`data-bind`](https://data-star.dev/reference/plugins_attributes#bind) attribute.

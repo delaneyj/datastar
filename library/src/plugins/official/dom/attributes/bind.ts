@@ -12,15 +12,11 @@ const updateEvents = ["change", "input", "keydown"];
 export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
+    mustHaveValue: true,
     onLoad: (ctx) => {
-        const { el, value, key, signals, effect } = ctx;
-
-        if (key.length) {
-            throw dsErr("BindKeyNotAllowed");
-        }
-
-        let setFromSignal = () => {};
-        let el2sig = () => {};
+        const { el, value, signals, effect } = ctx;
+        let setFromSignal = () => { };
+        let el2sig = () => { };
 
         const signalName = value;
 

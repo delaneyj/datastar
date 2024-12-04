@@ -12,16 +12,10 @@ const DISPLAY = "display";
 export const Show: AttributePlugin = {
     type: PluginType.Attribute,
     name: "show",
+    mustHaveValue: true,
     onLoad: (
-        { el: { style: s }, key, value, genRX, effect },
+        { el: { style: s }, genRX, effect },
     ) => {
-        if (key.length) {
-            throw dsErr("ShowKeyNotAllowed");
-        }
-        if (!value.length) {
-            throw dsErr("ShowValueNotProvided");
-        }
-
         const rx = genRX();
         return effect(async () => {
             const shouldShow = rx<boolean>();

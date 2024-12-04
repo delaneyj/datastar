@@ -10,14 +10,8 @@ import { AttributePlugin, PluginType } from "../../../../engine/types";
 export const Ref: AttributePlugin = {
     type: PluginType.Attribute,
     name: "ref",
-    onLoad: ({ el, key, value, signals }) => {
-        if (key.length) {
-            throw dsErr("RefKeyNotAllowed");
-        }
-        if (!value.length) {
-            throw dsErr("RefValueNotProvided");
-        }
-
+    mustHaveValue: true,
+    onLoad: ({ el, value, signals }) => {
         signals.upsert(value, el);
         return () => signals.remove(value);
     },

@@ -14,12 +14,9 @@ const FULL = "full";
 export const Intersects: AttributePlugin = {
     type: PluginType.Attribute,
     name: "intersects",
+    mustHaveValue: true,
     mods: new Set([ONCE, HALF, FULL]),
-    onLoad: ({ el, key, rawKey, mods, genRX }) => {
-        if (key.length) {
-            throw dsErr("IntersectsKeyNotAllowed");
-        }
-
+    onLoad: ({ el, rawKey, mods, genRX }) => {
         const options = { threshold: 0 };
         if (mods.has(FULL)) options.threshold = 1;
         else if (mods.has(HALF)) options.threshold = 0.5;

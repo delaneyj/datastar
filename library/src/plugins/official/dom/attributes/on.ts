@@ -23,6 +23,8 @@ const knownOnModifiers = new Set([
 export const On: AttributePlugin = {
     type: PluginType.Attribute,
     name: "on",
+    mustHaveKey: true,
+    mustHaveValue: true,
     argNames: ["evt"],
     onLoad: ({ el, key, genRX, mods, signals, effect }) => {
         const rx = genRX();

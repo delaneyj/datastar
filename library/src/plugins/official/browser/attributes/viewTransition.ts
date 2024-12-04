@@ -11,6 +11,7 @@ const VIEW_TRANSITION = "view-transition";
 export const ViewTransition: AttributePlugin = {
     type: PluginType.Attribute,
     name: VIEW_TRANSITION,
+    mustHaveValue: true,
     onGlobalInit() {
         let hasViewTransitionMeta = false;
         document.head.childNodes.forEach((node) => {

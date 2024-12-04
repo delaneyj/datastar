@@ -93,17 +93,25 @@ export class Engine {
 
                 for (const rawKey in el.dataset) {
                     const rawValue = `${el.dataset[rawKey]}` || "";
-                    let value = rawValue;
-
                     if (!rawKey.startsWith(p.name)) continue;
+
+                    let value = rawValue;
+                    if (p.mustHaveValue && !value.length) {
+                        throw dsErr(p.name + "ValueNotProvided");
+                    };
+
                     if (!el.id.length) el.id = elUniqId(el);
 
                     appliedMacros.clear();
                     const keyRaw = rawKey.slice(p.name.length);
                     let [key, ...rawModifiers] = keyRaw.split(":");
                     if (key.length) {
+                        if (!p.canHaveKey) continue;
                         key = key[0].toLowerCase() + key.slice(1);
+                    } else if (p.mustHaveKey) {
+                        throw dsErr(p.name + "KeyNotProvided");
                     }
+
                     const mods: Modifiers = new Map<string, Set<string>>();
                     rawModifiers.forEach((m) => {
                         const [label, ...args] = m.split("_");

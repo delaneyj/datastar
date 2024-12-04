@@ -9,6 +9,7 @@ import { AttributePlugin, PluginType } from "../../../../engine/types";
 export const Text: AttributePlugin = {
     type: PluginType.Attribute,
     name: "text",
+    mustHaveValue: true,
     onLoad: (ctx) => {
         const { el, genRX, effect } = ctx;
         const rx = genRX();

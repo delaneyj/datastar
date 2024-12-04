@@ -8,6 +8,8 @@ import { jsStrToObject } from "../../../../utils/text";
 export const Signals: AttributePlugin = {
     type: PluginType.Attribute,
     name: "signals",
+    canHaveKey: true,
+    mustHaveValue: true,
     purge: true,
     onLoad: (ctx) => {
         const { key, genRX, signals } = ctx;

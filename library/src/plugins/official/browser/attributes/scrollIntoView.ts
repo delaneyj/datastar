@@ -43,14 +43,7 @@ export const ScrollIntoView: AttributePlugin = {
         FOCUS,
     ]),
 
-    onLoad: ({ el, mods, key, value, rawKey }) => {
-        if (key.length) {
-            throw dsErr("ScrollIntoViewKeyNotAllowed");
-        }
-        if (value.length) {
-            throw dsErr("ScrollIntoViewValueNotAllowed");
-        }
-
+    onLoad: ({ el, mods, rawKey }) => {
         if (!el.tabIndex) el.setAttribute("tabindex", "0");
         const opts: ScrollIntoViewOptions = {
             behavior: SMOOTH,

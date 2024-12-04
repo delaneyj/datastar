@@ -5,6 +5,8 @@ const name = "computed";
 export const Computed: AttributePlugin = {
     type: PluginType.Attribute,
     name,
+    mustHaveKey: true,
+    mustHaveValue: true,
     purge: true,
     onLoad: ({ key, signals, genRX }) => {
         const rx = genRX();

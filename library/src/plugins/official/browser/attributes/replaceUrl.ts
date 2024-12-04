@@ -9,13 +9,8 @@ import { AttributePlugin, PluginType } from "../../../../engine/types";
 export const ReplaceUrl: AttributePlugin = {
     type: PluginType.Attribute,
     name: "replaceUrl",
-    onLoad: ({ key, value, effect, genRX }) => {
-        if (key.length) {
-            throw dsErr("ReplaceUrlKeyNotAllowed");
-        }
-        if (!value.length) {
-            throw dsErr("ReplaceUrlValueNotProvided");
-        }
+    mustHaveValue: true,
+    onLoad: ({ effect, genRX }) => {
         const rx = genRX();
         return effect(() => {
             const url = rx<string>();

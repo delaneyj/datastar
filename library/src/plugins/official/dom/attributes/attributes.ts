@@ -13,6 +13,8 @@ import { kebabize } from "../../../../utils/text";
 export const Attributes: AttributePlugin = {
     type: PluginType.Attribute,
     name: "attributes",
+    canHaveKey: true,
+    mustHaveValue: true,
     onLoad: ({ el, genRX, key, effect }) => {
         const rx = genRX();
         if (key === "") {

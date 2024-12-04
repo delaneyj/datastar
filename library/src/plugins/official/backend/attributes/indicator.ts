@@ -18,14 +18,8 @@ export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
     name: "indicator",
-    onLoad: ({ value, signals, el, key }) => {
-        if (key.length) {
-            throw dsErr("IndicatorKeyNotAllowed");
-        }
-        if (!value.length) {
-            throw dsErr("IndicatorValueNotProvided");
-        }
-
+    mustHaveValue: true,
+    onLoad: ({ value, signals, el }) => {
         const signal = signals.upsert(value, false);
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {
             const {
