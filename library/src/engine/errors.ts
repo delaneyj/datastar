@@ -1,5 +1,3 @@
-import { DATASTAR } from "./consts";
-
 const url = `http://localhost:8080/errors`;
 
 export const hasValNonExpr = /([\w0-9.]+)\.value/gm;

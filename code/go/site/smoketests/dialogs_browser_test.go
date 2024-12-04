@@ -2,6 +2,7 @@ package smoketests
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -18,6 +19,9 @@ func TestExampleDialogsBrowser(t *testing.T) {
 
 		wait, handle := page.MustHandleDialog()
 		go btn.MustClick()
+
+		//i don't know why this is needed but wait isn't enough
+		time.Sleep(1 * time.Second)
 
 		wait()
 		handle(true, "test")

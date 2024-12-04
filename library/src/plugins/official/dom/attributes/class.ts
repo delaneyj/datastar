@@ -16,7 +16,7 @@ export const Class: AttributePlugin = {
             if (key === "") {
                 const classes: Object = rx<Record<string, boolean>>();
                 for (const [k, v] of Object.entries(classes)) {
-                    const classNames = k.split(/\_+/);
+                    const classNames = k.split(/\s+/);
                     if (v) {
                         cl.add(...classNames);
                     } else {

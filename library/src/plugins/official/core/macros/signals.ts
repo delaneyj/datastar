@@ -5,7 +5,7 @@ export const SignalValueMacro: MacroPlugin = {
     type: PluginType.Macro,
     fn: (original: string) => {
         const validJS = /(?<path>[\w0-9.]*)((\.value))/gm;
-        const sub = `ctx.signals.signal('$1')?.value`;
+        const sub = `ctx.signals.signal('$1').value`;
         return original.replaceAll(validJS, sub);
     },
 };

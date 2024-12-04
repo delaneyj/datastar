@@ -167,7 +167,7 @@ export class Engine {
         const lastIdx = stmts.length - 1;
         const last = stmts[lastIdx];
         if (!last.startsWith("return")) {
-            stmts[lastIdx] = `return ${stmts[lastIdx]};`;
+            stmts[lastIdx] = `return (${stmts[lastIdx]});`;
         }
         const userExpression = stmts.join("\n");
 
