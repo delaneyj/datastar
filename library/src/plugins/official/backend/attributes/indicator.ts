@@ -19,14 +19,13 @@ export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
     name: "indicator",
     onLoad: ({ value, signals, el, key }) => {
-        if (key.length) {
-            throw dsErr("IndicatorKeyNotAllowed");
+        const hasKey = key.length > 0;
+        const hasValue = value.length > 0;
+        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
+            throw dsErr("XORKeyAndValue");
         }
-        if (!value.length) {
-            throw dsErr("IndicatorValueNotProvided");
-        }
-
-        const signal = signals.upsert(value, false);
+        const signalName = hasKey ? key : value;
+        const signal = signals.upsert(signalName, false);
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {
             const {
                 type,

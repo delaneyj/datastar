@@ -78,6 +78,7 @@ func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, 
 
 	ns, err := embeddednats.New(ctx, embeddednats.WithNATSServerOptions(&natsserver.Options{
 		JetStream: true,
+		StoreDir:  "./data/nats",
 		Port:      natsPort,
 	}))
 	if err != nil {

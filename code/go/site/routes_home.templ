@@ -267,7 +267,7 @@ templ TodoInput(i int) {
 		data-testid="todos_input"
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
-		data-bind="input"
+		data-bind-input
 		data-on-keypress={ fmt.Sprintf(`
 			if (event.key !== 'Enter' || !input.value.trim().length) return;
 

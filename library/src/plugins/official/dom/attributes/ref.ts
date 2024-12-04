@@ -11,14 +11,13 @@ export const Ref: AttributePlugin = {
     type: PluginType.Attribute,
     name: "ref",
     onLoad: ({ el, key, value, signals }) => {
-        if (key.length) {
-            throw dsErr("RefKeyNotAllowed");
+        const hasKey = key.length > 0;
+        const hasValue = value.length > 0;
+        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
+            throw dsErr("XORKeyAndValue");
         }
-        if (!value.length) {
-            throw dsErr("RefValueNotProvided");
-        }
-
-        signals.upsert(value, el);
-        return () => signals.remove(value);
+        const signalName = hasKey ? key : value;
+        signals.upsert(signalName, el);
+        return () => signals.setValue(signalName, null);
     },
 };

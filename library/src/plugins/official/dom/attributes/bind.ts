@@ -14,15 +14,15 @@ export const Bind: AttributePlugin = {
     name: "bind",
     onLoad: (ctx) => {
         const { el, value, key, signals, effect } = ctx;
-
-        if (key.length) {
-            throw dsErr("BindKeyNotAllowed");
+        const hasKey = key.length > 0;
+        const hasValue = value.length > 0;
+        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
+            throw dsErr("XORKeyAndValue");
         }
+        const signalName = hasKey ? key : value;
 
         let setFromSignal = () => {};
         let el2sig = () => {};
-
-        const signalName = value;
 
         // I better be tied to a signal
         if (typeof signalName !== "string") {

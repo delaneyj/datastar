@@ -9,31 +9,31 @@
 ```html
 <div
   id="container"
-  data-signals="{bindText:'foo',bindNumber:42,bindBool:true,bindSelection:1}"
+  data-signals="{text:'foo',number:42,bool:true,selection:1}"
 >
-  <input type="text" data-bind="bindText" />
-  <input type="number" data-bind="bindNumber" />
-  <textarea data-bind="bindText"></textarea>
+  <input type="text" data-bind-text />
+  <input type="number" data-bind-number />
+  <textarea data-bind-text></textarea>
   <label>
     <span>Checkbox</span>
-    <input type="checkbox" data-bind="bindBool" />
+    <input type="checkbox" data-bind-bool />
   </label>
-  <select data-bind="bindSelection">
+  <select data-bind-selection>
     <option value="1">Option 1</option>
     <option value="2">Option 2</option>
     <option value="3">Option 3</option>
   </select>
   <div class="flex flex-col">
     <label>
-      <input type="radio" data-bind="bindSelection" value="1" />
+      <input type="radio" data-bind-selection value="1" />
       <span>Option 1</span>
     </label>
     <label>
-      <input type="radio" data-bind="bindSelection" value="2" />
+      <input type="radio" data-bind-selection value="2" />
       <span>Option 2</span>
     </label>
     <label>
-      <input type="radio" data-bind="bindSelection" value="3" />
+      <input type="radio" data-bind-selection value="3" />
       <span>Option 3</span>
     </label>
     ...

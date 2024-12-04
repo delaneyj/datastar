@@ -12,17 +12,17 @@
         step="1"
         min="0"
         max="10"
-        data-bind="foo"
+        data-bind-foo
         class="input input-bordered"
     />
     <input
         type="text"
-        data-bind="bar"
+        data-bind-bar
         class="input input-bordered"
     />
     <input
         type="text"
-        data-bind="baz"
+        data-bind-baz
         class="input input-bordered"
     />
 </div>
@@ -37,9 +37,9 @@
 }"
 >
   <div data-signals-baz="2*foo.value"></div>
-  <input type="number" step="1" min="0" max="10" data-bind="foo" />
-  <input type="text" data-bind="bar" />
-  <input type="text" data-bind="baz" />
+  <input type="number" step="1" min="0" max="10" data-bind-foo />
+  <input type="text" data-bind-bar />
+  <input type="text" data-bind-baz />
 </div>
 ```
 
