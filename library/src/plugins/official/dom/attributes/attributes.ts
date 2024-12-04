@@ -15,8 +15,6 @@ export const Attributes: AttributePlugin = {
     type: PluginType.Attribute,
     name: "attributes",
     keyValRule: KeyValRules.KeyAllowed_ValueRequired,
-    canHaveKey: true,
-    mustHaveValue: true,
     onLoad: ({ el, genRX, key, effect }) => {
         const rx = genRX();
         if (key === "") {

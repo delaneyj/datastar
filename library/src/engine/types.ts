@@ -47,9 +47,6 @@ export interface AttributePlugin extends DatastarPlugin {
     type: PluginType.Attribute;
     onGlobalInit?: (ctx: InitContext) => void; // Called once on registration of the plugin
     onLoad: (ctx: RuntimeContext) => OnRemovalFn | void; // Return a function to be called on removal
-    canHaveKey?: boolean; // Whether the plugin can have a key (if false and a key is provided, the plugin will not be applied)
-    mustHaveKey?: boolean; // Whether the plugin must have a key
-    mustHaveValue?: boolean; // Whether the plugin must have a value
     mods?: AllowedModifiers; // If not provided, all modifiers are allowed
     keyValRule?: KeyValRules; // The rules for the key and value requirements
     removeOnLoad?: boolean; // If true, the attribute is removed after onLoad (useful for plugins you don’t want reapplied)
