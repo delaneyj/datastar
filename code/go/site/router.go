@@ -100,6 +100,7 @@ func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, 
 		setupReferenceRoutes(ctx, router),
 		setupExamples(ctx, router, sessionSignals, ns),
 		setupEssays(ctx, router),
+		setupErrors(ctx, router),
 		setupMemes(router),
 		setupBundler(router),
 	); err != nil {

@@ -1,6 +1,6 @@
 import { DATASTAR } from "./consts";
 
-const url = `https://data-star.dev/errors`;
+const url = `http://localhost:8080/errors`;
 
 export const hasValNonExpr = /([\w0-9.]+)\.value/gm;
 
@@ -75,10 +75,10 @@ export enum ErrorCodes {
     EffectError = "Z6",
 }
 
-export const dsErr = (code: string, args?: any) => {
+export const dsErr = (code: ErrorCodes, args?: any) => {
     const e = new Error();
     e.name = `${DATASTAR}${code}`;
-    const fullURL = `${url}/code?${new URLSearchParams(args)}`;
+    const fullURL = `${url}/${code}?${new URLSearchParams(args)}`;
     e.message = `${DATASTAR}${code}, for more info see ${fullURL}`;
     return e;
 };
