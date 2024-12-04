@@ -4,7 +4,7 @@
 
 <div
     data-signals="{page:0}"
-    data-on-raf.throttle_1s="page.value++"
+    data-on-raf:throttle_1s="page.value++"
     data-replace-url="'/examples/replace_url_from_signals?page=' + page.value"
 >
 </div>
@@ -16,7 +16,7 @@
 ```html
 <div
     data-signals="{page:0}"
-    data-on-raf.throttle_1s="page.value++"
+    data-on-raf:throttle_1s="page.value++"
     data-replace-url="'/examples/replace_url_from_signals?page=' + page.value"
 >
 </div>

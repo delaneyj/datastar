@@ -1,4 +1,5 @@
 import { elUniqId } from "../utils/dom";
+import { camelize } from "../utils/text";
 import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
 import { dsErr } from "./errors";
@@ -99,14 +100,14 @@ export class Engine {
 
                     appliedMacros.clear();
                     const keyRaw = rawKey.slice(p.name.length);
-                    let [key, ...modifiersWithArgsArr] = keyRaw.split(".");
+                    let [key, ...rawModifiers] = keyRaw.split(":");
                     if (key.length) {
                         key = key[0].toLowerCase() + key.slice(1);
                     }
                     const mods: Modifiers = new Map<string, Set<string>>();
-                    modifiersWithArgsArr.forEach((m) => {
+                    rawModifiers.forEach((m) => {
                         const [label, ...args] = m.split("_");
-                        mods.set(label, new Set(args));
+                        mods.set(camelize(label), new Set(args));
                     });
 
                     const macros = [

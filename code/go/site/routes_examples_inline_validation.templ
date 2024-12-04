@@ -19,7 +19,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 		<input
 			class={ "input input-bordered", templ.KV("input-error",!isValid) }
 			data-bind={ field }
-			data-on-keydown.debounce_500ms={ datastar.GetSSE("/examples/inline_validation/data") }
+			data-on-keydown:debounce_500ms={ datastar.GetSSE("/examples/inline_validation/data") }
 			data-testid={ "input_" + field }
 		/>
 		if !isValid {
@@ -29,7 +29,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 }
 
 templ inlineValidationUserComponent(u *inlineValidationUser, isEmailValid, isFirstNameValid, isLastNameValid, isValid bool) {
-	<div id="inline_validation" class="flex flex-col gap-4" data-signals.ifmissing={ templ.JSONString(u) }>
+	<div id="inline_validation" class="flex flex-col gap-4" data-signals:ifmissing={ templ.JSONString(u) }>
 		<div class="text-2xl font-bold">Sign Up</div>
 		<div>
 			@inlineValidationFieldComponent("Email Address", "email", isEmailValid, "Email '%s' is already taken or is invalid.  Please enter another email.", u.Email)

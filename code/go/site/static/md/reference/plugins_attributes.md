@@ -58,20 +58,20 @@ The `data-on-*` matches DOM events, however there are currently a few special ca
 
 #### Modifiers
 
-- `.once`\* - Only trigger the event listener once
-- `.passive`\* - Do not call `preventDefault` on the event listener
-- `.capture`\* - Use a capture event listener
-- `.debounce` - Debounce the event listener
+- `once`\* - Only trigger the event listener once
+- `passive`\* - Do not call `preventDefault` on the event listener
+- `capture`\* - Use a capture event listener
+- `debounce` - Debounce the event listener
   - `_1000ms` - Debounce for 1000ms
   - `_1s` - Debounce for 1s
   - `_leading` - Debounce with leading edge
   - `_noTrail` - Debounce without trailing edge
-- `.throttle` - Throttle the event listener
+- `throttle` - Throttle the event listener
   - `_1000ms` - Throttle for 1000ms
   - `_1s` - Throttle for 1s
   - `_noLead` - Throttle without leading edge
   - `_noTrail` - Throttle without trailing edge
-- `.window` - Attaches the event listener to the `window` element
+- `window` - Attaches the event listener to the `window` element
 
 \*only works currently on native events
 
@@ -99,9 +99,8 @@ If one or more values are provided, only those signals values will be persisted.
 
 #### Modifiers
 
-- `.session` - Persists signals values in Session Storage
-- `.remote` - Persists only remotely viewable signals values
+- `session` - Persists signals values in Session Storage
 
 ```html
-<div data-persist-foo.session></div>
+<div data-persist-foo:session></div>
 ```

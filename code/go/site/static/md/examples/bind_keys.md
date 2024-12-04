@@ -2,16 +2,16 @@
 
 ## Demo
 
-<h1 data-on-keydown.window.ctrl-key.key_k="alert('you hit the cheat code!')">Press Ctrl+K</h1>
-<h1 data-on-keydown.window.key_enter="alert('you hit the other code!')">Press Enter</h1>
+<h1 data-on-keydown:window:ctrl-key:key_k="alert('you hit the cheat code!')">Press Ctrl+K</h1>
+<h1 data-on-keydown:window:key_enter="alert('you hit the other code!')">Press Enter</h1>
 
 ## Explanation
 
 ```html
-<h1 data-on-keydown.window.ctrl-key.key_k="alert('you hit the cheat code!')">
+<h1 data-on-keydown:window:ctrl-key:key_k="alert('you hit the cheat code!')">
   Press Ctrl+K
 </h1>
-<h1 data-on-keydown.window.key_enter="alert('you hit the other code!')">
+<h1 data-on-keydown:window:key_enter="alert('you hit the other code!')">
   Press Enter
 </h1>
 ```

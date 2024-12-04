@@ -20,7 +20,7 @@ Sets all the signals that start with the prefix to the value of the second argum
 
 Toggles all the signals that start with the prefix. This is useful for toggling all the values of a form at once.
 
-## `@clipboard(text: string)`
+## `clipboard(text: string)`
 
 ```html
 <div data-on-click="@clipboard('Hello, world!')"></div>
@@ -28,19 +28,6 @@ Toggles all the signals that start with the prefix. This is useful for toggling 
 
 Copies the text to the clipboard. This is useful for copying text to the clipboard.
 
-## `@fit(v: number, oldMin:number, oldMax:number, newMin, newMax)`
+## `fit(v: number, oldMin:number, oldMax:number, newMin, newMax, shouldClamp=false, shouldRound=false)`
 
 Make a value linear interpolate from an original range to new one.
-
-
-## `@fitInt(v: number, oldMin:number, oldMax:number, newMin, newMax)`
-
-Same as `@fit` but rounded to nearest integer
-
-## `@clampFit(v: number, oldMin:number, oldMax:number, newMin, newMax)`
-
-Same as `@fit` but clamped to `newMin` -> `newMax` range
-
-## `@clampFitInt(v: number, oldMin:number, oldMax:number, newMin, newMax)`
-
-Same as `@clampFit` but rounded to nearest integer

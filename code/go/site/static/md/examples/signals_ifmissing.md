@@ -37,7 +37,7 @@ data: signals {id:73}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
-data: fragments <div id="demo" data-signals.ifmissing="{id:74}"></div>
+data: fragments <div id="demo" data-signals:ifmissing="{id:74}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
@@ -45,7 +45,7 @@ data: signals {id:75}
 
 event: datastar-merge-fragments
 data: mergeMode upsertAttributes
-data: fragments <div id="demo" data-signals.ifmissing="{id:76}"></div>
+data: fragments <div id="demo" data-signals:ifmissing="{id:76}"></div>
 
 event: datastar-merge-signals
 data: ifmissing true
@@ -54,4 +54,4 @@ data: signals {id:77}
 ...
 ```
 
-Since the signals is already set, the `data-signals.ifmissing` attribute will not overwrite the existing value in either case.
+Since the signals is already set, the `data-signals:ifmissing` attribute will not overwrite the existing value in either case.

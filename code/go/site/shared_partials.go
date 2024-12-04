@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"log"
 	"path/filepath"
 	"regexp"
 	"slices"
@@ -18,7 +17,6 @@ import (
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/delaneyj/toolbelt"
-	"github.com/goccy/go-json"
 	"github.com/gomarkdown/markdown"
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
@@ -272,12 +270,4 @@ func KVPairsAttrs(kvPairs ...string) templ.Attributes {
 		attrs[kvPairs[i]] = kvPairs[i+1]
 	}
 	return attrs
-}
-
-func logJSON(message string, v any) {
-	b, err := json.MarshalIndent(v, "", "  ")
-	if err != nil {
-		panic(err)
-	}
-	log.Printf("%s: %s", message, string(b))
 }

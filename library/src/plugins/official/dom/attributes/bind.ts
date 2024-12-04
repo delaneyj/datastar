@@ -19,8 +19,8 @@ export const Bind: AttributePlugin = {
             throw dsErr("BindKeyNotAllowed");
         }
 
-        let setFromSignal = () => { };
-        let el2sig = () => { };
+        let setFromSignal = () => {};
+        let el2sig = () => {};
 
         const signalName = value;
 
@@ -110,15 +110,13 @@ export const Bind: AttributePlugin = {
                             reader.onload = () => {
                                 if (typeof reader.result !== "string") {
                                     throw dsErr(
-                                        ErrorCodes.InvalidFileResultType,
+                                        "InvalidFileResultType",
                                         {
                                             type: typeof reader.result,
                                         },
                                     );
                                 }
-                                const match = reader.result.match(
-                                    dataURIRegex,
-                                );
+                                const match = reader.result.match(dataURIRegex);
                                 if (!match?.groups) {
                                     throw dsErr("InvalidDataUri", {
                                         result: reader.result,

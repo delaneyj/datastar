@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-	"github.com/delaneyj/toolbelt/embeddednats"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-sanitize/sanitize"
 	"github.com/gorilla/sessions"
@@ -19,7 +18,7 @@ var (
 	sanitizer *sanitize.Sanitizer
 )
 
-func setupExamples(ctx context.Context, router chi.Router, signals sessions.Store, ns *embeddednats.Server) (err error) {
+func setupExamples(ctx context.Context, router chi.Router, signals sessions.Store) (err error) {
 	mdDataset, err := markdownRenders(ctx, "examples")
 	if err != nil {
 		return err

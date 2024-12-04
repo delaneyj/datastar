@@ -29,7 +29,9 @@ export const On: AttributePlugin = {
         let target: Element | Window | Document = el;
         if (mods.has("window")) target = window;
 
-        let callback = (evt?: Event) => rx(evt);
+        let callback = (evt?: Event) => {
+            rx(evt);
+        };
 
         const debounceArgs = mods.get("debounce");
         if (debounceArgs) {
@@ -93,7 +95,7 @@ export const On: AttributePlugin = {
             case "load":
                 callback();
                 delete el.dataset.onLoad;
-                return () => { };
+                return () => {};
 
             case "raf":
                 let rafId: number | undefined;
