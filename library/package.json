@@ -1,0 +1,27 @@
+{
+  "name": "@starfederation/datastar",
+  "author": "Delaney Gillilan",
+  "description": "Hypermedia first SPA replacement framework",
+  "version": "0.21.0-beta1",
+  "license": "MIT",
+  "private": false,
+  "homepage": "https://data-star.dev",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/starfederation/datastar.git"
+  },
+  "bugs": {
+    "url": "https://github.com/starfederation/datastar/issues"
+  },
+  "files": [
+    "dist"
+  ],
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}
