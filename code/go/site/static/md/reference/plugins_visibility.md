@@ -24,9 +24,9 @@ Runs the expression when the element intersects with the viewport.
 
 #### Modifiers
 
-- `.once` - Only trigger the event once
-- `.half` - Trigger when half of the element is visible
-- `.full` - Trigger when the full element is visible
+- `:once` - Only trigger the event once
+- `:half` - Trigger when half of the element is visible
+- `:full` - Trigger when the full element is visible
 
 ### Teleport
 
@@ -38,8 +38,8 @@ Moves the element to the target.
 
 #### Modifiers
 
-- `.prepend` - Prepend the element to the target
-- `.append` - Append the element to the target
+- `:prepend` - Prepend the element to the target
+- `:append` - Append the element to the target
 
 ### Scroll Into View
 
@@ -51,18 +51,18 @@ Scrolls the element into view. Useful when updating DOM from the server, and you
 
 #### Modifiers
 
-- `.smooth` - Scrolling should be animate smoothly
-- `.instant` - Scrolling should be instant
-- `.auto` - Scrolling is determined by the computed `scroll-behavior` CSS property
-- `.hstart` - Scroll to the left of the element
-- `.hcenter` - Scroll to the horizontal center of the element
-- `.hend` - Scroll to the right of the element
-- `.hnearest` - Scroll to the nearest horizontal edge of the element
-- `.vstart` - Scroll to the top of the element
-- `.vcenter` - Scroll to the vertical center of the element
-- `.vend` - Scroll to the bottom of the element
-- `.vnearest` - Scroll to the nearest vertical edge of the element
-- `.focus` - Focus the element after scrolling
+- `:smooth` - Scrolling should be animate smoothly
+- `:instant` - Scrolling should be instant
+- `:auto` - Scrolling is determined by the computed `scroll-behavior` CSS property
+- `:hstart` - Scroll to the left of the element
+- `:hcenter` - Scroll to the horizontal center of the element
+- `:hend` - Scroll to the right of the element
+- `:hnearest` - Scroll to the nearest horizontal edge of the element
+- `:vstart` - Scroll to the top of the element
+- `:vcenter` - Scroll to the vertical center of the element
+- `:vend` - Scroll to the bottom of the element
+- `:vnearest` - Scroll to the nearest vertical edge of the element
+- `:focus` - Focus the element after scrolling
 
 ### View Transition
 
