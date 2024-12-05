@@ -122,7 +122,7 @@ The [`data-computed`](/reference/plugins_core#computed) attribute creates a new 
 </div>
 ```
 
-<div data-computed-repeated="input3.value.repeat(2)" class="flex items-start justify-between p-8 alert">
+<div data-signals-input3="''" data-computed-repeated="input3.value.repeat(2)" class="flex items-start justify-between p-8 alert">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
@@ -207,7 +207,7 @@ The [`data-attributes`](/reference/plugins_dom#attributes) attribute can be used
 
 This results in the button being given the `disabled` attribute whenever the input is empty.
 
-<div class="flex items-start justify-between p-8 alert">
+<div class="flex items-start justify-between p-8 alert" data-signals-input6="''">
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
@@ -218,7 +218,7 @@ This results in the button being given the `disabled` attribute whenever the inp
             <div data-text="input6.value" class="output"></div>
         </div>
     </div>
-    <button data-attributes-disabled="input.value == ''" class="btn btn-primary">
+    <button data-attributes-disabled="input6.value == ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -306,7 +306,7 @@ See if you can follow the code below _before_ trying the demo.
         <div id="question1">
             What do you put in a toaster?
         </div>
-    Correct:  <span data-text="correct.value"></span>
+    Correct:  <span data-text="correct1.value"></span>
         <div data-show="response1.value != ''">
             You answered “<span data-text="response1.value"></span>”.
             <span data-show="correct1.value">That is correct ✅</span>

@@ -1,4 +1,5 @@
 import { Computed, computed, Signal } from "../vendored/preact-core";
+import { dsErr } from "./errors";
 import { NestedSignal, NestedValues } from "./types";
 
 // If onlyPublic is true, only signals not starting with an underscore are included
@@ -118,7 +119,7 @@ export class SignalsRoot {
         return !!this.signal(dotDelimitedPath);
     }
 
-    signal(dotDelimitedPath: string): Signal<any> | null {
+    signal<T>(dotDelimitedPath: string): Signal<T> | null {
         const parts = dotDelimitedPath.split(".");
         let subSignals = this._signals;
         for (let i = 0; i < parts.length - 1; i++) {
@@ -129,7 +130,9 @@ export class SignalsRoot {
             subSignals = subSignals[part] as NestedSignal;
         }
         const last = parts[parts.length - 1];
-        return subSignals[last] as Signal<any>;
+        const signal = subSignals[last];
+        if (!signal) throw dsErr("SignalNotFound", { path: dotDelimitedPath });
+        return signal as Signal<T>;
     }
 
     setSignal<T extends Signal<T>>(dotDelimitedPath: string, signal: T) {
