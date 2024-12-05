@@ -3,8 +3,11 @@
 // Description: must be a valid signal name
 
 import { DATASTAR } from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
+import {
+    AttributePlugin,
+    PluginType,
+    Requirement,
+} from "../../../../engine/types";
 import {
     DATASTAR_SSE_EVENT,
     DatastarSSEEvent,
@@ -18,14 +21,10 @@ export const INDICATOR_LOADING_CLASS = `${INDICATOR_CLASS}-loading`;
 export const Indicator: AttributePlugin = {
     type: PluginType.Attribute,
     name: "indicator",
-    keyValRule: KeyValRules.KeyRequired_Xor_ValueRequired,
+    keyReq: Requirement.Exclusive,
+    valReq: Requirement.Exclusive,
     onLoad: ({ value, signals, el, key }) => {
-        const hasKey = key.length > 0;
-        const hasValue = value.length > 0;
-        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
-            throw dsErr("XORKeyAndValue");
-        }
-        const signalName = hasKey ? key : value;
+        const signalName = !!key ? key : value;
         const signal = signals.upsert(signalName, false);
         const watcher = (event: CustomEvent<DatastarSSEEvent>) => {
             const {

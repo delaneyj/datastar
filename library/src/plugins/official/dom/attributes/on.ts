@@ -4,7 +4,11 @@
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
+import {
+    AttributePlugin,
+    PluginType,
+    Requirement,
+} from "../../../../engine/types";
 import { argsHas, argsMs } from "../../../../utils/arguments";
 import { kebabize } from "../../../../utils/text";
 import { debounce, throttle } from "../../../../utils/timing";
@@ -23,7 +27,8 @@ const knownOnModifiers = new Set([
 export const On: AttributePlugin = {
     type: PluginType.Attribute,
     name: "on",
-    keyValRule: KeyValRules.KeyRequired_ValueRequired,
+    keyReq: Requirement.Must,
+    valReq: Requirement.Must,
     argNames: ["evt"],
     onLoad: ({ el, key, genRX, mods, signals, effect }) => {
         const rx = genRX();

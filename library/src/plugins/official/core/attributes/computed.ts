@@ -1,10 +1,15 @@
-import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
+import {
+    AttributePlugin,
+    PluginType,
+    Requirement,
+} from "../../../../engine/types";
 
 const name = "computed";
 export const Computed: AttributePlugin = {
     type: PluginType.Attribute,
     name,
-    keyValRule: KeyValRules.KeyRequired_ValueRequired,
+    keyReq: Requirement.Must,
+    valReq: Requirement.Must,
     removeOnLoad: true,
     onLoad: ({ key, signals, genRX }) => {
         const rx = genRX();

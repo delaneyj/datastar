@@ -5,16 +5,16 @@
 
 import {
     AttributePlugin,
-    KeyValRules,
     NestedValues,
     PluginType,
+    Requirement,
 } from "../../../../engine/types";
 import { kebabize } from "../../../../utils/text";
 
 export const Attributes: AttributePlugin = {
     type: PluginType.Attribute,
     name: "attributes",
-    keyValRule: KeyValRules.KeyAllowed_ValueRequired,
+    valReq: Requirement.Must,
     onLoad: ({ el, genRX, key, effect }) => {
         const rx = genRX();
         if (key === "") {

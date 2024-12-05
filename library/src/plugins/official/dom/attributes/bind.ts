@@ -4,7 +4,11 @@
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
 import { dsErr } from "../../../../engine/errors";
-import { AttributePlugin, KeyValRules, PluginType } from "../../../../engine/types";
+import {
+    AttributePlugin,
+    PluginType,
+    Requirement,
+} from "../../../../engine/types";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateEvents = ["change", "input", "keydown"];
@@ -12,15 +16,11 @@ const updateEvents = ["change", "input", "keydown"];
 export const Bind: AttributePlugin = {
     type: PluginType.Attribute,
     name: "bind",
-    keyValRule: KeyValRules.KeyRequired_Xor_ValueRequired,
+    keyReq: Requirement.Exclusive,
+    valReq: Requirement.Exclusive,
     onLoad: (ctx) => {
         const { el, value, key, signals, effect } = ctx;
-        const hasKey = key.length > 0;
-        const hasValue = value.length > 0;
-        if ((hasKey && hasValue) || (!hasKey && !hasValue)) {
-            throw dsErr("XORKeyAndValue");
-        }
-        const signalName = hasKey ? key : value;
+        const signalName = !!key ? key : value;
 
         let setFromSignal = () => {};
         let el2sig = () => {};

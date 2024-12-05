@@ -11,13 +11,12 @@ import {
     DatastarPlugin,
     GlobalInitializer,
     HTMLorSVGElement,
-    KeyValRequirement,
-    KeyValRules,
     MacroPlugin,
     Modifiers,
     OnRemovalFn,
     PluginType,
     RemovalEntry,
+    Requirement,
     RuntimeContext,
     RuntimeExpressionFunction,
     WatcherPlugin,
@@ -77,6 +76,7 @@ export class Engine {
         this.apply(document.body);
     }
 
+    // Clenup all plugins associated with the element
     private cleanup(element: Element) {
         const removalSet = this.removals.get(element);
         if (removalSet) {
@@ -87,57 +87,64 @@ export class Engine {
         }
     }
 
+    // Apply all plugins to the element and its children
     private apply(rootElement: Element) {
         const appliedMacros = new Set<MacroPlugin>();
         this.plugins.forEach((p, pi) => {
             this.walkDownDOM(rootElement, (el) => {
+                // Cleanup if not first plugin
                 if (!pi) this.cleanup(el);
 
                 for (const rawKey in el.dataset) {
-                    const rawValue = `${el.dataset[rawKey]}` || "";
+                    // Check if the key is relevant to the plugin
                     if (!rawKey.startsWith(p.name)) continue;
 
+                    // Extract the key and value from the dataset
                     const keyRaw = rawKey.slice(p.name.length);
                     let [key, ...rawModifiers] = keyRaw.split(":");
-                    const keyRequirement = this.getKeyRequirement(p.keyValRule);
-                    if (key.length) {
-                        if (keyRequirement === KeyValRequirement.NotAllowed) {
-                            throw dsErr(p.name + "KeyNotAllowed");
-                        };
+
+                    const hasKey = key.length > 0;
+                    if (hasKey) {
                         key = key[0].toLowerCase() + key.slice(1);
-                    } else if (keyRequirement === KeyValRequirement.Required) {
+                    }
+                    const rawValue = `${el.dataset[rawKey]}` || "";
+                    let value = rawValue;
+                    const hasValue = value.length > 0;
+
+                    // Check the requirements
+                    const keyReq = p.keyReq || Requirement.Allowed;
+                    if (key.length) {
+                        if (keyReq === Requirement.Denied) {
+                            throw dsErr(p.name + "KeyNotAllowed");
+                        } else if (
+                            keyReq === Requirement.Exclusive && hasValue
+                        ) {
+                            throw dsErr(p.name + "KeyExclusive");
+                        }
+                    } else if (keyReq === Requirement.Must) {
                         throw dsErr(p.name + "KeyRequired");
                     }
-
-                    let value = rawValue;
-                    const valueRequirement = this.getValueRequirement(p.keyValRule);
-                    if (value.length) {
-                        if (valueRequirement === KeyValRequirement.NotAllowed) {
+                    const valReq = p.valReq || Requirement.Allowed;
+                    if (hasValue) {
+                        if (valReq === Requirement.Denied) {
                             throw dsErr(p.name + "ValueNotAllowed");
+                        } else if (valReq === Requirement.Exclusive && hasKey) {
+                            throw dsErr(p.name + "ValueExclusive");
                         }
-                    }
-                    else if (valueRequirement === KeyValRequirement.Required) {
+                    } else if (valReq === Requirement.Must) {
                         throw dsErr(p.name + "ValueRequired");
                     }
 
-                    if (p.keyValRule === KeyValRules.KeyRequired_Xor_ValueRequired) {
-                        if (key.length && value.length) {
-                            throw dsErr(p.name + "KeyAndValueProvided");
-                        } else if (!key.length && !value.length) {
-                            throw dsErr(p.name + "KeyOrValueRequired");
-                        }
-                    }
-
+                    // Ensure the element has an id
                     if (!el.id.length) el.id = elUniqId(el);
 
+                    // Apply the macros
                     appliedMacros.clear();
-
                     const mods: Modifiers = new Map<string, Set<string>>();
                     rawModifiers.forEach((m) => {
                         const [label, ...args] = m.split("_");
                         mods.set(camelize(label), new Set(args));
                     });
-
                     const macros = [
                         ...(p.macros?.pre || []),
                         ...this.macros,
@@ -149,6 +156,7 @@ export class Engine {
                         value = macro.fn(value);
                     }
 
+                    // Create the runtime context
                     const { actions, apply, cleanup } = this;
                     const that = this; // I hate javascript
                     let ctx: RuntimeContext;
@@ -169,6 +177,7 @@ export class Engine {
                         mods,
                     };
 
+                    // Load the plugin and store any cleanup functions
                     const removal = p.onLoad(ctx);
                     if (removal) {
                         if (!this.removals.has(el)) {
@@ -180,6 +189,7 @@ export class Engine {
                         this.removals.get(el)!.set.add(removal);
                     }
 
+                    // Remove the attribute if required
                     if (!!p?.removeOnLoad) delete el.dataset[rawKey];
                 }
             });
@@ -246,15 +256,5 @@ export class Engine {
             this.walkDownDOM(element, callback);
             element = element.nextElementSibling;
         }
-    }
-
-    private getKeyRequirement(rule: KeyValRules | undefined): number {
-        rule = rule ?? KeyValRules.KeyAllowed_ValueAllowed;
-        return rule >> 2;
-    }
-
-    private getValueRequirement(rule: KeyValRules | undefined): number {
-        rule = rule ?? KeyValRules.KeyAllowed_ValueAllowed;
-        return rule & 3;
     }
 }

@@ -1,15 +1,15 @@
 import {
     AttributePlugin,
-    KeyValRules,
     NestedValues,
     PluginType,
+    Requirement,
 } from "../../../../engine/types";
 import { jsStrToObject } from "../../../../utils/text";
 
 export const Signals: AttributePlugin = {
     type: PluginType.Attribute,
     name: "signals",
-    keyValRule: KeyValRules.KeyAllowed_ValueRequired,
+    valReq: Requirement.Must,
     removeOnLoad: true,
     onLoad: (ctx) => {
         const { key, genRX, signals } = ctx;
