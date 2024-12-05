@@ -155,7 +155,7 @@ export class SignalsRoot {
     }
 
     value<T>(dotDelimitedPath: string): T {
-        const signal = this.signal(dotDelimitedPath);
+        const signal = this.signal(dotDelimitedPath) as Signal<T>;
         return signal?.value;
     }
 
