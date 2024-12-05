@@ -31,7 +31,8 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`);
 export type SSEArgs = {
     method: METHOD;
     headers?: Record<string, string>;
-    onlyRemote?: boolean;
+    includeLocal?: boolean;
+    openWhenHidden?: boolean;
 };
 
 export const ServerSentEvents: ActionPlugin = {
@@ -40,11 +41,22 @@ export const ServerSentEvents: ActionPlugin = {
     fn: async (
         ctx,
         url: string,
-        args: SSEArgs = { method: "GET", headers: {}, onlyRemote: true },
+        args: SSEArgs,
     ) => {
         const { el: { id: elId }, signals } = ctx;
-        const { headers: userHeaders, onlyRemote } = args;
-        const method = args.method.toUpperCase();
+        const {
+            method: methodAnyCase,
+            headers: userHeaders,
+            includeLocal,
+            openWhenHidden,
+        } = Object
+            .assign({
+                method: "GET",
+                headers: {},
+                includeLocal: false,
+                openWhenHidden: false,
+            }, args);
+        const method = methodAnyCase.toUpperCase();
         try {
             dispatchSSE(STARTED, { elId });
             if (!!!url?.length) {
@@ -59,6 +71,7 @@ export const ServerSentEvents: ActionPlugin = {
             const req: FetchEventSourceInit = {
                 method,
                 headers,
+                openWhenHidden,
                 onmessage: (evt) => {
                     if (!evt.event.startsWith(DATASTAR)) {
                         return;
@@ -101,7 +114,7 @@ export const ServerSentEvents: ActionPlugin = {
             };
 
             const urlInstance = new URL(url, window.location.origin);
-            const json = signals.JSON(false, onlyRemote);
+            const json = signals.JSON(false, !includeLocal);
             if (method === "GET") {
                 const queryParams = new URLSearchParams(urlInstance.search);
                 queryParams.set(DATASTAR, json);

@@ -20,9 +20,13 @@ Every request will be sent with a `{datastar: *}` object containing the current 
 
 The actions above take a second argument of options.
 
-The `onlyRemoteSignals` option determines whether to only send remotely viewable signals values (defaults to `true`).
+The `method` option is the HTTP method to use (defaults to `GET`).
+
+The `includeLocal` option determines whether to only send remotely viewable signals values (defaults to `false`).
 
 The `headers` option is an object containing headers to send with the request.
+
+The `openWhenHidden` option determines whether to close the page is hidden (defaults to `false`).  Useful for dashboards but will cause a drain on battery life and other resources.
 
 ```html
 <div data-on-click="sse('/examples/click_to_edit/contact/1', {
