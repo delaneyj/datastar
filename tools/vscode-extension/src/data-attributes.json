@@ -1,15 +1,4 @@
 {
-  "data-bind": {
-    "prefix": "data-bind",
-    "body": "data-bind=\"${1:signalName}\"",
-    "description": "Creates a new signal and enables two-way binding between it and the element’s value.",
-    "references": [
-      {
-        "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-bind"
-      }
-    ]
-  },
   "data-attributes": {
     "prefix": "data-attributes",
     "body": "data-attributes=\"{${1:attributeName}: ${2:expression}}\"",
@@ -29,6 +18,28 @@
       {
         "name": "Documentation",
         "url": "https://data-star.dev/guide/getting_started#data-attributes"
+      }
+    ]
+  },
+  "data-bind": {
+    "prefix": "data-bind",
+    "body": "data-bind=\"${1:signalName}\"",
+    "description": "Creates a new signal and enables two-way binding between it and the element.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/guide/getting_started#data-bind"
+      }
+    ]
+  },
+  "data-bind-*": {
+    "prefix": "data-bind-*",
+    "body": "data-bind-${1:name}",
+    "description": "Creates a new signal and enables two-way binding between it and the element.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/guide/getting_started#data-bind"
       }
     ]
   },
@@ -68,6 +79,17 @@
   "data-indicator": {
     "prefix": "data-indicator",
     "body": "data-indicator=\"${1:signalName}\"",
+    "description": "Creates a signal to track in-flight backend requests.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/guide/getting_started#data-indicator"
+      }
+    ]
+  },
+  "data-indicator-*": {
+    "prefix": "data-indicator-*",
+    "body": "data-indicator-${1:name}",
     "description": "Creates a signal to track in-flight backend requests.",
     "references": [
       {
@@ -131,6 +153,17 @@
       }
     ]
   },
+  "data-on-keydown": {
+    "prefix": "data-on-keydown",
+    "body": "data-on-keydown=\"${1:expression}\"",
+    "description": "Executes an expression whenever a key is pressed.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/guide/getting_started#data-on"
+      }
+    ]
+  },
   "data-on-load": {
     "prefix": "data-on-load",
     "body": "data-on-load=\"${1:expression}\"",
@@ -186,6 +219,17 @@
       }
     ]
   },
+  "data-ref-*": {
+    "prefix": "data-ref-*",
+    "body": "data-ref-${1:name}",
+    "description": "Creates a signal whose value references an element.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/guide/getting_started#data-ref"
+      }
+    ]
+  },
   "data-replace-url": {
     "prefix": "data-replace-url",
     "body": "data-replace-url=\"${1:expression}\"",
@@ -222,7 +266,7 @@
   "data-text": {
     "prefix": "data-text",
     "body": "data-text=\"${1:expression}\"",
-    "description": "Sets the text content of an element to the value of the signal.",
+    "description": "Sets the text content of an element to the evaluated expression.",
     "references": [
       {
         "name": "Documentation",
