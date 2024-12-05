@@ -1,45 +1,30 @@
-# Release Notes for Datastar
+# WIP Release Notes for Datastar
 
-## 0.20.1 - 2024-11-25
+## 0.21.0 - Unreleased
 
-VersionClientByteSize     = 35970->35789
-VersionClientByteSizeGzip = 12647->12568
+We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals declarative. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
 
 ### Added
-- SDKs
-  - .NET
-    - Initial SDK release! #231
-  - PHP
-    - Allow KV pairs
-    - Author
-- DevOps
-  - added `make test` & `make clean` to development Dockerfile
+
+- Added the ability to merge one-off signals using the syntax `data-signals-foo="value"`.
+- Added the ability to use dot-delimited paths to denote nested signals in applicable attribute keys (`data-signals-foo.bar="value"`).
+- Added the ability to use multiple attributes using the syntax `data-attributes="{attrName1: value1, attrName2: value2}"`.
+- Added the ability to use a single classes using the syntax `data-class-hidden="foo.value"`.
+- Added the ability to use a key instead of a value to denote a signal name in the `data-bind`, `data-indicator` and `data-ref` attributes (`data-bind-foo`, `data-indicator-foo`, `data-ref-foo`).
+- Added error codes and links to descriptions in the console for every error thrown.
 
 ### Changed
-- Client
-  - Function expression optimizations #234
-  - Truthy Attributes were not getting set correctly #234
-  - Fix invalid headers sent via SSE #241
-  - Added hooks so NPM will package the correct files
-- SDKs
-  - updated README for clarity around contributing
-  - Go
-    - Fix inverted logic for ViewTransitions #238
-  - PHP
-    - tagged SDK 1.0.0-alpha.1
-    - fixed retry duration
-    - general cleanup
-- Website
-  - Bundler getting create valid zip for Windows #228
-  - General site improvements
-  - Actions section in getting started
-  - Fixed broken links for SDKs and CDN #225
-  - Try to fix Safari bug around caching SSE connections #239
-- Devops
-  - fix `make dev` to work cross-platform
-  - moved development Dockerfile from Alpine to Ubuntu
 
+- Signals no longer have the `$` prefix and must be acessed using a `.value` suffix (`signalName.value`).
+- Action plugins no longer have the `$` prefix.
+- Renamed the `data-store` attribute to `data-signals`.
+- Renamed the `data-bind` attribute to `data-attributes`.
+- Renamed the `data-model` attribute to `data-bind`.
+- Changed the `data-*` attribute modifier delimiter from `.` to `:` (`data-on-keydown:debounce_100ms:throttle_lead="value"`).
+- The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method="get"})`).
+- The `setAll()` and `toggleAll` plugins now accept a dot-delimited path format, instead of a regular expression.
 
-### Removed
-- DevOps
-  - Removed broken Github Actions
+### Fixed
+
+- Fixed headers not merging correctly.
+- Fixed new lines in the SDK protocol for paths.

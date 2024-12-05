@@ -14,17 +14,17 @@ tasks:
     cmds:
       - go install github.com/go-task/task/v3/cmd/task@latest
       - go install github.com/a-h/templ/cmd/templ@latest
-      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
+      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
         platforms: [linux/amd64]
-      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-arm64
+      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-arm64
         platforms: [linux/arm64]
-      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
+      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
         platforms: [darwin/arm64]
-      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-x64
+      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-x64
         platforms: [darwin/amd64]
-      - cmd: test -f code/go/site/tailwindcli || wget -O code/go/site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
+      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
         platforms: [windows]
-      - chmod +x code/go/site/tailwindcli
+      - chmod +x site/tailwindcli
       - go install github.com/valyala/quicktemplate/qtc@latest
 
   version:
@@ -39,7 +39,7 @@ tasks:
     cmds:
       - qtc
 
-  tsbuild:
+  build:
     deps:
       - qtc
     sources:
@@ -50,20 +50,20 @@ tasks:
     generates:
       - "bundles/**/*"
     cmds:
-      - go run code/go/cmd/tsbuild/main.go
-      - cp -r bundles/* code/go/site/static/js/
-      - mkdir -p code/ts/library/dist/
-      - cp -r bundles/* code/ts/library/dist/
-      - mkdir -p code/go/site/static/librarySource
-      - rm -rf code/go/site/static/librarySource/*
-      - cp -r code/ts/library/src/* code/go/site/static/librarySource/
+      - go run build/cmd/build/main.go
+      - cp -r bundles/* site/static/js/
+      - mkdir -p library/dist/
+      - cp -r bundles/* library/dist/
+      - mkdir -p site/static/librarySource
+      - rm -rf site/static/librarySource/*
+      - cp -r library/src/* site/static/librarySource/
 
   libpub:
     dir: code/ts/library
     requires:
       vars: [VERSION]
     deps:
-      - tsbuild
+      - build
     cmds:
       - git push origin
       - git tag v{{.VERSION}}
@@ -77,7 +77,7 @@ tasks:
       - task: deploy
 
   css:
-    dir: code/go/site
+    dir: site
     sources:
       - "**/*.templ"
       - "**/*.md"
@@ -105,15 +105,15 @@ tasks:
 
   support:
     sources:
-      - code/go/**/*.templ
-      - code/go/**/*.go
-      - code/go/**/*.md
-      - code/go/site/static/**/*
+      - "**/*.templ"
+      - "**/*.go"
+      - "**/*.md"
+      - site/static/**/*
     generates:
       - ./datastar-website
     deps:
       - kill
-      - tsbuild
+      - build
       - templ
       - css
 
@@ -124,7 +124,7 @@ tasks:
       - support
     cmds:
       - go mod tidy
-      - go build -o ./datastar-website code/go/cmd/site/main.go
+      - go build -o ./datastar-website "site/cmd/site/main.go"
 
   deploy:
     method: none
@@ -134,7 +134,7 @@ tasks:
       - fly deploy --local-only
 
   test:
-    dir: code/go/site/smoketests
+    dir: site/smoketests
     deps:
       - support
     cmds:
