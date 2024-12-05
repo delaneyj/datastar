@@ -22,7 +22,7 @@ Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It
 
 #### Modifiers
 
-- `ifmissing` - Only set the signals if the key does not exist. This is useful for setting defaults without overwriting existing values.
+- `:ifmissing` - Only set the signals if the key does not exist. This is useful for setting defaults without overwriting existing values.
 
 ### Computed
 

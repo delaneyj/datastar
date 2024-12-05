@@ -6,11 +6,12 @@ We’ve doubled down on the mantra that “Datastar makes nestable signals decla
 
 ### Added
 
-- Added the ability to merge one-off signals using the syntax `data-signals-signalname="value"`.
+- Added the ability to merge one-off signals using the syntax `data-signals-foo="value"`.
 - Added the ability to use dot-delimited paths to denote nested signals in applicable attribute keys (`data-signals-foo.bar="value"`).
-- Added the ability to use multiple attributes using the syntax `data-attributes="{attrName1: value1, atattrName2: value2}"`.
+- Added the ability to use multiple attributes using the syntax `data-attributes="{attrName1: value1, attrName2: value2}"`.
 - Added the ability to use a single class using the syntax `data-class-hidden="foo.value"`.
-- Added links to error descriptions in the console for every error thrown.
+- Added the ability to use a key instead of a value to denote a signal name in the `data-bind`, `data-indicator` and `data-ref` attributes (`data-bind-foo`, `data-indicator-foo`, `data-ref-foo`).
+- Added error codes and links to descriptions in the console for every error thrown.
 
 ### Changed
 

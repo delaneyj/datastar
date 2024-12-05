@@ -49,13 +49,19 @@ Datastar uses signals to manage state. You can think of signals as reactive vari
 
 ### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#model) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#bind) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+
+```html
+<input data-bind-input type="text" />
+```
+
+This creates a new signal called `input`, and binds it to the element's value. If either is changed, the other automatically updates.
+
+An alternative syntax also exists for `data-bind`, in which the value is used as the signal name. This can be useful depending on the templating language you are using.
 
 ```html
 <input data-bind="input" type="text" />
 ```
-
-This creates a new signal called `input`, and binds it to the element's value. If either is changed, the other automatically updates.
 
 ### `data-text`
 
@@ -71,7 +77,7 @@ To see this in action, we can use the [`data-text`](/reference/plugins_attribute
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input1" class="input input-bordered">
+            <input data-bind-input1 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -80,7 +86,7 @@ To see this in action, we can use the [`data-text`](/reference/plugins_attribute
     </div>
 </div>
 
-This sets the text content of an element to the value of the signal `input.value`. The `.value` is required to denote a the use of a signal's *contents* in the expression.
+This sets the text content of an element to the value of the signal `input.value`. The `.value` is required to denote a the use of a signal's *value* in the expression.
 
 The value of the `data-text` attribute is an expression that is evaluated, meaning that we can use JavaScript in it.
 
@@ -94,7 +100,7 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input2" class="input input-bordered">
+            <input data-bind-input2 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -103,13 +109,13 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
     </div>
 </div>
 
-### `data-computed-*`
+### `data-computed`
 
-The `data-computed-*` attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
+The [`data-computed`](/reference/plugins_core#computed) attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
 
 ```html
 <div data-computed-repeated="input.value.repeat(2)">
-  <input data-bind="input" type="text" />
+  <input data-bind-input type="text" />
   <div data-text="repeated.value">
     Will be replaced with the contents of the repeated signal
   </div>
@@ -120,7 +126,7 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input3" class="input input-bordered">
+            <input data-bind-input3 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -131,7 +137,7 @@ The `data-computed-*` attribute creates a new signal that is computed based on a
 
 ### `data-show`
 
-The `data-show` attribute can be used to show or hide an element based on whether a JavaScript expression evaluates to `true` or `false`.
+The [`data-show`](/reference/plugins_visibility#show) attribute can be used to show or hide an element based on whether a JavaScript expression evaluates to `true` or `false`.
 
 ```html
 <button data-show="input.value != ''">Save</button>
@@ -143,7 +149,7 @@ This results in the button being visible only when the input is _not_ empty.
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input4" class="input input-bordered">
+            <input data-bind-input4 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -157,7 +163,7 @@ This results in the button being visible only when the input is _not_ empty.
 
 ### `data-class`
 
-The [`data-class`](/reference/plugins_attributes#class) attribute allows us to add or remove classes from an element using a set of key-value pairs that map to the class name and expression.
+The [`data-class`](/reference/plugins_attributes#class) attribute allows us to add or remove a class to or from an element based on an expression.
 
 ```html
 <button data-class-hidden="input.value == ''">Save</button>
@@ -173,7 +179,7 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!in
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input5" class="input input-bordered">
+            <input data-bind-input5 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -185,9 +191,15 @@ Since the expression evaluates to `true` or `false`, we can rewrite this as `!in
     </button>
 </div>
 
-### `data-attributes-*`
+The `data-class` attribute can also be used to add or remove multiple classes from an element using a set of key-value pairs, where keys represent class names and values represent expressions.
 
-The `data-attributes-*` attribute can be used to bind a JavaScript expression to **any** valid HTML attribute. The becomes even more powerful when combined with [Web Components](https://developer.mozilla.org/en-US/docs/Web/Web_Components).
+```html
+<button data-class="{hidden: input.value == '', bold: input.value == 1}">Save</button>
+```
+
+### `data-attributes`
+
+The [`data-attributes`](/reference/plugins_attributes#attributes) attribute can be used to set the value of any valid HTML attribute based on an expression.
 
 ```html
 <button data-attributes-disabled="input.value == ''">Save</button>
@@ -199,7 +211,7 @@ This results in the button being given the `disabled` attribute whenever the inp
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input6" class="input input-bordered">
+            <input data-bind-input6 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -211,41 +223,51 @@ This results in the button being given the `disabled` attribute whenever the inp
     </button>
 </div>
 
-### `data-signals`
-
-So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a **signals** that is accessible from anywhere in the DOM.
-
-We can merge signals into the signals using the [`data-signals`](/reference/plugins_core#signals) attribute.
+The `data-attributes` attribute can also be used to add or remove multiple classes from an element using a set of key-value pairs, where keys represent class names and values represent expressions.
 
 ```html
-<div data-signals="{input: ''}"></div>
+<button data-attributes="{disabled: input.value == '', title: input.value}">Save</button>
 ```
 
-The `data-signals` value must be written as a JavaScript object literal _or_ using JSON syntax.
+### `data-signals`
 
-Adding `data-signals` to multiple elements is allowed, and the signals provided will be _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
+So far, we've created signals on the fly using `data-bind` and `data-computed-*`. All signals are merged into a global set of signals that are accessible from anywhere in the DOM.
+
+We can create a signal using the [`data-signals`](/reference/plugins_core#signals) attribute.
+
+```html
+<div data-signals-input="1"></div>
+```
+
+Adding `data-signals` to multiple elements is allowed, as signals are _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
 
 Signals are nestable, which can be useful for namespacing.
 
 ```html
-<div data-signals="{primary: {input: ''}, secondary: {input: '' }}"></div>
+<div data-signals-primary.input="1"></div>
 ```
 
-### `data-on-*`
-
-The [`data-on-*`](/reference/plugins_attributes#on) attribute can be used to execute a JavaScript expression whenever an event is triggered on an element.
+The `data-signals` attribute can also be used to merge multiple signals using a set of key-value pairs, where keys represent signal names and values represent expressions.
 
 ```html
-<button data-on-click="input.value=''">Reset</button>
+<div data-signals="{primary: {input: 1}, secondary: {input: 2}}"></div>
 ```
 
-This results in the `input.value` signal being set to an empty string when the button element is clicked. If the `input.value` signal is used elsewhere, its value will automatically update. This, like `data-bind` can be used with **any** valid event name (e.g. `data-on-keydown`, `data-on-mouseover`, etc.).
+### `data-on`
+
+The [`data-on`](/reference/plugins_attributes#on) attribute can be used to attach an event listener to an element and execute an expression whenever the event is triggered.
+
+```html
+<button data-on-click="input.value = ''">Reset</button>
+```
+
+This results in the `input` signal's value being set to an empty string when the button element is clicked. If the `input` signal is used elsewhere, its value will automatically update. This can be used with any valid event name such as `data-on-keydown`, `data-on-mouseover`, etc.
 
 <div class="flex items-start justify-between p-8 alert" >
     <div class="flex flex-col gap-4">
         <div class="flex items-center">
             <div class="w-20">Input:</div>
-            <input data-bind="input7" class="input input-bordered">
+            <input data-bind-input7 class="input input-bordered">
         </div>
         <div class="flex items-center">
             <div class="w-20">Output:</div>
@@ -304,7 +326,7 @@ We've just scratched the surface of frontend reactivity. Now let's take a look a
 
 Datastar uses [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) or SSE. There's no special backend plumbing required to use SSE, just some special syntax. Fortunately, SSE is straightforward and [provides us with some advantages](/essays/event_streams_all_the_way_down).
 
-First, set up your backend in the language of your choice. Using one of the helper SDKs (available for Go, PHP and TypeScript) will help you get up and running faster. We're going to use the SDKs in the examples below, which set the appropriate headers and format the events for us, but this is optional.
+First, set up your backend in the language of your choice. Using one of the helper SDKs (available for [Go](https://github.com/starfederation/datastar/tree/main/sdk/go) and [PHP](https://github.com/starfederation/datastar/tree/main/sdk/php), with more on the way) will help you get up and running faster. We're going to use the SDKs in the examples below, which set the appropriate headers and format the events for us, but this is optional.
 
 The following code would exist in a controller action endpoint in your backend.
 
@@ -362,17 +384,17 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
 
 ### `data-indicator`
 
-The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator, which may be desirable for slower responses.
+The [`data-indicator`](/reference/plugins_backend#data-indicator) attribute sets the value of the provided signal name to `true` while the request is in flight. We can use this signal to show a loading indicator, which may be desirable for slower responses.
 
-Note that elements using the `data-indicator` attribute **_must_** have a unique ID attribute.
+Note that elements using the `data-indicator` attribute _must_ have a unique ID attribute.
 
 ```html
 <div id="question"></div>
-<div data-class="{loading: fetching.value}" class="indicator"></div>
+<div data-class-loading="fetching.value" class="indicator"></div>
 <button
   id="fetch-a-question"
   data-on-click="sse('/actions/quiz')"
-  data-indicator="fetching"
+  data-indicator-fetching
 >
   Fetch a question
 </button>
@@ -385,7 +407,7 @@ Note that elements using the `data-indicator` attribute **_must_** have a unique
             <button id="fetch-a-question" data-on-click="sse('/examples/quiz_slow/data')" data-indicator="fetching" class="btn btn-secondary">
                 Fetch a question
             </button>
-            <div data-class="{loading: fetching.value}" class="indicator"></div>
+            <div data-class-loading="fetching.value" class="indicator"></div>
         </div>
     </div>
 </div>
@@ -418,9 +440,9 @@ The `setAll()` action sets the values of multiple signals at once. It takes a re
 This sets the values of all signals containing `form_` to `true`, which could be useful for enabling input fields in a form.
 
 ```html
-<input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
-<input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
-<input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
+<input type="checkbox" data-bind-checkbox_1 /> Checkbox 1
+<input type="checkbox" data-bind-checkbox_2 /> Checkbox 2
+<input type="checkbox" data-bind-checkbox_3 /> Checkbox 3
 <button data-on-click="setAll('checkbox_', true)">Check All</button>
 ```
 
@@ -428,19 +450,19 @@ This sets the values of all signals containing `form_` to `true`, which could be
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 1</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_1_1"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_1_1/>
         </label>
     </div>
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 2</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_1_2"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_1_2/>
         </label>
     </div>
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 3</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_1_3"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_1_3/>
         </label>
     </div>
     <button data-on-click="setAll('checkbox_1_', true)" class="mt-4 btn btn-secondary">
@@ -459,9 +481,9 @@ The `toggleAll()` action toggles the values of multiple signals at once. It take
 This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
 
 ```html
-<input type="checkbox" data-bind="checkbox_1" /> Checkbox 1
-<input type="checkbox" data-bind="checkbox_2" /> Checkbox 2
-<input type="checkbox" data-bind="checkbox_3" /> Checkbox 3
+<input type="checkbox" data-bind-checkbox_1 /> Checkbox 1
+<input type="checkbox" data-bind-checkbox_2 /> Checkbox 2
+<input type="checkbox" data-bind-checkbox_3 /> Checkbox 3
 <button data-on-click="toggleAll('checkbox_')">Toggle All</button>
 ```
 
@@ -469,19 +491,19 @@ This toggles the values of all signals containing `form_` (to either `true` or `
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 1</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_2_1"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_2_1/>
         </label>
     </div>
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 2</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_2_2"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_2_2/>
         </label>
     </div>
     <div class="form-control">
         <label class="gap-2 cursor-pointer label">
             <span class="label-text">Checkbox 3</span>
-            <input type="checkbox" class="toggle" data-bind="checkbox_2_3"/>
+            <input type="checkbox" class="toggle" data-bind-checkbox_2_3/>
         </label>
     </div>
     <button data-on-click="toggleAll('checkbox_2_')" class="mt-4 btn btn-secondary">
@@ -493,18 +515,18 @@ This toggles the values of all signals containing `form_` (to either `true` or `
 
 Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes, you can introduce reactive state to your frontend and access it anywhere in the DOM and in your backend. You can set up events that trigger requests to backend endpoints that respond with HTML fragment and signal updates.
 
-- Bind element values to signals: `data-bind="foo"`
+- Bind element values to signals: `data-bind-foo`
 - Set the text content of an element to an expression.: `data-text="foo.value"`
 - Create a computed signal: `data-computed-foo="bar.value + 1"`
-- Show or hide an element using an expression: `data-show="foo.value"
-- Modify the classes on an element: `data-class="{'font-bold': foo.value}"`
+- Show or hide an element using an expression: `data-show="foo.value"`
+- Modify the classes on an element: `data-class-bold="foo.value"`
 - Bind an expression to an HTML attribute: `data-attributes-disabled="foo.value == ''"`
-- Merge signals into the signals: `data-signals="{foo: ''}"`
+- Merge signals into the signals: `data-signals-foo=""`
 - Execute an expression on an event: `data-on-click="sse(/endpoint)"`
-- Use signals to track in flight backend requests: `data-indicator="fetching"`
+- Use signals to track in flight backend requests: `data-indicator-fetching`
 - Replace the URL: `data-replace-url="'/page1'"`
 - Persist all signals in local storage: `data-persist`
-- Create a reference to an element: `data-ref="alert"`
+- Create a reference to an element: `data-ref-alert`
 - Check for intersection with the viewport: `data-intersect="alert('visible')"`
 - Scroll programmatically: `data-scroll-into-view`
 - Interact with the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API): `data-view-transition="slide"`
