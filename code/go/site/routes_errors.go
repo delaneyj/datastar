@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 	"net/url"
+	"slices"
 	"strings"
 
 	"github.com/a-h/templ"
@@ -18,49 +19,18 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 		return err
 	}
 
+	sidebarLinks := make([]*SidebarLink, 0, len(mdDataset))
+	for id := range mdDataset {
+		sidebarLinks = append(sidebarLinks, &SidebarLink{ID: id})
+	}
+	slices.SortFunc(sidebarLinks, func(a, b *SidebarLink) int {
+		return strings.Compare(a.ID, b.ID)
+	})
+
 	sidebarGroups := []*SidebarGroup{
 		{
 			Label: "Errors",
-			Links: []*SidebarLink{
-				{ID: "BatchError"},
-				{ID: "CleanupEffectError"},
-				{ID: "ClipboardNotAvailable"},
-				{ID: "ComputedKeyNotProvided"},
-				{ID: "EffectError"},
-				{ID: "EndEffectError"},
-				{ID: "GeneratingExpressionFailed"},
-				{ID: "GetComputedError"},
-				{ID: "IndicatorValueNotProvided"},
-				{ID: "InvalidContentType"},
-				{ID: "InvalidDataUri"},
-				{ID: "InvalidExpression"},
-				{ID: "InvalidFileResultType"},
-				{ID: "InvalidMergeMode"},
-				{ID: "InvalidMorphStyle"},
-				{ID: "InvalidPluginType"},
-				{ID: "InvalidValue"},
-				{ID: "MorphFailed"},
-				{ID: "NewElementCouldNotBeCreated"},
-				{ID: "NoBestMatchFound"},
-				{ID: "NoContentFound"},
-				{ID: "NoFragmentsFound"},
-				{ID: "NoParentElementFound"},
-				{ID: "NoPathsProvided"},
-				{ID: "NoScriptProvided"},
-				{ID: "NoSelectorProvided"},
-				{ID: "NoTargetsFound"},
-				{ID: "NoTemporaryNodeFound"},
-				{ID: "NoUrlProvided"},
-				{ID: "NotHtmlElement"},
-				{ID: "NotHtmlSvgElement"},
-				{ID: "RefValueNotProvided"},
-				{ID: "ReplaceUrlValueNotProvided"},
-				{ID: "RequiredPluginNotLoaded"},
-				{ID: "ShowValueNotProvided"},
-				{ID: "SignalCycleDetected"},
-				{ID: "SseFetchFailed"},
-				{ID: "UnsupportedSignalType"},
-			},
+			Links: sidebarLinks,
 		},
 	}
 	lo.ForEach(sidebarGroups, func(group *SidebarGroup, grpIdx int) {
@@ -89,9 +59,9 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		errorsRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
-			name := chi.URLParam(r, "name")
-			mdData, ok := mdDataset[name]
+		errorsRouter.Get("/{id}", func(w http.ResponseWriter, r *http.Request) {
+			id := chi.URLParam(r, "id")
+			mdData, ok := mdDataset[id]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
 				return
@@ -100,7 +70,7 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 			var currentLink *SidebarLink
 			for _, group := range sidebarGroups {
 				for _, link := range group.Links {
-					if link.ID == name {
+					if link.ID == id {
 						currentLink = link
 						break
 					}
