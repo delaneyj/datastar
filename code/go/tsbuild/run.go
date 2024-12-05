@@ -44,7 +44,7 @@ func extractVersion() (string, error) {
 	// Write out the version to the version file.
 	versionPath := "code/ts/library/src/engine/version.ts"
 	versionContents := fmt.Sprintf("export const VERSION = '%s';\n", version)
-	if err := os.WriteFile(versionPath, []byte(versionContents), 0644); err != nil {
+	if err := os.WriteFile(versionPath, []byte(versionContents), 0o644); err != nil {
 		return "", fmt.Errorf("error writing version file: %w", err)
 	}
 
@@ -136,12 +136,13 @@ func writeOutConsts(version string) error {
 		"code/php/sdk/src/Consts.php":                  phpConsts,
 		"code/php/sdk/src/enums/EventType.php":         phpEventType,
 		"code/php/sdk/src/enums/FragmentMergeMode.php": phpFragmentMergeMode,
+		"code/python/src/datastar_py/consts.py":        pythonConsts,
 	}
 
 	for path, tmplFn := range templates {
 		log.Printf("Writing %s...", path)
 		contents := strings.TrimSpace(tmplFn(Consts))
-		if err := os.WriteFile(path, []byte(contents), 0644); err != nil {
+		if err := os.WriteFile(path, []byte(contents), 0o644); err != nil {
 			return fmt.Errorf("error writing version file: %w", err)
 		}
 	}
