@@ -2,14 +2,14 @@
 
 ## 0.21.0 - Unreleased
 
-We’ve doubled down on the mantra that “Datastar makes nestable signals declarative” in v0.21.0. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
+We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals declarative. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
 
 ### Added
 
 - Added the ability to merge one-off signals using the syntax `data-signals-foo="value"`.
 - Added the ability to use dot-delimited paths to denote nested signals in applicable attribute keys (`data-signals-foo.bar="value"`).
 - Added the ability to use multiple attributes using the syntax `data-attributes="{attrName1: value1, attrName2: value2}"`.
-- Added the ability to use a single class using the syntax `data-class-hidden="foo.value"`.
+- Added the ability to use a single classes using the syntax `data-class-hidden="foo.value"`.
 - Added the ability to use a key instead of a value to denote a signal name in the `data-bind`, `data-indicator` and `data-ref` attributes (`data-bind-foo`, `data-indicator-foo`, `data-ref-foo`).
 - Added error codes and links to descriptions in the console for every error thrown.
 

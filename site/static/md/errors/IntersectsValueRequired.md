@@ -8,4 +8,4 @@ Example:
 <div data-intersects="console.log('I am intersecting!')"></div>
 ```
 
-See the docs on the [`data-intersects`](https://data-star.dev/reference/plugins_visibility#intersects) attribute.
+See the docs on the [`data-intersects`](https://data-star.dev/reference/plugins_browser#intersects) attribute.

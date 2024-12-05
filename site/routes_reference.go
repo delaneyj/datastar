@@ -21,16 +21,10 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 			Label: "Plugins Included",
 			Links: []*SidebarLink{
 				{ID: "plugins_core"},
-				{ID: "plugins_attributes"},
+				{ID: "plugins_dom"},
+				{ID: "plugins_browser"},
 				{ID: "plugins_backend"},
-				{ID: "plugins_helpers"},
-				{ID: "plugins_visibility"},
-			},
-		},
-		{
-			Label: "How it Works",
-			Links: []*SidebarLink{
-				{ID: "expressions"},
+				{ID: "plugins_logic"},
 			},
 		},
 	}

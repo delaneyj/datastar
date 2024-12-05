@@ -1,15 +1,19 @@
 # Core Plugins
 
-[Source](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/core.ts)
+[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/core)
 
 These are the only plugins that are required in order to have a working system. In the default build all (including core) plugins are included as they cover the most common use cases.
 
-## Attributes Plugins
+## Attribute Plugins
 
 ### Signals
 
 ```html
-<div data-signals="{foo:1234}"></div>
+<div data-signals-foo="1234"></div>
+```
+
+```html
+<div data-signals="{foo: 1234}"></div>
 ```
 
 Takes the contents of the attribute and runs a BigInt aware JSON parse on it. It then merges the contents into the signals. This can be used anywhere as the signals is a global singleton. All keys are converted into signals, works with nested objects.
@@ -35,19 +39,7 @@ Allows you to define a computed signals value that automatically updates its val
 ### Ref
 
 ```html
-<div data-ref="foo"></div>
+<div data-ref-foo></div>
 ```
 
-Makes an element available as a signal in the signals.
-
-## Macro Plugins
-
-# TODO: BEN! WAT
-
-### SignalMacro
-
-Takes a `$var` and converts into a `ctx.signals().var.value`. Since all expressions are evaluated within an effect it setups of a reactive system.
-
-### ActionMacro
-
-Takes a `$fn('foo','bar',1234)` and converts into a `ctx.actions.fn('foo','bar',1234()`. This is used to trigger actions plugins.
+Makes an element available as a signal.

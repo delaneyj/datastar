@@ -1,6 +1,6 @@
 # Backend Plugins
 
-[Source](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/backend.ts)
+[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/backend)
 
 A set of plugins that allow for the integration of any backend service that supports SSE with Datastar.
 

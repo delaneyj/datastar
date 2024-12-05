@@ -8,4 +8,4 @@ Example:
 <input data-bind="signalName"/>
 ```
 
-See the docs on the [`data-bind`](https://data-star.dev/reference/plugins_attributes#bind) attribute.
+See the docs on the [`data-bind`](https://data-star.dev/reference/plugins_dom#bind) attribute.

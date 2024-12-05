@@ -1,60 +1,62 @@
-# Attribute Plugins
+# DOM Plugins
 
-# TODO: BEN! $
-
-[Source](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/attributes.ts)
+[Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/dom)
 
 Primarily used to help hook up the signals and the DOM.
 
-## Attributes Plugins
+## Attribute Plugins
 
-### Bind
+### Attributes
 
 ```html
-<div data-attributes-disabled="$iShouldBeDisabled"></div>
+<div data-attributes-disabled="iShouldBeDisabled.value"></div>
+```
+
+```html
+<div data-attributes="{disabled: iShouldBeDisabled.value}"></div>
 ```
 
 Allows any valid attribute to be bound to an expression. This is useful for making elements reactive. Also, can be used as a fallback for any attribute that is not supported by a plugin currently.
 
-### Model
+### Bind
 
 ```html
-<input data-bind="foo" />
+<input data-bind-foo />
 ```
 
 Sets up two-way data-binding on an element.
 
-**Note:** Always binds to a signal and therefore should exclude the `$` prefix from the signal name. Event listeners are added for `change`, `input` and `keydown` events on `input`,`textarea`, `select`, `checkbox` and `radio` elements.
+**Note:** Event listeners are added for `change`, `input` and `keydown` events on `input`,`textarea`, `select`, `checkbox` and `radio` elements.
 
 ### Text
 
 ```html
-<div data-text="$foo"></div>
+<div data-text="foo.value"></div>
 ```
 
-Sets the text content of an element to the value of the signal. This is useful for setting the text content of an element to a signal value. Can use any expression that is valid in the system. For example, `data-text="$foo + 'bar'"` would set the text content to the value of `$foo` plus the string `bar`.
+Sets the text content of an element to the value of the signal. This is useful for setting the text content of an element to a signal value. Can use any expression that is valid in the system. For example, `data-text="foo.value + 'bar'"` would set the text content to the value of `foo.value` plus the string `bar`.
 
 ### On
 
 ```html
-<button data-on-click="$fn('foo','bar',1234)">Click Me</button>
+<button data-on-click="fn('foo','bar',1234)">Click Me</button>
 ```
 
-Sets up an event listener on an element. The event listener will trigger the action specified in the expression. The expression can be any valid expression in the system. For example, `data-on-click="$fn('foo','bar',1234)"` would trigger the action `fn` with the arguments `'foo','bar',1234` when the button is clicked.
+Sets up an event listener on an element. The event listener will trigger the action specified in the expression. The expression can be any valid expression in the system. For example, `data-on-click="fn('foo','bar',1234)"` would trigger the action `fn` with the arguments `'foo','bar',1234` when the button is clicked.
 
 If any signal in the expression changes, the event listener will be updated to reflect the new value of the signal automatically.
 
 An `evt` variable that represents the event object is available in the expression.
 
 ```html
-<div data-on-myevent="$eventDetails=evt.detail"></div>
+<div data-on-myevent="eventDetails.value=evt.detail"></div>
 ```
 
-The `data-on-*` matches DOM events, however there are currently a few special cases for custom events.
+The `data-on` attribute matches DOM events, however there are currently a few special cases for custom events.
 
 1.  `data-on-load` which is triggered when the element is loaded into the DOM.
 2.  `data-on-signals-change` which is triggered when the signals changes.
-3.  `data-on-raf` which is triggered on every requestAnimationFrame event.
+3.  `data-on-raf` which is triggered on every `requestAnimationFrame` event.
 
 #### Modifiers
 
@@ -78,7 +80,11 @@ The `data-on-*` matches DOM events, however there are currently a few special ca
 ### Class
 
 ```html
-<div data-class="{'text-primary':$primary,'font-bold':$bold}"></div>
+<div data-class-hidden="foo.value"></div>
+```
+
+```html
+<div data-class="{'text-primary': primary.value, 'font-bold': bold.value}"></div>
 ```
 
 Adds or removes each of the keys in the set of key-value pairs to the element’s class list, depending on whether the values evaluate to true or false, respectively.

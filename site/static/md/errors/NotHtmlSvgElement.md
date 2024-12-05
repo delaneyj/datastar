@@ -8,4 +8,4 @@ Example:
 <div data-scroll-into-view></div>
 ```
 
-See the docs on the [`data-scroll-into-view`](https://data-star.dev/reference/plugins_visibility#scroll-into-view) attribute.
+See the docs on the [`data-scroll-into-view`](https://data-star.dev/reference/plugins_browser#scroll-into-view) attribute.

@@ -49,7 +49,7 @@ Datastar uses signals to manage state. You can think of signals as reactive vari
 
 ### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_attributes#bind) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_dom#bind) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
 
 ```html
 <input data-bind-input type="text" />
@@ -65,7 +65,7 @@ An alternative syntax also exists for `data-bind`, in which the value is used as
 
 ### `data-text`
 
-To see this in action, we can use the [`data-text`](/reference/plugins_attributes#text) attribute.
+To see this in action, we can use the [`data-text`](/reference/plugins_dom#text) attribute.
 
 ```html
 <div data-text="input.value">
@@ -137,7 +137,7 @@ The [`data-computed`](/reference/plugins_core#computed) attribute creates a new 
 
 ### `data-show`
 
-The [`data-show`](/reference/plugins_visibility#show) attribute can be used to show or hide an element based on whether a JavaScript expression evaluates to `true` or `false`.
+The [`data-show`](/reference/plugins_browser#show) attribute can be used to show or hide an element based on whether a JavaScript expression evaluates to `true` or `false`.
 
 ```html
 <button data-show="input.value != ''">Save</button>
@@ -163,7 +163,7 @@ This results in the button being visible only when the input is _not_ empty.
 
 ### `data-class`
 
-The [`data-class`](/reference/plugins_attributes#class) attribute allows us to add or remove a class to or from an element based on an expression.
+The [`data-class`](/reference/plugins_dom#class) attribute allows us to add or remove a class to or from an element based on an expression.
 
 ```html
 <button data-class-hidden="input.value == ''">Save</button>
@@ -199,7 +199,7 @@ The `data-class` attribute can also be used to add or remove multiple classes fr
 
 ### `data-attributes`
 
-The [`data-attributes`](/reference/plugins_attributes#attributes) attribute can be used to set the value of any valid HTML attribute based on an expression.
+The [`data-attributes`](/reference/plugins_dom#attributes) attribute can be used to set the value of any valid HTML attribute based on an expression.
 
 ```html
 <button data-attributes-disabled="input.value == ''">Save</button>
@@ -218,7 +218,7 @@ This results in the button being given the `disabled` attribute whenever the inp
             <div data-text="input6.value" class="output"></div>
         </div>
     </div>
-    <button data-attributes-disabled="!!!input6.value" class="btn btn-primary">
+    <button data-attributes-disabled="input.value == ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -241,7 +241,7 @@ We can create a signal using the [`data-signals`](/reference/plugins_core#signal
 
 Adding `data-signals` to multiple elements is allowed, as signals are _merged_ into the existing signals (values defined later in the DOM tree override those defined earlier).
 
-Signals are nestable, which can be useful for namespacing.
+Signals are nestable using dot-notation, which can be useful for namespacing.
 
 ```html
 <div data-signals-primary.input="1"></div>
@@ -255,7 +255,7 @@ The `data-signals` attribute can also be used to merge multiple signals using a 
 
 ### `data-on`
 
-The [`data-on`](/reference/plugins_attributes#on) attribute can be used to attach an event listener to an element and execute an expression whenever the event is triggered.
+The [`data-on`](/reference/plugins_dom#on) attribute can be used to attach an event listener to an element and execute an expression whenever the event is triggered.
 
 ```html
 <button data-on-click="input.value = ''">Reset</button>

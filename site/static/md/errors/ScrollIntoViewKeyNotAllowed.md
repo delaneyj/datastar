@@ -8,4 +8,4 @@ Example:
 <div data-view-transition></div>
 ```
 
-See the docs on the [`data-view-transition`](https://data-star.dev/reference/plugins_visibility#view-transition) attribute.
+See the docs on the [`data-view-transition`](https://data-star.dev/reference/plugins_browser#view-transition) attribute.

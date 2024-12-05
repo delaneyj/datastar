@@ -1,10 +1,10 @@
-# Visibility Plugins
+# Browser Plugins
 
-[Source](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/visibility.ts)
+[Source Code](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/browser)
 
 Focused on showing and hiding elements based on signals. Most of the time you want to send updates from the server but is useful for things like modals, dropdowns, and other UI elements.
 
-## Attributes Plugins
+## Attribute Plugins
 
 ### Show
 
@@ -71,3 +71,13 @@ Scrolls the element into view. Useful when updating DOM from the server, and you
 ```
 
 Page level transitions are automatically handled by an injected meta tag. Inter-page elements are automatically transitioned if the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API) is available in the browser and `useViewTransitions` is `true`. To set the `view-transition-name` style attribute explicitly you use the `data-view-transition` attribute.
+
+## Action Plugins
+
+### `clipboard(text: string)`
+
+```html
+<div data-on-click="@clipboard('Hello, world!')"></div>
+```
+
+Copies the text to the clipboard. This is useful for copying text to the clipboard.

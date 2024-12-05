@@ -259,7 +259,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/reference/plugins_visibility#show"
+        "url": "https://data-star.dev/reference/plugins_browser#show"
       }
     ]
   },
@@ -270,7 +270,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/reference/plugins_attributes#text"
+        "url": "https://data-star.dev/reference/plugins_dom#text"
       }
     ]
   },
@@ -281,7 +281,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/reference/plugins_visibility#view-transition"
+        "url": "https://data-star.dev/reference/plugins_browser#view-transition"
       }
     ]
   }
