@@ -88,7 +88,7 @@ export class Engine {
     }
 
     // Apply all plugins to the element and its children
-    private apply(rootElement: Element) {
+    public apply(rootElement: Element) {
         const appliedMacros = new Set<MacroPlugin>();
         this.plugins.forEach((p, pi) => {
             this.walkDownDOM(rootElement, (el) => {
@@ -130,7 +130,10 @@ export class Engine {
                     }
 
                     // Check for exclusive requirements
-                    if (keyReq === Requirement.Exclusive || valReq === Requirement.Exclusive) {
+                    if (
+                        keyReq === Requirement.Exclusive ||
+                        valReq === Requirement.Exclusive
+                    ) {
                         if (hasKey && hasValue) {
                             throw dsErr(p.name + "KeyAndValueProvided");
                         } else if (!hasKey && !hasValue) {
