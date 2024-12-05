@@ -113,13 +113,9 @@ export class Engine {
 
                     // Check the requirements
                     const keyReq = p.keyReq || Requirement.Allowed;
-                    if (key.length) {
+                    if (hasKey) {
                         if (keyReq === Requirement.Denied) {
                             throw dsErr(p.name + "KeyNotAllowed");
-                        } else if (
-                            keyReq === Requirement.Exclusive && hasValue
-                        ) {
-                            throw dsErr(p.name + "KeyExclusive");
                         }
                     } else if (keyReq === Requirement.Must) {
                         throw dsErr(p.name + "KeyRequired");
@@ -128,11 +124,18 @@ export class Engine {
                     if (hasValue) {
                         if (valReq === Requirement.Denied) {
                             throw dsErr(p.name + "ValueNotAllowed");
-                        } else if (valReq === Requirement.Exclusive && hasKey) {
-                            throw dsErr(p.name + "ValueExclusive");
                         }
                     } else if (valReq === Requirement.Must) {
                         throw dsErr(p.name + "ValueRequired");
+                    }
+
+                    // Check for exclusive requirements
+                    if (keyReq === Requirement.Exclusive || valReq === Requirement.Exclusive) {
+                        if (hasKey && hasValue) {
+                            throw dsErr(p.name + "KeyAndValueProvided");
+                        } else if (!hasKey && !hasValue) {
+                            throw dsErr(p.name + "KeyOrValueRequired");
+                        }
                     }
 
                     // Ensure the element has an id
