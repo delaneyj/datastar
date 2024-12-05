@@ -1,4 +1,4 @@
-package tsbuild
+package build
 
 import (
 	"compress/gzip"
@@ -127,15 +127,15 @@ func writeOutConsts(version string) error {
 	})
 
 	templates := map[string]func(data *ConstTemplateData) string{
-		"README.md":                                    datastarREADME,
-		"library/README.md":                            datastarREADME,
-		"library/src/engine/consts.ts":                 datastarClientConsts,
-		"library/package.json":                         datastarClientPackageJSON,
-		"sdk/go/consts.go":                             goConsts,
-		"code/dotnet/sdk/src/Consts.fs":                dotnetConsts,
-		"code/php/sdk/src/Consts.php":                  phpConsts,
-		"code/php/sdk/src/enums/EventType.php":         phpEventType,
-		"code/php/sdk/src/enums/FragmentMergeMode.php": phpFragmentMergeMode,
+		"README.md":                               datastarREADME,
+		"library/README.md":                       datastarREADME,
+		"library/src/engine/consts.ts":            datastarClientConsts,
+		"library/package.json":                    datastarClientPackageJSON,
+		"sdk/go/consts.go":                        goConsts,
+		"sdk/dotnet/src/Consts.fs":                dotnetConsts,
+		"sdk/php/src/Consts.php":                  phpConsts,
+		"sdk/php/src/enums/EventType.php":         phpEventType,
+		"sdk/php/src/enums/FragmentMergeMode.php": phpFragmentMergeMode,
 	}
 
 	for path, tmplFn := range templates {

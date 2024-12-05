@@ -4,7 +4,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/starfederation/datastar/code/go/tsbuild"
+	build "github.com/starfederation/datastar/build"
 )
 
 func main() {
@@ -14,7 +14,7 @@ func main() {
 		log.Printf("Datastar built in %s", time.Since(start))
 	}()
 
-	if err := tsbuild.Build(); err != nil {
+	if err := build.Build(); err != nil {
 		log.Fatal(err)
 	}
 

@@ -1,4 +1,4 @@
-package tsbuild
+package build
 
 import (
 	"time"

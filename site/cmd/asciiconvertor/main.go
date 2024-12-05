@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/klauspost/compress/zstd"
-	"github.com/starfederation/datastar/code/go/site"
+	"github.com/starfederation/datastar/site"
 	"github.com/valyala/bytebufferpool"
 )
 

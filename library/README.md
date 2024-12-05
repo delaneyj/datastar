@@ -4,7 +4,7 @@
 ![Discord](https://img.shields.io/discord/1296224603642925098)
 ![GitHub Repo stars](https://img.shields.io/github/stars/starfederation/datastar?style=flat)
 
-<p align="center"><img width="200" src="https://media.githubusercontent.com/media/starfederation/datastar/refs/heads/main/code/go/site/static/images/rocket.gif"></p>
+<p align="center"><img width="200" src="https://media.githubusercontent.com/media/starfederation/datastar/refs/heads/main/site/static/images/rocket.gif"></p>
 
 # Datastar
 

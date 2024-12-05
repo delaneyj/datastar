@@ -3,7 +3,7 @@ package site
 import (
 	"fmt"
 	"github.com/dustin/go-humanize"
-	"github.com/starfederation/datastar/code/go/tsbuild"
+	build "github.com/starfederation/datastar/build"
 	datastar "github.com/starfederation/datastar/sdk/go"
 )
 
@@ -55,7 +55,7 @@ templ Home() {
 					</span>
 					file and start adding reactivity to your frontend immediately. Write your backend in the language of your choice!  Official SDKs are currently available to help you get up and running even faster.  More languages are on the way now that we have a stable API!
 					<div class="flex justify-center gap-2">
-						for _, lang := range tsbuild.Consts.SDKLanguages {
+						for _, lang := range build.Consts.SDKLanguages {
 							<a href={ templ.SafeURL(lang.SdkUrl) } class="flex flex-col justify-center items-center">
 								@icon(lang.Icon, "class", "text-9xl")
 								<div class="uppercase text-sm font-bold">{ lang.Name }</div>

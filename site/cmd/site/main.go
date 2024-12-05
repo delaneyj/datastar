@@ -11,7 +11,7 @@ import (
 
 	"github.com/delaneyj/toolbelt"
 	"github.com/joho/godotenv"
-	"github.com/starfederation/datastar/code/go/site"
+	"github.com/starfederation/datastar/site"
 )
 
 const port = 8080

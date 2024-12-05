@@ -21,7 +21,7 @@ import (
 	"github.com/gomarkdown/markdown/ast"
 	mdhtml "github.com/gomarkdown/markdown/html"
 	"github.com/gomarkdown/markdown/parser"
-	"github.com/starfederation/datastar/code/go/tsbuild"
+	build "github.com/starfederation/datastar/build"
 	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/valyala/bytebufferpool"
 )
@@ -198,7 +198,7 @@ func markdownRenders(ctx context.Context, staticMdPath string) (MarkdownDataset,
 				}
 
 				icon := ""
-				for _, lang := range tsbuild.Consts.SDKLanguages {
+				for _, lang := range build.Consts.SDKLanguages {
 					if lang.FileExtension == ext {
 						icon = lang.Icon
 						break

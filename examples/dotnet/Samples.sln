@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CsharpAspServer", "CsharpAs
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BuildFiles", "BuildFiles", "{01B23A4D-E3AD-4C90-A321-F8FE8D60F1BE}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\go\tsbuild\consts_dotnet.qtpl = ..\..\go\tsbuild\consts_dotnet.qtpl
+		..\..\go\build\consts_dotnet.qtpl = ..\..\go\build\consts_dotnet.qtpl
 		..\Build.ps1 = ..\Build.ps1
 	EndProjectSection
 EndProject
