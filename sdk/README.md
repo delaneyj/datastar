@@ -107,6 +107,18 @@ ServerSentEventGenerator.MergeFragments(
  )
 ```
 
+#### Example Output
+
+```
+event: datastar-merge-fragments
+retryDuration: 2000
+id: 371071a9-8010-4bc4-a91b-b58fd7f19541
+data: selector #feed
+data: settleDuration 10
+data: useViewTransition true
+data: fragments  <span id='feed'>1</span>
+```
+
 `MergeFragments` is a helper function to send HTML fragments to the browser to be merged into the DOM.
 
 #### Args
@@ -155,6 +167,17 @@ ServerSentEventGenerator.RemoveFragments(
 )
 ```
 
+#### Example Output
+
+```
+event: datastar-remove-fragments
+retryDuration: 2000
+id: 66f14ed4-3de7-4692-9fe0-26f61169c157
+data: selector #target
+data: settleDuration 20
+data: useViewTransition true
+```
+
 `RemoveFragments` is a helper function to send a selector to the browser to remove HTML fragments from the DOM.
 
 #### Args
@@ -186,6 +209,16 @@ ServerSentEventGenerator.MergeSignals(
  )
 ```
 
+#### Example Output
+
+```
+event: datastar-merge-signals
+retryDuration: 2000
+id: 7086e424-1178-4756-bd6b-b9ed1e8900ee
+data: onlyIfMissing true
+data: signals {"output":"Patched Output Test","show":true,"input":"Test","user":{"name":"","email":""}}
+```
+
 `MergeSignals` is a helper function to send one or more signals to the browser to be merged into the signals.
 
 #### Args
@@ -214,6 +247,15 @@ ServerSentEventGenerator.RemoveSignals(
 )
 ```
 
+#### Example Output
+
+```
+event: datastar-remove-signals
+retryDuration: 2000
+id: 09ccbe27-e15b-4631-a321-b1fa72d49847
+data: paths user.name user.email
+```
+
 `RemoveSignals` is a helper function to send signals to the browser to be removed from the signals.
 
 #### Args
@@ -237,6 +279,17 @@ ServerSentEventGenerator.ExecuteScript(
         retryDuration?: durationInMilliseconds
     }
 )
+```
+
+#### Example Output
+
+```
+event: datastar-execute-script
+retryDuration: 1200
+id: d356edb8-ae4c-40df-98c4-831703edfebe
+data: autoRemove false
+data: attributes type text/javascript
+data: script window.location = "https://datastar.fly.dev"
 ```
 
 #### Args
