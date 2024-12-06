@@ -2,6 +2,8 @@
 
 Adds autocomplete for [Datastar](https://data-star.dev/) to Visual Studio Code.
 
+![screenshot-Zi09CjE7@2x](https://github.com/user-attachments/assets/5082d177-46d2-4683-b7ed-f68749c12c7b)
+
 ## License
 
 This plugin is licensed for free under the MIT License.
