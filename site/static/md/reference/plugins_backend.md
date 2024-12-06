@@ -30,10 +30,12 @@ The `openWhenHidden` option determines whether to close the page is hidden (defa
 
 ```html
 <div data-on-click="sse('/examples/click_to_edit/contact/1', {
+  method: 'post',
   onlyRemoteSignals: false,
   headers: {
     'X-Csrf-Token': 'JImikTbsoCYQ9oGOcvugov0Awc5LbqFsZW6ObRCxuqFHDdPbuFyc4ksPVVa9+EB4Ag+VU6rpc680edNFswIRwg==',
   },
+  openWhenHidden: true,
 })"></div>
 ```
 
