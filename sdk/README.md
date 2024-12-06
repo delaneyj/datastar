@@ -194,12 +194,12 @@ Data is a JavaScript object or JSON string that will be sent to the browser to u
 
 ##### Options
 
-* `onlyIfMissing` (boolean) If `true`, the SDK ***should*** send the signal only if the data is not already in the signals.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the signals.
+* `onlyIfMissing` (boolean) Whether to merge the signal only if it does not already exist.  If not provided, the Datastar client side ***will*** default to `false`, which will cause the data to be merged into the signals.
 
 #### Logic
 When called the function ***must*** call `ServerSentEventGenerator.send` with the `datastar-merge-signals` event type.
 
-1. If `onlyIfMissing` is provided, the function ***must*** include the onlyIfMissing in the event data in the format `onlyIfMissing ONLY_IF_MISSING\n`, ***unless*** the value is the default of `false`.  `ONLY_IF_MISSING` should be `true` or `false` (string), depending on the value of the `onlyIfMissing` option.
+1. If `onlyIfMissing` is provided, the function ***must*** include it in the event data in the format `onlyIfMissing ONLY_IF_MISSING\n`, ***unless*** the value is the default of `false`.  `ONLY_IF_MISSING` should be `true` or `false` (string), depending on the value of the `onlyIfMissing` option.
 2. The function ***must*** include the signals in the event data, with each line prefixed with `signals `.  This ***should*** be output after all other event data.
 
 ### `ServerSentEventGenerator.RemoveSignals`
