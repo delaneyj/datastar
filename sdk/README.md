@@ -117,7 +117,7 @@ data: selector #feed
 data: settleDuration 10
 data: useViewTransition true
 data: fragments <div id="feed">
-data: fragments <span>1</span>
+data: fragments     <span>1</span>
 data: fragments </div>
 ```
 
