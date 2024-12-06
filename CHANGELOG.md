@@ -26,7 +26,7 @@ This should be the final round of API changes before v1.0.0 🚀
 - Renamed the `data-model` attribute to `data-bind`.
 - Changed the `data-*` attribute modifier delimiter from `.` to `:` (`data-on-keydown:debounce_100ms:throttle_lead="value"`).
 - The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method: 'post'})`), defaulting to `get`.
-- The `setAll()` and `toggleAll` plugins now accept a dot-delimited path format, instead of a regular expression.
+- The `setAll()` and `toggleAll` plugins now accept a path prefix, instead of a regular expression.
 
 ### Fixed
 
