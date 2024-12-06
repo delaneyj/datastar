@@ -7,10 +7,12 @@ import { ActionPlugin, PluginType } from "../../../../engine/types";
 export const ToggleAll: ActionPlugin = {
     type: PluginType.Action,
     name: "toggleAll",
-    fn: (ctx, regexp) => {
-        const re = new RegExp(regexp);
+    fn: (ctx, path: string) => {
         ctx.signals.walk(
-            (name, signal) => re.test(name) && (signal.value = !signal.value),
+            (name, signal) => {
+                if (!name.startsWith(path)) return;
+                signal.value = !signal.value;
+            },
         );
     },
 };

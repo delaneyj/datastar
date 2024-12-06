@@ -430,7 +430,7 @@ Actions in Datastar are helper functions that are available in `data-*` attribut
 
 ### `setAll()`
 
-The `setAll()` action sets the values of multiple signals at once. It takes a regular expression that is used to match against signals, and a value to set them to, as arguments.
+The `setAll()` action sets the values of multiple signals at once. It takes a signals' name prefix that is used to match against signals, and a value to set them to, as arguments.
 
 ```html
 <button data-on-click="setAll('form_', true)"></button>
@@ -471,13 +471,13 @@ This sets the values of all signals containing `form_` to `true`, which could be
 
 ### `toggleAll()`
 
-The `toggleAll()` action toggles the values of multiple signals at once. It takes a regular expression that is used to match against signals, as an argument.
+The `toggleAll()` action toggles the values of multiple signals at once. It takes a path prefix that is used to match against signals, as an argument.
 
 ```html
-<button data-on-click="toggleAll('form_')"></button>
+<button data-on-click="toggleAll('form.')"></button>
 ```
 
-This toggles the values of all signals containing `form_` (to either `true` or `false`), which could be useful for toggling input fields in a form.
+This toggles the values of all signals containing `form.` (to either `true` or `false`), which could be useful for toggling input fields in a form.
 
 ```html
 <input type="checkbox" data-bind-checkbox_1 /> Checkbox 1

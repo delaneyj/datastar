@@ -4,7 +4,7 @@
 
 ## Action Plugins
 
-### `setAll(regexp: string, value: any)`
+### `setAll(signalPath: string, value: any)`
 
 ```html
 <div data-on-change="setAll('contact_', $selections.all)"></div>
@@ -12,7 +12,7 @@
 
 Sets all the signals that start with the prefix to the value of the second argument. This is useful for setting all the values of a form at once.
 
-### `toggleAll(regexp: string)`
+### `toggleAll(signalPath: string)`
 
 ```html
 <div data-on-click="toggleAll('contact_')"></div>
