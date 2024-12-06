@@ -18,14 +18,11 @@ Getting started is as easy as adding a single script tag to your HTML.
 <script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
 ```
 
-Then start adding frontend reactivity using declarative `data-*` attributes.
-Datastar helps you build reactive web applications with the simplicity of server-side rendering and the power of a full-stack SPA framework.
-
-Here’s what frontend reactivity looks like using Datastar:
+Then start adding frontend reactivity using declarative <code>data-*</code> attributes.
 
 ```html
-<input data-bind-input type="text">
-<div data-text="input.value.toUpperCase()"></div>
+<input data-bind-title type="text">
+<div data-text="title.value.toUpperCase()"></div>
 <button data-on-click="sse('/endpoint', {method: 'post'})">Save</button>
 ```
 
