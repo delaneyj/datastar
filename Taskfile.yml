@@ -59,7 +59,7 @@ tasks:
       - cp -r library/src/* site/static/librarySource/
 
   libpub:
-    dir: code/ts/library
+    dir: library
     requires:
       vars: [VERSION]
     deps:
