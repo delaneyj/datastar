@@ -430,7 +430,7 @@ Actions in Datastar are helper functions that are available in `data-*` attribut
 
 ### `setAll()`
 
-The `setAll()` action sets the values of multiple signals at once. It takes a signals' name prefix that is used to match against signals, and a value to set them to, as arguments.
+The `setAll()` action sets the values of multiple signals at once. It takes a path prefix that is used to match against signals, and a value to set them to, as arguments.
 
 ```html
 <button data-on-click="setAll('form_', true)"></button>
