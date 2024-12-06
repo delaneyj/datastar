@@ -4,6 +4,8 @@
 
 We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals declarative. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
 
+The new [Datastar VSCode extension](https://marketplace.visualstudio.com/items?itemName=starfederation.datastar-vscode) has autocomplete for all v0.21.0 `data-*` attributes and the `sse` action, and we’ve painstakingly added error pages for every error that can be thrown.
+
 This should be the final round of API changes before v1.0.0 🚀
 
 ### Added
