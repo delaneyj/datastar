@@ -306,7 +306,6 @@ See if you can follow the code below _before_ trying the demo.
         <div id="question1">
             What do you put in a toaster?
         </div>
-    Correct:  <span data-text="correct1.value"></span>
         <div data-show="response1.value != ''">
             You answered “<span data-text="response1.value"></span>”.
             <span data-show="correct1.value">That is correct ✅</span>
@@ -340,7 +339,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 ```html
 <div
-  data-signals="{response: '', answer: '', correct: false}"
+  data-signals="{response: '', answer: ''}"
   data-computed-correct="response.value.toLowerCase() == answer.value"
 >
   <div id="question"></div>
@@ -363,7 +362,7 @@ With our backend in place, we can now use the `data-on-click` attribute to trigg
 
 Now when the `Fetch a question` button is clicked, the server will respond with an event to modify the `question` element in the DOM and an event to modify the `response` and `answer` signals. We're driving state from the backend!
 
-<div data-signals="{response2: '', answer2: '', correct2:''}" data-computed-correct2="response2.value.toLowerCase() == answer2.value" class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response2: '', answer2: ''}" data-computed-correct2="response2.value.toLowerCase() == answer2.value" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="pb-3 space-y-3">
         <div id="question2"></div>
         <div data-show="response2.value != ''">

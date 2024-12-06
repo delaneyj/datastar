@@ -10,7 +10,6 @@ export const Computed: AttributePlugin = {
     name,
     keyReq: Requirement.Must,
     valReq: Requirement.Must,
-    removeOnLoad: true,
     onLoad: ({ key, signals, genRX }) => {
         const rx = genRX();
         signals.setComputed(key, rx);
