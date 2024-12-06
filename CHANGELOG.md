@@ -1,8 +1,12 @@
 # WIP Release Notes for Datastar
 
-## 0.21.0 - Unreleased
+## 0.21.0-beta - 2024-12-06
 
 We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals declarative. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
+
+The new [Datastar VSCode extension](https://marketplace.visualstudio.com/items?itemName=starfederation.datastar-vscode) has autocomplete for all v0.21.0 `data-*` attributes and the `sse` action, and we’ve painstakingly added error pages for every error that can be thrown.
+
+This should be the final round of API changes before v1.0.0 🚀
 
 ### Added
 
@@ -22,7 +26,7 @@ We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals
 - Renamed the `data-model` attribute to `data-bind`.
 - Changed the `data-*` attribute modifier delimiter from `.` to `:` (`data-on-keydown:debounce_100ms:throttle_lead="value"`).
 - The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method: 'post'})`), defaulting to `get`.
-- The `setAll()` and `toggleAll` plugins now accept a dot-delimited path format, instead of a regular expression.
+- The `setAll()` and `toggleAll` plugins now accept a path prefix, instead of a regular expression.
 
 ### Fixed
 

@@ -4,13 +4,14 @@ RUN apk add --no-cache upx
 ENV PORT=8080
 
 WORKDIR /src
-COPY go.* *.go ./
+COPY . .
 RUN go mod download
-COPY code/go/. ./code/go/
+COPY site ./site
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -ldflags="-s" -o /out/site code/go/cmd/site/main.go
+    go build -ldflags="-s" -o /out/site site/cmd/site/main.go
 RUN upx -9 -k /out/site
 
-FROM scratch
+FROM alpine
+RUN chmod a=rwx,u+t /tmp
 COPY --from=build /out/site /
 ENTRYPOINT ["/site"]

@@ -79,7 +79,7 @@ function endBatch() {
     batchDepth--;
 
     if (hasError) {
-        throw dsErr("BatchError, error");
+        throw dsErr("BatchError, error", { error });
     }
 }
 
