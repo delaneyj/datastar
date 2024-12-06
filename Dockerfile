@@ -8,7 +8,7 @@ COPY go.* *.go ./
 RUN go mod download
 COPY site ./site
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -ldflags="-s" -o /out/site site/cmd/main.go
+    go build -ldflags="-s" -o /out/site site/cmd/site/main.go
 RUN upx -9 -k /out/site
 
 FROM scratch
