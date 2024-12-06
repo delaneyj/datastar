@@ -6,9 +6,9 @@ ENV PORT=8080
 WORKDIR /src
 COPY go.* *.go ./
 RUN go mod download
-COPY code/go/. ./code/go/
+COPY site/. ./site/
 RUN --mount=type=cache,target=/root/.cache/go-build \
-    go build -ldflags="-s" -o /out/site code/go/cmd/site/main.go
+    go build -ldflags="-s" -o /out/site site/cmd/main.go
 RUN upx -9 -k /out/site
 
 FROM scratch
