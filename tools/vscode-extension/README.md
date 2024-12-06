@@ -21,7 +21,3 @@ Install the extension from the Visual Studio Code Marketplace or from the extens
 `npm run build`
 
 `code --install-extension datastar-vscode-x.y.z.vsix`
-
----
-
-Created by [PutYourLightsOn](https://putyourlightson.com/).

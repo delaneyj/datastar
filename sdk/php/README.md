@@ -57,7 +57,3 @@ use starfederation\datastar\ServerSentEventGenerator;
 
 $signals = ServerSentEventGenerator::readSignals();
 ```
-
----
-
-Created by [PutYourLightsOn](https://putyourlightson.com/).
