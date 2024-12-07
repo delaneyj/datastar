@@ -2,223 +2,101 @@
   "$schema": "../../../../schema.json",
   "name": "Datastar",
   "version": "1.0.0",
+  "js-types-syntax": "typescript",
+  "description-markup": "markdown",
   "default-icon": "datastar-icon.png",
   "contributions": {
     "html": {
       "attributes": [
         {
-          "virtual": true,
-          "name": "data-attributes",
-          "description": "Sets one or more attribute values using a set of key-value pairs that map to the attribute name and expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-attributes"
-        },
-        {
-          "virtual": true,
-          "name": "data-attributes-*",
-          "pattern": {
-            "template": [
-              "data-attributes-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Sets an element’s attribute value based on an expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-attributes"
-        },
-        {
-          "virtual": true,
-          "name": "data-bind",
-          "description": "Creates a new signal and enables two-way binding between it and the element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-bind"
-        },
-        {
-          "virtual": true,
-          "name": "data-bind-*",
-          "pattern": {
-            "template": [
-              "data-bind-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Creates a new signal and enables two-way binding between it and the element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-bind"
-        },
-        {
-          "virtual": true,
-          "name": "data-class",
-          "description": "Adds or removes one or more classes from an element using a set of key-value pairs that map to the class name and expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-class"
-        },
-        {
-          "virtual": true,
-          "name": "data-class-*",
-          "pattern": {
-            "template": [
-              "data-class-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Adds or removes a class from an element based on an expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-class"
-        },
-        {
-          "virtual": true,
-          "name": "data-computed-*",
-          "pattern": {
-            "template": [
-              "data-computed-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Creates a signal that is computed based on an expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-computed"
-        },
-        {
-          "virtual": true,
-          "name": "data-indicator",
-          "description": "Creates a signal to track in-flight backend requests.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-indicator"
-        },
-        {
-          "virtual": true,
-          "name": "data-indicator-*",
-          "pattern": {
-            "template": [
-              "data-indicator-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Creates a signal to track in-flight backend requests.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-indicator"
-        },
-        {
-          "virtual": true,
-          "name": "data-intersect",
-          "description": "Executes an expression on intersection with the viewport.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-intersect"
-        },
-        {
-          "virtual": true,
-          "name": "data-signals",
-          "description": "Merges one or more signals into the existing signals using a set of key-value pairs that map to the signal name and expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-signals"
-        },
-        {
-          "virtual": true,
-          "name": "data-signals-*",
-          "pattern": {
-            "template": [
-              "data-signals-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
-          "description": "Merges a signal into the existing signals.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-signals"
-        },
-        {
-          "virtual": true,
           "name": "data-on-*",
-          "pattern": {
-            "template": [
-              "data-on-",
-              {
-                "regex": ".*"
-              }
-            ]
-          },
           "description": "Executes an expression whenever an event is triggered on an element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-on-click",
-          "description": "Executes an expression whenever the element is clicked.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-on-keydown",
-          "description": "Executes an expression whenever a key is pressed.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-on-load",
-          "description": "Executes an expression whenever the element is loaded into the DOM.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-on-signal-change",
-          "description": "Executes an expression whenever a signal changes.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-on-raf",
-          "description": "Executes an expression on every `requestAnimationFrame` event.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on"
-        },
-        {
-          "virtual": true,
-          "name": "data-ref",
-          "description": "Creates a signal whose value references an element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-ref"
-        },
-        {
-          "virtual": true,
-          "name": "data-ref-*",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-on",
+          "value": {
+            "kind": "expression",
+            "required": true
+          },
           "pattern": {
-            "template": [
-              "data-ref-",
+            "or": [
               {
-                "regex": ".*"
+                "items": "/js/events",
+                "template": [
+                  "data-on-",
+                  "$...",
+                  "#item:event name"
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  {
+                    "regex": "@[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
               }
             ]
+          }
+        },
+        {
+          "name": "data-class-*",
+          "description": "Adds or removes a class from an element based on an expression.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-class",
+          "value": {
+            "kind": "expression",
+            "required": true
           },
-          "description": "Creates a signal whose value references an element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-ref"
+          "pattern": {
+            "or": [
+              {
+                "items": "/css/classes",
+                "template": [
+                  "data-class-",
+                  "$...",
+                  "#item:event name"
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  {
+                    "regex": "@[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
+              }
+            ]
+          }
         },
         {
-          "virtual": true,
-          "name": "data-replace-url",
-          "description": "Replaces the URL in the browser with an evaluated expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-replace-url"
-        },
-        {
-          "virtual": true,
-          "name": "data-scroll-into-view",
-          "description": "Scrolls the element into view.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-scroll-into-view"
-        },
-        {
-          "virtual": true,
-          "name": "data-show",
-          "description": "Shows or hides an element based on whether an expression evaluates to `true` or `false`.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-show"
-        },
-        {
-          "virtual": true,
-          "name": "data-text",
-          "description": "Sets the text content of an element to the evaluated expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-text"
-        },
-        {
-          "virtual": true,
-          "name": "data-view-transition",
-          "description": "Sets the value of `view-transition-name` for use with the View Transition API.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-view-transition"
+          "name": "data-attributes-*",
+          "description": "Sets an element’s attribute value based on an expression.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-attributes",
+          "value": {
+            "kind": "expression",
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "items": "/html/attributes",
+                "template": [
+                  "data-attributes-",
+                  "$...",
+                  "#item:event name"
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  {
+                    "regex": "@[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
+              }
+            ]
+          }
         }
       ]
     }
