@@ -6,6 +6,6 @@
     <depends>com.intellij.modules.platform</depends>
     <depends>JavaScript</depends>
     <extensions defaultExtensionNs="com.intellij">
-        <javascript.webTypes source="datastar.web-types.json" enableByDefault="true"/>
+        <javascript.webTypes source="datastar-attributes.web-types.json" enableByDefault="true"/>
     </extensions>
 </idea-plugin>
