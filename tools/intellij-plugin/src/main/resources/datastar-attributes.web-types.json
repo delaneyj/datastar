@@ -30,11 +30,9 @@
               },
               {
                 "template": [
-                  {
-                    "regex": "[-a-z0-9]+"
-                  }
+                  "data-attributes"
                 ],
-                "priority": "lowest"
+                "priority": "normal"
               }
             ]
           }
@@ -61,11 +59,9 @@
               },
               {
                 "template": [
-                  {
-                    "regex": "[-a-z0-9]+"
-                  }
+                  "data-class"
                 ],
-                "priority": "lowest"
+                "priority": "normal"
               }
             ]
           }
@@ -89,14 +85,6 @@
                   "#item:event name"
                 ],
                 "priority": "normal"
-              },
-              {
-                "template": [
-                  {
-                    "regex": "[-a-z0-9]+"
-                  }
-                ],
-                "priority": "lowest"
               }
             ]
           }
@@ -127,13 +115,23 @@
                 "required": true
               },
               "pattern": {
-                "template": [
-                  "data-bind-",
+                "or": [
                   {
-                    "regex": "[-a-z0-9]+"
+                    "template": [
+                      "data-bind-",
+                      {
+                        "regex": "[-a-z0-9]+"
+                      }
+                    ],
+                    "priority": "normal"
+                  },
+                  {
+                    "template": [
+                      "data-bind"
+                    ],
+                    "priority": "normal"
                   }
-                ],
-                "priority": "lowest"
+                ]
               }
             }
           ]
