@@ -184,7 +184,7 @@ If the expression evaluates to `true`, the `hidden` class is added to the elemen
             <div data-text="input5.value" class="output"></div>
         </div>
     </div>
-    <button data-class-hidden="input5.value != ''" class="btn btn-primary">
+    <button data-class-hidden="input5.value == ''" class="btn btn-primary">
         Save
     </button>
 </div>
@@ -277,7 +277,7 @@ This results in the `input` signal's value being set to an empty string whenever
     </button>
 </div>
 
-So what else can we do now that we have declarative signals and expressions? Anything we want, really.
+So what else can we do now that we have declarative signals and expressions? Anything we want, really!
 
 See if you can follow the code below based on what you've learned so far, _before_ trying the demo.
 
@@ -322,7 +322,7 @@ We've just scratched the surface of frontend reactivity. Now let's take a look a
 
 ## Backend Setup
 
-Datastar uses [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE). There's no special backend plumbing required to use SSE, just some syntax. Fortunately, SSE is straightforward and [provides us with some advantages](/essays/event_streams_all_the_way_down).
+Datastar uses [Server-Sent Events](https://en.wikipedia.org/wiki/Server-sent_events) (SSE) to stream zero or more events from the web server to the browser. There's no special backend plumbing required to use SSE, just some syntax. Fortunately, SSE is straightforward and [provides us with some advantages](/essays/event_streams_all_the_way_down).
 
 First, set up your backend in the language of your choice. Using one of the helper SDKs (available for [Go](https://github.com/starfederation/datastar/tree/main/sdk/go) and [PHP](https://github.com/starfederation/datastar/tree/main/sdk/php), with more on the way) will help you get up and running faster. We're going to use the SDKs in the examples below, which set the appropriate headers and format the events for us, but this is optional.
 
@@ -407,7 +407,7 @@ The [`data-indicator`](/reference/plugins_backend#data-indicator) attribute sets
     </div>
 </div>
 
-The `data-indicator` attribute can also be written with the value used as the signal name.
+The `data-indicator` attribute can also be written with signal name in the attribute value.
 
 ```html
 <button
