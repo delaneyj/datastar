@@ -102,6 +102,35 @@
           }
         },
         {
+          "name": "data-indicator-*",
+          "description": "Creates a signal to track in-flight backend requests.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-indicator",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "template": [
+                  "data-indicator-",
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  "data-indicator"
+                ],
+                "priority": "normal"
+              }
+            ]
+          }
+        },
+        {
           "name": "data-on-*",
           "description": "Executes an expression whenever an event is triggered on an element.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-on",
