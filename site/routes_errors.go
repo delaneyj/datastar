@@ -9,10 +9,12 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/go-chi/chi/v5"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/samber/lo"
 )
 
 func setupErrors(ctx context.Context, router chi.Router) error {
+	santizePolicy := bluemonday.UGCPolicy()
 
 	mdDataset, err := markdownRenders(ctx, "errors")
 	if err != nil {
@@ -86,6 +88,7 @@ func setupErrors(ctx context.Context, router chi.Router) error {
 			contents := mdData.Contents
 			for key, values := range params {
 				contents = strings.ReplaceAll(contents, "{ "+key+" }", strings.Join(values, ","))
+				contents = santizePolicy.Sanitize(contents)
 			}
 
 			SidebarPage(r, sidebarGroups, currentLink, mdData.Title, mdData.Description, contents).Render(r.Context(), w)

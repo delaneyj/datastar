@@ -16,6 +16,7 @@ This should be the final round of API changes before v1.0.0 🚀
 - Added the ability to use a single classes using the syntax `data-class-hidden="foo.value"`.
 - Added the ability to use a key instead of a value to denote a signal name in the `data-bind`, `data-indicator` and `data-ref` attributes (`data-bind-foo`, `data-indicator-foo`, `data-ref-foo`).
 - Added error codes and links to descriptions in the console for every error thrown.
+- Retries and backoff for SSE connections now configurable
 
 ### Changed
 
@@ -32,3 +33,5 @@ This should be the final round of API changes before v1.0.0 🚀
 
 - Fixed headers not merging correctly.
 - Fixed new lines in the SDK protocol for paths.
+- Possible XSS vulnerability in the errors page
+- Using `evt` in a `data-on` might have had a `.value` that would cause an error. This has been fixed. #326
