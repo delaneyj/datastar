@@ -77,7 +77,7 @@ Page level transitions are automatically handled by an injected meta tag. Inter-
 ### `clipboard(text: string)`
 
 ```html
-<div data-on-click="@clipboard('Hello, world!')"></div>
+<div data-on-click="clipboard('Hello, world!')"></div>
 ```
 
 Copies the text to the clipboard. This is useful for copying text to the clipboard.

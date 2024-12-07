@@ -39,7 +39,7 @@ module Consts =
     let [<Literal>] DatastarKey               = "datastar"
     let [<Literal>] Version                   = "0.21.0-beta2"
     let [<Literal>] VersionClientByteSize     = 33568
-    let [<Literal>] VersionClientByteSizeGzip = 12332
+    let [<Literal>] VersionClientByteSizeGzip = 12330
 
     /// Default: TimeSpan.FromMilliseconds 300
     let DefaultSettleDuration = TimeSpan.FromMilliseconds 300
