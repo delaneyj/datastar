@@ -6,6 +6,16 @@
   "description-markup": "markdown",
   "default-icon": "datastar-icon.png",
   "contributions": {
+    "js": {
+      "events": [
+        {
+          "name": "signal-change"
+        },
+        {
+          "name": "raf"
+        }
+      ]
+    },
     "html": {
       "attributes": [
         {
