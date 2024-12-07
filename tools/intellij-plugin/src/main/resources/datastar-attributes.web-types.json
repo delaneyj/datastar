@@ -67,6 +67,25 @@
           }
         },
         {
+          "name": "data-computed-*",
+          "description": "Creates a signal that is computed based on an expression.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-computed",
+          "value": {
+            "kind": "expression",
+            "type": "any",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-computed-",
+              {
+                "regex": "[-a-z0-9]+"
+              }
+            ],
+            "priority": "normal"
+          }
+        },
+        {
           "name": "data-on-*",
           "description": "Executes an expression whenever an event is triggered on an element.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-on",
