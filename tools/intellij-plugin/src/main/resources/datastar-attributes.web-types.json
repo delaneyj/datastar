@@ -14,7 +14,10 @@
           "doc-url": "https://data-star.dev/guide/getting_started#data-attributes",
           "value": {
             "kind": "expression",
-            "type": "any",
+            "type": [
+              "string",
+              "object"
+            ],
             "required": true
           },
           "pattern": {
@@ -43,7 +46,10 @@
           "doc-url": "https://data-star.dev/guide/getting_started#data-class",
           "value": {
             "kind": "expression",
-            "type": "boolean",
+            "type": [
+              "boolean",
+              "object"
+            ],
             "required": true
           },
           "pattern": {
@@ -72,7 +78,7 @@
           "doc-url": "https://data-star.dev/guide/getting_started#data-computed",
           "value": {
             "kind": "expression",
-            "type": "any",
+            "type": "string",
             "required": true
           },
           "pattern": {
@@ -91,7 +97,7 @@
           "doc-url": "https://data-star.dev/guide/getting_started#data-on",
           "value": {
             "kind": "expression",
-            "type": "any",
+            "type": "string",
             "required": true
           },
           "pattern": {
@@ -102,6 +108,38 @@
                   "data-on-",
                   "$...",
                   "#item:event name"
+                ],
+                "priority": "normal"
+              }
+            ]
+          }
+        },
+        {
+          "name": "data-signals-*",
+          "description": "Merges a signal into the existing signals.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-signals",
+          "value": {
+            "kind": "expression",
+            "type": [
+              "string",
+              "object"
+            ],
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "template": [
+                  "data-signals-",
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  "data-signals"
                 ],
                 "priority": "normal"
               }
@@ -130,7 +168,7 @@
               "doc-url": "https://data-star.dev/guide/getting_started#data-bind",
               "value": {
                 "kind": "expression",
-                "type": "any",
+                "type": "string",
                 "required": true
               },
               "pattern": {
@@ -142,7 +180,8 @@
                         "regex": "[-a-z0-9]+"
                       }
                     ],
-                    "priority": "normal"
+                    "priority": "normal",
+                    "required": false
                   },
                   {
                     "template": [
