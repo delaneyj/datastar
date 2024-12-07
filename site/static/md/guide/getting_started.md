@@ -49,7 +49,7 @@ Datastar uses signals to manage state. You can think of signals as reactive vari
 
 ### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_dom#bind) attribute, which can be placed on any HTML element that users can directly input data or choices from (`input`, `textarea`, `select`, `checkbox` and `radio` elements).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_dom#bind) attribute, which can be placed on any HTML element on which data be be input or choices selected from (`input`, `textarea`, `select`, `checkbox` and `radio` elements, as well as web components).
 
 ```html
 <input data-bind-input />
