@@ -24,12 +24,39 @@ const knownOnModifiers = new Set([
     "outside",
 ]);
 
+const EVT = "evt";
 export const On: AttributePlugin = {
     type: PluginType.Attribute,
     name: "on",
     keyReq: Requirement.Must,
     valReq: Requirement.Must,
-    argNames: ["evt"],
+    argNames: [EVT],
+    macros: {
+        pre: [
+            {
+                type: PluginType.Macro,
+                name: "evtEsc",
+                fn: (original) => {
+                    return original.replaceAll(
+                        /evt.([\w\.]+)value/gm,
+                        "EVT_$1_VALUE",
+                    );
+                },
+            },
+        ],
+        post: [
+            {
+                type: PluginType.Macro,
+                name: "evtUnesc",
+                fn: (original) => {
+                    return original.replaceAll(
+                        /EVT_([\w\.]+)_VALUE/gm,
+                        "evt.$1.value",
+                    );
+                },
+            },
+        ],
+    },
     onLoad: ({ el, key, genRX, mods, signals, effect }) => {
         const rx = genRX();
         let target: Element | Window | Document = el;
