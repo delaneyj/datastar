@@ -33,6 +33,9 @@ export type SSEArgs = {
     headers?: Record<string, string>;
     includeLocal?: boolean;
     openWhenHidden?: boolean;
+    retryScaler?: number;
+    retryMaxWaitMs?: number;
+    retryMaxCount?: number;
 };
 
 export const ServerSentEvents: ActionPlugin = {
@@ -49,12 +52,18 @@ export const ServerSentEvents: ActionPlugin = {
             headers: userHeaders,
             includeLocal,
             openWhenHidden,
+            retryScaler,
+            retryMaxWaitMs,
+            retryMaxCount,
         } = Object
             .assign({
                 method: "GET",
                 headers: {},
                 includeLocal: false,
-                openWhenHidden: false,
+                openWhenHidden: false, // will keep the request open even if the document is hidden.
+                retryScaler: 2, // the amount to multiply the retry interval by each time
+                retryMaxWaitMs: 30_000, // the maximum retry interval in milliseconds
+                retryMaxCount: 10, // the maximum number of retries before giving up
             }, args);
         const method = methodAnyCase.toUpperCase();
         try {
@@ -72,6 +81,9 @@ export const ServerSentEvents: ActionPlugin = {
                 method,
                 headers,
                 openWhenHidden,
+                retryScaler,
+                retryMaxWaitMs,
+                retryMaxCount,
                 onmessage: (evt) => {
                     if (!evt.event.startsWith(DATASTAR)) {
                         return;

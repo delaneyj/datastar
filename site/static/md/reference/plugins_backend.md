@@ -28,6 +28,13 @@ The `headers` option is an object containing headers to send with the request.
 
 The `openWhenHidden` option determines whether to close the page is hidden (defaults to `false`).  Useful for dashboards but will cause a drain on battery life and other resources.
 
+The `retryScaler` option is a number that scales the retry time (defaults to `2`).
+
+The `retryMaxWaitMs` option is the maximum milliseconds to wait between retries (defaults to `30000`).
+
+The `retryMaxCount` option is the maximum number of retries (defaults to `10`).
+
+
 ```html
 <div data-on-click="sse('/examples/click_to_edit/contact/1', {
   method: 'post',
