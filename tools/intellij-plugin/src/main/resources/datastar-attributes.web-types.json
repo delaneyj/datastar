@@ -131,6 +131,22 @@
           }
         },
         {
+          "name": "data-intersect",
+          "description": "Executes an expression on intersection with the viewport.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-intersect",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-intersect"
+            ],
+            "priority": "normal"
+          }
+        },
+        {
           "name": "data-on-*",
           "description": "Executes an expression whenever an event is triggered on an element.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-on",
@@ -151,6 +167,22 @@
                 "priority": "normal"
               }
             ]
+          }
+        },
+        {
+          "name": "data-persist",
+          "description": "Persists all signals in local storage.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-persist",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-persist"
+            ],
+            "priority": "normal"
           }
         },
         {
@@ -183,6 +215,22 @@
           }
         },
         {
+          "name": "data-replace-url",
+          "description": "Replaces the URL in the browser with an evaluated expression.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-replace-url",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-replace-url"
+            ],
+            "priority": "normal"
+          }
+        },
+        {
           "name": "data-signals-*",
           "description": "Merges a signal into the existing signals.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-signals",
@@ -212,6 +260,70 @@
                 "priority": "normal"
               }
             ]
+          }
+        },
+        {
+          "name": "data-scroll-into-view",
+          "description": "Scrolls the element into view.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-scroll-into-view",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-scroll-into-view"
+            ],
+            "priority": "normal"
+          }
+        },
+        {
+          "name": "data-show",
+          "description": "Shows or hides an element based on whether an expression evaluates to `true` or `false`.",
+          "doc-url": "https://data-star.dev/reference/plugins_browser#show",
+          "value": {
+            "kind": "expression",
+            "type": "boolean",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-show"
+            ],
+            "priority": "normal"
+          }
+        },
+        {
+          "name": "data-text",
+          "description": "Sets the text content of an element to the evaluated expression.",
+          "doc-url": "https://data-star.dev/reference/plugins_dom#text",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-text"
+            ],
+            "priority": "normal"
+          }
+        },
+        {
+          "name": "data-view-transition",
+          "description": "Sets the value of `view-transition-name` for use with the View Transition API.",
+          "doc-url": "https://data-star.dev/reference/plugins_browser#view-transition",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "template": [
+              "data-view-transition"
+            ],
+            "priority": "normal"
           }
         }
       ],
