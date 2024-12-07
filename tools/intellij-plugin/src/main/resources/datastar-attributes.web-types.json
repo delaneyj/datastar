@@ -125,6 +125,35 @@
           }
         },
         {
+          "name": "data-ref-*",
+          "description": "Creates a signal whose value references an element.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-ref",
+          "value": {
+            "kind": "expression",
+            "type": "string",
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "template": [
+                  "data-ref-",
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  "data-ref"
+                ],
+                "priority": "normal"
+              }
+            ]
+          }
+        },
+        {
           "name": "data-signals-*",
           "description": "Merges a signal into the existing signals.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-signals",
