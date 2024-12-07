@@ -9,71 +9,12 @@
     "html": {
       "attributes": [
         {
-          "name": "data-on-*",
-          "description": "Executes an expression whenever an event is triggered on an element.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-on",
-          "value": {
-            "kind": "expression",
-            "required": true
-          },
-          "pattern": {
-            "or": [
-              {
-                "items": "/js/events",
-                "template": [
-                  "data-on-",
-                  "$...",
-                  "#item:event name"
-                ],
-                "priority": "normal"
-              },
-              {
-                "template": [
-                  {
-                    "regex": "@[-a-z0-9]+"
-                  }
-                ],
-                "priority": "lowest"
-              }
-            ]
-          }
-        },
-        {
-          "name": "data-class-*",
-          "description": "Adds or removes a class from an element based on an expression.",
-          "doc-url": "https://data-star.dev/guide/getting_started#data-class",
-          "value": {
-            "kind": "expression",
-            "required": true
-          },
-          "pattern": {
-            "or": [
-              {
-                "items": "/css/classes",
-                "template": [
-                  "data-class-",
-                  "$...",
-                  "#item:event name"
-                ],
-                "priority": "normal"
-              },
-              {
-                "template": [
-                  {
-                    "regex": "@[-a-z0-9]+"
-                  }
-                ],
-                "priority": "lowest"
-              }
-            ]
-          }
-        },
-        {
           "name": "data-attributes-*",
           "description": "Sets an element’s attribute value based on an expression.",
           "doc-url": "https://data-star.dev/guide/getting_started#data-attributes",
           "value": {
             "kind": "expression",
+            "type": "any",
             "required": true
           },
           "pattern": {
@@ -90,13 +31,112 @@
               {
                 "template": [
                   {
-                    "regex": "@[-a-z0-9]+"
+                    "regex": "[-a-z0-9]+"
                   }
                 ],
                 "priority": "lowest"
               }
             ]
           }
+        },
+        {
+          "name": "data-class-*",
+          "description": "Adds or removes a class from an element based on an expression.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-class",
+          "value": {
+            "kind": "expression",
+            "type": "boolean",
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "items": "/css/classes",
+                "template": [
+                  "data-class-",
+                  "$...",
+                  "#item:event name"
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
+              }
+            ]
+          }
+        },
+        {
+          "name": "data-on-*",
+          "description": "Executes an expression whenever an event is triggered on an element.",
+          "doc-url": "https://data-star.dev/guide/getting_started#data-on",
+          "value": {
+            "kind": "expression",
+            "type": "any",
+            "required": true
+          },
+          "pattern": {
+            "or": [
+              {
+                "items": "/js/events",
+                "template": [
+                  "data-on-",
+                  "$...",
+                  "#item:event name"
+                ],
+                "priority": "normal"
+              },
+              {
+                "template": [
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
+              }
+            ]
+          }
+        }
+      ],
+      "elements": [
+        {
+          "name": "Standard HTML elements extension",
+          "description": "This is a workaround to provide /js/properties on standard HTML elements.",
+          "extension": true,
+          "pattern": {
+            "or": [
+              "input",
+              "textarea",
+              "select",
+              "checkbox",
+              "radio"
+            ]
+          },
+          "attributes": [
+            {
+              "name": "data-bind-*",
+              "description": "Creates a new signal and enables two-way binding between it and the element.",
+              "doc-url": "https://data-star.dev/guide/getting_started#data-bind",
+              "value": {
+                "kind": "expression",
+                "type": "any",
+                "required": true
+              },
+              "pattern": {
+                "template": [
+                  "data-bind-",
+                  {
+                    "regex": "[-a-z0-9]+"
+                  }
+                ],
+                "priority": "lowest"
+              }
+            }
+          ]
         }
       ]
     }
