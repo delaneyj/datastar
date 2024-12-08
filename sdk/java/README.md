@@ -1,7 +1,3 @@
-Here's a `README.md` for your **Datastar Java SDK** following the format you provided:
-
----
-
 # Datastar Java SDK
 
 This package provides a Java SDK for working with [Datastar](https://data-star.dev/).
