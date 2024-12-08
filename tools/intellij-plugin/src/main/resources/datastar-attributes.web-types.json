@@ -14,6 +14,64 @@
         {
           "name": "raf"
         }
+      ],
+      "datastar-on-modifiers": [
+        {
+          "name": "once",
+          "description": "Only trigger the event listener once"
+        },
+        {
+          "name": "passive",
+          "description": "Do not call `preventDefault` on the event listener"
+        },
+        {
+          "name": "capture",
+          "description": "Use a capture event listener"
+        },
+        {
+          "name": "debounce",
+          "description": "Debounce the event listener"
+        },
+        {
+          "name": "debounce_1000ms",
+          "description": "Debounce for 1000ms"
+        },
+        {
+          "name": "debounce_1s",
+          "description": "Debounce for 1s"
+        },
+        {
+          "name": "debounce_leading",
+          "description": "Debounce with leading edge"
+        },
+        {
+          "name": "debounce_noTrail",
+          "description": "Debounce without trailing edge"
+        },
+        {
+          "name": "throttle",
+          "description": "Throttle the event listener"
+        },
+        {
+          "name": "throttle_1000ms",
+          "description": "Throttle for 1000ms"
+        },
+        {
+          "name": "throttle_1s",
+          "description": "Throttle for 1s"
+        },
+        {
+          "name": "throttle_noLead",
+          "description": "Throttle without leading edge"
+        },
+        {
+          "name": "throttle_noTrail",
+          "description": "Throttle without trailing edge"
+        },
+        {
+          "name": "window",
+          "description": "Attaches the event listener to the `window` element"
+        }
       ]
     },
     "html": {
@@ -162,7 +220,16 @@
                 "template": [
                   "data-on-",
                   "$...",
-                  "#item:event name"
+                  "#item:event name",
+                  {
+                    "items": "/js/datastar-on-modifiers",
+                    "template": [
+                      ".",
+                      "#item:modifier"
+                    ],
+                    "required": false,
+                    "repeat": true
+                  }
                 ],
                 "priority": "normal"
               }
