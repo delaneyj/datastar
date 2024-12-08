@@ -1,8 +1,8 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.khalwat.datastarjetbrainsplugin</id>
-    <name>Datastar</name>
-    <vendor>khalwat</vendor>
+    <id>com.github.starfederation.datastarjetbrainsplugin</id>
+    <name>Datastar support</name>
+    <vendor>starfederation</vendor>
     <depends>com.intellij.modules.platform</depends>
     <depends>JavaScript</depends>
     <extensions defaultExtensionNs="com.intellij">
