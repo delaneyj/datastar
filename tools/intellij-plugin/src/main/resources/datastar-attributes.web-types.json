@@ -15,6 +15,12 @@
           "name": "raf"
         }
       ],
+      "datastar-persist-modifiers": [
+        {
+          "name": "session",
+          "description": "Persists signals values in Session Storage"
+        }
+      ],
       "datastar-on-modifiers": [
         {
           "name": "once",
@@ -224,7 +230,7 @@
                   {
                     "items": "/js/datastar-on-modifiers",
                     "template": [
-                      ".",
+                      ":",
                       "#item:modifier"
                     ],
                     "required": false,
@@ -247,7 +253,16 @@
           },
           "pattern": {
             "template": [
-              "data-persist"
+              "data-persist",
+              {
+                "items": "/js/datastar-persist-modifiers",
+                "template": [
+                  ":",
+                  "#item:modifier"
+                ],
+                "required": false,
+                "repeat": true
+              }
             ],
             "priority": "normal"
           }
