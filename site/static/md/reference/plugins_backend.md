@@ -34,6 +34,8 @@ The `retryMaxWaitMs` option is the maximum milliseconds to wait between retries 
 
 The `retryMaxCount` option is the maximum number of retries (defaults to `10`).
 
+The `abort` option is an [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) object that can be used to cancel the request.
+
 
 ```html
 <div data-on-click="sse('/examples/click_to_edit/contact/1', {
