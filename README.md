@@ -36,7 +36,7 @@ Read the [Getting Started Guide »](https://data-star.dev/guide/getting_started)
 
 ## Contributing
 
-Read the [Contribution Guidelines »](CONTRIBUTING.md)
+Read the [Contribution Guidelines »](https://github.com/starfederation/datastar/blob/develop/CONTRIBUTING.md)
 
 ## Custom Plugins
 
@@ -51,10 +51,10 @@ You can manually add your own plugins to the core:
 }
 </script>
 <script type="module">
-import {Datastar} from 'datastar'
+    import {Datastar} from 'datastar'
 
-Datastar.load(
-    // I can make my own plugins!
-)
-</script>
+    Datastar.load(
+        // I can make my own plugins!
+    )
+    </script>
 ```
