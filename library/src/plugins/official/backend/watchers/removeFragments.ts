@@ -3,8 +3,8 @@
 // Description: Remember, SSE is just a regular SSE request but with the ability to send 0-inf messages to the client.
 
 import {
+    DefaultFragmentsSettleDurationMs,
     DefaultFragmentsUseViewTransitions,
-    DefaultSettleDurationMs,
     EventTypes,
 } from "../../../../engine/consts";
 import { dsErr } from "../../../../engine/errors";
@@ -24,7 +24,7 @@ export const RemoveFragments: WatcherPlugin = {
             EventTypes.RemoveFragments,
             ({
                 selector,
-                settleDuration: settleDurationRaw = `${DefaultSettleDurationMs}`,
+                settleDuration: settleDurationRaw = `${DefaultFragmentsSettleDurationMs}`,
                 useViewTransition: useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
             }) => {
                 if (!!!selector.length) {

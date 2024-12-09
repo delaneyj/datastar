@@ -95,8 +95,8 @@ var Consts = &ConstTemplateData{
 	},
 	DefaultDurations: []*DefaultDuration{
 		{
-			Name:        toolbelt.ToCasedString("settleDuration"),
-			Description: "The default duration for settling during merges. Allows for CSS transitions to complete.",
+			Name:        toolbelt.ToCasedString("fragmentsSettleDuration"),
+			Description: "The default duration for settling during fragment merges. Allows for CSS transitions to complete.",
 			Duration:    300 * time.Millisecond,
 		},
 		{

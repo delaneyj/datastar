@@ -7,13 +7,13 @@ import "time"
 const (
     DatastarKey = "datastar"
     Version                   = "0.21.0-beta2"
-    VersionClientByteSize     = 33705
-    VersionClientByteSizeGzip = 12361
+    VersionClientByteSize     = 33600
+    VersionClientByteSizeGzip = 12338
 
     //region Default durations
 
-    // The default duration for settling during merges. Allows for CSS transitions to complete.
-    DefaultSettleDuration = 300 * time.Millisecond
+    // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
+    DefaultFragmentsSettleDuration = 300 * time.Millisecond
     // The default duration for retrying SSE on connection reset. This is part of the underlying retry mechanism of SSE.
     DefaultSseRetryDuration = 1000 * time.Millisecond
 
