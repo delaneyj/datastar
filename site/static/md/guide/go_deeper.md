@@ -16,8 +16,6 @@ Datastar started as just a plugin framework but found that by having no overlap 
 
 With Datastar, even if you have never coded before, with a few examples, you can easily create high interconnected web assets. It doesn't matter if you are a making a user interface for bank or a simple blog. The approach is simplicity through declarative HTML.
 
-If Datastar doesn't match your needs, you still might be interested in using it as originally intended [and write your own library](https://github.com/starfederation/datastar/tree/main/packages/library/src/lib/plugins).
-
 ## Time to think declaratively
 
 Declarative code is amazing.
@@ -32,7 +30,7 @@ LIMIT 10
 
 This is SQL. As a user you don't have to know how the query will get executed, it's up to the engine used. Sure you can read the query plan or introspect indexes, but you can start at a high level and drill down only when necessary.
 
-HTML work in a similar fashion. You don't have to worry about how a `<div>Hello</div>` turned into pixels nor how the page uses resources when you tab away. This is wonderful for the majority of cases but at least in modern HTML is a bit limiting.
+HTML works in a similar fashion. You don't have to worry about how a `<div>Hello</div>` turned into pixels nor how the page uses resources when you tab away. This is wonderful for the majority of cases but at least in modern HTML is a bit limiting.
 
 For example:
 
@@ -74,14 +72,14 @@ effect(() => {
 });
 ```
 
-The difference is if you change `a` or `b`, `c` will auto schedule for updates. So you spend your time declaring relationships more than procedures. They have been popularized by [Solid,js](https://www.solidjs.com/) but are now used by many frameworks.
+The difference is if you change `a` or `b`, `c` will auto schedule for updates. So you spend your time declaring relationships more than procedures. They have been popularized by [Solid.js](https://www.solidjs.com/) but are now used by many frameworks.
 
 ## Declarative Signals
 
 Ok so back to our hypothetical framework let's have a way to declare stuff that can setup signals on the page using `data-*` attributes.
 
 ```html
-<div data-signals="{value:'hello world'}"></div>
+<div data-signals="{greeting: 'hello world'}"></div>
 ```
 
 The contents are just a set of data that can be:
@@ -90,42 +88,40 @@ The contents are just a set of data that can be:
 2. Converted into a tree of signals
 3. Merged into a signal that tracks all the reactivity on the page
 
-In this case we want a single `value` signal with the contents of `'hello world'`. Normally, you'd have to write a bunch of code to make this happen. With Datastar, you just add a `data-signals` attribute and think declaratively.
+In this case we want a single `greeting` signal with the contents of `'hello world'`. Normally, you'd have to write a bunch of code to make this happen. With Datastar, you just add a `data-signals` attribute and think declaratively.
 
-## Models
+## Two-way Binding
 
 Let's replace the hard coded value in the input with another attribute
 
 ```html
-<div data-signals="{value:'hello world'}">
+<div data-signals="{greeting: 'hello world'}">
   <label>HELLO WORLD</label>
-  <input data-bind="value" />
+  <input data-bind="greeting" />
 </div>
 ```
 
-Here we've created a new attribute `data-bind` with the contents of `value`. We are just saying when the signal `value` changes **or** input is edited on the page make sure you keep them in sync. We don't care how, just do it.
+Here we've created a new attribute `data-bind` with the contents of `greeting`. We are just saying when the signal `greeting` changes **or** input is edited on the page make sure you keep them in sync. We don't care how, just do it.
 
 ## Contents
 
 Now we want to update the label relationship.
 
 ```html
-<div data-signals="{value:'hello world'}">
-  <label data-text="value.value"></label>
-  <input data-bind="value" />
+<div data-signals="{greeting: 'hello world'}">
+  <label data-text="greeting.value"></label>
+  <input data-bind="greeting" />
 </div>
 ```
 
-# TODO: BEN! $
-
-Here we've added another attribute `data-text` but the content has a `$` prefix. Remember that `data-*` attributes _are just strings_, which means we can give any semantics we want as long as it's consistent. It this case we are designating the use of a signal by adding a `$` prefix. Now went the `value` signal updates, so will the `innerHTML` of the label. Pretty neat.
+Here we've added another attribute `data-text` with the value `greeting.value`. Remember that `data-*` attributes _are just strings_, which means we can give any semantics we want as long as it's consistent. It this case we are designating the use of a signal by adding a `.value` suffix. Now when the `greeting` signal updates, so will the `innerHTML` of the label. Pretty neat.
 
 However, it doesn't yet match the original intent, which was to make it uppercase, so let's make a quick adjustment.
 
 ```html
-<div data-signals="{value:'hello world'}">
-  <label data-text="value.value.toUpperCase()"></label>
-  <input data-bind="value" />
+<div data-signals="{greeting: 'hello world'}">
+  <label data-text="greeting.value.toUpperCase()"></label>
+  <input data-bind="greeting" />
 </div>
 ```
 
