@@ -20,7 +20,7 @@ test('Options are correctly output', function() {
 test('Default options are not output', function() {
     $content = 'body';
     $event = new RemoveFragments($content, [
-        'settleDuration' => Consts::DEFAULT_SETTLE_DURATION,
+        'settleDuration' => Consts::DEFAULT_FRAGMENTS_SETTLE_DURATION,
         'useViewTransition' => false,
     ]);
     expect($event->getDataLines())
