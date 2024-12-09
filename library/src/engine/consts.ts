@@ -9,8 +9,8 @@ export const VERSION = "0.21.0-beta2";
 
 // #region Default durations
 
-// The default duration for settling during merges. Allows for CSS transitions to complete.
-export const DefaultSettleDurationMs = 300;
+// The default duration for settling during fragment merges. Allows for CSS transitions to complete.
+export const DefaultFragmentsSettleDurationMs = 300;
 // The default duration for retrying SSE on connection reset. This is part of the underlying retry mechanism of SSE.
 export const DefaultSseRetryDurationMs = 1000;
 

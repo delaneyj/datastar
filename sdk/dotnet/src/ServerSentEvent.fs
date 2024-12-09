@@ -69,7 +69,7 @@ module MergeFragmentsOptions =
     let defaults =
         { Selector = ValueNone
           MergeMode = Consts.DefaultFragmentMergeMode
-          SettleDuration = Consts.DefaultSettleDuration
+          SettleDuration = Consts.DefaultFragmentsSettleDuration
           UseViewTransition = Consts.DefaultFragmentsUseViewTransitions
           EventId = ValueNone
           Retry = Consts.DefaultSseRetryDuration }
@@ -81,7 +81,7 @@ type RemoveFragmentsOptions =
       Retry: TimeSpan }
 module RemoveFragmentsOptions =
     let defaults =
-        { SettleDuration = Consts.DefaultSettleDuration
+        { SettleDuration = Consts.DefaultFragmentsSettleDuration
           UseViewTransition = Consts.DefaultFragmentsUseViewTransitions
           EventId = ValueNone
           Retry = Consts.DefaultSseRetryDuration }
