@@ -7,7 +7,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 const ONCE = "once";
 const HALF = "half";

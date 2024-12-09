@@ -3,12 +3,12 @@
 // Slug: Bind attributes to expressions
 // Description: Any attribute can be bound to an expression. The attribute will be updated reactively whenever the expression signal changes.
 
-import { dsErr } from "../../../../engine/errors";
+import { dsErr } from "#engine/errors";
 import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 const dataURIRegex = /^data:(?<mime>[^;]+);base64,(?<contents>.*)$/;
 const updateEvents = ["change", "input", "keydown"];

@@ -7,7 +7,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 const NONE = "none";
 const DISPLAY = "display";

@@ -2,7 +2,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 export const Star: AttributePlugin = {
     type: PluginType.Attribute,

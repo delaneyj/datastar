@@ -7,8 +7,8 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
-import { kebabize } from "../../../../utils/text";
+} from "#engine/types";
+import { kebabize } from "#utils/text";
 
 export const Class: AttributePlugin = {
     type: PluginType.Attribute,

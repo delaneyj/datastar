@@ -2,12 +2,12 @@
 // Slug: Sets the indicator signal used when fetching data via SSE
 // Description: must be a valid signal name
 
-import { DATASTAR } from "../../../../engine/consts";
+import { DATASTAR } from "#engine/consts";
 import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 import {
     DATASTAR_SSE_EVENT,
     DatastarSSEEvent,

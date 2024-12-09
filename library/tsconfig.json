@@ -17,7 +17,13 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "ts",
     "declaration": true,
-    "outDir": "dist"
+    "outDir": "dist",
+    "baseUrl": "./",
+    "paths": {
+      "#engine/*": ["./src/engine/*"],
+      "#utils/*": ["./src/utils/*"],
+      "#vendored/*": ["./src/vendored/*"]
+    }
   },
   "include": ["src/**/*.ts"]
 }

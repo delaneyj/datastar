@@ -6,14 +6,14 @@ import {
     DefaultFragmentsUseViewTransitions,
     DefaultSettleDurationMs,
     EventTypes,
-} from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
-import { PluginType, WatcherPlugin } from "../../../../engine/types";
-import { isBoolString } from "../../../../utils/text";
+} from "#engine/consts";
+import { dsErr } from "#engine/errors";
+import { PluginType, WatcherPlugin } from "#engine/types";
+import { isBoolString } from "#utils/text";
 import {
     docWithViewTransitionAPI,
     supportsViewTransitions,
-} from "../../../../utils/view-transtions";
+} from "#utils/view-transtions";
 import { datastarSSEEventWatcher, SWAPPING_CLASS } from "../shared";
 
 export const RemoveFragments: WatcherPlugin = {
