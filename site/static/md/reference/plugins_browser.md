@@ -28,19 +28,6 @@ Runs the expression when the element intersects with the viewport.
 - `:half` - Trigger when half of the element is visible
 - `:full` - Trigger when the full element is visible
 
-### Teleport
-
-```html
-<div data-teleport="#foo"></div>
-```
-
-Moves the element to the target.
-
-#### Modifiers
-
-- `:prepend` - Prepend the element to the target
-- `:append` - Append the element to the target
-
 ### Scroll Into View
 
 ```html

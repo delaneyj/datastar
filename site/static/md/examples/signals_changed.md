@@ -3,7 +3,7 @@
 ## Demo
 
 <div
-  data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-signals="{clicks:0, _localState: {bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change__remote="sse('/examples/signals_changed/updates', {method:'post'})"
   >
     <div class="flex gap-4">
@@ -31,7 +31,7 @@
 
 ```html
 <div
-  data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
+  data-signals="{clicks:0, _localState: {bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change__remote="sse('/examples/signals_changed/updates', {method:'post'})"
 >
   <div>
