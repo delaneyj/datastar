@@ -1,6 +1,6 @@
 {
   "name": "datastar-vscode",
-  "version": "0.21.0",
+  "version": "0.21.1",
   "displayName": "Datastar",
   "description": "Adds autocomplete for Datastar to Visual Studio Code.",
   "author": "Ben Croker",
@@ -20,10 +20,6 @@
       {
         "language": "html",
         "path": "./src/data-attributes.json"
-      },
-      {
-        "language": "html",
-        "path": "./src/sse-plugin.json"
       }
     ]
   },
