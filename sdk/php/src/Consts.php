@@ -14,8 +14,8 @@ class Consts
     public const VERSION_CLIENT_BYTE_SIZE = 33647;
     public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12356;
 
-    // The default duration for settling during merges. Allows for CSS transitions to complete.
-    public const DEFAULT_SETTLE_DURATION = 300;
+    // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
+    public const DEFAULT_FRAGMENTS_SETTLE_DURATION = 300;
 
     // The default duration for retrying SSE on connection reset. This is part of the underlying retry mechanism of SSE.
     public const DEFAULT_SSE_RETRY_DURATION = 1000;

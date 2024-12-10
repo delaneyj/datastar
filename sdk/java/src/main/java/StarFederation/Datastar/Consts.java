@@ -7,12 +7,12 @@ import starfederation.datastar.enums.FragmentMergeMode;
  */
 public final class Consts {
     public static final String DATASTAR_KEY = "datastar";
-    public static final String VERSION = "0.21.0-beta1";
-    public static final int VERSION_CLIENT_BYTE_SIZE = 33376;
-    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12238;
+    public static final String VERSION = "0.21.0-beta2";
+    public static final int VERSION_CLIENT_BYTE_SIZE = 33647;
+    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12356;
 
-    // The default duration for settling during merges. Allows for CSS transitions to complete.
-    public static final int DEFAULT_SETTLE_DURATION = 300;
+    // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
+    public static final int DEFAULT_FRAGMENTS_SETTLE_DURATION = 300;
 
     // The default duration for retrying SSE on connection reset. This is part of the underlying retry mechanism of SSE.
     public static final int DEFAULT_SSE_RETRY_DURATION = 1000;

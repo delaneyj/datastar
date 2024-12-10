@@ -42,7 +42,7 @@ module Consts =
     let [<Literal>] VersionClientByteSizeGzip = 12356
 
     /// Default: TimeSpan.FromMilliseconds 300
-    let DefaultSettleDuration = TimeSpan.FromMilliseconds 300
+    let DefaultFragmentsSettleDuration = TimeSpan.FromMilliseconds 300
     /// Default: TimeSpan.FromMilliseconds 1000
     let DefaultSseRetryDuration = TimeSpan.FromMilliseconds 1000
 
