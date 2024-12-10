@@ -25,9 +25,10 @@ This should be the final round of API changes before v1.0.0 🚀
 - Renamed the `data-store` attribute to `data-signals`.
 - Renamed the `data-bind` attribute to `data-attributes`.
 - Renamed the `data-model` attribute to `data-bind`.
-- Changed the `data-*` attribute modifier delimiter from `.` to `:` (`data-on-keydown:debounce_100ms:throttle_lead="value"`).
+- Changed the `data-*` attribute modifier delimiter from `.` to `__` for modifiers and from `_` to `.` for arguments.  This is to be spec compliant while still parseable with new nested signal syntax #345 (`data-on-keydown__debounce.100ms__throttle.noLead="value"`).
 - The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method: 'post'})`), defaulting to `get`.
 - The `setAll()` and `toggleAll` plugins now accept a path prefix, instead of a regular expression.
+- Nested signals no longer allow for `__` in the key.  It causes a conflict with modifiers.
 
 ### Fixed
 

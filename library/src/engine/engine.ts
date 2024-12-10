@@ -101,7 +101,7 @@ export class Engine {
 
                     // Extract the key and value from the dataset
                     const keyRaw = rawKey.slice(p.name.length);
-                    let [key, ...rawModifiers] = keyRaw.split(":");
+                    let [key, ...rawModifiers] = keyRaw.split(/\_\_+/);
 
                     const hasKey = key.length > 0;
                     if (hasKey) {
@@ -148,7 +148,7 @@ export class Engine {
                     appliedMacros.clear();
                     const mods: Modifiers = new Map<string, Set<string>>();
                     rawModifiers.forEach((m) => {
-                        const [label, ...args] = m.split("_");
+                        const [label, ...args] = m.split(".");
                         mods.set(camelize(label), new Set(args));
                     });
                     const macros = [

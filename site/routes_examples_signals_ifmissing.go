@@ -3,6 +3,7 @@ package site
 import (
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -27,7 +28,13 @@ func setupExamplesSignalsIfMissing(examplesRouter chi.Router) error {
 
 				switch i % 2 {
 				case 0:
-					fragment := fmt.Sprintf(`<div id="placeholder" data-signals:ifmissing=%q data-text="id.value"></div>`, signals)
+					fragment := strings.TrimSpace(fmt.Sprintf(`
+<div
+	id="placeholder"
+	data-signals__ifmissing=%q
+	data-text="id.value"
+></div>
+					`, signals))
 					sse.MergeFragments(fragment, datastar.WithMergeUpsertAttributes())
 				case 1:
 					sse.MarshalAndMergeSignalsIfMissing(signals)

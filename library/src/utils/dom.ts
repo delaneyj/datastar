@@ -32,3 +32,18 @@ export function elUniqId(el: Element) {
     }
     return DATASTAR + hash;
 }
+
+export function onElementRemoved(element: Element, callback: () => void) {
+    const observer = new MutationObserver((mutations) => {
+        for (const mutation of mutations) {
+            for (const removedNode of mutation.removedNodes) {
+                if (removedNode === element) {
+                    observer.disconnect();
+                    callback();
+                    return;
+                }
+            }
+        }
+    });
+    observer.observe(element.parentNode as Node, { childList: true });
+}

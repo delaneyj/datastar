@@ -31,6 +31,10 @@ function mergeNested(
 ): void {
     for (const key in values) {
         if (values.hasOwnProperty(key)) {
+            if (key.match(/\_\_+/)) {
+                throw dsErr("InvalidSignalKey", { key });
+            }
+
             const value = values[key];
             if (value instanceof Object && !Array.isArray(value)) {
                 if (!target[key]) {

@@ -4,7 +4,7 @@
 
 <div data-signals="{eventCount:0,eventDetails:''}">
      <div id="foo" data-on-myevent="eventDetails.value=evt.detail;eventCount.value++">
-          <div>Event count: <span data-text="eventCount.value">EventCount</span></div>
+          <div>Event count: <span id="eventCount" data-text="eventCount.value">EventCount</span></div>
           <div>Last Event Details: <span data-text="eventDetails.value">EventTime</span></div>
      </div>
      <script>
