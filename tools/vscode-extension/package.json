@@ -20,10 +20,6 @@
       {
         "language": "html",
         "path": "./src/data-attributes.json"
-      },
-      {
-        "language": "html",
-        "path": "./src/sse-plugin.json"
       }
     ]
   },
