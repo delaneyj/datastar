@@ -2,14 +2,14 @@ import { Computed, computed, Signal } from "../vendored/preact-core";
 import { dsErr } from "./errors";
 import { NestedSignal, NestedValues } from "./types";
 
-// If onlyPublic is true, only signals not starting with an underscore are included
+// If onlyRemote is true, only signals not starting with an underscore are included
 function nestedValues(
     signal: NestedSignal,
-    onlyPublic = false,
+    onlyRemote = false,
 ): Record<string, any> {
     const kv: Record<string, any> = {};
     for (const key in signal) {
-        if (onlyPublic && key.startsWith("_")) {
+        if (onlyRemote && key.startsWith("_")) {
             continue;
         }
 
@@ -219,12 +219,12 @@ export class SignalsRoot {
         walkNestedSignal(this._signals, cb);
     }
 
-    values(onlyPublic = false): NestedValues {
-        return nestedValues(this._signals, onlyPublic);
+    values(onlyRemote = false): NestedValues {
+        return nestedValues(this._signals, onlyRemote);
     }
 
-    JSON(shouldIndent = true, onlyPublic = false) {
-        const values = this.values(onlyPublic);
+    JSON(shouldIndent = true, onlyRemote = false) {
+        const values = this.values(onlyRemote);
         if (!shouldIndent) {
             return JSON.stringify(values);
         }
