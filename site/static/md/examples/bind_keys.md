@@ -2,16 +2,26 @@
 
 ## Demo
 
-<h1 data-on-keydown:window:ctrl-key:key_k="alert('you hit the cheat code!')">Press Ctrl+K</h1>
-<h1 data-on-keydown:window:key_enter="alert('you hit the other code!')">Press Enter</h1>
+<h1 data-on-keydown="(evt.ctrlKey && evt.key=='k') && alert('you hit the cheat code!') " data-modifiers-on-keydown="{window:true,preventDefault:true}">
+  Press Ctrl+K
+</h1>
+<h1 data-on-keydown="evt.key == 'Enter' && alert('you hit the other code!')" data-modifiers-on-keydown.window="true">
+  Press Enter
+</h1>
 
 ## Explanation
 
 ```html
-<h1 data-on-keydown:window:ctrl-key:key_k="alert('you hit the cheat code!')">
+<h1
+  data-on-keydown="(evt.ctrlKey && evt.key=='k') && alert('you hit the cheat code!') "
+  data-modifiers-on-keydown="{window:true,preventDefault:true}"
+>
   Press Ctrl+K
 </h1>
-<h1 data-on-keydown:window:key_enter="alert('you hit the other code!')">
+<h1
+  data-on-keydown="evt.key == 'Enter' && alert('you hit the other code!')"
+  data-modifiers-on-keydown.window="true"
+>
   Press Enter
 </h1>
 ```

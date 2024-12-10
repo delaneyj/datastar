@@ -3,27 +3,16 @@
 // Slug: Add an event listener to an element
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
-import { dsErr } from "../../../../engine/errors";
 import {
     AttributePlugin,
     PluginType,
     Requirement,
 } from "../../../../engine/types";
-import { argsHas, argsMs } from "../../../../utils/arguments";
+import { modifiers } from "../../../../utils/modifiers";
 import { kebabize } from "../../../../utils/text";
 import { debounce, throttle } from "../../../../utils/timing";
 
-const knownOnModifiers = new Set([
-    "window",
-    "once",
-    "passive",
-    "capture",
-    "debounce",
-    "throttle",
-    "remote",
-    "outside",
-]);
-
+let lastSignalsMarshalled = "";
 const EVT = "evt";
 export const On: AttributePlugin = {
     type: PluginType.Attribute,
@@ -59,72 +48,42 @@ export const On: AttributePlugin = {
             },
         ],
     },
-    onLoad: ({ el, key, genRX, mods, signals, effect }) => {
+    onLoad: (ctx) => {
+        const { el, key, genRX, signals, effect } = ctx;
         const rx = genRX();
+
         let target: Element | Window | Document = el;
-        if (mods.has("window")) target = window;
+
+        const mods = modifiers(ctx);
+        if (mods?.window ?? false) target = window;
 
         let callback = (evt?: Event) => {
+            if (mods?.preventDefault ?? false) {
+                evt?.preventDefault();
+            }
             rx(evt);
         };
 
-        const debounceArgs = mods.get("debounce");
-        if (debounceArgs) {
-            const wait = argsMs(debounceArgs);
-            const leading = argsHas(debounceArgs, "leading", false);
-            const trailing = !argsHas(debounceArgs, "noTrail", false);
-            callback = debounce(callback, wait, leading, trailing);
+        if ("debounce" in mods) {
+            const time = mods?.debounce?.time || 100;
+            const leading = mods?.debounce?.leading ?? false;
+            const noTrail = mods?.debounce?.noTrail ?? false;
+            callback = debounce(callback, time, leading, !noTrail);
         }
 
-        const throttleArgs = mods.get("throttle");
-        if (throttleArgs) {
-            const wait = argsMs(throttleArgs);
-            const leading = !argsHas(throttleArgs, "noLeading", false);
-            const trailing = argsHas(throttleArgs, "trail", false);
-            callback = throttle(callback, wait, leading, trailing);
+        if ("throttle" in mods) {
+            const time = mods?.throttle?.time ?? 100;
+            const noLead = mods?.throttle?.noLead ?? false;
+            const trailing = mods?.throttle?.noTrail ?? false;
+            callback = throttle(callback, time, !noLead, trailing);
         }
 
         const evtListOpts: AddEventListenerOptions = {
-            capture: true,
-            passive: false,
-            once: false,
+            capture: mods?.capture ?? true,
+            passive: mods?.passive ?? false,
+            once: mods?.once ?? false,
         };
-        if (!mods.has("capture")) evtListOpts.capture = false;
-        if (mods.has("passive")) evtListOpts.passive = true;
-        if (mods.has("once")) evtListOpts.once = true;
 
-        const unknownModifierKeys = [...mods.keys()].filter(
-            (key) => !knownOnModifiers.has(key),
-        );
-
-        unknownModifierKeys.forEach((attrName) => {
-            const eventValues = mods.get(attrName) || [];
-            const cb = callback;
-            const revisedCallback = () => {
-                const evt = event as any;
-                const attr = evt[attrName];
-                let valid: boolean;
-
-                if (typeof attr === "function") {
-                    valid = attr(...eventValues);
-                } else if (typeof attr === "boolean") {
-                    valid = attr;
-                } else if (typeof attr === "string") {
-                    const lowerAttr = attr.toLowerCase().trim();
-                    const expr = [...eventValues].join("").toLowerCase().trim();
-                    valid = lowerAttr === expr;
-                } else {
-                    throw dsErr("InvalidValue", { attrName, key, el });
-                }
-
-                if (valid) {
-                    cb(evt);
-                }
-            };
-            callback = revisedCallback;
-        });
-
-        let lastSignalsMarshalled = "";
         const eventName = kebabize(key).toLowerCase();
         switch (eventName) {
             case "load":
@@ -146,16 +105,15 @@ export const On: AttributePlugin = {
 
             case "signals-change":
                 return effect(() => {
-                    const onlyRemoteSignals = mods.has("remote");
+                    const onlyRemoteSignals = mods?.onlyremote ?? false;
                     const current = signals.JSON(false, onlyRemoteSignals);
-                    if (lastSignalsMarshalled !== current) {
+                    if (current !== lastSignalsMarshalled) {
                         lastSignalsMarshalled = current;
                         callback();
                     }
                 });
-
             default:
-                const testOutside = mods.has("outside");
+                const testOutside = mods?.outside ?? false;
                 if (testOutside) {
                     target = document;
                     const cb = callback;

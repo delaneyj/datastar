@@ -9,12 +9,13 @@ function nestedValues(
 ): Record<string, any> {
     const kv: Record<string, any> = {};
     for (const key in signal) {
+        if (onlyPublic && key.startsWith("_")) {
+            continue;
+        }
+
         if (signal.hasOwnProperty(key)) {
             const value = signal[key];
             if (value instanceof Signal) {
-                if (onlyPublic && key.startsWith("_")) {
-                    continue;
-                }
                 kv[key] = value.value;
             } else {
                 kv[key] = nestedValues(value);

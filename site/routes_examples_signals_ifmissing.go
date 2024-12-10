@@ -27,7 +27,13 @@ func setupExamplesSignalsIfMissing(examplesRouter chi.Router) error {
 
 				switch i % 2 {
 				case 0:
-					fragment := fmt.Sprintf(`<div id="placeholder" data-signals:ifmissing=%q data-text="id.value"></div>`, signals)
+					fragment := fmt.Sprintf(`
+<div
+	id="placeholder"
+	data-signals=%q data-text="id.value"
+	data-modifiers-signals.onlyifmissing="true"
+>
+</div>`, signals)
 					sse.MergeFragments(fragment, datastar.WithMergeUpsertAttributes())
 				case 1:
 					sse.MarshalAndMergeSignalsIfMissing(signals)

@@ -1,7 +1,6 @@
 package site
 
 import (
-	"fmt"
 	"net/http"
 
 	lorem "github.com/drhodes/golorem"
@@ -18,8 +17,8 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 
 	opts := []ScrollIntoViewOption{
 		{"behavior", []string{"smooth", "instant", "auto"}},
-		{"block", []string{"vstart", "vcenter", "vend", "vnearest"}},
-		{"inline", []string{"hstart", "hcenter", "hend", "hnearest"}},
+		{"block", []string{"start", "center", "end", "nearest"}},
+		{"inline", []string{"start", "center", "end", "nearest"}},
 	}
 	// inlineOpts := []string{"hstart", "hcenter", "hend", "hnearest"}
 
@@ -29,8 +28,8 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 
 			signals := &ScrollIntoViewSignals{
 				Behavior: "smooth",
-				Block:    "vcenter",
-				Inline:   "hcenter",
+				Block:    "center",
+				Inline:   "center",
 			}
 
 			sse.MergeFragmentTempl(scrollIntoViewView(paragraphs, opts, signals))
@@ -44,20 +43,8 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 			}
 
 			sse := datastar.NewSSE(w, r)
-
-			attr := "scroll-into-view"
-			if signals.Behavior != "" {
-				attr += ":" + signals.Behavior
-			}
-			if signals.Block != "" {
-				attr += ":" + signals.Block
-			}
-			if signals.Inline != "" {
-				attr += ":" + signals.Inline
-			}
-
-			updated := fmt.Sprintf(`<p id="p%d" data-%s></p>`, paragraphCount/2, attr)
-			sse.MergeFragments(updated, datastar.WithMergeUpsertAttributes())
+			c := scrollIntoViewFragment(paragraphCount/2, *signals)
+			sse.MergeFragmentTempl(c, datastar.WithMergeUpsertAttributes())
 		})
 	})
 

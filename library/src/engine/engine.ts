@@ -1,5 +1,4 @@
 import { elUniqId } from "../utils/dom";
-import { camelize } from "../utils/text";
 import { effect } from "../vendored/preact-core";
 import { VERSION } from "./consts";
 import { dsErr } from "./errors";
@@ -12,7 +11,6 @@ import {
     GlobalInitializer,
     HTMLorSVGElement,
     MacroPlugin,
-    Modifiers,
     OnRemovalFn,
     PluginType,
     RemovalEntry,
@@ -100,9 +98,7 @@ export class Engine {
                     if (!rawKey.startsWith(p.name)) continue;
 
                     // Extract the key and value from the dataset
-                    const keyRaw = rawKey.slice(p.name.length);
-                    let [key, ...rawModifiers] = keyRaw.split(":");
-
+                    let key = rawKey.slice(p.name.length);
                     const hasKey = key.length > 0;
                     if (hasKey) {
                         key = key[0].toLowerCase() + key.slice(1);
@@ -146,11 +142,6 @@ export class Engine {
 
                     // Apply the macros
                     appliedMacros.clear();
-                    const mods: Modifiers = new Map<string, Set<string>>();
-                    rawModifiers.forEach((m) => {
-                        const [label, ...args] = m.split("_");
-                        mods.set(camelize(label), new Set(args));
-                    });
                     const macros = [
                         ...(p.macros?.pre || []),
                         ...this.macros,
@@ -176,11 +167,11 @@ export class Engine {
                         actions,
                         genRX: () => this.genRX(ctx, ...p.argNames || []),
                         el,
+                        prefix: p.name,
                         rawKey,
                         rawValue,
                         key,
                         value,
-                        mods,
                     };
 
                     // Load the plugin and store any cleanup functions

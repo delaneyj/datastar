@@ -8,34 +8,31 @@ import {
     PluginType,
     Requirement,
 } from "../../../../engine/types";
-
-const ONCE = "once";
-const HALF = "half";
-const FULL = "full";
+import { modifiers } from "../../../../utils/modifiers";
 
 // Run expression when element intersects with viewport
 export const Intersects: AttributePlugin = {
     type: PluginType.Attribute,
     name: "intersects",
     keyReq: Requirement.Denied,
-    mods: new Set([ONCE, HALF, FULL]),
-    onLoad: ({ el, rawKey, mods, genRX }) => {
-        const options = { threshold: 0 };
-        if (mods.has(FULL)) options.threshold = 1;
-        else if (mods.has(HALF)) options.threshold = 0.5;
-
+    onLoad: (ctx) => {
+        const { el, rawKey, genRX } = ctx;
+        const mods = modifiers(ctx);
+        const threshold = mods?.threshold ?? 0;
         const rx = genRX();
         const observer = new IntersectionObserver((entries) => {
             entries.forEach((entry) => {
                 if (entry.isIntersecting) {
                     rx();
-                    if (mods.has(ONCE)) {
+                    if ("once" in mods) {
                         observer.disconnect();
                         delete el.dataset[rawKey];
                     }
                 }
             });
-        }, options);
+        }, {
+            threshold,
+        });
 
         observer.observe(el);
         return () => observer.disconnect();

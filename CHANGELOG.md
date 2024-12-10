@@ -25,7 +25,7 @@ This should be the final round of API changes before v1.0.0 🚀
 - Renamed the `data-store` attribute to `data-signals`.
 - Renamed the `data-bind` attribute to `data-attributes`.
 - Renamed the `data-model` attribute to `data-bind`.
-- Changed the `data-*` attribute modifier delimiter from `.` to `:` (`data-on-keydown:debounce_100ms:throttle_lead="value"`).
+- Changed the `data-*` attribute modifiers to an independent `data-modifiers` attribute plugin (`data-modifiers-on-keydown-debounce-time="100"`) is now valid.  Take key or object syntax like most signal plugins.  Now allows modifiers to be reactive expressions.
 - The the `get()`, `post()`, `put()`, and `delete()` plugins have been replaced by a single `sse()` plugin that accepts the method as an option (`sse(url, {method: 'post'})`), defaulting to `get`.
 - The `setAll()` and `toggleAll` plugins now accept a path prefix, instead of a regular expression.
 

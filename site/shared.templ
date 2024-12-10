@@ -49,10 +49,10 @@ templ Page(title, description string, uri string) {
 }
 			</style>
 		</head>
-		// data-on-pageshow:window is to combat Safari's aggressive caching
-		// https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
+		// to combat Safari's aggressive caching https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
 		<body
-			data-on-pageshow:window="evt?.persisted && window.location.reload()"
+			data-on-pageshow="evt?.persisted && window.location.reload()"
+			data-modifiers-pageshow.window="true"
 			class="flex flex-col min-h-screen overflow-y-scroll min-w-screen scrollbar scrollbar-thumb-primary scrollbar-track-accent"
 		>
 			{ children... }

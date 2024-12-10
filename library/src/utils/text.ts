@@ -11,6 +11,6 @@ export const camelize = (str: string) =>
         return index == 0 ? word.toLowerCase() : word.toUpperCase();
     }).replace(/\s+/g, "");
 
-export const jsStrToObject = (raw: string) => {
+export const jsStrToObject = <T>(raw: string): T => {
     return (new Function(`return Object.assign({}, ${raw})`))();
 };

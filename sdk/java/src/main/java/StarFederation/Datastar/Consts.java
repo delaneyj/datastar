@@ -7,9 +7,9 @@ import starfederation.datastar.enums.FragmentMergeMode;
  */
 public final class Consts {
     public static final String DATASTAR_KEY = "datastar";
-    public static final String VERSION = "0.21.0-beta1";
-    public static final int VERSION_CLIENT_BYTE_SIZE = 33376;
-    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12238;
+    public static final String VERSION = "0.21.0-beta2";
+    public static final int VERSION_CLIENT_BYTE_SIZE = 32643;
+    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 11947;
 
     // The default duration for settling during merges. Allows for CSS transitions to complete.
     public static final int DEFAULT_SETTLE_DURATION = 300;

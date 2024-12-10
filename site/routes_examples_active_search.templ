@@ -29,7 +29,8 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				type="text"
 				placeholder="Search..."
 				data-bind="search"
-				data-on-input:debounce_500ms={ datastar.GetSSE("/examples/active_search/updates") }
+				data-on-input={ datastar.GetSSE("/examples/active_search/updates") }
+				data-modifiers-on-input.debounce.time="500"
 				data-indicator="fetching"
 			/>
 			@sseIndicator("fetching")

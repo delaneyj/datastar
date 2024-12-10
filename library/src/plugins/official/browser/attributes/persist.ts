@@ -9,6 +9,7 @@ import {
     NestedValues,
     PluginType,
 } from "../../../../engine/types";
+import { modifiers } from "../../../../utils/modifiers";
 
 const SESSION = "session";
 
@@ -16,11 +17,13 @@ export const Persist: AttributePlugin = {
     type: PluginType.Attribute,
     name: "persist",
     mods: new Set([SESSION]),
-    onLoad: ({ key, value, signals, effect, mods }) => {
+    onLoad: (ctx) => {
+        let { key, value, signals, effect } = ctx;
         if (key === "") {
             key = DATASTAR;
         }
-        const storage = mods.has(SESSION) ? sessionStorage : localStorage;
+        const mods = modifiers(ctx);
+        const storage = mods?.mode === SESSION ? sessionStorage : localStorage;
         const paths = value.split(/\s+/).filter((p) => p !== "");
 
         const storageToSignals = () => {

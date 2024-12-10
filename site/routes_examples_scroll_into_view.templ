@@ -58,3 +58,11 @@ templ scrollIntoViewView(paragraphs []string, opts []ScrollIntoViewOption, signa
 		}
 	</div>
 }
+
+templ scrollIntoViewFragment(paragaphToScrollTo int, signals ScrollIntoViewSignals) {
+	<p
+		id={ fmt.Sprintf("p%d", paragaphToScrollTo) }
+		data-scroll-into-view
+		data-modifiers-scroll-into-view={ templ.JSONString(signals) }
+	></p>
+}

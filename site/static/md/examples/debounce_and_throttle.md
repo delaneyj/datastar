@@ -4,30 +4,32 @@ Debouncing and throttling are two techniques to limit the number of times a func
 
 ## Throttling
 
-<div class="bg-secondary text-secondary-content p-8 rounded-box font-bold font-mono text-6xl" data-signals="{tick:0}" data-on-raf:throttle_500ms="tick.value = (new Date()).getTime()">
+<div class="bg-secondary text-secondary-content p-8 rounded-box font-bold font-mono text-6xl" data-signals="{tick:0}" data-on-raf="tick.value = (new Date()).getTime()" data-modifiers-on-raf.throttle.time="500">
 <div data-text="tick.value">Text</div>
 </div>
 
 ```html
 <div
     data-signals="{tick:0}"
-    data-on-raf:throttle_500ms="tick.value = (new Date()).getTime()"
+    data-on-raf="tick.value = (new Date()).getTime()"
+    data-modifiers-on-raf.throttle.time="500"
 >
     <div data-text="tick.value"></div>
 </div>
 ```
 
-In the example above, the `data-on-raf:throttle_500ms` directive ensures that the `tick` value is updated at most once every 500ms. If the value is updated more frequently, the updates are ignored until the 500ms delay has passed.
+In the example above, the `data-modifiers-on-raf.throttle.time="500"` directive ensures that the `tick` value is updated at most once every 500ms. If the value is updated more frequently, the updates are ignored until the 500ms delay has passed.
 
 ### Debouncing
 
-<button class="btn btn-primary btn-lg" data-signals="{clicks:0}" data-on-click:debounce_500ms="clicks.value++">Debounced button clicked<span data-text="clicks.value"> times</span>
+<button class="btn btn-primary btn-lg" data-signals="{clicks:0}" data-on-click="clicks.value++" data-modifiers-on-click.debounce.time="500">Debounced button clicked<span data-text="clicks.value"> times</span>
 </button>
 
 ```html
 <button
     data-signals="{clicks:0}"
-    data-on-click:debounce_500ms="clicks.value++"
+    data-on-click="clicks.value++"
+    data-modifiers-on-click.debounce.time="500"
 >
     Debounced button clicked
     <span data-text="clicks.value"></span>

@@ -17,7 +17,8 @@ The interesting part is the input field:
 ```html
 <input
   data-bind="search"
-  data-on-input:debounce_1000ms="sse('/examples/active_search/data')"
+  data-on-input="sse('/examples/active_search/data')"
+  data-modifiers-on-input-debounce="1000"
   placeholder="Search..."
   type="text"
 />

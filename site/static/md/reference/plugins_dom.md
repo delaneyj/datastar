@@ -105,8 +105,8 @@ If one or more values are provided, only those signals values will be persisted.
 
 #### Modifiers
 
-- `:session` - Persists signals values in Session Storage
+- `mode` - Persists signals values into either  `session` SessionStorage or `local` for  LocalStorage.  Default is `local`.
 
 ```html
-<div data-persist-foo:session></div>
+<div data-modifiers-persist-mode="'session'"></div>
 ```
