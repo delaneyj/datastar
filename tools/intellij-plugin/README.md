@@ -31,6 +31,10 @@ This plugin offers IntelliJ IDE support for the [Datastar](https://data-star.dev
 
 It offers autocomplete for all of the Datastar custom `data-*` attributes, with additional autocomplete of DOM
 attributes and events.
+
+You can show the documentation alongside the autocomplete suggestions via the File &rarr; Settings &rarr; Editor &rarr;
+General &rarr;
+Code Completion: **Show the documentation popup in .... ms checkbox**
 <!-- Plugin description end -->
 
 ![Screenshot](./resources/img/datastar-intellij-plugin.png)
