@@ -148,7 +148,7 @@ export class Engine {
                     appliedMacros.clear();
                     const mods: Modifiers = new Map<string, Set<string>>();
                     rawModifiers.forEach((m) => {
-                        const [label, ...args] = m.split("_");
+                        const [label, ...args] = m.split(".");
                         mods.set(camelize(label), new Set(args));
                     });
                     const macros = [

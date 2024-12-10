@@ -9,7 +9,7 @@ public final class Consts {
     public static final String DATASTAR_KEY = "datastar";
     public static final String VERSION = "0.21.0-beta2";
     public static final int VERSION_CLIENT_BYTE_SIZE = 33602;
-    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12356;
+    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12354;
 
     // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
     public static final int DEFAULT_FRAGMENTS_SETTLE_DURATION = 300;
