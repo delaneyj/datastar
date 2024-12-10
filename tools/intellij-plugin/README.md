@@ -1,4 +1,4 @@
-# datastar-jetbrains-plugin
+# Datastar support JetBrains plugin
 
 ![Build](https://github.com/khalwat/datastar-jetbrains-plugin/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
@@ -24,12 +24,16 @@
 - [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified
   about releases containing new features and fixes.
 
+---
+
 <!-- Plugin description -->
 This plugin offers IntelliJ IDE support for the [Datastar](https://data-star.dev/) hypermedia framework.
 
 It offers autocomplete for all of the Datastar custom `data-*` attributes, with additional autocomplete of DOM
 attributes and events.
 <!-- Plugin description end -->
+
+![Screenshot](./resources/img/datastar-intellij-plugin.png)
 
 ## Installation
 
@@ -53,6 +57,16 @@ attributes and events.
   Download the [latest release](https://github.com/khalwat/datastar-jetbrains-plugin/releases/latest) and install it
   manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
+
+## Errata
+
+- The Datastar support plugin does have inline documentation and links to the official documentation, but due an
+  [issue with the `web-types`](https://github.com/JetBrains/web-types/issues/85) implementation, it does not appear on
+  hover currently.
+- Autocomplete of Datastar actions in attribute values is not implemented yet
+- CI build & release workflows are not implemented yet
+
+Brought to you by [nystudio107](https://nystudio107.com/)
 
 ---
 Plugin based on the [IntelliJ Platform Plugin Template][template].
