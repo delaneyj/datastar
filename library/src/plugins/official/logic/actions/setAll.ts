@@ -7,10 +7,10 @@ import { ActionPlugin, PluginType } from "../../../../engine/types";
 export const SetAll: ActionPlugin = {
     type: PluginType.Action,
     name: "setAll",
-    fn: (ctx, regexp, newValue) => {
-        const re = new RegExp(regexp);
-        ctx.signals.walk(
-            (name, signal) => re.test(name) && (signal.value = newValue),
-        );
+    fn: ({ signals }, path: string, newValue) => {
+        signals.walk((name, signal) => {
+            if (!name.startsWith(path)) return;
+            signal.value = newValue;
+        });
     },
 };

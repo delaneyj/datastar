@@ -27,7 +27,7 @@ test('Default options are not output', function() {
     $event = new MergeFragments($content, [
         'selector' => '',
         'mergeMode' => FragmentMergeMode::Morph,
-        'settleDuration' => Consts::DEFAULT_SETTLE_DURATION,
+        'settleDuration' => Consts::DEFAULT_FRAGMENTS_SETTLE_DURATION,
         'useViewTransition' => false,
     ]);
     expect($event->getDataLines())

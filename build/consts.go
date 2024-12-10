@@ -66,13 +66,25 @@ var Consts = &ConstTemplateData{
 			FileExtension: "go",
 			Name:          "Go",
 			Icon:          "vscode-icons:file-type-go-gopher",
-			SdkUrl:        "https://github.com/starfederation/datastar/tree/main/code/go/sdk",
+			SdkUrl:        "https://github.com/starfederation/datastar/tree/develop/sdk/go",
 		},
 		{
 			FileExtension: "php",
 			Name:          "PHP",
 			Icon:          "vscode-icons:file-type-php2",
-			SdkUrl:        "https://github.com/starfederation/datastar/tree/main/code/php/sdk",
+			SdkUrl:        "https://github.com/starfederation/datastar/tree/develop/sdk/php",
+		},
+		{
+			FileExtension: "fs",
+			Name:          "Dotnet",
+			Icon:          "vscode-icons:file-type-fsharp2",
+			SdkUrl:        "https://github.com/starfederation/datastar/tree/develop/sdk/dotnet",
+		},
+		{
+			FileExtension: "java",
+			Name:          "Java",
+			Icon:          "vscode-icons:file-type-java",
+			SdkUrl:        "https://github.com/starfederation/datastar/tree/develop/sdk/java",
 		},
 	},
 	DatastarKey: "datastar",
@@ -95,8 +107,8 @@ var Consts = &ConstTemplateData{
 	},
 	DefaultDurations: []*DefaultDuration{
 		{
-			Name:        toolbelt.ToCasedString("settleDuration"),
-			Description: "The default duration for settling during merges. Allows for CSS transitions to complete.",
+			Name:        toolbelt.ToCasedString("fragmentsSettleDuration"),
+			Description: "The default duration for settling during fragment merges. Allows for CSS transitions to complete.",
 			Duration:    300 * time.Millisecond,
 		},
 		{

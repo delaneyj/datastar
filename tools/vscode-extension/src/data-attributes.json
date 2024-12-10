@@ -6,7 +6,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-bind"
+        "url": "https://data-star.dev/reference/plugins_dom#attributes"
       }
     ]
   },
@@ -17,7 +17,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-attributes"
+        "url": "https://data-star.dev/reference/plugins_dom#attributes"
       }
     ]
   },
@@ -28,7 +28,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-bind"
+        "url": "https://data-star.dev/reference/plugins_dom#bind"
       }
     ]
   },
@@ -39,7 +39,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-bind"
+        "url": "https://data-star.dev/reference/plugins_dom#bind"
       }
     ]
   },
@@ -50,7 +50,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-class"
+        "url": "https://data-star.dev/reference/plugins_dom#class"
       }
     ]
   },
@@ -61,7 +61,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-class"
+        "url": "https://data-star.dev/reference/plugins_dom#class"
       }
     ]
   },
@@ -72,7 +72,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-computed"
+        "url": "https://data-star.dev/reference/plugins_core#computed"
       }
     ]
   },
@@ -83,7 +83,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-indicator"
+        "url": "https://data-star.dev/reference/plugins_backend#data-indicator"
       }
     ]
   },
@@ -94,7 +94,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-indicator"
+        "url": "https://data-star.dev/reference/plugins_backend#data-indicator"
       }
     ]
   },
@@ -105,29 +105,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-intersect"
-      }
-    ]
-  },
-  "data-signals": {
-    "prefix": "data-signals",
-    "body": "data-signals=\"{${1:signalName}: ${2:expression}}\"",
-    "description": "Merges one or more signals into the existing signals using a set of key-value pairs that map to the signal name and expression.",
-    "references": [
-      {
-        "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-signals"
-      }
-    ]
-  },
-  "data-signals-*": {
-    "prefix": "data-signals",
-    "body": "data-signals-${1:name}=\"${2:expression}\"",
-    "description": "Merges a signal into the existing signals.",
-    "references": [
-      {
-        "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-signals"
+        "url": "https://data-star.dev/reference/plugins_browser#intersects"
       }
     ]
   },
@@ -138,7 +116,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
@@ -149,7 +127,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
@@ -160,7 +138,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
@@ -171,7 +149,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
@@ -182,7 +160,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
@@ -193,18 +171,29 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-on"
+        "url": "https://data-star.dev/reference/plugins_dom#on"
       }
     ]
   },
   "data-persist": {
     "prefix": "data-persist",
     "body": "data-persist=\"\"",
-    "description": "Persists all signals in local storage.",
+    "description": "Persists signals in local storage.",
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-persist"
+        "url": "https://data-star.dev/reference/plugins_dom#persist"
+      }
+    ]
+  },
+  "data-persist-*": {
+    "prefix": "data-persist-*",
+    "body": "data-persist-${1:name}=\"${2:expression}\"",
+    "description": "Persists signals in local storage with the provided name.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/reference/plugins_dom#persist"
       }
     ]
   },
@@ -215,7 +204,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-ref"
+        "url": "https://data-star.dev/reference/plugins_core#ref"
       }
     ]
   },
@@ -226,7 +215,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-ref"
+        "url": "https://data-star.dev/reference/plugins_core#ref"
       }
     ]
   },
@@ -237,7 +226,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-replace-url"
+        "url": "https://data-star.dev/reference/plugins_backend#data-replace-url"
       }
     ]
   },
@@ -248,7 +237,7 @@
     "references": [
       {
         "name": "Documentation",
-        "url": "https://data-star.dev/guide/getting_started#data-scroll-into-view"
+        "url": "https://data-star.dev/reference/plugins_browser#scroll-into-view"
       }
     ]
   },
@@ -260,6 +249,28 @@
       {
         "name": "Documentation",
         "url": "https://data-star.dev/reference/plugins_browser#show"
+      }
+    ]
+  },
+  "data-signals": {
+    "prefix": "data-signals",
+    "body": "data-signals=\"{${1:signalName}: ${2:expression}}\"",
+    "description": "Merges one or more signals into the existing signals using a set of key-value pairs that map to the signal name and expression.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/reference/plugins_core#signals"
+      }
+    ]
+  },
+  "data-signals-*": {
+    "prefix": "data-signals-*",
+    "body": "data-signals-${1:name}=\"${2:expression}\"",
+    "description": "Merges a signal into the existing signals.",
+    "references": [
+      {
+        "name": "Documentation",
+        "url": "https://data-star.dev/reference/plugins_core#signals"
       }
     ]
   },

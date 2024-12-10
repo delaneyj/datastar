@@ -31,6 +31,10 @@ function mergeNested(
 ): void {
     for (const key in values) {
         if (values.hasOwnProperty(key)) {
+            if (key.match(/\_\_+/)) {
+                throw dsErr("InvalidSignalKey", { key });
+            }
+
             const value = values[key];
             if (value instanceof Object && !Array.isArray(value)) {
                 if (!target[key]) {
@@ -177,7 +181,12 @@ export class SignalsRoot {
         const last = parts[parts.length - 1];
 
         const current = subSignals[last];
-        if (!!current) return current as Signal<T>;
+        if (!!current) {
+            if (current.value === null || current.value === undefined) {
+                current.value = value;
+            }
+            return current as Signal<T>;
+        }
 
         const signal = new Signal(value);
         subSignals[last] = signal;

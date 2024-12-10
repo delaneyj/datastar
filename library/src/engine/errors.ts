@@ -1,5 +1,4 @@
-// TODO: set to https://data-star.dev/
-const url = `http://localhost:8080/errors`;
+const url = `https://data-star.dev/errors`;
 
 export const hasValNonExpr = /([\w0-9.]+)\.value/gm;
 

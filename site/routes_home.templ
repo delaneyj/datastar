@@ -9,10 +9,10 @@ import (
 
 templ Home() {
 	{{
-		cdnText := `<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>`
+		cdnText := `<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar@develop/bundles/datastar.js"></script>`
 	}}
 	{{
-		usageSample := `<input data-bind-title type="text">
+		usageSample := `<input data-bind-title />
 <div data-text="title.value.toUpperCase()"></div>
 <button data-on-click="sse('/endpoint', {method: 'post'})">Save</button>`
 	}}
@@ -73,7 +73,7 @@ templ Home() {
 					<div class="card-body">
 						<div class="flex items-center gap-4">
 							<code
-								class="flex-1 overflow-auto text-xs text-primary text-ellipsis"
+								class="flex-1 overflow-auto text-primary text-ellipsis"
 							>
 								<pre>{ cdnText }</pre>
 							</code>
@@ -91,7 +91,7 @@ templ Home() {
 					<div class="card-body">
 						<div class="flex items-center gap-4">
 							<code
-								class="flex-1 overflow-auto text-xs text-primary text-ellipsis"
+								class="flex-1 overflow-auto text-primary text-ellipsis"
 							>
 								<pre>{ usageSample }</pre>
 							</code>
@@ -116,7 +116,7 @@ templ Home() {
 					</a>
 				</div>
 				<p>
-					We are by far the smallest and fastest full-featured framework, even with everything included.  But no worries, we provide a “pay what for what you use” bundling system for when you want a custom build.''
+					We are by far the smallest and fastest full-featured framework, even with everything included.  But no worries, we provide a “pay for what you use” bundling system for when you want a custom build.
 				</p>
 				<img class="w-full" src="/chart"/>
 				<div

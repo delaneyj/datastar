@@ -33,9 +33,13 @@ export type SSEArgs = {
     headers?: Record<string, string>;
     includeLocal?: boolean;
     openWhenHidden?: boolean;
+    retryScaler?: number;
+    retryMaxWaitMs?: number;
+    retryMaxCount?: number;
+    abort?: AbortSignal;
 };
 
-export const ServerSentEvents: ActionPlugin = {
+export const SSE: ActionPlugin = {
     type: PluginType.Action,
     name: "sse",
     fn: async (
@@ -49,12 +53,20 @@ export const ServerSentEvents: ActionPlugin = {
             headers: userHeaders,
             includeLocal,
             openWhenHidden,
+            retryScaler,
+            retryMaxWaitMs,
+            retryMaxCount,
+            abort,
         } = Object
             .assign({
                 method: "GET",
                 headers: {},
                 includeLocal: false,
-                openWhenHidden: false,
+                openWhenHidden: false, // will keep the request open even if the document is hidden.
+                retryScaler: 2, // the amount to multiply the retry interval by each time
+                retryMaxWaitMs: 30_000, // the maximum retry interval in milliseconds
+                retryMaxCount: 10, // the maximum number of retries before giving up
+                abort: undefined,
             }, args);
         const method = methodAnyCase.toUpperCase();
         try {
@@ -72,6 +84,10 @@ export const ServerSentEvents: ActionPlugin = {
                 method,
                 headers,
                 openWhenHidden,
+                retryScaler,
+                retryMaxWaitMs,
+                retryMaxCount,
+                signal: abort,
                 onmessage: (evt) => {
                     if (!evt.event.startsWith(DATASTAR)) {
                         return;

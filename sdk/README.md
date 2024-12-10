@@ -14,7 +14,7 @@ Provide an SDK in a language agnostic way, to that end
 ### Status
 
 - [x] Create a document (this) to allow any one to make a spec compliant SDK for any language or framework
-- [x] Provide a [reference implementation](../code/go/sdk) in Go
+- [x] Provide a [reference implementation](../sdk/go) in Go
 - [ ] Provide SDKs for
   - [ ] JS/TS
   - [x] PHP
