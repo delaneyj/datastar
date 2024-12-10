@@ -1,7 +1,9 @@
 package smoketests
 
 import (
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -13,22 +15,22 @@ func TestExampleCustomEvents(t *testing.T) {
 	assert.NotNil(t, page)
 
 	t.Run("observe custom event", func(t *testing.T) {
-		evt := "myevent"
 
-		// setup listener
-		page.MustEval(`() => {
-				addEventListener('` + evt + `', function(event) {
-					window.__CUSTOM_EVENT = event;
-				});
-			}
-    	`)
+		evtCountEl := page.MustElement("#eventCount")
 
-		// wait until an event is captured in global scope
-		page.MustWait(`() => (window.__CUSTOM_EVENT !== undefined && window.__CUSTOM_EVENT !== undefined)`)
+		count := func() int {
+			evtCountRaw := evtCountEl.MustText()
+			evtCount, err := strconv.Atoi(evtCountRaw)
+			assert.NoError(t, err)
+			return evtCount
+		}
 
-		// capture event details
-		result := page.MustEval(`() => window.__CUSTOM_EVENT.detail`).Str()
-
-		assert.Contains(t, result, "eventTime")
+		prev := count()
+		for i := 0; i < 2; i++ {
+			time.Sleep(1 * time.Second)
+			evtCountAgain := count()
+			assert.Greater(t, evtCountAgain, prev)
+			prev = evtCountAgain
+		}
 	})
 }

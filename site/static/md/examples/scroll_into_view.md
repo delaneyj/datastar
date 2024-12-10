@@ -7,7 +7,7 @@ We are highlighting the middle paragraph of the page to make it easier to see th
 **Note:** The defaults are to have smooth centered scroll. If you want to also focus() the element just add the `:focus` modifier.
 
 ```html
-<p data-scroll-into-view:instant:vstart:hcenter id="p10"></p>
+<p data-scroll-into-view__instant__vstart__hcenter id="p10"></p>
 ```
 
 ## Demo
