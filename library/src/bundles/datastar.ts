@@ -1,5 +1,5 @@
 import { Datastar } from "../engine";
-import { ServerSentEvents as SSE } from "../plugins/official/backend/actions/sse";
+import { SSE } from "../plugins/official/backend/actions/sse";
 import { Indicator } from "../plugins/official/backend/attributes/indicator";
 import { ExecuteScript } from "../plugins/official/backend/watchers/executeScript";
 import { MergeFragments } from "../plugins/official/backend/watchers/mergeFragments";

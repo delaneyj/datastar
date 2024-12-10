@@ -39,7 +39,7 @@ export type SSEArgs = {
     abort?: AbortSignal;
 };
 
-export const ServerSentEvents: ActionPlugin = {
+export const SSE: ActionPlugin = {
     type: PluginType.Action,
     name: "sse",
     fn: async (
