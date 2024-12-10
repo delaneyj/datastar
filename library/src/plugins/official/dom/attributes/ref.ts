@@ -7,7 +7,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 // Sets the value of the element
 export const Ref: AttributePlugin = {

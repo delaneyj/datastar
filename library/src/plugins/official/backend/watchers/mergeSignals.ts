@@ -5,9 +5,9 @@
 import {
     DefaultMergeSignalsOnlyIfMissing,
     EventTypes,
-} from "../../../../engine/consts";
-import { PluginType, WatcherPlugin } from "../../../../engine/types";
-import { isBoolString, jsStrToObject } from "../../../../utils/text";
+} from "#engine/consts";
+import { PluginType, WatcherPlugin } from "#engine/types";
+import { isBoolString, jsStrToObject } from "#utils/text";
 import { datastarSSEEventWatcher } from "../shared";
 
 export const MergeSignals: WatcherPlugin = {

@@ -2,7 +2,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 const name = "computed";
 export const Computed: AttributePlugin = {

@@ -7,8 +7,8 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
-import { supportsViewTransitions } from "../../../../utils/view-transtions";
+} from "#engine/types";
+import { supportsViewTransitions } from "#utils/view-transtions";
 
 const VIEW_TRANSITION = "view-transition";
 

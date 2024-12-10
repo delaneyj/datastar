@@ -7,7 +7,7 @@ import {
     AttributePlugin,
     PluginType,
     Requirement,
-} from "../../../../engine/types";
+} from "#engine/types";
 
 export const ReplaceUrl: AttributePlugin = {
     type: PluginType.Attribute,

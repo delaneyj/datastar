@@ -8,19 +8,19 @@ import {
     DefaultSettleDurationMs,
     EventTypes,
     FragmentMergeModes,
-} from "../../../../engine/consts";
-import { dsErr } from "../../../../engine/errors";
+} from "#engine/consts";
+import { dsErr } from "#engine/errors";
 import {
     InitContext,
     PluginType,
     WatcherPlugin,
-} from "../../../../engine/types";
-import { isBoolString } from "../../../../utils/text";
+} from "#engine/types";
+import { isBoolString } from "#utils/text";
 import {
     docWithViewTransitionAPI,
     supportsViewTransitions,
-} from "../../../../utils/view-transtions";
-import { idiomorph } from "../../../../vendored/idiomorph";
+} from "#utils/view-transtions";
+import { idiomorph } from "#vendored/idiomorph";
 import {
     datastarSSEEventWatcher,
     SETTLING_CLASS,
