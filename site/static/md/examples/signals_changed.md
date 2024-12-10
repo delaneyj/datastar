@@ -5,7 +5,7 @@
 <div
   data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change="sse('/examples/signals_changed/updates', {method:'post'})"
-  data-modifiers-on-signals-change.onlyRemote="true"
+  data-modifiers-on-signals-change.onlyremote="true"
   >
     <div class="flex gap-4">
       <button
@@ -34,7 +34,7 @@
 <div
   data-signals="{clicks:0, _localState: { bar: 1234}, _anotherLocalVar: 'hello'}"
   data-on-signals-change="sse('/examples/signals_changed/updates', {method:'post'})"
-  data-modifiers-on-signals-change.onlyRemote="true"
+  data-modifiers-on-signals-change.onlyremote="true"
 >
   <div>
     <button id="increment" data-on-click="clicks.value++">Click Me</button>
@@ -55,7 +55,7 @@
 
 `data-on-signals-change` is a special event that is triggered when the signals changes. This is useful for updating the UI when the signals changes. In this example we update the `clicks` signals with a new value. This triggers a re-render of the `clicks` span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further. In this case we are sending the signals changes to the server to update the lifetime total clicks the server has seen.
 
-**Note**: The `data-modifiers-on-signals-change.onlyRemote="true"` modifier is used to trigger this event only when remotely viewable signals are updated. This is useful for not sending data that is not needed to the server. To look at the details run `console.log(JSON.stringify(ds.signals.value,null,2))` in the browser console. You should see something like
+**Note**: The `data-modifiers-on-signals-change.onlyremote="true"` modifier is used to trigger this event only when remotely viewable signals are updated. This is useful for not sending data that is not needed to the server. To look at the details run `console.log(JSON.stringify(ds.signals.value,null,2))` in the browser console. You should see something like
 
 ```json
 {
