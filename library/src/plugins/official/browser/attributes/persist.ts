@@ -16,7 +16,6 @@ const SESSION = "session";
 export const Persist: AttributePlugin = {
     type: PluginType.Attribute,
     name: "persist",
-    mods: new Set([SESSION]),
     onLoad: (ctx) => {
         let { key, value, signals, effect } = ctx;
         if (key === "") {

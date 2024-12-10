@@ -49,50 +49,65 @@ export const On: AttributePlugin = {
         ],
     },
     onLoad: (ctx) => {
-        const { el, key, genRX, signals, effect } = ctx;
+        const { el, key, genRX } = ctx;
         const rx = genRX();
 
         let target: Element | Window | Document = el;
-
         const mods = modifiers(ctx);
         if (mods?.window ?? false) target = window;
 
         let callback = (evt?: Event) => {
-            if (mods?.preventDefault ?? false) {
-                evt?.preventDefault();
-            }
+            // if (mods?.preventDefault ?? false) {
+            evt?.preventDefault();
+            evt?.stopPropagation();
+            // }
+            console.log("callback", evt, el.id, key);
             rx(evt);
         };
 
+        const testOutside = mods?.outside ?? false;
+        if (testOutside) {
+            target = document;
+            const cb = callback;
+            let called = false;
+            const targetOutsideCallback = (e?: Event) => {
+                const targetHTML = e?.target as HTMLElement;
+                if (!targetHTML) return;
+                const isEl = el.id === targetHTML.id;
+                if (isEl && called) {
+                    called = false;
+                }
+                if (!isEl && !called) {
+                    cb(e);
+                    called = true;
+                }
+            };
+            callback = targetOutsideCallback;
+        }
+
         if ("debounce" in mods) {
-            const time = mods?.debounce?.time || 100;
+            const duration = mods?.debounce?.duration || 100;
             const leading = mods?.debounce?.leading ?? false;
             const noTrail = mods?.debounce?.noTrail ?? false;
-            callback = debounce(callback, time, leading, !noTrail);
+            callback = debounce(callback, duration, leading, !noTrail);
         }
 
         if ("throttle" in mods) {
-            const time = mods?.throttle?.time ?? 100;
+            const duration = mods?.throttle?.duration ?? 100;
             const noLead = mods?.throttle?.noLead ?? false;
             const trailing = mods?.throttle?.noTrail ?? false;
-            callback = throttle(callback, time, !noLead, trailing);
+            callback = throttle(callback, duration, !noLead, trailing);
         }
 
-        const evtListOpts: AddEventListenerOptions = {
-            capture: mods?.capture ?? true,
-            passive: mods?.passive ?? false,
-            once: mods?.once ?? false,
-        };
-
         const eventName = kebabize(key).toLowerCase();
+
         switch (eventName) {
             case "load":
                 callback();
                 delete el.dataset.onLoad;
-                return () => {};
-
+                return;
             case "raf":
-                let rafId: number | undefined;
+                let rafId = -1;
                 const raf = () => {
                     callback();
                     rafId = requestAnimationFrame(raf);
@@ -102,38 +117,21 @@ export const On: AttributePlugin = {
                 return () => {
                     if (rafId) cancelAnimationFrame(rafId);
                 };
-
             case "signals-change":
-                return effect(() => {
-                    const onlyRemoteSignals = mods?.onlyremote ?? false;
-                    const current = signals.JSON(false, onlyRemoteSignals);
-                    if (current !== lastSignalsMarshalled) {
-                        lastSignalsMarshalled = current;
-                        callback();
-                    }
-                });
-            default:
-                const testOutside = mods?.outside ?? false;
-                if (testOutside) {
-                    target = document;
-                    const cb = callback;
-                    let called = false;
-                    const targetOutsideCallback = (e?: Event) => {
-                        const targetHTML = e?.target as HTMLElement;
-                        if (!targetHTML) return;
-                        const isEl = el.id === targetHTML.id;
-                        if (isEl && called) {
-                            called = false;
-                        }
-                        if (!isEl && !called) {
-                            cb(e);
-                            called = true;
-                        }
-                    };
-                    callback = targetOutsideCallback;
+                const current = ctx.signals.JSON();
+                if (lastSignalsMarshalled !== current) {
+                    callback();
+                    lastSignalsMarshalled = current;
                 }
-
+                return;
+            default:
+                const evtListOpts: AddEventListenerOptions = {
+                    capture: mods?.capture ?? true,
+                    passive: mods?.passive ?? false,
+                    once: mods?.once ?? false,
+                };
                 target.addEventListener(eventName, callback, evtListOpts);
+
                 return () => {
                     target.removeEventListener(eventName, callback);
                 };
