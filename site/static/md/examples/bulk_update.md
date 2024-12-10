@@ -24,7 +24,7 @@ transition: all 1.2s;
 
 ## Explanation
 
-This demo shows how to implement a common pattern where rows are selected and then bulk updated. This is accomplished by putting a form around a table, with checkboxes in the table, and then including the checked values in PUT’s to two different endpoints: `activate` and `deactivate`:
+This demo shows how to implement a common pattern where rows are selected and then bulk updated. This is accomplished by putting a form around a table, with checkboxes in the table, and then including the checked values in PUT’s to two different endpoints: `activate` and `deactivate`.
 
 Added to the page in this way:
 
