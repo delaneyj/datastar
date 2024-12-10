@@ -4,20 +4,20 @@ import (
 	"context"
 	"fmt"
 	"testing"
+	"time"
 
 	"github.com/delaneyj/toolbelt"
 	"github.com/go-rod/rod"
 	"github.com/starfederation/datastar/site"
-	"github.com/ysmood/got"
 )
 
 var (
 	baseURL string
 )
 
-// test context
-type G struct {
-	got.G
+type UnitTest struct {
+	t       *testing.T
+	ctx     context.Context
 	browser *rod.Browser
 }
 
@@ -40,18 +40,19 @@ func TestMain(m *testing.M) {
 	ctx.Done()
 }
 
-var setup = func() func(t *testing.T) G {
-
+var setup = func() func(t *testing.T) UnitTest {
 	browser := rod.New().MustConnect()
+	return func(t *testing.T) UnitTest {
+		t.Parallel()
+		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
 
-	return func(t *testing.T) G {
-		t.Parallel() // run each test concurrently
-		return G{got.New(t), browser}
+		return UnitTest{t, ctx, browser}
 	}
 }()
 
-func (g G) page(url string) *rod.Page {
-	page := g.browser.MustIncognito().MustPage(fmt.Sprintf("%s/%s", baseURL, url))
-	g.Cleanup(page.MustClose)
+func (u UnitTest) page(url string) *rod.Page {
+	page := u.browser.MustIncognito().MustPage(fmt.Sprintf("%s/%s", baseURL, url))
+	u.t.Cleanup(page.MustClose)
 	return page
 }

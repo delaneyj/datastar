@@ -1,3 +1,4 @@
-import { Datastar } from "../engine";
+import { Datastar as DS } from "../engine";
 
-Datastar.load();
+DS.load();
+export const Datastar = DS;
