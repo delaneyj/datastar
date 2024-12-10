@@ -2,7 +2,7 @@ export type TimerHandler = (...args: any[]) => void;
 
 export function debounce(
     callback: TimerHandler,
-    wait: number,
+    duration: number,
     leading = false,
     trailing = true,
 ): TimerHandler {
@@ -22,13 +22,13 @@ export function debounce(
                 callback(...args);
             }
             resetTimer();
-        }, wait);
+        }, duration);
     };
 }
 
 export function throttle(
     callback: TimerHandler,
-    wait: number,
+    duration: number,
     leading = true,
     trailing = false,
 ): TimerHandler {
@@ -47,6 +47,6 @@ export function throttle(
             if (trailing) {
                 callback(...args);
             }
-        }, wait);
+        }, duration);
     };
 }

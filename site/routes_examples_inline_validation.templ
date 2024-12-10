@@ -20,7 +20,7 @@ templ inlineValidationFieldComponent(label, field string, isValid bool, isNotVal
 			class={ "input input-bordered", templ.KV("input-error",!isValid) }
 			data-bind={ field }
 			data-on-keydown={ datastar.GetSSE("/examples/inline_validation/data") }
-			data-modifiers-on-keydown.debounce.time="500"
+			data-modifiers-on-keydown.debounce.duration="500"
 			data-testid={ "input_" + field }
 		/>
 		if !isValid {

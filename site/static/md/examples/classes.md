@@ -5,7 +5,7 @@
 <div
     data-signals="{count:0}"
     data-on-raf="count.value++"
-    data-modifiers-on-raf.throttle.time="500"
+    data-modifiers-on-raf.throttle.duration="500"
     data-computed-blinker="count.value % 2 === 0"
 >
     <div data-text="count.value">Count</div>
@@ -20,7 +20,7 @@
 <div
     data-signals="{count:0}"
     data-on-raf="count.value++"
-    data-modifiers-on-raf.throttle.time="500"
+    data-modifiers-on-raf.throttle.duration="500"
     data-computed-blinker="count.value % 2 === 0"
 >
     <div data-text="count.value">Count</div>
