@@ -15,21 +15,21 @@
           "name": "raf"
         }
       ],
-      "datastar-persist-modifiers": [
+      "datastar-intersects-modifiers": [
         {
-          "name": "session",
-          "description": "Persists signals values in Session Storage"
+          "name": "full",
+          "description": "Trigger when the full element is visible"
+        },
+        {
+          "name": "half",
+          "description": "Trigger when half of the element is visible"
+        },
+        {
+          "name": "once",
+          "description": "Only trigger the event once"
         }
       ],
       "datastar-on-modifiers": [
-        {
-          "name": "once",
-          "description": "Only trigger the event listener once"
-        },
-        {
-          "name": "passive",
-          "description": "Do not call `preventDefault` on the event listener"
-        },
         {
           "name": "capture",
           "description": "Use a capture event listener"
@@ -59,6 +59,14 @@
           "description": "Throttle the event listener"
         },
         {
+          "name": "once",
+          "description": "Only trigger the event listener once"
+        },
+        {
+          "name": "passive",
+          "description": "Do not call `preventDefault` on the event listener"
+        },
+        {
           "name": "throttle_1000ms",
           "description": "Throttle for 1000ms"
         },
@@ -77,6 +85,68 @@
         {
           "name": "window",
           "description": "Attaches the event listener to the `window` element"
+        }
+      ],
+      "datastar-persist-modifiers": [
+        {
+          "name": "session",
+          "description": "Persists signals values in Session Storage"
+        }
+      ],
+      "datastar-scroll-into-view-modifiers": [
+        {
+          "name": "auto",
+          "description": "Scrolling is determined by the computed scroll-behavior CSS property"
+        },
+        {
+          "name": "instant",
+          "description": "Scrolling should be instant"
+        },
+        {
+          "name": "focus",
+          "description": "Focus the element after scrolling"
+        },
+        {
+          "name": "hcenter",
+          "description": "Scroll to the horizontal center of the element"
+        },
+        {
+          "name": "hend",
+          "description": "Scroll to the right of the element"
+        },
+        {
+          "name": "hnearest",
+          "description": "Scroll to the nearest horizontal edge of the element"
+        },
+        {
+          "name": "hstart",
+          "description": "Scroll to the left of the element"
+        },
+        {
+          "name": "smooth",
+          "description": "Scrolling should be animate smoothly"
+        },
+        {
+          "name": "vstart",
+          "description": "Scroll to the top of the element"
+        },
+        {
+          "name": "vcenter",
+          "description": "Scroll to the vertical center of the element"
+        },
+        {
+          "name": "vend",
+          "description": "Scroll to the bottom of the element"
+        },
+        {
+          "name": "vnearest",
+          "description": "Scroll to the nearest vertical edge of the element"
+        }
+      ],
+      "datastar-signals-modifiers": [
+        {
+          "name": "ifmissing",
+          "description": "Only set the signals if the key does not exist. This is useful for setting defaults without overwriting existing values"
         }
       ]
     },
@@ -215,7 +285,17 @@
           },
           "pattern": {
             "template": [
-              "data-intersect"
+              "data-intersects",
+              {
+                "items": "/js/datastar-intersects-modifiers",
+                "template": [
+                  "__",
+                  "$...",
+                  "#item:modifier"
+                ],
+                "required": false,
+                "repeat": true
+              }
             ],
             "priority": "normal"
           }
@@ -241,7 +321,7 @@
                   {
                     "items": "/js/datastar-on-modifiers",
                     "template": [
-                      ":",
+                      "__",
                       "$...",
                       "#item:modifier"
                     ],
@@ -270,7 +350,7 @@
               {
                 "items": "/js/datastar-persist-modifiers",
                 "template": [
-                  ":",
+                  "__",
                   "$...",
                   "#item:modifier"
                 ],
@@ -348,13 +428,33 @@
                   "data-signals-",
                   {
                     "regex": "[-a-z0-9]+"
+                  },
+                  {
+                    "items": "/js/datastar-signals-modifiers",
+                    "template": [
+                      "__",
+                      "$...",
+                      "#item:modifier"
+                    ],
+                    "required": false,
+                    "repeat": true
                   }
                 ],
                 "priority": "normal"
               },
               {
                 "template": [
-                  "data-signals"
+                  "data-signals",
+                  {
+                    "items": "/js/datastar-signals-modifiers",
+                    "template": [
+                      "__",
+                      "$...",
+                      "#item:modifier"
+                    ],
+                    "required": false,
+                    "repeat": true
+                  }
                 ],
                 "priority": "normal"
               }
@@ -373,7 +473,17 @@
           },
           "pattern": {
             "template": [
-              "data-scroll-into-view"
+              "data-scroll-into-view",
+              {
+                "items": "/js/datastar-scroll-into-view-modifiers",
+                "template": [
+                  "__",
+                  "$...",
+                  "#item:modifier"
+                ],
+                "required": false,
+                "repeat": true
+              }
             ],
             "priority": "normal"
           }
