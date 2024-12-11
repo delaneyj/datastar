@@ -45,7 +45,7 @@ templ bulkUpdateContacts(signals *BulkUpdateSelectionSignals, contacts []*Contac
 							class="checkbox"
 							type="checkbox"
 							data-bind="selections.all"
-							data-on-change="setAll('contact_', selections.all.value)"
+							data-on-change="setAll('selections.contact_', selections.all.value)"
 						/>
 					</th>
 					<th>Name</th>
@@ -64,7 +64,7 @@ templ bulkUpdateContacts(signals *BulkUpdateSelectionSignals, contacts []*Contac
 				data-on-click="
 					sse('/examples/bulk_update/data/activate', {method:'put'})
 					selections.all.value = false
-					setAll('contact_', selections.all.value)
+					setAll('selections.contact_', selections.all.value)
 				"
 				class="btn btn-success"
 			>
@@ -75,7 +75,7 @@ templ bulkUpdateContacts(signals *BulkUpdateSelectionSignals, contacts []*Contac
 				data-on-click="
 					sse('/examples/bulk_update/data/deactivate', {method:'put'})
 					selections.all.value = false
-					setAll('contact_', selections.all.value)
+					setAll('selections.contact_', selections.all.value)
 				"
 				class="btn btn-error"
 			>

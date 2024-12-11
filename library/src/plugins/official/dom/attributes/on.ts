@@ -57,8 +57,8 @@ export const On: AttributePlugin = {
 
         let callback = (evt?: Event) => {
             if (evt) {
-                if (!mods.has("noPrevent")) evt.preventDefault();
-                if (!mods.has("noPropagation")) evt.stopPropagation();
+                if (mods.has("prevent")) evt.preventDefault();
+                if (mods.has("stop")) evt.stopPropagation();
             }
             rx(evt);
         };
