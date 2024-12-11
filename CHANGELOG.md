@@ -1,10 +1,10 @@
 # WIP Release Notes for Datastar
 
-## 0.21.0 - 2024-12-10
+## v0.21.0 - 2024-12-10
 
 We’ve overhauled Datastar in v0.21.0, doubling down on making nestable signals declarative. To that end, we’ve removed special characters, made the API more explicit and consistent, and fixed some restrictions to nested signals that we discovered. Signal values are now accessed in expressions using the syntax `signalName.value`, actions no longer have a prefix, and attribute keys support nested signals using dot-delimited paths.
 
-The new [Datastar VSCode extension](https://marketplace.visualstudio.com/items?itemName=starfederation.datastar-vscode) has autocomplete for all v0.21.0 `data-*`, and we’ve painstakingly added error pages for every error that can be thrown.
+The new Datastar [VSCode extension](https://marketplace.visualstudio.com/items?itemName=starfederation.datastar-vscode) and [IntelliJ plugin]() have autocomplete for all v0.21.0 attributes, and we’ve painstakingly added error pages for every error that can be thrown.
 
 This should be the final round of API changes before v1.0.0 🚀
 
