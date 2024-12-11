@@ -45,9 +45,7 @@ func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 
 		router.Use(middleware.Recoverer)
 
-		cleanup, err := setupRoutes(ctx, router)
-		defer cleanup()
-		if err != nil {
+		if err := setupRoutes(ctx, router); err != nil {
 			return fmt.Errorf("error setting up routes: %w", err)
 		}
 
@@ -68,12 +66,12 @@ func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 	}
 }
 
-func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, err error) {
+func setupRoutes(ctx context.Context, router chi.Router) (err error) {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 
 	natsPort, err := toolbelt.FreePort()
 	if err != nil {
-		return nil, fmt.Errorf("error getting free port: %w", err)
+		return fmt.Errorf("error getting free port: %w", err)
 	}
 
 	ns, err := embeddednats.New(ctx, embeddednats.WithNATSServerOptions(&natsserver.Options{
@@ -82,15 +80,9 @@ func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, 
 		Port:      natsPort,
 	}))
 	if err != nil {
-		return nil, fmt.Errorf("error creating embedded nats server: %w", err)
+		return fmt.Errorf("error creating embedded nats server: %w", err)
 	}
 	ns.WaitForServer()
-
-	cleanup = func() error {
-		return errors.Join(
-			ns.Close(),
-		)
-	}
 
 	sessionSignals := sessions.NewCookieStore([]byte("datastar-session-secret"))
 	sessionSignals.MaxAge(int(24 * time.Hour / time.Second))
@@ -105,8 +97,8 @@ func setupRoutes(ctx context.Context, router chi.Router) (cleanup func() error, 
 		setupMemes(router),
 		setupBundler(router),
 	); err != nil {
-		return cleanup, fmt.Errorf("error setting up routes: %w", err)
+		return fmt.Errorf("error setting up routes: %w", err)
 	}
 
-	return cleanup, nil
+	return nil
 }
