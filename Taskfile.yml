@@ -14,16 +14,22 @@ tasks:
     cmds:
       - go install github.com/go-task/task/v3/cmd/task@latest
       - go install github.com/a-h/templ/cmd/templ@latest
-      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
-        platforms: [linux/amd64]
-      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-arm64
-        platforms: [linux/arm64]
-      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
-        platforms: [darwin/arm64]
-      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-x64
-        platforms: [darwin/amd64]
-      - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
-        platforms: [windows]
+
+      - platforms: [linux/amd64]
+        cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-x64
+
+      - platforms: [linux/arm64]
+        cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-linux-arm64
+
+      - platforms: [darwin/arm64]
+        cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-arm64
+
+      - platforms: [darwin/amd64]
+        cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-macos-x64
+
+      - platforms: [windows]
+        cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
+
       - chmod +x site/tailwindcli
       - go install github.com/valyala/quicktemplate/qtc@latest
 
