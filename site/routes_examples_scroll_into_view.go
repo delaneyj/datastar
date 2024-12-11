@@ -47,13 +47,13 @@ func setupExamplesScrollIntoView(examplesRouter chi.Router) error {
 
 			attr := "scroll-into-view"
 			if signals.Behavior != "" {
-				attr += ":" + signals.Behavior
+				attr += "__" + signals.Behavior
 			}
 			if signals.Block != "" {
-				attr += ":" + signals.Block
+				attr += "__" + signals.Block
 			}
 			if signals.Inline != "" {
-				attr += ":" + signals.Inline
+				attr += "__" + signals.Inline
 			}
 
 			updated := fmt.Sprintf(`<p id="p%d" data-%s></p>`, paragraphCount/2, attr)
