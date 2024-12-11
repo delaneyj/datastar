@@ -25,11 +25,11 @@ import { ToggleAll } from "../plugins/official/logic/actions/toggleAll";
 
 Datastar.load(
     // Plugins that can create signals must be loaded first
-    Attributes,
     Bind,
     Indicator,
     Ref,
     // DOM
+    Attributes,
     Class,
     On,
     Show,
