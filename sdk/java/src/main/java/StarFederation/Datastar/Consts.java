@@ -7,7 +7,7 @@ import starfederation.datastar.enums.FragmentMergeMode;
  */
 public final class Consts {
     public static final String DATASTAR_KEY = "datastar";
-    public static final String VERSION = "0.21.0";
+    public static final String VERSION = "0.21.1";
     public static final int VERSION_CLIENT_BYTE_SIZE = 33622;
     public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12362;
 
