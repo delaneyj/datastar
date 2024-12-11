@@ -11,8 +11,8 @@ class Consts
 {
     public const DATASTAR_KEY = 'datastar';
     public const VERSION = '0.21.0';
-    public const VERSION_CLIENT_BYTE_SIZE = 33596;
-    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12349;
+    public const VERSION_CLIENT_BYTE_SIZE = 33622;
+    public const VERSION_CLIENT_BYTE_SIZE_GZIP = 12362;
 
     // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
     public const DEFAULT_FRAGMENTS_SETTLE_DURATION = 300;

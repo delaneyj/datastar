@@ -7,9 +7,9 @@ import { ActionPlugin, PluginType } from "../../../../engine/types";
 export const SetAll: ActionPlugin = {
     type: PluginType.Action,
     name: "setAll",
-    fn: ({ signals }, path: string, newValue) => {
-        signals.walk((name, signal) => {
-            if (!name.startsWith(path)) return;
+    fn: ({ signals }, prefix: string, newValue) => {
+        signals.walk((path, signal) => {
+            if (!path.startsWith(prefix)) return;
             signal.value = newValue;
         });
     },
