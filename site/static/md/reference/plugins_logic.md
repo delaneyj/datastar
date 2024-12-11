@@ -7,7 +7,7 @@
 ### `setAll(signalPath: string, value: any)`
 
 ```html
-<div data-on-change="setAll('contact_', $selections.all)"></div>
+<div data-on-change="setAll('contact_', selections.all.value)"></div>
 ```
 
 Sets all the signals that start with the prefix to the value of the second argument. This is useful for setting all the values of a form at once.

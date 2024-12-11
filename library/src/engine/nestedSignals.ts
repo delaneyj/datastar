@@ -57,7 +57,7 @@ function mergeNested(
 
 function walkNestedSignal(
     signal: NestedSignal,
-    cb: (dotDeliminatedB: string, signal: Signal<any>) => void,
+    cb: (dotDeliminatedPath: string, signal: Signal<any>) => void,
 ): void {
     for (const key in signal) {
         if (signal.hasOwnProperty(key)) {
@@ -65,7 +65,9 @@ function walkNestedSignal(
             if (value instanceof Signal) {
                 cb(key, value);
             } else {
-                walkNestedSignal(value as NestedSignal, cb);
+                walkNestedSignal(value, (path, value) => {
+                    cb(`${key}.${path}`, value);
+                });
             }
         }
     }
