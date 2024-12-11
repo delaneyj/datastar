@@ -7,8 +7,8 @@ open StarFederation.Datastar
 [<RequireQualifiedAccess>]
 module Request =
     let deserializeSignals<'T when 'T :> ISignals> (deserializer:string voption -> 'T) = (fun (ctx:HttpContext) -> task {
-        let! store = ServerSentEventHttpHandler.readRawSignals ctx.Request
-        return deserializer store
+        let! signals = ServerSentEventHttpHandler.readRawSignals ctx.Request
+        return deserializer signals
         })
     let getSignals<'T when 'T :> ISignals> = (fun (ctx:HttpContext) -> task {
         let sseService = ctx.RequestServices.GetService(typedefof<ISignals>)

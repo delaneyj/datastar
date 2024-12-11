@@ -47,9 +47,9 @@ public static class Program
         });
         app.MapGet("/title/{title:required}", (string title, IServerSentEventService sseService) => sseService.MergeFragments($"""<span id="title">C# + {title}</span>"""));
         app.MapGet("/check_more_examples", () => Task.CompletedTask); // do nothing
-        app.MapGet("/patch", async (IServerSentEventService sseService, ISignals dsStore) =>
+        app.MapGet("/patch", async (IServerSentEventService sseService, ISignals dsSignals) =>
         {
-            Signals signals = (dsStore as Signals) ?? throw new InvalidCastException("Unknown Datastore passed");
+            Signals signals = (dsSignals as Signals) ?? throw new InvalidCastException("Unknown signals passed");
             Signals mergeSignals = new() { Output = $"Patched Output: {signals.Input}" };
             await sseService.MergeSignals(mergeSignals);
         });
