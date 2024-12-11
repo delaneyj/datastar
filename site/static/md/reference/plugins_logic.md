@@ -1,6 +1,6 @@
 # Logic Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/logic)
+[Source Code](https://github.com/starfederation/datastar/tree/main/library/src/plugins/official/logic)
 
 ## Action Plugins
 
