@@ -4,7 +4,7 @@ Datastar comes with a development environment for developing Datastar via a Dock
 
 It takes care of the setup listed in the for you in a Dockerized environment, which allows you to get it up and running quickly & easily.
 
-The only requirement is that you have [Docker](https://www.docker.com/products/docker-desktop) installed (you do not need `golang`, `git-lfs`, or anything else installed locally).
+The only requirement is that you have [Docker](https://www.docker.com/products/docker-desktop) installed (you do not need `golang`, `tmpl`, `npm`, `pnpm` or any other project dependencies installed locally).
 
 ## Why Docker?
 
@@ -24,11 +24,11 @@ make dev
 
 The first time you run this command, it may take a bit of time to build the Docker image, and download all of the appropriate packages, and cache them locally.
 
-Then just navigate to `http://localhost:8080` in your browser, and Datastar site from `backends/go/site/` will be up and running.
+Then just navigate to `http://localhost:8080` in your browser, and Datastar site from `site` will be up and running.
 
-You can freely make changes the `packages/library/` Datastar codebase, and the changes will be rebuilt and reload automatically.
+You can freely make changes to the `library` Datastar codebase, and the changes will be rebuilt and reload automatically.
 
-You can also make changes to the `backends/go/site/` Datastar website backend, and the backend will be rebuilt and reload automatically.
+You can also make changes to the `site` Datastar website backend, and the backend will be rebuilt and reload automatically.
 
 ## Using Datastar Docker Dev
 

@@ -109,7 +109,7 @@ templ Home() {
 					</a>
 					<a
 						class="flex items-center justify-center flex-1 btn bg-github"
-						href="https://github.com/starfederation/datastar/tree/develop/code/ts/library"
+						href="https://github.com/starfederation/datastar/tree/main/library"
 					>
 						@icon("simple-icons:github")
 						View the Source Code
@@ -285,9 +285,8 @@ templ TodoInput(i int) {
 		class="flex-1 w-full italic input input-bordered input-lg"
 		placeholder="What needs to be done?"
 		data-bind-input
-		data-on-keypress={ fmt.Sprintf(`
-			if (event.key !== 'Enter' || !input.value.trim().length) return;
-
+		data-on-keydown={ fmt.Sprintf(`
+			if (evt.key !== 'Enter' || !input.value.trim().length) return;
 			sse('/api/todos/%d/edit', {method:'put'});
 			input.value = '';
 		`, i) }

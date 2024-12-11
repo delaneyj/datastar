@@ -27,7 +27,7 @@ Some think not big brain and no like complexity but complexity spirit demon seem
 
 ## Some grug like stick club cause simpler make, some grug like spike club cause simpler to take down T-Rex
 
-Some old clubs still work good but that don't mean ignoring clubs that have spike in them. If build step take less than grug blink then grug happy, no slow down, find problem smol brain miss. Seems less complex to keep in head. Most complexity in this project lives in single file less that [240 lines](https://github.com/starfederation/datastar/blob/main/code/ts/library/src/engine/engine.ts#L245-L472). Even lizard brain can keep that in head.
+Some old clubs still work good but that don't mean ignoring clubs that have spike in them. If build step take less than grug blink then grug happy, no slow down, find problem smol brain miss. Seems less complex to keep in head. Most complexity in this project lives in single file less that [240 lines](https://github.com/starfederation/datastar/blob/main/library/src/engine/engine.ts#L245-L472). Even lizard brain can keep that in head.
 
 This smol brain make new project that makes each part own plug-in, own file, but that not necessary, but make tree shake easier. Everything plug-in make simpler. Use HTML without monkeys or eval. Grug learn from other grug but think found better club. May not be simpler at start of project but much simpler and less think over whole hunt. Grug like to think about hunt, not club or who messed with it.
 

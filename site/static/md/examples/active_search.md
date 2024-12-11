@@ -16,11 +16,11 @@ The interesting part is the input field:
 
 ```html
 <input
-  data-bind="search"
+  data-bind-search
   data-on-input__debounce.1000ms="sse('/examples/active_search/data')"
   placeholder="Search..."
   type="text"
 />
 ```
 
-The input issues a `GET` to `/active_search/data` with the input value bound to `search`. The `debounce.1000ms` modifier ensures that the search is not issued on every keystroke, but only after the user has stopped typing for 1 second. This modifier will be covered in more detail in the [reference section](/reference).
+The input issues a `GET` to `/active_search/data` with the input value bound to `search`. The `__debounce.1000ms` modifier ensures that the search is not issued on every keystroke, but only after the user has stopped typing for 1 second. This modifier will be covered in more detail in the [reference section](/reference).

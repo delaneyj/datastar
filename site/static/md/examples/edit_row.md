@@ -31,10 +31,10 @@ Finally, here is what the row looks like when the data is being edited:
 ```html
 <tr id="contact_0">
   <td>
-    <input data-bind="name" type="text" />
+    <input data-bind-name type="text" />
   </td>
   <td>
-    <input data-bind="email" type="text" />
+    <input data-bind-email type="text" />
   </td>
   <td>
     <button data-on-click="sse('/examples/edit_row/data')">Cancel</button>

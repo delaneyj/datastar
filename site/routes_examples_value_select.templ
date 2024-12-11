@@ -27,7 +27,7 @@ templ valueSelectView(cars []*ValueSelectMake, signals *ValueSelectSignals, make
 		<div class="text-2xl font-bold">Pick a Make / Model</div>
 		<select
 			class="select select-bordered"
-			data-bind="make"
+			data-bind-make
 			data-on-change={ datastar.GetSSE("/examples/value_select/data") }
 			data-testid="make_select"
 		>
@@ -39,7 +39,7 @@ templ valueSelectView(cars []*ValueSelectMake, signals *ValueSelectSignals, make
 		if make != nil {
 			<select
 				class="select select-bordered"
-				data-bind="model"
+				data-bind-model
 				data-on-change={ datastar.GetSSE("/examples/value_select/data") }
 				data-testid="model_select"
 			>

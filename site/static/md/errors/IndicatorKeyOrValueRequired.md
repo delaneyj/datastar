@@ -5,6 +5,10 @@ No key or value was provided to the `data-indicator` attribute. The `data-indica
 Example:
 
 ```html
+<div data-indicator-signalname></div>
+```
+
+```html
 <div data-indicator="signalName"></div>
 ```
 
