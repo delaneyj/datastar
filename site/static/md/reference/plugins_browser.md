@@ -1,6 +1,6 @@
 # Browser Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main/packages/library/src/lib/plugins/official/browser)
+[Source Code](https://github.com/starfederation/datastar/tree/main/library/src/plugins/official/browser)
 
 Focused on showing and hiding elements based on signals. Most of the time you want to send updates from the server but is useful for things like modals, dropdowns, and other UI elements.
 
