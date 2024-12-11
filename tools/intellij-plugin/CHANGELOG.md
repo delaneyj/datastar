@@ -1,7 +1,7 @@
 <!-- Keep a Changelog guide -> https://keepachangelog.com -->
 
-# datastar-jetbrains-plugin Changelog
+# Datastar support JetBrains plugin Changelog
 
-## [Unreleased]
+## 0.21.0 - 2024.12.10
 ### Added
-- Initial scaffold created from [IntelliJ Platform Plugin Template](https://github.com/JetBrains/intellij-platform-plugin-template)
+- Initial public release
