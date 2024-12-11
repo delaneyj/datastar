@@ -4,21 +4,21 @@
 
 ## Action Plugins
 
-### `setAll(signalPath: string, value: any)`
+### `setAll(pathPrefix: string, value: any)`
 
 ```html
-<div data-on-change="setAll('contact_', selections.all.value)"></div>
+<div data-on-change="setAll('contact.', selections.all.value)"></div>
 ```
 
-Sets all the signals that start with the prefix to the value of the second argument. This is useful for setting all the values of a form at once.
+Sets all the signals that start with the prefix to the value of the second argument. This is useful for setting all the values of a nested signal at once.
 
-### `toggleAll(signalPath: string)`
+### `toggleAll(pathPrefix: string)`
 
 ```html
-<div data-on-click="toggleAll('contact_')"></div>
+<div data-on-click="toggleAll('contact.')"></div>
 ```
 
-Toggles all the signals that start with the prefix. This is useful for toggling all the values of a form at once.
+Toggles all the signals that start with the prefix. This is useful for toggling all the values of a nested signal at once.
 
 ### `fit(v: number, oldMin:number, oldMax:number, newMin, newMax, shouldClamp=false, shouldRound=false)`
 
