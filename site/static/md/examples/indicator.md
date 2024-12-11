@@ -34,7 +34,7 @@
 <button
   id="greetingBtn"
   data-on-click="sse('/examples/fetch_indicator/greet')"
-  data-indicator="fetching"
+  data-indicator-fetching
   data-attributes-disabled="fetching.value"
 >
   Click me for a greeting

@@ -3,7 +3,7 @@
 ## Demo
 
 <div data-signals="{name:'',reversed:''}" class="flex flex-col gap-4">
-    <input data-bind="name" class="flex items-center input input-bordered">
+    <input data-bind-name class="flex items-center input input-bordered">
     <div class="h-16 alert">
         <span data-text="reversed.value"></span>
     </div>
@@ -17,7 +17,7 @@ This is an example of two-way binding with a web component that reverses a strin
 
 ```html
 <div data-signals="{name:'',reversed:''}">
-  <input data-bind="name" />
+  <input data-bind-name />
   <span data-text="reversed.value"></span>
   <reverse-component
     data-attributes-name="name.value"

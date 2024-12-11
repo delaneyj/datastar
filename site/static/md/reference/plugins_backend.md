@@ -138,8 +138,6 @@ The `datastar-execute-script` event is used to execute JavaScript in the browser
 
 The `data-indicator` attribute sets the value of the provided signal name to `true` while the request is in flight. This signal can be used by other attributes to show a loading spinner, disable a button, etc.
 
-Note that elements using the `data-indicator` attribute ***must*** have a unique ID attribute.
-
 ### `data-replace-url`
 
 ```html

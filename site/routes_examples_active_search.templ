@@ -28,9 +28,9 @@ templ ActiveSearchComponent(filteredUsers []*ActiveSearchUser, scores map[string
 				class="flex-1 input input-bordered"
 				type="text"
 				placeholder="Search..."
-				data-bind="search"
+				data-bind-search
 				data-on-input__debounce.500ms={ datastar.GetSSE("/examples/active_search/updates") }
-				data-indicator="fetching"
+				data-indicator-fetching
 			/>
 			@sseIndicator("fetching")
 		</div>
