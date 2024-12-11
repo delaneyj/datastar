@@ -159,7 +159,7 @@ def render_main_partial(signals):
       Div(
         Span("Feed from server: "),
         Span(id="feed", **{"data-on-load":'sse("/feed")'}),
-        **{"data.value-show.duration_500ms":"show.value"}
+        **{"data.value-show__duration.500ms":"show.value"}
         ),
     ),
     id="main",
