@@ -1,6 +1,6 @@
 # Error: ScrollIntoViewKeyNotAllowed
 
-A key was provided to the `data-scroll-into-view` attribute. The `data-scroll-into-view` attribute must not have a key _nor_ a value.
+The key `{ key }` was provided to the `data-scroll-into-view` attribute. The `data-scroll-into-view` attribute must not have a key _nor_ a value.
 
 Example:
 

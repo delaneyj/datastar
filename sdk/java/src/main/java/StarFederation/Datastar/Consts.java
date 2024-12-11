@@ -8,8 +8,8 @@ import starfederation.datastar.enums.FragmentMergeMode;
 public final class Consts {
     public static final String DATASTAR_KEY = "datastar";
     public static final String VERSION = "0.21.1";
-    public static final int VERSION_CLIENT_BYTE_SIZE = 33661;
-    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12377;
+    public static final int VERSION_CLIENT_BYTE_SIZE = 33679;
+    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = 12384;
 
     // The default duration for settling during fragment merges. Allows for CSS transitions to complete.
     public static final int DEFAULT_FRAGMENTS_SETTLE_DURATION = 300;

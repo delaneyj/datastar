@@ -1,6 +1,6 @@
 # Error: ScrollIntoViewValueNotAllowed
 
-A value was provided to the `data-scroll-into-view` attribute. The `data-scroll-into-view` attribute must not have a key _nor_ a value.
+The value `{ value }` was provided to the `data-scroll-into-view` attribute. The `data-scroll-into-view` attribute must not have a key _nor_ a value.
 
 Example:
 

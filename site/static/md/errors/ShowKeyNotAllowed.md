@@ -1,6 +1,6 @@
 # Error: ShowKeyNotAllowed
 
-A key was provided to the `data-show` attribute. The `data-show` attribute must _only_ have a value, representing an expression evaluating to `true` or `false`, which determines whether to show or hide the element, respectively.
+The key `{ key }` was provided to the `data-show` attribute. The `data-show` attribute must _only_ have a value, representing an expression evaluating to `true` or `false`, which determines whether to show or hide the element, respectively.
 
 Example:
 

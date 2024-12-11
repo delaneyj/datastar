@@ -1,6 +1,6 @@
 # Error: ViewTransitionKeyNotAllowed
 
-A key was provided to the `data-view-transition` attribute. The `data-view-transition` attribute must _only_ have a value, representing a `view-transition-name`.
+The key `{ key }` was provided to the `data-view-transition` attribute. The `data-view-transition` attribute must _only_ have a value, representing a `view-transition-name`.
 
 Example:
 

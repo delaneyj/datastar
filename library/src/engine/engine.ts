@@ -115,7 +115,7 @@ export class Engine {
                     const keyReq = p.keyReq || Requirement.Allowed;
                     if (hasKey) {
                         if (keyReq === Requirement.Denied) {
-                            throw dsErr(p.name + "KeyNotAllowed");
+                            throw dsErr(p.name + "KeyNotAllowed", { key });
                         }
                     } else if (keyReq === Requirement.Must) {
                         throw dsErr(p.name + "KeyRequired");
@@ -123,7 +123,7 @@ export class Engine {
                     const valReq = p.valReq || Requirement.Allowed;
                     if (hasValue) {
                         if (valReq === Requirement.Denied) {
-                            throw dsErr(p.name + "ValueNotAllowed");
+                            throw dsErr(p.name + "ValueNotAllowed", { value });
                         }
                     } else if (valReq === Requirement.Must) {
                         throw dsErr(p.name + "ValueRequired");
