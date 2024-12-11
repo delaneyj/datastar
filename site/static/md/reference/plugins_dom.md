@@ -74,8 +74,8 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
   - `.noLeading` - Throttle without leading edge
   - `.noTrail` - Throttle without trailing edge
 - `__window` - Attaches the event listener to the `window` element
-- `__prevent` - Do not call `preventDefault` on the event listener
-- `__stop` - Do not call `stopPropagation` on the event listener
+- `__prevent` - Call `preventDefault` on the event listener
+- `__stop` - Call `stopPropagation` on the event listener
 
 \*only works currently on native events
 
