@@ -4,7 +4,7 @@ Datastar comes with a development environment for developing Datastar via a Dock
 
 It takes care of the setup listed in the for you in a Dockerized environment, which allows you to get it up and running quickly & easily.
 
-The only requirement is that you have [Docker](https://www.docker.com/products/docker-desktop) installed (you do not need `golang`, `git-lfs`, or anything else installed locally).
+The only requirement is that you have [Docker](https://www.docker.com/products/docker-desktop) installed (you do not need `golang`, `tmpl`, `npm`, `pnpm` or any other project dependencies installed locally).
 
 ## Why Docker?
 
