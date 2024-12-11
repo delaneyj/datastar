@@ -287,7 +287,7 @@ See if you can follow the code below based on what you've learned so far, _befor
   data-computed-correct="response.value.toLowerCase() == answer.value"
 >
   <div id="question">What do you put in a toaster?</div>
-  <button data-on-click="response.value = prompt('Answer:')">BUZZ</button>
+  <button data-on-click="response.value = prompt('Answer:') ?? ''">BUZZ</button>
   <div data-show="response.value != ''">
     You answered “<span data-text="response.value"></span>”.
     <span data-show="correct.value">That is correct ✅</span>
@@ -313,7 +313,7 @@ See if you can follow the code below based on what you've learned so far, _befor
             </span>
         </div>
     </div>
-    <button data-on-click="response1.value = prompt('Answer:')" class="btn btn-primary">
+    <button data-on-click="response1.value = prompt('Answer:') ?? ''" class="btn btn-primary">
         BUZZ
     </button>
 </div>
@@ -395,9 +395,16 @@ The [`data-indicator`](/reference/plugins_backend#data-indicator) attribute sets
 </button>
 ```
 
-<div class="flex items-start justify-between gap-4 p-8 alert">
+<div data-signals="{response3: '', answer3: ''}" data-computed-correct3="response3.value.toLowerCase() == answer3.value" class="flex items-start justify-between gap-4 p-8 alert">
     <div class="pb-3 space-y-3">
         <div id="question3"></div>
+        <div data-show="response3.value != ''">
+            You answered “<span data-text="response3.value"></span>”.
+            <span data-show="correct3.value">That is correct ✅</span>
+            <span data-show="!correct3.value">
+                The correct answer is “<span data-text="answer3.value"></span>” 🤷
+            </span>
+        </div>
         <div class="flex items-center gap-2">
             <button id="fetch-a-question" data-on-click="sse('/examples/quiz_slow/data')" data-indicator-fetching class="btn btn-secondary">
                 Fetch a question
@@ -405,6 +412,9 @@ The [`data-indicator`](/reference/plugins_backend#data-indicator) attribute sets
             <div data-class-loading="fetching.value" class="indicator"></div>
         </div>
     </div>
+    <button data-show="answer3.value != ''" data-on-click="response3.value = prompt('Answer:') ?? ''" class="btn btn-primary">
+        BUZZ
+    </button>
 </div>
 
 The `data-indicator` attribute can also be written with signal name in the attribute value.
@@ -511,7 +521,7 @@ This toggles the values of all signals containing `form.` (to either `true` or `
             <input type="checkbox" data-bind-checkboxes2.checkbox_3 class="toggle" />
         </label>
     </div>
-    <button data-on-click="toggleAll('checkbox_2_')" class="mt-4 btn btn-secondary">
+    <button data-on-click="toggleAll('checkboxes2.')" class="mt-4 btn btn-secondary">
         Toggle All
     </button>
 </div>

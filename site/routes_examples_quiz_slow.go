@@ -31,6 +31,8 @@ func setupExamplesQuizSlow(examplesRouter chi.Router, signals sessions.Store) er
 		time.Sleep(2 * time.Second)
 		sse.MergeFragments(fmt.Sprintf(`<div id="question3">%s</div>`, QA.Question))
 		sse.MarshalAndMergeSignals(map[string]any{
+			"response3":       "",
+			"answer3":         QA.Answer,
 			"lastQuestionId2": questionID,
 		})
 	})
