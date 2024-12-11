@@ -35,7 +35,7 @@ public class MergeFragments extends AbstractSSEEvent {
         );
 
         addDataLineIfNotDefault(
-                dataLines, SETTLE_DURATION_DATALINE_LITERAL, mergeFragmentsOptions.getSettleDuration(), DEFAULT_SETTLE_DURATION
+                dataLines, SETTLE_DURATION_DATALINE_LITERAL, mergeFragmentsOptions.getSettleDuration(), DEFAULT_FRAGMENTS_SETTLE_DURATION
         );
 
         if (mergeFragmentsOptions.isUseViewTransition()) {

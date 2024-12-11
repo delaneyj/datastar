@@ -34,7 +34,7 @@ public class RemoveFragments extends AbstractSSEEvent {
         dataLines.add(getDataLine(SELECTOR_DATALINE_LITERAL, selector));
 
         addDataLineIfNotDefault(dataLines, SETTLE_DURATION_DATALINE_LITERAL,
-                removeFragmentsOptions.getSettleDuration(), DEFAULT_SETTLE_DURATION);
+                removeFragmentsOptions.getSettleDuration(), DEFAULT_FRAGMENTS_SETTLE_DURATION);
 
         if (removeFragmentsOptions.isUseViewTransition()) {
             dataLines.add(getDataLine(USE_VIEW_TRANSITION_DATALINE_LITERAL, getBooleanAsString(true)));

@@ -10,7 +10,7 @@ public class MergeFragmentsOptions {
 
     private String selector = "";
     private FragmentMergeMode mergeMode = DEFAULT_FRAGMENT_MERGE_MODE;
-    private int settleDuration = DEFAULT_SETTLE_DURATION;
+    private int settleDuration = DEFAULT_FRAGMENTS_SETTLE_DURATION;
     private boolean useViewTransition = DEFAULT_FRAGMENTS_USE_VIEW_TRANSITIONS;
 
     private MergeFragmentsOptions() {}

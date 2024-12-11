@@ -2,12 +2,12 @@ package StarFederation.Datastar.events;
 
 import java.util.Objects;
 
+import static StarFederation.Datastar.Consts.DEFAULT_FRAGMENTS_SETTLE_DURATION;
 import static StarFederation.Datastar.Consts.DEFAULT_FRAGMENTS_USE_VIEW_TRANSITIONS;
-import static StarFederation.Datastar.Consts.DEFAULT_SETTLE_DURATION;
 
 public class RemoveFragmentsOptions {
 
-    private int settleDuration = DEFAULT_SETTLE_DURATION;
+    private int settleDuration = DEFAULT_FRAGMENTS_SETTLE_DURATION;
     private boolean useViewTransition = DEFAULT_FRAGMENTS_USE_VIEW_TRANSITIONS;
 
     // Private constructor to enforce use of factory method
