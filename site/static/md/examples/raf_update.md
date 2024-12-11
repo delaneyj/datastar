@@ -26,6 +26,6 @@ In the [Title Update Backend](/examples/title_update_backend) example we showed 
 </div>
 ```
 
-`data-on-raf` is a special event that is triggered on every requestAnimationFrame event. This is useful for updating the UI at maximum at the rendering refresh rate of the browser. In this example we update the currentTime signals with a new Date object. This triggers a re-render of the currentTime span element. You can still use the `throttle` and `debounce` modifiers to control the rate of updates even further.
+`data-on-raf` is a special event that is triggered on every requestAnimationFrame event. This is useful for updating the UI at maximum at the rendering refresh rate of the browser. In this example we update the currentTime signals with a new Date object. This triggers a re-render of the currentTime span element. You can still use the `__throttle` and `__debounce` modifiers to control the rate of updates even further.
 
 In this case we are updating the currentTime signals with the current time. This triggers a re-render of the `currentTime` span element, however if you inspect with the browser debugger you will notice that `#time`'s `<span>` element is not updated every frame. This is because the signals are smartly updated only when the value changes. This is a performance optimization that is done by default.

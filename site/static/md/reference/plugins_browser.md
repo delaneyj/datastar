@@ -24,9 +24,9 @@ Runs the expression when the element intersects with the viewport.
 
 #### Modifiers
 
-- `once` - Only trigger the event once
-- `half` - Trigger when half of the element is visible
-- `full` - Trigger when the full element is visible
+- `__once` - Only trigger the event once
+- `__half` - Trigger when half of the element is visible
+- `__full` - Trigger when the full element is visible
 
 ### Scroll Into View
 
@@ -38,18 +38,18 @@ Scrolls the element into view. Useful when updating DOM from the server, and you
 
 #### Modifiers
 
-- `smooth` - Scrolling should be animate smoothly
-- `instant` - Scrolling should be instant
-- `auto` - Scrolling is determined by the computed `scroll-behavior` CSS property
-- `hstart` - Scroll to the left of the element
-- `hcenter` - Scroll to the horizontal center of the element
-- `hend` - Scroll to the right of the element
-- `hnearest` - Scroll to the nearest horizontal edge of the element
-- `vstart` - Scroll to the top of the element
-- `vcenter` - Scroll to the vertical center of the element
-- `vend` - Scroll to the bottom of the element
-- `vnearest` - Scroll to the nearest vertical edge of the element
-- `focus` - Focus the element after scrolling
+- `__smooth` - Scrolling should be animate smoothly
+- `__instant` - Scrolling should be instant
+- `__auto` - Scrolling is determined by the computed `scroll-behavior` CSS property
+- `__hstart` - Scroll to the left of the element
+- `__hcenter` - Scroll to the horizontal center of the element
+- `__hend` - Scroll to the right of the element
+- `__hnearest` - Scroll to the nearest horizontal edge of the element
+- `__vstart` - Scroll to the top of the element
+- `__vcenter` - Scroll to the vertical center of the element
+- `__vend` - Scroll to the bottom of the element
+- `__vnearest` - Scroll to the nearest vertical edge of the element
+- `__focus` - Focus the element after scrolling
 
 ### View Transition
 
