@@ -30,15 +30,12 @@ tasks:
       - platforms: [windows]
         cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
 
-<<<<<<< Updated upstream
-=======
       - platforms: [openbsd, dragonfly, freebsd, netbsd]
         cmd: pnpm add tailwindcss @tailwindcss/container-queries @tailwindcss/typography daisyui
 
       - platforms: [openbsd, dragonfly, freebsd, netbsd]
         cmd: test -f site/tailwindcli || (echo "#!/bin/sh" > site/tailwindcli  && echo "tailwindcss $@" >> site/tailwindcli)
 
->>>>>>> Stashed changes
       - chmod +x site/tailwindcli
       - go install github.com/valyala/quicktemplate/qtc@latest
 
