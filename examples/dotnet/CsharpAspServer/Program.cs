@@ -39,6 +39,11 @@ public static class Program
         {
             FileProvider = new PhysicalFileProvider(Path.Combine(app.Environment.ContentRootPath, "..", "Shared", "wwwroot")),
         });
+        app.UseStaticFiles(new StaticFileOptions
+        {
+            FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "..", "bundles")),
+            RequestPath = "/bundles"
+        });
 
         app.MapGet("/", (context) =>
         {
