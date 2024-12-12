@@ -1,3 +1,3 @@
-import { Datastar } from "../engine";
+import { Datastar as DS } from "../engine";
 
-(window as any).Datastar = Datastar;
+export const Datastar = DS;
