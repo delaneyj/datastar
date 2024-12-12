@@ -1,17 +1,13 @@
-import {
-    AttributePlugin,
-    PluginType,
-    Requirement,
-} from "../../../../engine/types";
+import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
 
-const name = "computed";
+const name = 'computed'
 export const Computed: AttributePlugin = {
-    type: PluginType.Attribute,
-    name,
-    keyReq: Requirement.Must,
-    valReq: Requirement.Must,
-    onLoad: ({ key, signals, genRX }) => {
-        const rx = genRX();
-        signals.setComputed(key, rx);
-    },
-};
+  type: PluginType.Attribute,
+  name,
+  keyReq: Requirement.Must,
+  valReq: Requirement.Must,
+  onLoad: ({ key, signals, genRX }) => {
+    const rx = genRX()
+    signals.setComputed(key, rx)
+  },
+}

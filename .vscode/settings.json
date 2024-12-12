@@ -4,5 +4,11 @@
     "go.coverOnSingleTest": true,
     "editor.foldingStrategy": "indentation",
     "makefile.configureOnOpen": false,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[json]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
 }
