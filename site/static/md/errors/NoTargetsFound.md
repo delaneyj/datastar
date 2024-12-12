@@ -1,8 +1,8 @@
 # Error: NoTargetsFound
 
-No targets were found for a fragment in the `merge-fragments` SSE event. Each fragment must have a target, either via an ID attribute or a `selector`.
+No targets were found for a fragment with the ID or selector `{ selectorOrID }` in the `merge-fragments` SSE event . Each fragment must target an element that already exists in the DOM, via an ID or selector.
 
-Example using an ID attribute (an element with the ID must already exist in the DOM):
+Example using an ID:
 
 ```
 event: datastar-merge-fragments
