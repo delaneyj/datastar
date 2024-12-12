@@ -70,6 +70,7 @@ func createBundles() error {
 		MinifyWhitespace:  true,
 		MinifyIdentifiers: true,
 		MinifySyntax:      true,
+		Format:            api.FormatESModule,
 		Sourcemap:         api.SourceMapLinked,
 		Target:            api.ES2023,
 	})
@@ -127,18 +128,18 @@ func writeOutConsts(version string) error {
 	})
 
 	templates := map[string]func(data *ConstTemplateData) string{
-		"README.md":                                                                    datastarREADME,
-		"library/README.md":                                                            datastarREADME,
-		"library/src/engine/consts.ts":                                                 datastarClientConsts,
-		"library/package.json":                                                         datastarClientPackageJSON,
-		"sdk/go/consts.go":                                                             goConsts,
-		"sdk/dotnet/src/Consts.fs":                                                     dotnetConsts,
-		"sdk/php/src/Consts.php":                                                       phpConsts,
-		"sdk/php/src/enums/EventType.php":                                              phpEventType,
-		"sdk/php/src/enums/FragmentMergeMode.php":                                      phpFragmentMergeMode,
-        "sdk/java/src/main/java/StarFederation/Datastar/Consts.java":                   javaConsts,
-        "sdk/java/src/main/java/StarFederation/Datastar/enums/EventType.java":          javaEventType,
-        "sdk/java/src/main/java/StarFederation/Datastar/enums/FragmentMergeMode.java":  javaFragmentMergeMode,
+		"README.md":                               datastarREADME,
+		"library/README.md":                       datastarREADME,
+		"library/src/engine/consts.ts":            datastarClientConsts,
+		"library/package.json":                    datastarClientPackageJSON,
+		"sdk/go/consts.go":                        goConsts,
+		"sdk/dotnet/src/Consts.fs":                dotnetConsts,
+		"sdk/php/src/Consts.php":                  phpConsts,
+		"sdk/php/src/enums/EventType.php":         phpEventType,
+		"sdk/php/src/enums/FragmentMergeMode.php": phpFragmentMergeMode,
+		"sdk/java/src/main/java/StarFederation/Datastar/Consts.java":                  javaConsts,
+		"sdk/java/src/main/java/StarFederation/Datastar/enums/EventType.java":         javaEventType,
+		"sdk/java/src/main/java/StarFederation/Datastar/enums/FragmentMergeMode.java": javaFragmentMergeMode,
 	}
 
 	for path, tmplFn := range templates {

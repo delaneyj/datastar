@@ -1,4 +1,4 @@
-import { Datastar } from "../engine";
+import { Datastar as DS } from "../engine";
 import { SSE } from "../plugins/official/backend/actions/sse";
 import { Indicator } from "../plugins/official/backend/attributes/indicator";
 import { ExecuteScript } from "../plugins/official/backend/watchers/executeScript";
@@ -23,7 +23,7 @@ import { Fit } from "../plugins/official/logic/actions/fit";
 import { SetAll } from "../plugins/official/logic/actions/setAll";
 import { ToggleAll } from "../plugins/official/logic/actions/toggleAll";
 
-Datastar.load(
+DS.load(
     // Plugins that can create signals must be loaded first
     Bind,
     Indicator,
@@ -53,3 +53,5 @@ Datastar.load(
     SetAll,
     ToggleAll,
 );
+
+export const Datastar = DS;
