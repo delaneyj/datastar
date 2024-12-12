@@ -53,3 +53,5 @@ Datastar.load(
     SetAll,
     ToggleAll,
 );
+
+(window as any).Datastar = Datastar;

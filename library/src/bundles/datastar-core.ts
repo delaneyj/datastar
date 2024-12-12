@@ -1,4 +1,3 @@
-import { Datastar as DS } from "../engine";
+import { Datastar } from "../engine";
 
-DS.load();
-export const Datastar = DS;
+(window as any).Datastar = Datastar;
