@@ -29,13 +29,9 @@ templ Page(title, description string, uri string) {
 			<meta name="twitter:creator" content="@DelaneyGillilan"/>
 			// <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
 			// <script type="module" src={ staticPath("js/datastar.js") }></script>
+			<script type="module" src="https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js"></script>
 			<script type="module" src={ staticPath("/js/unocss.js") }></script>
-			<style>
-			[un-cloak] {
-			  display: none;
-
-			}
-			</style>
+			<link rel="stylesheet" href={ staticPath("/css/site.css") }/>
 			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css"/>
 			// <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css"/>
 			// 			<style>
@@ -53,8 +49,9 @@ templ Page(title, description string, uri string) {
 		// https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
 		<body
 			data-on-pageshow__window="evt?.persisted && window.location.reload()"
+			data-on-load="sse('/hotreload')"
 			un-cloak
-			class="h-screen bg-red-800 font-sans text-white p-8"
+			class="h-screen font-sans flex flex-col"
 		>
 			{ children... }
 		</body>

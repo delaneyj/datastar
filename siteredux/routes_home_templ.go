@@ -41,7 +41,7 @@ func PageHome() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1 class=\"font-brand\">Home</h1><sp-button onclick=\"alert(&#39;I was clicked&#39;);\">Click me!</sp-button>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"p-400\"><div class=\"bg-primary text-primary-content\">Foo</div><h1 class=\"font-brand\">Home</h1><sp-button onclick=\"alert(&#39;I was clicked&#39;);\">Click me!</sp-button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

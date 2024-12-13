@@ -198,20 +198,33 @@ func Page(title, description string, uri string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><meta name=\"twitter:site\" content=\"@DelaneyGillilan\"><meta name=\"twitter:creator\" content=\"@DelaneyGillilan\"><script type=\"module\" src=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><meta name=\"twitter:site\" content=\"@DelaneyGillilan\"><meta name=\"twitter:creator\" content=\"@DelaneyGillilan\"><script type=\"module\" src=\"https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js\"></script><script type=\"module\" src=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(staticPath("/js/unocss.js"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `siteredux/shared.templ`, Line: 32, Col: 58}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `siteredux/shared.templ`, Line: 33, Col: 58}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><style>\n\t\t\t[un-cloak] {\n\t\t\t  display: none;\n\n\t\t\t}\n\t\t\t</style><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css\"></head><body data-on-pageshow__window=\"evt?.persisted &amp;&amp; window.location.reload()\" un-cloak class=\"h-screen bg-red-800 font-sans text-white p-8\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></script><link rel=\"stylesheet\" href=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var16 string
+		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(staticPath("/css/site.css"))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `siteredux/shared.templ`, Line: 34, Col: 60}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css\"></head><body data-on-pageshow__window=\"evt?.persisted &amp;&amp; window.location.reload()\" data-on-load=\"sse(&#39;/hotreload&#39;)\" un-cloak class=\"h-screen font-sans flex flex-col\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -116,7 +116,6 @@ tasks:
       - kill
       - build
       - templ
-      - css
 
   site:
     method: none
@@ -127,26 +126,12 @@ tasks:
       - go mod tidy
       - go build -o ./datastar-website "site/cmd/site/main.go"
 
-  cssredux:
-    dir: siteredux
-    sources:
-      - "**/*.templ"
-      - "**/*.md"
-      - "**/*.go"
-      - "**/*.css"
-      - "tailwind.config.js"
-    generates:
-      - "static/css/site.css"
-
-    cmds:
-      - ./tailwindcli build -i site.css -o static/css/site.css
 
   redux:
     method: none
     desc: build and run site
     deps:
       - support
-      - cssredux
     cmds:
       - go mod tidy
       - go build -o ./datastar-website "siteredux/cmd/site/main.go"
