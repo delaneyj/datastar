@@ -828,7 +828,8 @@ function effect(fn: EffectFn): () => void {
     effect._callback()
   } catch (error) {
     effect._dispose()
-    throw dsErr('EffectError', { error })
+    // Throw the error which is already a Datastar error.
+    throw error
   }
   // Return a bound function instead of a wrapper like `() => effect._dispose()`,
   // because bound functions seem to be just as fast and take up a lot less memory.
