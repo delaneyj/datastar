@@ -6,8 +6,8 @@ For edge-cases where you find yourself having to change the DOM without involvin
 
 ```html
 <script type="module">
-    import { Datastar } from 'https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js';
-    const element = document.body;
-    Datastar.apply(element);
+    import { Datastar } from 'https://cdn.jsdelivr.net/gh/starfederation/datastar/bundles/datastar.js'
+    const element = document.body
+    Datastar.apply(element)
 </script>
 ```
