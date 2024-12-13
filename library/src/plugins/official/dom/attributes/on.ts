@@ -4,8 +4,8 @@
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
 import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
-import { argsHas, argsMs } from '~/utils/arguments'
 import { onElementRemoved } from '~/utils/dom'
+import { tagHas, tagToMs } from '~/utils/tags'
 import { kebabize } from '~/utils/text'
 import { debounce, throttle } from '~/utils/timing'
 
@@ -55,17 +55,17 @@ export const On: AttributePlugin = {
 
     const debounceArgs = mods.get('debounce')
     if (debounceArgs) {
-      const wait = argsMs(debounceArgs)
-      const leading = argsHas(debounceArgs, 'leading', false)
-      const trailing = !argsHas(debounceArgs, 'noTrail', false)
+      const wait = tagToMs(debounceArgs)
+      const leading = tagHas(debounceArgs, 'leading', false)
+      const trailing = !tagHas(debounceArgs, 'notrail', false)
       callback = debounce(callback, wait, leading, trailing)
     }
 
     const throttleArgs = mods.get('throttle')
     if (throttleArgs) {
-      const wait = argsMs(throttleArgs)
-      const leading = !argsHas(throttleArgs, 'noLeading', false)
-      const trailing = argsHas(throttleArgs, 'trail', false)
+      const wait = tagToMs(throttleArgs)
+      const leading = !tagHas(throttleArgs, 'noleading', false)
+      const trailing = tagHas(throttleArgs, 'trail', false)
       callback = throttle(callback, wait, leading, trailing)
     }
 

@@ -71,7 +71,7 @@ export type InitContext = {
 }
 
 export type HTMLorSVGElement = Element & (HTMLElement | SVGElement)
-export type Modifiers = Map<string, Set<string>>
+export type Modifiers = Map<string, Set<string>> // name -> tags
 
 export type RuntimeContext = InitContext & {
   el: HTMLorSVGElement // The element the attribute is on
