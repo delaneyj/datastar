@@ -30,6 +30,8 @@ Note that `data-*` attributes are case-insensitive. If you want to use uppercase
 
 #### Modifiers
 
+Modifiers allow you to modify behavior when merging signals.
+
 - `__ifmissing` - Only merges signals if their keys do not already exist. This is useful for setting defaults without overwriting existing values.
 
 ```html
@@ -141,6 +143,8 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
 
 #### Modifiers
 
+Modifiers allow you to modify behavior when events are triggered. Some modifiers have tags to further modify the behavior.
+
 - `__once`\* - Only trigger the event listener once.
 - `__passive`\* - Do not call `preventDefault` on the event listener.
 - `__capture`\* - Use a capture event listener.
@@ -161,7 +165,7 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
 \*only works on native events.
 
 ```html
-<div data-on-click__debounce.500ms__throttle.500ms="foo.value = ''"></div>
+<div data-on-click__window__debounce.500ms.leading="foo.value = ''"></div>
 ```
 
 ### `data-persist`
@@ -185,6 +189,8 @@ If a key is provided, it will be used as the key when saving in storage, otherwi
 ```
 
 #### Modifiers
+
+Modifiers allow you to modify the storage target.
 
 - `__session` - Persists signals in Session Storage.
 
@@ -225,6 +231,8 @@ Runs an expression when the element intersects with the viewport.
 
 #### Modifiers
 
+Modifiers allow you to modify the element intersection behavior.
+
 - `__once` - Only triggers the event once.
 - `__half` - Triggers when half of the element is visible.
 - `__full` - Triggers when the full element is visible.
@@ -242,6 +250,8 @@ Scrolls the element into view. Useful when updating the DOM from the backend, an
 ```
 
 #### Modifiers
+
+Modifiers allow you to modify scrolling behavior.
 
 - `__smooth` - Scrolling is animate smoothly.
 - `__instant` - Scrolling is instant.
