@@ -10,7 +10,7 @@ Allow for the integration of any backend service that supports SSE.
 
 Arguments: `sse(url: string, options={})`
 
-Sends a `fetch` request to the server and merges the response with the current DOM and signals. The URL can be any valid URL and the response must be 0 or more [Datastar SSE events](/reference/sse_events).
+Sends a `fetch` request to the server and merges the response with the current DOM and signals. The URL can be any valid URL and the response must contain zero or more [Datastar SSE events](/reference/sse_events).
 
 ```html
 <div data-on-click="sse('/endpoint')"></div>

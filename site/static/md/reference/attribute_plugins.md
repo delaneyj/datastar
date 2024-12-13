@@ -17,7 +17,7 @@ Merges one or more signals into the existing signals. Values defined later in th
 Signals are nestable using dot-notation, which can be useful for namespacing.
 
 ```html
-<div data-signals-foo.bar="1" data-signals-baz="2"></div>
+<div data-signals-foo.bar="1"></div>
 ```
 
 The `data-signals` attribute can also be used to merge multiple signals using a set of key-value pairs, where the keys represent signal names and the values represent expressions.
@@ -25,6 +25,8 @@ The `data-signals` attribute can also be used to merge multiple signals using a 
 ```html
 <div data-signals="{foo: {bar: 1, baz: 2}}"></div>
 ```
+
+Note that `data-*` attributes are case-insensitive. If you want to use uppercase characters in signal names, you’ll need to kebabize them or use the object syntax. So the signal name `mySignal` must be written as `data-signals-my-signal` or `data-signals="{mySignal: 1}"`.
 
 #### Modifiers
 

@@ -1,6 +1,6 @@
 # SSE Events
 
-Responses to the [`sse()`](/reference/action_plugins#sse) action must contain 0 or more Datastar SSE events.
+Responses to the [`sse()`](/reference/action_plugins#sse) action must contain zero or more Datastar SSE events.
 
 ## Event Types
 
