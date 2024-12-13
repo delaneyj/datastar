@@ -9,4 +9,4 @@ event: datastar-merge-fragments
 data: fragments <div id="swap"></div>
 ```
 
-See the docs on the [`datastar-merge-fragments`](https://data-star.dev/reference/plugins_backend#datastar-merge-fragments) event.
+See the docs on the [`datastar-merge-fragments`](/reference/attribute_plugins#data-datastar-merge-fragments) event.

@@ -8,4 +8,4 @@ Example:
 <div data-replace-url="'?page=1'"></div>
 ```
 
-See the docs on the [`data-replace-url`](https://data-star.dev/reference/plugins_backend#data-replace-url) attribute.
+See the docs on the [`data-replace-url`](/reference/attribute_plugins#data-replace-url) attribute.

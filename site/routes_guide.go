@@ -18,7 +18,7 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 
 	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Getting Started",
+			Label: "Guide",
 			Links: []*SidebarLink{
 				{ID: "getting_started"},
 				{ID: "go_deeper"},

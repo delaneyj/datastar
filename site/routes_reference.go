@@ -18,13 +18,11 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 
 	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Plugins Included",
+			Label: "Reference",
 			Links: []*SidebarLink{
-				{ID: "plugins_core"},
-				{ID: "plugins_dom"},
-				{ID: "plugins_browser"},
-				{ID: "plugins_backend"},
-				{ID: "plugins_logic"},
+				{ID: "attribute_plugins"},
+				{ID: "action_plugins"},
+				{ID: "sse_events"},
 			},
 		},
 	}

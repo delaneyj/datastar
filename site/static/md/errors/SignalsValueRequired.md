@@ -10,4 +10,4 @@ Example:
 <div data-signals="{foo: 1}"></div>
 ```
 
-See the docs on the [`data-signals`](https://data-star.dev/reference/plugins_core#signals) attribute.
+See the docs on the [`data-signals`](/reference/attribute_plugins#data-signals) attribute.

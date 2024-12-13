@@ -8,4 +8,4 @@ Example:
 <div data-indicator-signal></div>
 ```
 
-See the docs on the [`data-indicator`](https://data-star.dev/reference/plugins_backend#data-indicator) attribute.
+See the docs on the [`data-indicator`](/reference/attribute_plugins#data-indicator) attribute.

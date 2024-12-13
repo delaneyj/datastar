@@ -8,4 +8,4 @@ Example:
 <div data-show="foo.value"></div>
 ```
 
-See the docs on the [`data-show`](https://data-star.dev/reference/plugins_browser#show) attribute.
+See the docs on the [`data-show`](/reference/attribute_plugins#data-show) attribute.

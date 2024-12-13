@@ -10,4 +10,4 @@ Example:
 <div data-attributes="{disabled: foo.value}"></div>
 ```
 
-See the docs on the [`data-attributes`](https://data-star.dev/reference/plugins_dom#attributes) attribute.
+See the docs on the [`data-attributes`](/reference/attribute_plugins#data-attributes) attribute.

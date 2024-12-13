@@ -9,4 +9,4 @@ event: datastar-remove-signals
 data: paths foo.bar abc
 ```
 
-See the docs on the [`datastar-remove-signals`](https://data-star.dev/reference/plugins_backend#datastar-remove-signals) event.
+See the docs on the [`datastar-remove-signals`](/reference/attribute_plugins#data-datastar-remove-signals) event.

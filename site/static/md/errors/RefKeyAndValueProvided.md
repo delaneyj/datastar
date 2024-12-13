@@ -8,4 +8,4 @@ Example:
 <div data-ref-signalname></div>
 ```
 
-See the docs on the [`data-ref`](https://data-star.dev/reference/plugins_core#ref) attribute.
+See the docs on the [`data-ref`](/reference/attribute_plugins#data-ref) attribute.
