@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>Datastar</AssemblyName>
-        <Version>0.21.0</Version>
+        <Version>0.21.2</Version>
         <RootNamespace>StarFederation.Datastar</RootNamespace>
         <Nullable>disabled</Nullable>
 
@@ -16,7 +16,7 @@
         <OutputType>Library</OutputType>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
-        <!--<GenerateDocumentationFile>true</GenerateDocumentationFile>-->
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
 
         <!-- NuGet config -->
         <PackageId>Datastar</PackageId>
