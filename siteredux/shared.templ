@@ -1,0 +1,62 @@
+package site
+
+templ Page(title, description string, uri string) {
+	<!DOCTYPE html>
+	<html lang="en">
+		<head>
+			<title>{ title }</title>
+			<meta name="description" content={ description }/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<link rel="canonical" href={ canonicalUrl(uri) }/>
+			// <link rel="preconnect" href="https://fonts.googleapis.com"/>
+			// <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+			// <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Orbitron:wght@400..900&display=swap"/>
+			<link rel="apple-touch-icon" sizes="180x180" href={ staticPath("favicon/apple-touch-icon.png") }/>
+			<link rel="icon" type="image/png" sizes="32x32" href={ staticPath("favicon/favicon-32x32.png") }/>
+			<link rel="icon" type="image/png" sizes="16x16" href={ staticPath("favicon/favicon-16x16.png") }/>
+			<link rel="manifest" href={ staticPath("favicon/site.webmanifest") }/>
+			<meta property="og:title" content={ title }/>
+			<meta property="og:description" content={ description }/>
+			<meta property="og:image" content={ staticAbsolutePath("images/rocket.webp") }/>
+			<meta property="og:url" content="https://data-star.dev/"/>
+			<meta property="og:type" content="website"/>
+			<meta property="og:site_name" content="Datastar"/>
+			<meta name="twitter:card" content="summary"/>
+			<meta name="twitter:title" content={ title }/>
+			<meta name="twitter:description" content={ description }/>
+			<meta name="twitter:image" content={ staticAbsolutePath("images/rocket.webp") }/>
+			<meta name="twitter:site" content="@DelaneyGillilan"/>
+			<meta name="twitter:creator" content="@DelaneyGillilan"/>
+			// <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
+			// <script type="module" src={ staticPath("js/datastar.js") }></script>
+			<script type="module" src={ staticPath("/js/unocss.js") }></script>
+			<style>
+			[un-cloak] {
+			  display: none;
+
+			}
+			</style>
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css"/>
+			// <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/tailwind.min.css"/>
+			// 			<style>
+			// .indicator {
+			// 	opacity:0;
+			// 	transition: opacity 300ms ease-out;
+			// }
+			// .indicator.loading {
+			// 	opacity:1;
+			// 	transition: opacity 300ms ease-in;
+			// }
+			// 			</style>
+		</head>
+		// data-on-pageshow__window is to combat Safari's aggressive caching
+		// https://stackoverflow.com/questions/8788802/prevent-safari-loading-from-cache-when-back-button-is-clicked
+		<body
+			data-on-pageshow__window="evt?.persisted && window.location.reload()"
+			un-cloak
+			class="h-screen bg-red-800 font-sans text-white p-8"
+		>
+			{ children... }
+		</body>
+	</html>
+}

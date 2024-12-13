@@ -13,6 +13,14 @@
             "preLaunchTask": "build datastar"
         },
         {
+            "name": "Website Redux",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/siteredux/cmd/site/main.go",
+            "preLaunchTask": "build datastar"
+        },
+        {
             "name": "Build Library",
             "type": "go",
             "request": "launch",

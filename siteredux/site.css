@@ -1,0 +1,12 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+
+    :host,
+    :root {
+
+        --spectrum-sans-serif-font-family: "Obitron", sans-serif;
+    }
+}

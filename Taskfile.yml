@@ -25,6 +25,7 @@ tasks:
       - cmd: test -f site/tailwindcli || wget -O site/tailwindcli https://github.com/dobicinaitis/tailwind-cli-extra/releases/download/v1.7.21/tailwindcss-extra-windows-x64.exe
         platforms: [windows]
       - chmod +x site/tailwindcli
+      - cp site/tailwindcli siteredux/tailwindcli
       - go install github.com/valyala/quicktemplate/qtc@latest
 
   version:
@@ -125,6 +126,31 @@ tasks:
     cmds:
       - go mod tidy
       - go build -o ./datastar-website "site/cmd/site/main.go"
+
+  cssredux:
+    dir: siteredux
+    sources:
+      - "**/*.templ"
+      - "**/*.md"
+      - "**/*.go"
+      - "**/*.css"
+      - "tailwind.config.js"
+    generates:
+      - "static/css/site.css"
+
+    cmds:
+      - ./tailwindcli build -i site.css -o static/css/site.css
+
+  redux:
+    method: none
+    desc: build and run site
+    deps:
+      - support
+      - cssredux
+    cmds:
+      - go mod tidy
+      - go build -o ./datastar-website "siteredux/cmd/site/main.go"
+      - ./datastar-website
 
   deploy:
     method: none
