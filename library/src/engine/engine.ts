@@ -23,12 +23,12 @@ import {
 } from './types'
 
 export class Engine {
-  private _signals = new SignalsRoot()
-  private plugins: AttributePlugin[] = []
-  private macros: MacroPlugin[] = []
-  private actions: ActionPlugins = {}
-  private watchers: WatcherPlugin[] = []
-  private removals = new Map<Element, RemovalEntry>()
+  #signals = new SignalsRoot()
+  #plugins: AttributePlugin[] = []
+  #macros: MacroPlugin[] = []
+  #actions: ActionPlugins = {}
+  #watchers: WatcherPlugin[] = []
+  #removals = new Map<Element, RemovalEntry>()
 
   get version() {
     return VERSION
@@ -39,19 +39,19 @@ export class Engine {
       let globalInitializer: GlobalInitializer | undefined
       switch (plugin.type) {
         case PluginType.Macro:
-          this.macros.push(plugin as MacroPlugin)
+          this.#macros.push(plugin as MacroPlugin)
           break
         case PluginType.Watcher:
           const wp = plugin as WatcherPlugin
-          this.watchers.push(wp)
+          this.#watchers.push(wp)
           globalInitializer = wp.onGlobalInit
           break
         case PluginType.Action:
-          this.actions[plugin.name] = plugin as ActionPlugin
+          this.#actions[plugin.name] = plugin as ActionPlugin
           break
         case PluginType.Attribute:
           const ap = plugin as AttributePlugin
-          this.plugins.push(ap)
+          this.#plugins.push(ap)
           globalInitializer = ap.onGlobalInit
           break
         default:
@@ -64,36 +64,25 @@ export class Engine {
         const that = this // I hate javascript
         globalInitializer({
           get signals() {
-            return that._signals
+            return that.#signals
           },
           effect: (cb: () => void): OnRemovalFn => effect(cb),
-          actions: this.actions,
+          actions: this.#actions,
           apply: this.apply.bind(this),
-          cleanup: this.cleanup.bind(this),
+          cleanup: this.#cleanup.bind(this),
         })
       }
     })
     this.apply(document.body)
   }
 
-  // Clenup all plugins associated with the element
-  private cleanup(element: Element) {
-    const removalSet = this.removals.get(element)
-    if (removalSet) {
-      for (const removal of removalSet.set) {
-        removal()
-      }
-      this.removals.delete(element)
-    }
-  }
-
   // Apply all plugins to the element and its children
   public apply(rootElement: Element) {
     const appliedMacros = new Set<MacroPlugin>()
-    this.plugins.forEach((p, pi) => {
-      this.walkDownDOM(rootElement, (el) => {
+    this.#plugins.forEach((p, pi) => {
+      this.#walkDownDOM(rootElement, (el) => {
         // Cleanup if not first plugin
-        if (!pi) this.cleanup(el)
+        if (!pi) this.#cleanup(el)
 
         for (const rawKey in el.dataset) {
           // Check if the key is relevant to the plugin
@@ -153,7 +142,7 @@ export class Engine {
           })
           const macros = [
             ...(p.macros?.pre || []),
-            ...this.macros,
+            ...this.#macros,
             ...(p.macros?.post || []),
           ]
           for (const macro of macros) {
@@ -163,18 +152,17 @@ export class Engine {
           }
 
           // Create the runtime context
-          const { actions, apply, cleanup } = this
           const that = this // I hate javascript
           let ctx: RuntimeContext
           ctx = {
             get signals() {
-              return that._signals
+              return that.#signals
             },
             effect: (cb: () => void): OnRemovalFn => effect(cb),
-            apply: apply.bind(this),
-            cleanup: cleanup.bind(this),
-            actions,
-            genRX: () => this.genRX(ctx, ...(p.argNames || [])),
+            apply: that.apply.bind(that),
+            cleanup: that.#cleanup.bind(that),
+            actions: that.#actions,
+            genRX: () => this.#genRX(ctx, ...(p.argNames || [])),
             el,
             rawKey,
             rawValue,
@@ -186,13 +174,13 @@ export class Engine {
           // Load the plugin and store any cleanup functions
           const removal = p.onLoad(ctx)
           if (removal) {
-            if (!this.removals.has(el)) {
-              this.removals.set(el, {
+            if (!this.#removals.has(el)) {
+              this.#removals.set(el, {
                 id: el.id,
                 set: new Set(),
               })
             }
-            this.removals.get(el)!.set.add(removal)
+            this.#removals.get(el)!.set.add(removal)
           }
 
           // Remove the attribute if required
@@ -202,7 +190,11 @@ export class Engine {
     })
   }
 
-  private genRX(
+  get signals() {
+    return this.#signals
+  }
+
+  #genRX(
     ctx: RuntimeContext,
     ...argNames: string[]
   ): RuntimeExpressionFunction {
@@ -224,7 +216,7 @@ export class Engine {
       methodsCalled.add(match[1])
     }
     // Action names
-    const an = Object.keys(this.actions).filter((i) => methodsCalled.has(i))
+    const an = Object.keys(this.#actions).filter((i) => methodsCalled.has(i))
     // Action lines
     const al = an.map((a) => `const ${a} = ctx.actions.${a}.fn;`)
     const fnContent = `${al.join('\n')}return (()=> {${userExpression}})()`
@@ -247,7 +239,7 @@ export class Engine {
     }
   }
 
-  private walkDownDOM(
+  #walkDownDOM(
     element: Element | null,
     callback: (el: HTMLorSVGElement) => void,
   ) {
@@ -259,8 +251,19 @@ export class Engine {
     callback(element)
     element = element.firstElementChild
     while (element) {
-      this.walkDownDOM(element, callback)
+      this.#walkDownDOM(element, callback)
       element = element.nextElementSibling
+    }
+  }
+
+  // Clenup all plugins associated with the element
+  #cleanup(element: Element) {
+    const removalSet = this.#removals.get(element)
+    if (removalSet) {
+      for (const removal of removalSet.set) {
+        removal()
+      }
+      this.#removals.delete(element)
     }
   }
 }

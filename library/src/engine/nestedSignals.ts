@@ -117,7 +117,7 @@ export function walkNestedValues(
 }
 
 export class SignalsRoot {
-  private _signals: NestedSignal = {}
+  #signals: NestedSignal = {}
 
   constructor() {}
 
@@ -127,7 +127,7 @@ export class SignalsRoot {
 
   signal<T>(dotDelimitedPath: string): Signal<T> | null {
     const parts = dotDelimitedPath.split('.')
-    let subSignals = this._signals
+    let subSignals = this.#signals
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i]
       if (!subSignals[part]) {
@@ -143,7 +143,7 @@ export class SignalsRoot {
 
   setSignal<T extends Signal<T>>(dotDelimitedPath: string, signal: T) {
     const parts = dotDelimitedPath.split('.')
-    let subSignals = this._signals
+    let subSignals = this.#signals
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i]
       if (!subSignals[part]) {
@@ -172,7 +172,7 @@ export class SignalsRoot {
 
   upsert<T>(dotDelimitedPath: string, value: T) {
     const parts = dotDelimitedPath.split('.')
-    let subSignals = this._signals
+    let subSignals = this.#signals
     for (let i = 0; i < parts.length - 1; i++) {
       const part = parts[i]
       if (!subSignals[part]) {
@@ -199,7 +199,7 @@ export class SignalsRoot {
   remove(...dotDelimitedPaths: string[]) {
     for (const path of dotDelimitedPaths) {
       const parts = path.split('.')
-      let subSignals = this._signals
+      let subSignals = this.#signals
       for (let i = 0; i < parts.length - 1; i++) {
         const part = parts[i]
         if (!subSignals[part]) {
@@ -213,7 +213,7 @@ export class SignalsRoot {
   }
 
   merge(other: NestedValues, onlyIfMissing = false) {
-    mergeNested(this._signals, other, onlyIfMissing)
+    mergeNested(this.#signals, other, onlyIfMissing)
   }
 
   subset(...keys: string[]): NestedValues {
@@ -221,11 +221,11 @@ export class SignalsRoot {
   }
 
   walk(cb: (name: string, signal: Signal<any>) => void) {
-    walkNestedSignal(this._signals, cb)
+    walkNestedSignal(this.#signals, cb)
   }
 
   values(onlyPublic = false): NestedValues {
-    return nestedValues(this._signals, onlyPublic)
+    return nestedValues(this.#signals, onlyPublic)
   }
 
   JSON(shouldIndent = true, onlyPublic = false) {
