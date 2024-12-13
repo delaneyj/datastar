@@ -33,7 +33,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v3.2.0
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
  
     - name: Build and Pack NuGet package with versioning
       run: dotnet pack ${{ vars.FS_PROJ_PATH }} -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
