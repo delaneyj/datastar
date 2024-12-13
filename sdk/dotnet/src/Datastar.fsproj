@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <AssemblyName>Datastar</AssemblyName>
+        <AssemblyName>SpiralOSS.Datastar</AssemblyName>
         <Version>0.21.2</Version>
         <RootNamespace>StarFederation.Datastar</RootNamespace>
         <Nullable>disabled</Nullable>
