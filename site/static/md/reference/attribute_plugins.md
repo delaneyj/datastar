@@ -4,7 +4,7 @@
 
 [Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/core/attributes)
 
-These are the core plugins required to have a working system. They are included in every bundle, and contain the core functionality in Datastar.
+The core plugins are included in every bundle, and contain the core functionality in Datastar.
 
 ### `data-signals`
 
