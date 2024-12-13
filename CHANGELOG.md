@@ -2,6 +2,6 @@
 
 ## v0.21.3
 
-### Fixed
+### Changed
 
-- Fixed the Datastar module not being exported ([#358](https://github.com/starfederation/datastar/issues/358)).
+- The Datastar module is now exported, exposing its public methods ([#358](https://github.com/starfederation/datastar/issues/358)).
