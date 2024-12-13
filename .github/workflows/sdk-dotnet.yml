@@ -40,7 +40,7 @@ jobs:
       run: dotnet pack ${{ vars.FS_PROJ_PATH }} -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
 
     - name: Upload NuGet package to GitHub
-      uses: actions/upload-artifact@v3.1.3
+      uses: actions/upload-artifact@v4
       with:
         name: nugetPackage
         path: ${{ vars.DOTNET_SDK_ROOT }}/bin/Release/*.nupkg
@@ -62,11 +62,15 @@ jobs:
       run: dotnet nuget add source --username ${{ vars.USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ vars.USERNAME }}/index.json"
 
     - name: Push package to GitHub packages
-      if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+      if: needs.build.outputs.CommitsSinceVersionSource > 0 # Only release if there has been a commit/version change
       run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} --source "github" --skip-duplicate
 
+    - name: Publish to NuGet.org
+      if: needs.build.outputs.CommitsSinceVersionSource > 0 # Only release if there has been a commit/version change
+      run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
+
     - name: Create Release
-      if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+      if: needs.build.outputs.CommitsSinceVersionSource > 0 # Only release if there has been a commit/version change
       uses: ncipollo/release-action@v1.13.0
       with:
         tag: ${{ needs.build.outputs.Version }}
