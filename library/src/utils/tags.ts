@@ -1,4 +1,4 @@
-export function argsMs(args: Set<string>) {
+export function tagToMs(args: Set<string>) {
   if (!args || args.size <= 0) return 0
   for (const arg of args) {
     if (arg.endsWith('ms')) {
@@ -13,7 +13,7 @@ export function argsMs(args: Set<string>) {
   return 0
 }
 
-export function argsHas(args: Set<string>, arg: string, defaultValue = false) {
-  if (!args) return defaultValue
-  return args.has(arg)
+export function tagHas(tags: Set<string>, tag: string, defaultValue = false) {
+  if (!tags) return defaultValue
+  return tags.has(tag.toLowerCase())
 }
