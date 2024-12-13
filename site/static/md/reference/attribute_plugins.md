@@ -152,8 +152,8 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
 - `__throttle` - Throttle the event listener.
   - `.500ms` - Throttle for 500 milliseconds.
   - `.1s` - Throttle for 1 second.
-  - `.noLeading` - Throttle without leading edge.
-  - `.noTrail` - Throttle without trailing edge.
+  - `.noleading` - Throttle without leading edge.
+  - `.notrail` - Throttle without trailing edge.
 - `__window` - Attaches the event listener to the `window` element.
 - `__prevent` - Calls `preventDefault` on the event listener.
 - `__stop` - Calls `stopPropagation` on the event listener.
