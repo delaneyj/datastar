@@ -3,20 +3,20 @@ name: Build & Publish NuGet to GitHub Registry
 on:
   push:
     branches: [sdk/dotnet-nuget]
-      
+
 jobs:
   build:
-    runs-on: ubuntu-latest    
-    outputs: 
+    runs-on: ubuntu-latest
+    outputs:
       Version: ${{ steps.gitversion.outputs.SemVer }}
-      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }} 
+      CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}
 
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: 0 #fetch-depth is needed for GitVersion
-        
-    # Install and calculate the new version with GitVersion  
+
+    # Install and calculate the new version with GitVersion
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.10.2
       with:
@@ -28,13 +28,13 @@ jobs:
       run: |
         echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
         echo "CommitsSinceVersionSource: ${{ steps.gitversion.outputs.CommitsSinceVersionSource }}"
-    
+
     # Build/pack the project
     - name: Setup .NET
       uses: actions/setup-dotnet@v3.2.0
       with:
         dotnet-version: 9.0.x
- 
+
     - name: Build and Pack NuGet package with versioning
       run: dotnet pack ${{ vars.FS_PROJ_PATH }} -p:Version='${{ steps.gitversion.outputs.SemVer }}' -c Release
 
@@ -45,11 +45,11 @@ jobs:
         path: ${{ vars.DOTNET_SDK_ROOT }}/bin/Release/*.nupkg
 
   release:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
     needs: build
-    if: github.ref == 'refs/heads/sdk/dotnet-nuget' # only run job if on the right branch   
-    
-    steps: 
+    if: github.ref == 'refs/heads/sdk/dotnet-nuget' # only run job if on the right branch
+
+    steps:
     #Push NuGet package to GitHub packages
     - name: Download nuget package artifact
       uses: actions/download-artifact@v3.0.2
@@ -58,10 +58,10 @@ jobs:
         path: nugetPackage
     - name: Prep packages
       run: dotnet nuget add source --username ${{ vars.USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ vars.USERNAME }}/index.json"
-    - name: Push package to GitHub packages 
-      if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change  
-      run: dotnet nuget push ${{ vars.DOTNET_SDK_ROOT }}/bin/Release/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} --source "github"
-    
+    - name: Push package to GitHub packages
+      if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
+      run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} --source "github"
+
     # Create release
     - name: Create Release
       if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
