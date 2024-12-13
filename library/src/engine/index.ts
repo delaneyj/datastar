@@ -4,6 +4,6 @@ import { Star } from '~/plugins/official/core/attributes/star'
 import { SignalValueMacro } from '~/plugins/official/core/macros/signals'
 import { Engine } from './engine'
 
-const ds = new Engine()
-ds.load(Star, SignalValueMacro, Signals, Computed)
-export const Datastar = ds
+const DS = new Engine()
+DS.load(Star, SignalValueMacro, Signals, Computed)
+export const Datastar = DS
