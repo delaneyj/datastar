@@ -148,12 +148,12 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
   - `.500ms` - Debounce for 500 milliseconds.
   - `.1s` - Debounce for 1 second.
   - `.leading` - Debounce with leading edge.
-  - `.noTrail` - Debounce without trailing edge.
+  - `.notrail` - Debounce without trailing edge.
 - `__throttle` - Throttle the event listener.
   - `.500ms` - Throttle for 500 milliseconds.
   - `.1s` - Throttle for 1 second.
   - `.noleading` - Throttle without leading edge.
-  - `.notrail` - Throttle without trailing edge.
+  - `.trail` - Throttle with trailing edge.
 - `__window` - Attaches the event listener to the `window` element.
 - `__prevent` - Calls `preventDefault` on the event listener.
 - `__stop` - Calls `stopPropagation` on the event listener.
