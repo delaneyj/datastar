@@ -4,60 +4,58 @@ import (
 	"strconv"
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleActiveSearch(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/active_search", func(runner runnerFn) {
+		runner("search with first name", func(t *testing.T, page *rod.Page) {
+			firstName := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(1)").MustText()
 
-	page := g.page("examples/active_search")
-	assert.NotNil(t, page)
+			search := page.MustElement("#searchInput")
+			search.Input(firstName)
 
-	t.Run("search with first name", func(t *testing.T) {
-		firstName := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(1)").MustText()
+			scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
 
-		search := page.MustElement("#searchInput")
-		search.Input(firstName)
+			scoreFloat, err := strconv.ParseFloat(scoreText, 64)
+			if err != nil {
+				t.Fail()
+			}
 
-		scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
+			assert.Greater(t, scoreFloat, 80.0)
+		})
 
-		scoreFloat, err := strconv.ParseFloat(scoreText, 64)
-		if err != nil {
-			t.Fail()
-		}
+		runner("search with last name", func(t *testing.T, page *rod.Page) {
+			lastName := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(2)").MustText()
 
-		assert.Greater(t, scoreFloat, 80.0)
-	})
+			search := page.MustElement("#searchInput")
+			search.Input(lastName)
 
-	t.Run("search with last name", func(t *testing.T) {
-		lastName := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(2)").MustText()
+			scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
 
-		search := page.MustElement("#searchInput")
-		search.Input(lastName)
+			scoreFloat, err := strconv.ParseFloat(scoreText, 64)
+			if err != nil {
+				t.Fail()
+			}
 
-		scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
+			assert.Greater(t, scoreFloat, 80.0)
+		})
 
-		scoreFloat, err := strconv.ParseFloat(scoreText, 64)
-		if err != nil {
-			t.Fail()
-		}
+		runner("search with email", func(t *testing.T, page *rod.Page) {
+			email := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(3)").MustText()
 
-		assert.Greater(t, scoreFloat, 80.0)
-	})
+			search := page.MustElement("#searchInput")
+			search.Input(email)
 
-	t.Run("search with email", func(t *testing.T) {
-		email := page.MustElement("#active_search_rows > tr:nth-child(5) > td:nth-child(3)").MustText()
+			scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
 
-		search := page.MustElement("#searchInput")
-		search.Input(email)
+			scoreFloat, err := strconv.ParseFloat(scoreText, 64)
+			if err != nil {
+				t.Fail()
+			}
 
-		scoreText := page.MustElement("#active_search_rows > tr:nth-child(1) > td:nth-child(4)").MustText()
-
-		scoreFloat, err := strconv.ParseFloat(scoreText, 64)
-		if err != nil {
-			t.Fail()
-		}
-
-		assert.Greater(t, scoreFloat, 80.0)
+			assert.Greater(t, scoreFloat, 80.0)
+		})
 	})
 }

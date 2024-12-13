@@ -4,25 +4,26 @@ import (
 	"testing"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/go-rod/rod"
 	datastar "github.com/starfederation/datastar/sdk/go"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleSessionStorage(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/session_storage", func(runner runnerFn) {
+		runner("session storage", func(t *testing.T, page *rod.Page) {
 
-	page := g.page("examples/session_storage")
-	assert.NotNil(t, page)
+			page.MustWaitIdle()
 
-	page.MustWaitIdle()
-
-	checkSessionStorage := func() float64 {
-		ss := page.MustEval(`k => sessionStorage[k]`, datastar.DatastarKey)
-		marshalled := ss.String()
-		c, err := gabs.ParseJSON([]byte(marshalled))
-		assert.NoError(t, err)
-		actual := c.Path("sessionId").Data().(float64)
-		return actual
-	}
-	assert.Equal(t, float64(1234), checkSessionStorage())
+			checkSessionStorage := func() float64 {
+				ss := page.MustEval(`k => sessionStorage[k]`, datastar.DatastarKey)
+				marshalled := ss.String()
+				c, err := gabs.ParseJSON([]byte(marshalled))
+				assert.NoError(t, err)
+				actual := c.Path("sessionId").Data().(float64)
+				return actual
+			}
+			assert.Equal(t, float64(1234), checkSessionStorage())
+		})
+	})
 }

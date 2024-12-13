@@ -5,32 +5,30 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleCustomEvents(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/custom_events", func(runner runnerFn) {
+		runner("observe custom event", func(t *testing.T, page *rod.Page) {
 
-	page := g.page("examples/custom_events")
-	assert.NotNil(t, page)
+			evtCountEl := page.MustElement("#eventCount")
 
-	t.Run("observe custom event", func(t *testing.T) {
+			count := func() int {
+				evtCountRaw := evtCountEl.MustText()
+				evtCount, err := strconv.Atoi(evtCountRaw)
+				assert.NoError(t, err)
+				return evtCount
+			}
 
-		evtCountEl := page.MustElement("#eventCount")
-
-		count := func() int {
-			evtCountRaw := evtCountEl.MustText()
-			evtCount, err := strconv.Atoi(evtCountRaw)
-			assert.NoError(t, err)
-			return evtCount
-		}
-
-		prev := count()
-		for i := 0; i < 2; i++ {
-			time.Sleep(1 * time.Second)
-			evtCountAgain := count()
-			assert.Greater(t, evtCountAgain, prev)
-			prev = evtCountAgain
-		}
+			prev := count()
+			for i := 0; i < 2; i++ {
+				time.Sleep(1 * time.Second)
+				evtCountAgain := count()
+				assert.Greater(t, evtCountAgain, prev)
+				prev = evtCountAgain
+			}
+		})
 	})
 }
