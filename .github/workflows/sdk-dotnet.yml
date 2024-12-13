@@ -16,14 +16,15 @@ jobs:
       with:
         fetch-depth: 0 #fetch-depth is needed for GitVersion
 
-    # Install and calculate the new version with GitVersion
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.10.2
       with:
         versionSpec: 5.x
+
     - name: Determine Version
       uses: gittools/actions/gitversion/execute@v0.10.2
       id: gitversion  # step id used as reference for output values
+
     - name: Display GitVersion outputs
       run: |
         echo "Version: ${{ steps.gitversion.outputs.SemVer }}"
@@ -50,19 +51,20 @@ jobs:
     if: github.ref == 'refs/heads/sdk/dotnet-nuget' # only run job if on the right branch
 
     steps:
-    #Push NuGet package to GitHub packages
+
     - name: Download nuget package artifact
       uses: actions/download-artifact@v3.0.2
       with:
         name: nugetPackage
         path: nugetPackage
+
     - name: Prep packages
       run: dotnet nuget add source --username ${{ vars.USERNAME }} --password ${{ secrets.NUGET_PACKAGE_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ vars.USERNAME }}/index.json"
+
     - name: Push package to GitHub packages
       if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
-      run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} --source "github"
+      run: dotnet nuget push nugetPackage/*.nupkg --api-key ${{ secrets.NUGET_PACKAGE_TOKEN }} --source "github" --skip-duplicate
 
-    # Create release
     - name: Create Release
       if: needs.build.outputs.CommitsSinceVersionSource > 0 #Only release if there has been a commit/version change
       uses: ncipollo/release-action@v1.13.0
