@@ -45,7 +45,7 @@
           <Link>datastar_icon.png</Link>
           <PackagePath>$(PackageIconUrl)</PackagePath>
         </None>
-        <None Include="..\..\README.md">
+        <None Include="..\README.md">
           <Pack>true</Pack>
           <PackagePath>/</PackagePath>
           <Link>README.md</Link>
