@@ -4,37 +4,37 @@ import (
 	"testing"
 
 	"github.com/Jeffail/gabs/v2"
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExamplePersist(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/persist", func(runner runnerFn) {
+		runner("persist", func(t *testing.T, page *rod.Page) {
+			page.MustWaitIdle()
 
-	page := g.page("examples/persist")
-	assert.NotNil(t, page)
+			expected := "foo"
 
-	page.MustWaitIdle()
+			checkLocalStorage := func() string {
+				fromLocalStorage := page.MustEval(`k => localStorage[k]`, "foo")
+				marshalled := fromLocalStorage.String()
+				c, err := gabs.ParseJSON([]byte(marshalled))
+				assert.NoError(t, err)
+				actual := c.Path("nested.test1").Data().(string)
+				return actual
+			}
+			assert.Equal(t, expected, checkLocalStorage())
 
-	expected := "foo"
+			page.MustWaitIdle()
 
-	checkLocalStorage := func() string {
-		fromLocalStorage := page.MustEval(`k => localStorage[k]`, "foo")
-		marshalled := fromLocalStorage.String()
-		c, err := gabs.ParseJSON([]byte(marshalled))
-		assert.NoError(t, err)
-		actual := c.Path("nested.test1").Data().(string)
-		return actual
-	}
-	assert.Equal(t, expected, checkLocalStorage())
+			input := page.MustElement("#keyInput")
 
-	page.MustWaitIdle()
+			revisedExpected := "This is a test"
+			input.MustInput(revisedExpected)
 
-	input := page.MustElement("#keyInput")
+			page.MustWaitIdle()
+			assert.Equal(t, expected+revisedExpected, checkLocalStorage())
 
-	revisedExpected := "This is a test"
-	input.MustInput(revisedExpected)
-
-	page.MustWaitIdle()
-	assert.Equal(t, expected+revisedExpected, checkLocalStorage())
-
+		})
+	})
 }

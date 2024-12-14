@@ -3,33 +3,31 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleModelBinding(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/model_binding", func(runner runnerFn) {
+		runner("text box", func(t *testing.T, page *rod.Page) {
+			textInput := page.MustElement("#container > input:nth-of-type(1)")
+			textInput.MustSelectAllText().MustInput("")
+			textInput.MustInput("banana")
 
-	page := g.page("examples/model_binding")
-	assert.NotNil(t, page)
+			textArea := page.MustElement("#container > textarea")
 
-	t.Run("text box", func(t *testing.T) {
-		textInput := page.MustElement("#container > input:nth-of-type(1)")
-		textInput.MustSelectAllText().MustInput("")
-		textInput.MustInput("banana")
+			assert.Equal(t, "banana", textArea.MustText())
+		})
 
-		textArea := page.MustElement("#container > textarea")
+		runner("select", func(t *testing.T, page *rod.Page) {
+			selector := "#container > select"
+			selectEl := page.MustElement(selector)
 
-		assert.Equal(t, "banana", textArea.MustText())
-	})
+			selectEl.MustSelect("Option 4")
+			assert.Equal(t, 3, selectEl.MustProperty("selectedIndex").Int())
 
-	t.Run("select", func(t *testing.T) {
-		selector := "#container > select"
-		selectEl := page.MustElement(selector)
-
-		selectEl.MustSelect("Option 4")
-		assert.Equal(t, 3, selectEl.MustProperty("selectedIndex").Int())
-
-		checkbox := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(4) > label > input")
-		assert.True(t, checkbox.MustProperty("checked").Bool())
+			checkbox := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(4) > label > input")
+			assert.True(t, checkbox.MustProperty("checked").Bool())
+		})
 	})
 }

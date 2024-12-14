@@ -3,28 +3,25 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleScrollIntoView(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/scroll_into_view", func(runner runnerFn) {
+		runner("smooth", func(t *testing.T, page *rod.Page) {
+			pos := page.Mouse.Position()
+			assert.InDelta(t, 0, pos.X, 5.0)
+			assert.InDelta(t, 0, pos.Y, 5.0)
 
-	page := g.page("examples/scroll_into_view")
-	assert.NotNil(t, page)
+			btn := page.MustElement("#scrollIntoViewButton")
+			btn.MustClick()
 
-	t.Run("smooth", func(t *testing.T) {
-		pos := page.Mouse.Position()
-		assert.InDelta(t, 0, pos.X, 5.0)
-		assert.InDelta(t, 0, pos.Y, 5.0)
+			page.MustWaitIdle()
 
-		btn := page.MustElement("#scrollIntoViewButton")
-		btn.MustClick()
-
-		page.MustWaitIdle()
-
-		pos = page.Mouse.Position()
-		assert.Greater(t, pos.X, 500.0)
-		assert.Greater(t, pos.Y, 200.0)
+			pos = page.Mouse.Position()
+			assert.Greater(t, pos.X, 500.0)
+			assert.Greater(t, pos.Y, 200.0)
+		})
 	})
-
 }
