@@ -38,8 +38,8 @@ type EventType =
 module Consts =
     let [<Literal>] DatastarKey               = "datastar"
     let [<Literal>] Version                   = "0.21.2"
-    let [<Literal>] VersionClientByteSize     = 33459
-    let [<Literal>] VersionClientByteSizeGzip = 12369
+    let [<Literal>] VersionClientByteSize     = 33434
+    let [<Literal>] VersionClientByteSizeGzip = 12364
 
     /// Default: TimeSpan.FromMilliseconds 300
     let DefaultFragmentsSettleDuration = TimeSpan.FromMilliseconds 300

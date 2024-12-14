@@ -2,29 +2,25 @@ package smoketests
 
 import (
 	"testing"
-	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleDbmon(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/dbmon", func(runner runnerFn) {
+		runner("database monitoring", func(t *testing.T, page *rod.Page) {
 
-	page := g.page("examples/dbmon")
-	assert.NotNil(t, page)
+			selector := "#dbmon > table"
+			initial := page.MustElement(selector).MustHTML()
+			// start := time.Now()
 
-	t.Run("database monitoring", func(t *testing.T) {
+			page.MustWait("() => document.querySelector(`" + selector + "`).innerHTML !== `" + initial + "`")
+			// t.Logf("TestExampleDbmon - database monitoring - MustWait duration: %s", time.Since(start))
 
-		selector := "#dbmon > table"
-		initial := page.MustElement(selector).MustHTML()
-		start := time.Now()
+			result := page.MustElement(selector).MustHTML()
 
-		page.MustWait("() => document.querySelector(`" + selector + "`).innerHTML !== `" + initial + "`")
-		t.Logf("TestExampleDbmon - database monitoring - MustWait duration: %s", time.Since(start))
-
-		result := page.MustElement(selector).MustHTML()
-
-		assert.NotEqual(t, initial, result)
+			assert.NotEqual(t, initial, result)
+		})
 	})
-
 }

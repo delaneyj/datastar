@@ -3,24 +3,21 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleImgSrcBind(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/img_src_bind", func(runner runnerFn) {
+		runner("image source binding", func(t *testing.T, page *rod.Page) {
+			initial := page.MustElement("#file_upload > img").MustProperty("src").Str()
+			assert.Equal(t, "https://picsum.photos/id/237/640/320", initial)
 
-	page := g.page("examples/img_src_bind")
-	assert.NotNil(t, page)
+			page.MustElement("#file_upload > button").MustClick()
+			page.MustWaitIdle()
+			result := page.MustElement("#file_upload > img").MustProperty("src").Str()
 
-	t.Run("image source binding", func(t *testing.T) {
-		el := page.MustElement("#file_upload > img")
-		initial := el.MustProperty("src").Str()
-		assert.Equal(t, "https://picsum.photos/id/237/640/320", initial)
-
-		page.MustElement("#file_upload > button").MustClick()
-		page.MustWaitIdle()
-		result := el.MustProperty("src").Str()
-
-		assert.NotEqual(t, initial, result)
+			assert.NotEqual(t, initial, result)
+		})
 	})
 }

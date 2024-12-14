@@ -7,7 +7,6 @@ on:
       - 'Dockerfile-dev'
       - '.github/workflows/build-docker-images.yml'
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -3,29 +3,26 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleIndicator(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/indicator", func(runner runnerFn) {
+		runner("greeting", func(t *testing.T, page *rod.Page) {
+			btn := page.MustElement("button")
 
-	page := g.page("examples/indicator")
-	assert.NotNil(t, page)
+			greeting := page.MustElement("#greeting")
+			greetingText := greeting.MustText()
+			assert.Equal(t, "", greetingText)
 
-	t.Run("greeting", func(t *testing.T) {
-		btn := page.MustElement("button")
+			btn.MustClick()
+			page.MustWaitIdle()
+			waitForElementWithIDToStartWith(t, page, greeting, "Hello")
 
-		greeting := page.MustElement("#greeting")
-		greetingText := greeting.MustText()
-		assert.Equal(t, "", greetingText)
+			updatedGreeting := greeting.MustText()
 
-		btn.MustClick()
-		page.MustWaitIdle()
-		waitForElementWithIDToStartWith(t, page, greeting, "Hello")
-
-		updatedGreeting := greeting.MustText()
-
-		assert.Contains(t, updatedGreeting, "Hello")
+			assert.Contains(t, updatedGreeting, "Hello")
+		})
 	})
-
 }
