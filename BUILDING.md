@@ -13,9 +13,11 @@ To run the examples website you will need the following:
 - [Go](https://go.dev/)
 - [Taskfile](https://taskfile.dev/)
 - [Git-LFS](https://git-lfs.com/)
-- To publish the library or if you're using a BSD operating system
-	- [pnpm](https://pnpm.io/)
-	- [Node](https://nodejs.org/)
+
+To publish the library or if you're using a BSD operating system, you will also need:
+
+- [pnpm](https://pnpm.io/)
+- [Node and npm](https://nodejs.org/)
 
 `task tools` will install all required tools
 
