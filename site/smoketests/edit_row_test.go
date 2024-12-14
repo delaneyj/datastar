@@ -3,63 +3,61 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleEditRow(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/edit_row", func(runner runnerFn) {
+		runner("edit a row", func(t *testing.T, page *rod.Page) {
+			editBtn := page.MustElement("#contact_0 > td:nth-child(3) > button")
+			editBtn.MustClick()
 
-	page := g.page("examples/edit_row")
-	assert.NotNil(t, page)
+			nameInput := page.MustElement("#contact_0 > td:nth-child(1) > input")
+			nameInput.MustSelectAllText().MustInput("")
+			nameInput.MustInput("Test")
 
-	t.Run("edit a row", func(t *testing.T) {
-		editBtn := page.MustElement("#contact_0 > td:nth-child(3) > button")
-		editBtn.MustClick()
+			emailInput := page.MustElement("#contact_0 > td:nth-child(2) > input")
+			emailInput.MustSelectAllText().MustInput("")
+			emailInput.MustInput("Test")
 
-		nameInput := page.MustElement("#contact_0 > td:nth-child(1) > input")
-		nameInput.MustSelectAllText().MustInput("")
-		nameInput.MustInput("Test")
+			saveBtn := page.MustElement("#contact_0 > td:nth-child(3) > div > button:nth-child(2)")
+			saveBtn.MustClick()
 
-		emailInput := page.MustElement("#contact_0 > td:nth-child(2) > input")
-		emailInput.MustSelectAllText().MustInput("")
-		emailInput.MustInput("Test")
+			name := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
+			assert.Equal(t, "Test", name)
 
-		saveBtn := page.MustElement("#contact_0 > td:nth-child(3) > div > button:nth-child(2)")
-		saveBtn.MustClick()
+			email := page.MustElement("#contact_0 > td:nth-child(2) > div:nth-child(1)").MustText()
+			assert.Equal(t, "Test", email)
+		})
 
-		name := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
-		assert.Equal(t, "Test", name)
+		runner("reset", func(t *testing.T, page *rod.Page) {
+			editBtn := page.MustElement("#contact_0 > td:nth-child(3) > button")
+			editBtn.MustClick()
 
-		email := page.MustElement("#contact_0 > td:nth-child(2) > div:nth-child(1)").MustText()
-		assert.Equal(t, "Test", email)
-	})
+			nameInput := page.MustElement("#contact_0 > td:nth-child(1) > input")
+			nameInput.MustSelectAllText().MustInput("")
+			nameInput.MustInput("Test")
 
-	t.Run("reset", func(t *testing.T) {
-		editBtn := page.MustElement("#contact_0 > td:nth-child(3) > button")
-		editBtn.MustClick()
+			emailInput := page.MustElement("#contact_0 > td:nth-child(2) > input")
+			emailInput.MustSelectAllText().MustInput("")
+			emailInput.MustInput("Test")
 
-		nameInput := page.MustElement("#contact_0 > td:nth-child(1) > input")
-		nameInput.MustSelectAllText().MustInput("")
-		nameInput.MustInput("Test")
+			saveBtn := page.MustElement("#contact_0 > td:nth-child(3) > div > button:nth-child(2)")
+			saveBtn.MustClick()
 
-		emailInput := page.MustElement("#contact_0 > td:nth-child(2) > input")
-		emailInput.MustSelectAllText().MustInput("")
-		emailInput.MustInput("Test")
+			name := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
+			assert.Equal(t, "Test", name)
 
-		saveBtn := page.MustElement("#contact_0 > td:nth-child(3) > div > button:nth-child(2)")
-		saveBtn.MustClick()
+			email := page.MustElement("#contact_0 > td:nth-child(2) > div:nth-child(1)").MustText()
+			assert.Equal(t, "Test", email)
 
-		name := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
-		assert.Equal(t, "Test", name)
+			resetBtn := page.MustElement("#edit_row > div > button")
+			resetBtn.MustClick()
 
-		email := page.MustElement("#contact_0 > td:nth-child(2) > div:nth-child(1)").MustText()
-		assert.Equal(t, "Test", email)
+			resetName := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
+			assert.NotEqual(t, resetName, name)
 
-		resetBtn := page.MustElement("#edit_row > div > button")
-		resetBtn.MustClick()
-
-		resetName := page.MustElement("#contact_0 > td:nth-child(1) > div:nth-child(1)").MustText()
-		assert.NotEqual(t, resetName, name)
-
+		})
 	})
 }

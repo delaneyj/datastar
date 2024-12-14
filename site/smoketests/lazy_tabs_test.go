@@ -3,32 +3,29 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleLazyTabs(t *testing.T) {
+	setupPageTest(t, "examples/lazy_tabs", func(runner runnerFn) {
+		runner("click through lazy tabs", func(t *testing.T, page *rod.Page) {
+			tabContents := page.MustElement("#tab_content")
+			initial := tabContents.MustText()
 
-	g := setup(t)
+			tabs := page.MustElement("#tabButtons")
+			tabButtons := tabs.MustElements("button")
 
-	page := g.page("examples/lazy_tabs")
-	assert.NotNil(t, page)
+			currentText := initial
+			for _, btn := range tabButtons {
+				btn.MustClick()
+				waitForSelectorToNotHaveInnerTextEqual(page, "#tabButtons", initial)
 
-	t.Run("click through lazy tabs", func(t *testing.T) {
-		tabContents := page.MustElement("#tab_content")
-		initial := tabContents.MustText()
+				result := page.MustElement("#tab_content").MustText()
+				assert.NotEqual(t, currentText, result)
 
-		tabs := page.MustElement("#tabButtons")
-		tabButtons := tabs.MustElements("button")
-
-		currentText := initial
-		for _, btn := range tabButtons {
-			btn.MustClick()
-			waitForSelectorToNotHaveInnerTextEqual(page, "#tabButtons", initial)
-
-			result := page.MustElement("#tab_content").MustText()
-			assert.NotEqual(t, currentText, result)
-
-			currentText = result
-		}
+				currentText = result
+			}
+		})
 	})
 }

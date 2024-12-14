@@ -3,32 +3,30 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleTemplCounter(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/templ_counter", func(runner runnerFn) {
+		runner("increment global", func(t *testing.T, page *rod.Page) {
+			initial := page.MustElement("#container > div:nth-of-type(2) > div > div:nth-of-type(2)").MustText()
 
-	page := g.page("examples/templ_counter")
-	assert.NotNil(t, page)
+			page.MustElementR("button", "Increment Global").MustClick()
 
-	t.Run("increment global", func(t *testing.T) {
-		initial := page.MustElement("#container > div:nth-of-type(2) > div > div:nth-of-type(2)").MustText()
+			result := page.MustElement("#container > div:nth-of-type(2) > div > div:nth-of-type(2)").MustText()
 
-		page.MustElementR("button", "Increment Global").MustClick()
+			assert.NotEqual(t, initial, result)
+		})
 
-		result := page.MustElement("#container > div:nth-of-type(2) > div > div:nth-of-type(2)").MustText()
+		runner("increment user", func(t *testing.T, page *rod.Page) {
+			initial := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)").MustText()
 
-		assert.NotEqual(t, initial, result)
-	})
+			page.MustElementR("button", "Increment User").MustClick()
 
-	t.Run("increment user", func(t *testing.T) {
-		initial := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)").MustText()
+			result := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)").MustText()
 
-		page.MustElementR("button", "Increment User").MustClick()
-
-		result := page.MustElement("#container > div:nth-of-type(2) > div:nth-of-type(2) > div:nth-of-type(2)").MustText()
-
-		assert.NotEqual(t, initial, result)
+			assert.NotEqual(t, initial, result)
+		})
 	})
 }

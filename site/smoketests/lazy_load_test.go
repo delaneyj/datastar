@@ -3,25 +3,23 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleLazyLoad(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/lazy_load", func(runner runnerFn) {
+		runner("observe lazy load", func(t *testing.T, page *rod.Page) {
+			selector := "#lazy_load"
 
-	page := g.page("examples/lazy_load")
-	assert.NotNil(t, page)
+			initial := page.MustElement(selector).MustText()
+			assert.Equal(t, "Loading...", initial)
 
-	t.Run("observe lazy load", func(t *testing.T) {
-		selector := "#lazy_load"
+			page.MustWait(`() => document.querySelector("` + selector + `").innerText === ""`)
 
-		initial := page.MustElement(selector).MustText()
-		assert.Equal(t, "Loading...", initial)
+			src := page.MustElement(selector).MustAttribute("src")
 
-		page.MustWait(`() => document.querySelector("` + selector + `").innerText === ""`)
-
-		src := page.MustElement(selector).MustAttribute("src")
-
-		assert.NotNil(t, src)
+			assert.NotNil(t, src)
+		})
 	})
 }

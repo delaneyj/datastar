@@ -13,25 +13,22 @@ type carSignals struct {
 }
 
 func TestExampleMultiSelect(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/multi_select", func(runner runnerFn) {
+		runner("multi-select", func(t *testing.T, page *rod.Page) {
+			selectEl := page.MustElement("select")
 
-	page := g.page("examples/multi_select")
-	assert.NotNil(t, page)
+			// unselect
+			selectEl.Select([]string{"What's your favorite car"}, false, rod.SelectorTypeText)
 
-	t.Run("multi-select", func(t *testing.T) {
-		selectEl := page.MustElement("select")
+			// select
+			selectEl.MustSelect("Volvo", "Saab", "Opel")
 
-		// unselect
-		selectEl.Select([]string{"What's your favorite car"}, false, rod.SelectorTypeText)
+			pre := page.MustElement("pre")
 
-		// select
-		selectEl.MustSelect("Volvo", "Saab", "Opel")
+			signals := &carSignals{}
+			json.Unmarshal([]byte(pre.MustText()), signals)
 
-		pre := page.MustElement("pre")
-
-		signals := &carSignals{}
-		json.Unmarshal([]byte(pre.MustText()), signals)
-
-		assert.Len(t, signals.Cars, 3)
+			assert.Len(t, signals.Cars, 3)
+		})
 	})
 }
