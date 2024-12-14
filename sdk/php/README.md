@@ -21,7 +21,6 @@ composer require starfederation/datastar-php
 ## Usage
 
 ```php
-use starfederation\datastar\enums\ConsoleMode;
 use starfederation\datastar\enums\EventType;
 use starfederation\datastar\enums\FragmentMergeMode;
 use starfederation\datastar\ServerSentEventGenerator;

@@ -39,7 +39,7 @@ class ServerSentEventGenerator
      *
      * @param array{
      *     selector?: string|null,
-     *     mergeMode?: FragmentMergeMode|null,
+     *     mergeMode?: FragmentMergeMode|string|null,
      *     settleDuration?: int|null,
      *     useViewTransition?: bool|null,
      *     eventId?: string|null,
