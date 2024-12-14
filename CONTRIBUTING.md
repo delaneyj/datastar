@@ -22,4 +22,4 @@ If you’re unsure about whether a pull request is within the scope of Datastar,
 
 ## Building
 
-Datastar comes with a development environment for developing Datastar via a Docker container. Read the [Building Guidelines »](BUILDING.md)
+Datastar comes with instructions for building, either manually or via docker Read the [Building Guidelines »](BUILDING.md)
