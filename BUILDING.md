@@ -2,7 +2,7 @@
 
 Datastar comes with a development environment for developing Datastar via a Docker container.
 
-It takes care of the setup listed in the for you in a Dockerized environment, which allows you to get it up and running quickly & easily.
+It takes care of the setup listed here for you in a Dockerized environment, which allows you to get it up and running quickly & easily.
 
 See [DOCKER.md](DOCKER.md) for detailed instructions on using it.
 
