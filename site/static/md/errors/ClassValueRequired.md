@@ -10,4 +10,4 @@ Example:
 <div data-class="{hidden: foo.value}"></div>
 ```
 
-See the docs on the [`data-class`](https://data-star.dev/reference/plugins_dom#class) attribute.
+See the docs on the [`data-class`](/reference/attribute_plugins#data-class) attribute.

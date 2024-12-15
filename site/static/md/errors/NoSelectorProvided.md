@@ -9,4 +9,4 @@ event: datastar-remove-fragments
 data: selector #foo
 ```
 
-See the docs on the [`datastar-remove-fragments`](https://data-star.dev/reference/plugins_backend#datastar-remove-fragments) event.
+See the docs on the [`datastar-remove-fragments`](/reference/attribute_plugins#data-datastar-remove-fragments) event.

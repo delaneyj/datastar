@@ -18,13 +18,12 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 
 	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Plugins Included",
+			Label: "Reference",
 			Links: []*SidebarLink{
-				{ID: "plugins_core"},
-				{ID: "plugins_dom"},
-				{ID: "plugins_browser"},
-				{ID: "plugins_backend"},
-				{ID: "plugins_logic"},
+				{ID: "attribute_plugins"},
+				{ID: "action_plugins"},
+				{ID: "sse_events"},
+				{ID: "javascript_api"},
 			},
 		},
 	}
@@ -49,12 +48,20 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 		})
 	})
 
-	router.Route("/reference", func(essaysRouter chi.Router) {
-		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Route("/reference", func(referenceRouter chi.Router) {
+		referenceRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+		// Redirect legacy pages to “Attribute Plugins”.
+		legacyPages := []string{"core", "dom", "browser", "backend", "logic"}
+		for _, page := range legacyPages {
+			referenceRouter.Get("/plugins_"+page, func(w http.ResponseWriter, r *http.Request) {
+				http.Redirect(w, r, "/reference/attribute_plugins", http.StatusMovedPermanently)
+			})
+		}
+
+		referenceRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
 			mdData, ok := mdDataset[name]
 			if !ok {

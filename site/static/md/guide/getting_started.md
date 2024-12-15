@@ -43,13 +43,13 @@ npm install @starfederation/datastar
 
 ## Data Attributes
 
-At the core of Datastar are [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes (hence the name). They allow you to add reactivity to your frontend in a declarative way, and interact with your backend.
+At the core of Datastar are [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes (hence the name). They allow you to add reactivity to your frontend in a declarative way, and to interact with your backend.
 
-Datastar uses signals to manage state. You can think of signals as reactive variables that automatically track and propagate changes from expressions. They can be created and modified using data attributes on the frontend, and using events sent from the backend. Don't worry if this sounds complicated; it will become clearer as we look at some examples.
+Datastar uses signals to manage state. You can think of signals as reactive variables that automatically track and propagate changes, from and to expressions. They can be created and modified using data attributes on the frontend, or events sent from the backend. Don't worry if this sounds complicated; it will become clearer as we look at some examples.
 
 ### `data-bind`
 
-Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/plugins_dom#bind) attribute, which can be placed on any HTML element on which data be be input or choices selected from (`input`, `textarea`, `select`, `checkbox` and `radio` elements, as well as web components).
+Datastar provides us with a way to set up two-way data binding on an element using the [`data-bind`](/reference/attribute_plugins#data-bind) attribute, which can be placed on any HTML element on which data be be input or choices selected from (`input`, `textarea`, `select`, `checkbox` and `radio` elements, as well as web components).
 
 ```html
 <input data-bind-input />
@@ -65,7 +65,7 @@ An alternative syntax exists for `data-bind`, in which the value is used as the 
 
 ### `data-text`
 
-To see this in action, we can use the [`data-text`](/reference/plugins_dom#text) attribute.
+To see this in action, we can use the [`data-text`](/reference/attribute_plugins#data-text) attribute.
 
 ```html
 <div data-text="input.value">
@@ -111,7 +111,7 @@ The value of the `data-text` attribute is an expression that is evaluated, meani
 
 ### `data-computed`
 
-The [`data-computed`](/reference/plugins_core#computed) attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
+The [`data-computed`](/reference/attribute_plugins#data-computed) attribute creates a new signal that is computed based on an expression. The computed signal is read-only, and its value is automatically updated when any signals in the expression are updated.
 
 ```html
 <div data-computed-repeated="input.value.repeat(2)">
@@ -139,7 +139,7 @@ This results in the `repeated` signal's value always being equal to the value of
 
 ### `data-show`
 
-The [`data-show`](/reference/plugins_browser#show) attribute can be used to show or hide an element based on whether an expression evaluates to `true` or `false`.
+The [`data-show`](/reference/attribute_plugins#data-show) attribute can be used to show or hide an element based on whether an expression evaluates to `true` or `false`.
 
 ```html
 <button data-show="input.value != ''">Save</button>
@@ -165,7 +165,7 @@ This results in the button being visible only when the input is _not_ an empty s
 
 ### `data-class`
 
-The [`data-class`](/reference/plugins_dom#class) attribute allows us to add or remove a class to or from an element based on an expression.
+The [`data-class`](/reference/attribute_plugins#data-class) attribute allows us to add or remove a class to or from an element based on an expression.
 
 ```html
 <button data-class-hidden="input.value == ''">Save</button>
@@ -197,7 +197,7 @@ The `data-class` attribute can also be used to add or remove multiple classes fr
 
 ### `data-attributes`
 
-The [`data-attributes`](/reference/plugins_dom#attributes) attribute can be used to set the value of any valid HTML attribute based on an expression.
+The [`data-attributes`](/reference/attribute_plugins#data-attributes) attribute can be used to bind the value of any HTML attribute to an expression.
 
 ```html
 <button data-attributes-disabled="input.value == ''">Save</button>
@@ -231,7 +231,7 @@ The `data-attributes` attribute can also be used to set the values of multiple a
 
 So far, we've created signals on the fly using `data-bind` and `data-computed`. All signals are merged into a global set of signals that are accessible from anywhere in the DOM.
 
-We can also create signals using the [`data-signals`](/reference/plugins_core#signals) attribute.
+We can also create signals using the [`data-signals`](/reference/attribute_plugins#data-signals) attribute.
 
 ```html
 <div data-signals-input="1"></div>
@@ -253,7 +253,7 @@ The `data-signals` attribute can also be used to merge multiple signals using a 
 
 ### `data-on`
 
-The [`data-on`](/reference/plugins_dom#on) attribute can be used to attach an event listener to an element and execute an expression whenever the event is triggered.
+The [`data-on`](/reference/attribute_plugins#data-on) attribute can be used to attach an event listener to an element and execute an expression whenever the event is triggered.
 
 ```html
 <button data-on-click="input.value = ''">Reset</button>
@@ -382,7 +382,7 @@ Now when the `Fetch a question` button is clicked, the server will respond with 
 
 ### `data-indicator`
 
-The [`data-indicator`](/reference/plugins_backend#data-indicator) attribute sets the value of a signal to `true` while the request is in flight, otherwise `false`. We can use this signal to show a loading indicator, which may be desirable for slower responses.
+The [`data-indicator`](/reference/attribute_plugins#data-data-indicator) attribute sets the value of a signal to `true` while the request is in flight, otherwise `false`. We can use this signal to show a loading indicator, which may be desirable for slower responses.
 
 ```html
 <div id="question"></div>
@@ -545,3 +545,5 @@ Using [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_d
 - Check for intersection with the viewport: `data-intersect="alert('visible')"`
 - Scroll programmatically: `data-scroll-into-view`
 - Interact with the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API): `data-view-transition="slide"`
+
+View the [attributes reference](/reference/attributes).

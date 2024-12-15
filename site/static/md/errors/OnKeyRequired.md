@@ -8,4 +8,4 @@ Example:
 <button data-on-click="alert(foo.value)">Click Me</button>
 ```
 
-See the docs on the [`data-on`](https://data-star.dev/reference/plugins_dom#on) attribute.
+See the docs on the [`data-on`](/reference/attribute_plugins#data-on) attribute.

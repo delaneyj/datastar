@@ -8,4 +8,4 @@ Example:
 <div data-text="foo.value"></div>
 ```
 
-See the docs on the [`data-text`](https://data-star.dev/reference/plugins_dom#text) attribute.
+See the docs on the [`data-text`](/reference/attribute_plugins#data-text) attribute.

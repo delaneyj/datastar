@@ -8,4 +8,4 @@ Example:
 <div data-computed-blinker="count.value % 2 === 0"></div>
 ```
 
-See the docs on the [`data-computed`](https://data-star.dev/reference/plugins_core#computed) attribute.
+See the docs on the [`data-computed`](/reference/attribute_plugins#data-computed) attribute.

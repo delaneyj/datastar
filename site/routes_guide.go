@@ -18,13 +18,10 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 
 	sidebarGroups := []*SidebarGroup{
 		{
-			Label: "Getting Started",
+			Label: "Guide",
 			Links: []*SidebarLink{
 				{ID: "getting_started"},
-				{ID: "go_deeper"},
-				{ID: "howl"},
-				{ID: "batteries_included"},
-				{ID: "streaming_backend"},
+				{ID: "going_deeper"},
 			},
 		},
 	}
@@ -49,12 +46,20 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 		})
 	})
 
-	router.Route("/guide", func(essaysRouter chi.Router) {
-		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Route("/guide", func(guideRouter chi.Router) {
+		guideRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+		// Redirect legacy pages to “Going Deeper”.
+		legacyPages := []string{"go_deeper", "howl", "batteries_included", "streaming_backend"}
+		for _, page := range legacyPages {
+			guideRouter.Get("/"+page, func(w http.ResponseWriter, r *http.Request) {
+				http.Redirect(w, r, "/guide/going_deeper", http.StatusMovedPermanently)
+			})
+		}
+
+		guideRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
 			mdData, ok := mdDataset[name]
 			if !ok {
