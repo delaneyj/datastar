@@ -6,7 +6,7 @@ It takes care of the setup listed here for you in a Dockerized environment, whic
 
 See [DOCKER.md](DOCKER.md) for detailed instructions on using it.
 
-# Building Datastar
+# Building Datastar Natively
 
 To run the examples website you will need the following:
 
