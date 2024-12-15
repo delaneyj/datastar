@@ -1,16 +1,8 @@
 # Going Deeper
 
-At only 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity, and building on first principles, everything becomes cleaner and leaner.
-
-But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. 
-
-Datastar is both a core library (4 KiB) and a “batteries included” framework (12 KiB), allowing you to create [custom bundles](/bundler) and write your own plugins!
-
-## Declarative Signals
-
 At its core, Datastar makes __nestable signals declarative__. Let's unpack that (in reverse order).
 
-### 1. Declarative
+## 1. Declarative
 
 Declarative code is amazing. It allows you to simply request the result you want, without having to think about the steps required to make it happen.
 
@@ -31,7 +23,7 @@ Datastar allows us to write this logic declaratively while embracing locality-of
 <div data-class-bold="foo.value == 1"></div>
 ```
 
-### 2. Signals
+## 2. Signals
 
 Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes, from and to expressions. 
 
@@ -49,7 +41,7 @@ Behind the scenes, Datastar converts `foo.value` to `ctx.signals.foo.value`, and
 <button data-on-click="foo.value = foo.value.toUpperCase()"></button>
 ```
 
-### 3 Nestable Signals
+## 3 Nestable Signals
 
 Signals in Datastar have a superpower—they are nestable. This allows you to scope state as deeply as you like.
 
@@ -103,6 +95,14 @@ data: script console.log('Success!')
 ```
 
 Every request is sent with a `{datastar: *}` object that includes all existing signals (except for local signals whose keys begin with an underscore). This allows frontend state to be shared with the backend, and for the backend to “drive the frontend” (control its state and behavior dynamically).
+
+## Embracing Simplicity
+
+At only 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity, and building on first principles, everything becomes cleaner and leaner.
+
+But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. 
+
+Datastar is both a core library (4 KiB) and a “batteries included” framework (12 KiB), allowing you to create [custom bundles](/bundler) and write your own plugins!
 
 ## Hypermedia First
 
