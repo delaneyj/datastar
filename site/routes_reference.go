@@ -48,12 +48,20 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 		})
 	})
 
-	router.Route("/reference", func(essaysRouter chi.Router) {
-		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Route("/reference", func(referencesRouter chi.Router) {
+		referencesRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+		// #367: Redirect old plugin pages to the new reference pages.
+		oldPluginPages := []string{"core", "dom", "browser", "backend", "logic"}
+		for _, page := range oldPluginPages {
+			referencesRouter.Get("/plugins_"+page, func(w http.ResponseWriter, r *http.Request) {
+				http.Redirect(w, r, "/reference/attribute_plugins", http.StatusMovedPermanently)
+			})
+		}
+
+		referencesRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
 			mdData, ok := mdDataset[name]
 			if !ok {
