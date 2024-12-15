@@ -29,7 +29,7 @@ Datastar allows us to write this logic declaratively while embracing locality-of
 
 Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes, from and to expressions. 
 
-Signals can be created and modified using `data-*` attributes on the frontend or events sent from the backend. They can also be used inside of Datastar expressions.
+Signals can be created and modified using `data-*` attributes on the frontend, or events sent from the backend. They can also be used in Datastar expressions (expressions evalauted by Datastar attributes and actions).
 
 ```html
 <div data-signals-foo="fizz"></div>
@@ -37,7 +37,7 @@ Signals can be created and modified using `data-*` attributes on the frontend or
 <button data-on-click="foo.value = ''"></button>
 ```
 
-In the example above, Datastar converts `foo.value` to `ctx.signals.foo.value`, and then evaluates the expression in a sandboxed context. This means that JavaScript can be used in Datastar expressions.
+Behind the scenes, Datastar converts `foo.value` to `ctx.signals.foo.value`, and then evaluates the expression in a sandboxed context. This means that JavaScript can be used in Datastar expressions.
 
 ```html
 <button data-on-click="foo.value = foo.value.toUpperCase()"></button>
@@ -48,27 +48,26 @@ In the example above, Datastar converts `foo.value` to `ctx.signals.foo.value`, 
 Signals in Datastar have a superpower—they are nestable. This allows you to scope state as deeply as you like.
 
 ```html
-<div data-signals-foo.bar="1" data-signals-foo.baz="2"></div>
+<div data-signals-foo.bar.baz="1"></div>
 ```
 
 Or, using object syntax:
 
 ```html
-<div data-signals="{foo: {bar: 1, baz: 2}}"></div>
+<div data-signals="{foo: {bar: {baz: 1}}}"></div>
 ```
 
 Or, using two-way binding:
 
 ```html
-<input data-bind-foo.bar />
-<input data-bind-foo.baz />
+<input data-bind-foo.bar.baz />
 ```
 
 The beauty of this is that you don't need to write a bunch of code to set up and maintain state. You just use `data-*` attributes and think declaratively!
 
 ## Datastar Actions
 
-Actions are helper functions that can be used inside expressions. They allow you to perform logical operations without having to write a bunch of JavaScript.
+Actions are helper functions that can be used in Datastar expressions. They allow you to perform logical operations without having to write a bunch of JavaScript.
 
 ```html
 <button data-on-click="setAll('foo.', mysignal.value.toUpperCase()"></button>
@@ -81,6 +80,8 @@ The [`sse()`](/reference/action_plugins#sse) action sends a `fetch` request to t
 ```html
 <div data-on-click="sse('/endpoint')"></div>
 ```
+
+An event stream response is nothing more than a response containing a `Content-Type: text/event-stream` header.
 
 SSE events can update the DOM, adjust signals, or run JavaScript directly in the browser.
 
@@ -95,7 +96,7 @@ event: datastar-execute-script
 data: script console.log('Success!')
 ```
 
-Every request is sent with a `{datastar: *}` object that includes the current signals (except for local signals whose keys begin with an underscore). This allows frontend state to be shared with the backend, and for the backend to “drive the frontend” (control its state and behavior dynamically).
+Every request is sent with a `{datastar: *}` object that includes all existing signals (except for local signals whose keys begin with an underscore). This allows frontend state to be shared with the backend, and for the backend to “drive the frontend” (control its state and behavior dynamically).
 
 ## Hypermedia First
 
@@ -109,14 +110,20 @@ Browsers don't care about your application – they care about rendering hyperme
 - When implemented correctly, all logic resides in the backend, eliminating the need for client-side routing, validation, etc.
 - HTML can be generated from any language.
 
-## Simplicity
-
-At 12 KiB, Datastar is smaller than both Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity and first principles, everything becomes leaner and cleaner.
-
-Don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. And remember that Datastar is a framework, so while the [core plugins](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/core/attributes) are required, you can create [custom bundles](/bundler) and write your own plugins.
-
 ## Unlearning
 
-When approaching Datastar, especially when coming from other frontend frameworks, be prepared to _unlearn_ your bad practices. These may not seem like bad practices initially; they may even feel natural. 
+When approaching Datastar, especially when coming from other frontend frameworks, be prepared to _unlearn_ some bad practices. These may not seem like bad practices initially; they may even feel natural to you. Here are a few things you should look out for.
+
+1. __Overuse of procedural code for DOM manipulation.__ Stop writing procedural JavaScript to manually update the DOM. Use declarative, HTML-based `data-*` attributes and fine-grained reactivity instead.
+2. __Reliance on state management libraries.__ Stop using complex state management tools for tracking global state. Use reactive signals that bind directly to the DOM instead.
+3. 
+
+We're very confident that Datastar can do _anything_ that React, Vue.js, or Svelte can do, faster and with less code. We'll take on anyone that disagrees!
 
 When you embrace hypermedia, everything becomes much _less_ complicated. Put state in the right place, and it becomes a lot easier to reason about.
+
+## Simplicity
+
+At 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity and building on first principles, everything becomes leaner and cleaner.
+
+But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. And remember that Datastar is a framework, so while the [core plugins](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/core/attributes) are required, you can create [custom bundles](/bundler) and write your own plugins!
