@@ -13,7 +13,7 @@ jobs:
       - name: Check for keyword in commit message
         id: check_keyword
         run: |
-          if [[ "$(git log -1 --pretty=%B)" == *"deploy-site"* ]]; then
+          if [[ "$(git log -1 --pretty=%B)" == *"[deploy-site]"* ]]; then
             echo "Keyword found"
             echo "run_action=true" >> $GITHUB_ENV
           else
