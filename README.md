@@ -49,7 +49,7 @@ You can manually add your own plugins to the core:
 }
 </script>
 <script type="module">
-    import {Datastar} from 'datastar'
+    import { Datastar } from 'datastar'
 
     Datastar.load(
         // I can make my own plugins!
