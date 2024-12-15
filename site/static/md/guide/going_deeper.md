@@ -17,7 +17,7 @@ else {
 }
 ```
 
-Datastar allows us to write this logic declaratively while embracing locality-of-behavior, by placing it on the element we want to affect.
+Datastar allows us to write this logic declaratively while embracing locality-of-behavior, by placing it directly on the element we want to affect.
 
 ```html
 <div data-class-bold="foo.value == 1"></div>
@@ -25,7 +25,7 @@ Datastar allows us to write this logic declaratively while embracing locality-of
 
 ### 2. Signals
 
-Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes, from and to expressions. 
+Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes in expressions. 
 
 Signals can be created and modified using `data-*` attributes on the frontend, or events sent from the backend. They can also be used in Datastar expressions (expressions evalauted by Datastar attributes and actions).
 
@@ -65,7 +65,7 @@ The beauty of this is that you don't need to write a bunch of code to set up and
 
 ## Datastar Actions
 
-Actions are helper functions that can be used in Datastar expressions. They allow you to perform logical operations without having to write a bunch of JavaScript.
+Actions are helper functions that can be used in Datastar expressions. They allow you to perform logical operations without having to write procedural JavaScript.
 
 ```html
 <button data-on-click="setAll('foo.', mysignal.value.toUpperCase()"></button>
