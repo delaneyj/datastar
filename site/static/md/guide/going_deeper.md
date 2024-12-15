@@ -76,7 +76,7 @@ Actions are helper functions that can be used in Datastar expressions. They allo
 The [`sse()`](/reference/action_plugins#sse) action sends a `fetch` request to the backend, and expects an event stream response containing zero or more [Datastar SSE events](/reference/sse_events). 
 
 ```html
-<div data-on-click="sse('/endpoint')"></div>
+<button data-on-click="sse('/endpoint')"></button>
 ```
 
 An event stream response is nothing more than a response containing a `Content-Type: text/event-stream` header.
