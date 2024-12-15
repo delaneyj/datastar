@@ -131,7 +131,8 @@ func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Serve
 			{Label: "HTMX+\nhyperscript", Value: 54000},
 			{Label: "HTMX+\nAlpine", Value: 40300},
 			{Label: "Datastar+\nPlugins", Value: float64(datastar.VersionClientByteSizeGzip)},
-			{Label: "Datastar Core", Value: 5698},
+			// https://bundlephobia.com/package/@starfederation/datastar
+			{Label: "Datastar Core", Value: 4200},
 		},
 	}
 
