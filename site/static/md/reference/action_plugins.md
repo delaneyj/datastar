@@ -2,7 +2,7 @@
 
 ## Backend Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/backend/actions)
+[Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/backend/actions)
 
 Allow for the integration of any backend service that supports SSE.
 
@@ -10,7 +10,7 @@ Allow for the integration of any backend service that supports SSE.
 
 Arguments: `sse(url: string, options={})`
 
-Sends a `fetch` request to the server and merges the response with the current DOM and signals. The URL can be any valid URL and the response must contain zero or more [Datastar SSE events](/reference/sse_events).
+Sends a `fetch` request to the backend and merges the response with the current DOM and signals. The URL can be any valid URL and the response must contain zero or more [Datastar SSE events](/reference/sse_events).
 
 ```html
 <div data-on-click="sse('/endpoint')"></div>
@@ -44,7 +44,7 @@ The `sse()` action takes a second argument of options.
 
 ## Logic Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/logic/actions)
+[Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/logic/actions)
 
 Provides actions for performing logic operations.
 

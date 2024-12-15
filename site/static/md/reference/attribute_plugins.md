@@ -2,7 +2,7 @@
 
 ## Core Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/core/attributes)
+[Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/core/attributes)
 
 The core plugins are included in every bundle, and contain the core functionality in Datastar.
 
@@ -290,7 +290,7 @@ Page level transitions are automatically handled by an injected meta tag. Inter-
 
 ## Backend Plugins
 
-[Source Code](https://github.com/starfederation/datastar/blob/main//library/src/plugins/official/backend/attributes)
+[Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/backend/attributes)
 
 Add integrations with the [`sse()`](/reference/action_plugins#sse) action.
 
