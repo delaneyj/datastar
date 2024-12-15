@@ -14,8 +14,6 @@ type {%s enum.Name.Pascal %} =
 module Consts =
     let [<Literal>] DatastarKey               = "{%s data.DatastarKey %}"
     let [<Literal>] Version                   = "{%s data.Version %}"
-    let [<Literal>] VersionClientByteSize     = {%d data.VersionClientByteSize %}
-    let [<Literal>] VersionClientByteSizeGzip = {%d data.VersionClientByteSizeGzip %}
 
     {%- for _, d := range data.DefaultDurations -%}
     /// Default: TimeSpan.FromMilliseconds {%d durationToMs(d.Duration) %}

@@ -9,8 +9,6 @@ import starfederation.datastar.enums.FragmentMergeMode;
 public final class Consts {
     public static final String DATASTAR_KEY = "{%s data.DatastarKey %}";
     public static final String VERSION = "{%s data.Version %}";
-    public static final int VERSION_CLIENT_BYTE_SIZE = {%d data.VersionClientByteSize %};
-    public static final int VERSION_CLIENT_BYTE_SIZE_GZIP = {%d data.VersionClientByteSizeGzip %};
     {%- for _, d := range data.DefaultDurations %}
     // {%s= d.Description %}
     public static final int DEFAULT_{%s d.Name.ScreamingSnake %} = {%d durationToMs(d.Duration) %};
@@ -92,35 +90,6 @@ public enum FragmentMergeMode {
     private final String value;
 
     FragmentMergeMode(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-    {%- endif -%}
-{%- endfor -%}
-}
-{%- endfunc -%}
-
-{%- func javaConsoleMode(data *ConstTemplateData) -%}
-package starfederation.datastar.enums;
-
-/**
- * {%s data.DoNotEdit %}
- */
-public enum ConsoleMode {
-{%- for _, enum := range data.Enums -%}
-    {%- if enum.Name.Pascal == "ConsoleMode" -%}
-        {%- for _, entry := range enum.Values %}
-    // {%s entry.Description %}
-    {%s entry.Name.Pascal %}("{%s entry.Value %}"),
-        {%- endfor -%}
-    ;
-
-    private final String value;
-
-    ConsoleMode(String value) {
         this.value = value;
     }
 

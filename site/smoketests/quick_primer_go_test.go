@@ -3,68 +3,66 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleQuickPrimerGo(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/quick_primer_go", func(runner runnerFn) {
+		runner("text input", func(t *testing.T, page *rod.Page) {
+			initial := page.MustElement("main > div:nth-of-type(1)").MustText()
 
-	page := g.page("examples/quick_primer_go")
-	assert.NotNil(t, page)
+			input := page.MustElement("main > input:nth-of-type(1)")
+			input.MustSelectAllText().MustInput("")
+			input.MustInput("test")
 
-	t.Run("text input", func(t *testing.T) {
-		initial := page.MustElement("main > div:nth-of-type(1)").MustText()
+			result := page.MustElement("main > div:nth-of-type(1)").MustText()
 
-		input := page.MustElement("main > input:nth-of-type(1)")
-		input.MustSelectAllText().MustInput("")
-		input.MustInput("test")
+			assert.NotEqual(t, initial, result)
+		})
 
-		result := page.MustElement("main > div:nth-of-type(1)").MustText()
+		runner("toggle button", func(t *testing.T, page *rod.Page) {
+			initial := page.MustElement("main > div:nth-of-type(2)").MustAttribute("style")
+			assert.Equal(t, "display: none;", *initial)
 
-		assert.NotEqual(t, initial, result)
-	})
+			btn := page.MustElementR("button", "Toggle")
+			btn.MustClick()
 
-	t.Run("toggle button", func(t *testing.T) {
-		initial := page.MustElement("main > div:nth-of-type(2)").MustAttribute("style")
-		assert.Equal(t, "display: none;", *initial)
+			result := page.MustElement("main > div:nth-of-type(2)").MustAttribute("style")
+			assert.Equal(t, "", *result)
+		})
 
-		btn := page.MustElementR("button", "Toggle")
-		btn.MustClick()
+		runner("send state", func(t *testing.T, page *rod.Page) {
+			t.Skip("skipping send state, button is not being clicked")
+			selector := "#output"
+			initial := page.MustElement(selector).MustText()
 
-		result := page.MustElement("main > div:nth-of-type(2)").MustAttribute("style")
-		assert.Equal(t, "", *result)
-	})
+			t.Logf("initial: %s", initial)
 
-	t.Run("send state", func(t *testing.T) {
-		t.Skip("skipping send state, button is not being clicked")
-		selector := "#output"
-		initial := page.MustElement(selector).MustText()
+			btn := page.MustElementR("button", "Send State")
+			btn.MustClick()
 
-		t.Logf("initial: %s", initial)
+			page.MustWaitDOMStable()
+			page.MustScreenshot("send.png")
 
-		btn := page.MustElementR("button", "Send State")
-		btn.MustClick()
+			result := page.MustElement(selector).MustText()
+			t.Logf("result: %s", result)
 
-		page.MustWaitDOMStable()
-		page.MustScreenshot("send.png")
+			assert.NotEqual(t, initial, result)
+		})
 
-		result := page.MustElement(selector).MustText()
-		t.Logf("result: %s", result)
+		runner("get state", func(t *testing.T, page *rod.Page) {
+			selector := "#output2"
+			initial := page.MustElement(selector).MustText()
 
-		assert.NotEqual(t, initial, result)
-	})
+			btn := page.MustElementR("button", "Get State")
+			btn.MustClick()
 
-	t.Run("get state", func(t *testing.T) {
-		selector := "#output2"
-		initial := page.MustElement(selector).MustText()
+			page.MustWaitDOMStable()
 
-		btn := page.MustElementR("button", "Get State")
-		btn.MustClick()
+			result := page.MustElement(selector).MustText()
 
-		page.MustWaitDOMStable()
-
-		result := page.MustElement(selector).MustText()
-
-		assert.NotEqual(t, initial, result)
+			assert.NotEqual(t, initial, result)
+		})
 	})
 }

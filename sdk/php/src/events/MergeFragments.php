@@ -5,6 +5,7 @@
 
 namespace starfederation\datastar\events;
 
+use Exception;
 use starfederation\datastar\Consts;
 use starfederation\datastar\enums\EventType;
 use starfederation\datastar\enums\FragmentMergeMode;
@@ -24,6 +25,10 @@ class MergeFragments implements EventInterface
         $this->fragments = $fragments;
 
         foreach ($options as $key => $value) {
+            if ($key === 'mergeMode') {
+                $value = $this->getMergeMode($value);
+            }
+
             $this->$key = $value;
         }
     }
@@ -63,5 +68,18 @@ class MergeFragments implements EventInterface
             $dataLines,
             $this->getMultiDataLines(Consts::FRAGMENTS_DATALINE_LITERAL, $this->fragments),
         );
+    }
+
+    private function getMergeMode(FragmentMergeMode|string $value): FragmentMergeMode
+    {
+        $value = is_string($value) ? FragmentMergeMode::tryFrom($value) : $value;
+
+        if ($value === null) {
+            $enumValues = array_map(fn($case) => '`' . $case->value . '`', FragmentMergeMode::cases());
+
+            throw new Exception('An invalid value was passed into `mergeMode`. The value must be one of: ' . implode(', ', $enumValues) . '.');
+        }
+
+        return $value;
     }
 }

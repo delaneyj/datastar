@@ -6,7 +6,6 @@ on:
     paths:
       - '.github/workflows/fly-deploy.yml'
   workflow_dispatch:
-
 jobs:
   deploy:
     name: Deploy app

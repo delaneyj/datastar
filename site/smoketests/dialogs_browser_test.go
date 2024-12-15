@@ -4,32 +4,30 @@ import (
 	"testing"
 	"time"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleDialogsBrowser(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/dialogs_browser", func(runner runnerFn) {
+		runner("launch dialog", func(t *testing.T, page *rod.Page) {
+			btn := page.MustElement("#dialogs")
+			page.MustWaitIdle()
 
-	page := g.page("examples/dialogs_browser")
-	assert.NotNil(t, page)
+			wait, handle := page.MustHandleDialog()
+			go btn.MustClick()
 
-	t.Run("launch dialog", func(t *testing.T) {
-		btn := page.MustElement("#dialogs")
-		page.MustWaitIdle()
+			//i don't know why this is needed but wait isn't enough
+			time.Sleep(1 * time.Second)
 
-		wait, handle := page.MustHandleDialog()
-		go btn.MustClick()
+			wait()
+			handle(true, "test")
+			handle(true, "")
+			page.MustWaitIdle()
 
-		//i don't know why this is needed but wait isn't enough
-		time.Sleep(1 * time.Second)
-
-		wait()
-		handle(true, "test")
-		handle(true, "")
-		page.MustWaitIdle()
-
-		confirmation := page.MustElement("#confirmation")
-		confirmationText := confirmation.MustText()
-		assert.Equal(t, "test", confirmationText)
+			confirmation := page.MustElement("#confirmation")
+			confirmationText := confirmation.MustText()
+			assert.Equal(t, "test", confirmationText)
+		})
 	})
 }

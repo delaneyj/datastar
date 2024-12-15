@@ -3,32 +3,30 @@ package smoketests
 import (
 	"testing"
 
+	"github.com/go-rod/rod"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestExampleClasses(t *testing.T) {
-	g := setup(t)
+	setupPageTest(t, "examples/classes", func(runner runnerFn) {
+		runner("observe class change", func(t *testing.T, page *rod.Page) {
+			element := page.MustElement("article > div > div:nth-of-type(2)")
 
-	page := g.page("examples/classes")
-	assert.NotNil(t, page)
+			initialClass, err := element.Attribute("class")
+			if err != nil {
+				t.Fatal("failed to get initial class: %w", err)
+			}
 
-	t.Run("observe class change", func(t *testing.T) {
-		element := page.MustElement("article > div > div:nth-of-type(2)")
+			assert.Equal(t, "", *initialClass)
 
-		initialClass, err := element.Attribute("class")
-		if err != nil {
-			t.Fatal("failed to get initial class: %w", err)
-		}
+			page.MustWait(`() => document.querySelector("article > div > div:nth-of-type(2)").className !== "` + *initialClass + `"`)
 
-		assert.Equal(t, "", *initialClass)
+			updatedClass, err := element.Attribute("class")
+			if err != nil {
+				t.Fatal("failed to get initial class: %w", err)
+			}
 
-		page.MustWait(`() => document.querySelector("article > div > div:nth-of-type(2)").className !== "` + *initialClass + `"`)
-
-		updatedClass, err := element.Attribute("class")
-		if err != nil {
-			t.Fatal("failed to get initial class: %w", err)
-		}
-
-		assert.Equal(t, "text-primary font-bold", *updatedClass)
+			assert.Equal(t, "text-primary font-bold", *updatedClass)
+		})
 	})
 }
