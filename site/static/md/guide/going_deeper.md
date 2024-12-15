@@ -1,8 +1,8 @@
 # Going Deeper
 
-At its core, Datastar makes __nestable signals declarative__. Let's unpack that (in reverse order).
+At its core, Datastar makes __nestable signals declarative__. Let's unpack that.
 
-## 1. Declarative
+### 1. Declarative
 
 Declarative code is amazing. It allows you to simply request the result you want, without having to think about the steps required to make it happen.
 
@@ -23,7 +23,7 @@ Datastar allows us to write this logic declaratively while embracing locality-of
 <div data-class-bold="foo.value == 1"></div>
 ```
 
-## 2. Signals
+### 2. Signals
 
 Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes, from and to expressions. 
 
@@ -41,7 +41,7 @@ Behind the scenes, Datastar converts `foo.value` to `ctx.signals.foo.value`, and
 <button data-on-click="foo.value = foo.value.toUpperCase()"></button>
 ```
 
-## 3 Nestable Signals
+### 3. Nestable Signals
 
 Signals in Datastar have a superpower—they are nestable. This allows you to scope state as deeply as you like.
 
