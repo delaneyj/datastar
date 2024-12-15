@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     concurrency: deploy-group
     needs: keyword_check
-    if: env.run_action == 'true'
+    if: ${{ env.run_action == 'true' }}
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
