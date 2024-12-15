@@ -16,14 +16,6 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 		return err
 	}
 
-	legacyPages := map[string]bool{
-		"plugins_core":    true,
-		"plugins_dom":     true,
-		"plugins_browser": true,
-		"plugins_backend": true,
-		"plugins_logic":   true,
-	}
-
 	sidebarGroups := []*SidebarGroup{
 		{
 			Label: "Reference",
@@ -56,27 +48,21 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 		})
 	})
 
-	router.Route("/reference", func(referencesRouter chi.Router) {
-		referencesRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Route("/reference", func(referenceRouter chi.Router) {
+		referenceRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		// #367: Redirect old plugin pages to the new reference pages.
-		oldPluginPages := []string{"core", "dom", "browser", "backend", "logic"}
-		for _, page := range oldPluginPages {
-			referencesRouter.Get("/plugins_"+page, func(w http.ResponseWriter, r *http.Request) {
+		// Redirect legacy pages to “Attribute Plugins”.
+		legacyPages := []string{"core", "dom", "browser", "backend", "logic"}
+		for _, page := range legacyPages {
+			referenceRouter.Get("/plugins_"+page, func(w http.ResponseWriter, r *http.Request) {
 				http.Redirect(w, r, "/reference/attribute_plugins", http.StatusMovedPermanently)
 			})
 		}
 
-		referencesRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+		referenceRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
-
-			// Redirect legacy pages to “Attribute Plugins”.
-			if legacyPages[name] {
-				http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusMovedPermanently)
-			}
-
 			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)

@@ -16,13 +16,6 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 		return err
 	}
 
-	legacyPages := map[string]bool{
-		"go_deeper": true,
-		"howl": true,
-		"batteries_included": true,
-		"streaming_backend": true,
-    }
-
 	sidebarGroups := []*SidebarGroup{
 		{
 			Label: "Guide",
@@ -53,19 +46,21 @@ func setupGuide(ctx context.Context, router chi.Router) error {
 		})
 	})
 
-	router.Route("/guide", func(essaysRouter chi.Router) {
-		essaysRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
+	router.Route("/guide", func(guideRouter chi.Router) {
+		guideRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusFound)
 		})
 
-		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
+		// Redirect legacy pages to “Going Deeper”.
+		legacyPages := []string{"go_deeper", "howl", "batteries_included", "streaming_backend"}
+		for _, page := range legacyPages {
+			guideRouter.Get("/"+page, func(w http.ResponseWriter, r *http.Request) {
+				http.Redirect(w, r, "/guide/going_deeper", http.StatusMovedPermanently)
+			})
+		}
+
+		guideRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
-
-			// Redirect legacy pages to “Going Deeper”.
-			if legacyPages[name] {
-				http.Redirect(w, r, string(sidebarGroups[0].Links[1].URL), http.StatusMovedPermanently)
-			}
-
 			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
