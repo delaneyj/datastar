@@ -1,16 +1,31 @@
-name: Fly Deploy
+name: Deploy Site
 on:
   push:
     branches:
       - develop
-    paths:
-      - '.github/workflows/fly-deploy.yml'
   workflow_dispatch:
 jobs:
+  keyword_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v4
+      - name: Check for keyword in commit message
+        id: check_keyword
+        run: |
+          if [[ "$(git log -1 --pretty=%B)" == *"deploy-site"* ]]; then
+            echo "Keyword found"
+            echo "run_action=true" >> $GITHUB_ENV
+          else
+            echo "No keyword found"
+            echo "run_action=false" >> $GITHUB_ENV
+          fi
   deploy:
     name: Deploy app
     runs-on: ubuntu-latest
     concurrency: deploy-group
+    needs: keyword_check
+    if: env.run_action == 'true'
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v4
