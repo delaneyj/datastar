@@ -27,7 +27,7 @@ Datastar allows us to write this logic declaratively while embracing locality-of
 
 Datastar uses signals, provided by [Preact Signals](https://preactjs.com/guide/v10/signals/), to manage state. You can think of signals as reactive variables that automatically track and propagate changes in expressions. 
 
-Signals can be created and modified using `data-*` attributes on the frontend, or events sent from the backend. They can also be used in Datastar expressions (expressions evalauted by Datastar attributes and actions).
+Signals can be created and modified using `data-*` attributes on the frontend, or events sent from the backend. They can also be used in Datastar expressions (expressions evaluated by Datastar attributes and actions).
 
 ```html
 <div data-signals-foo="fizz"></div>
