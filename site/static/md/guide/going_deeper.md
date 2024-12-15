@@ -1,5 +1,11 @@
 # Going Deeper
 
+At only 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity, and building on first principles, everything becomes cleaner and leaner.
+
+But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. 
+
+Datastar is both a core library (4 KiB) and a “batteries included” framework (12 KiB), allowing you to create [custom bundles](/bundler) and write your own plugins!
+
 ## Declarative Signals
 
 At its core, Datastar makes __nestable signals declarative__. Let's unpack that (in reverse order).
@@ -116,14 +122,8 @@ When approaching Datastar, especially when coming from other frontend frameworks
 
 1. __Overuse of procedural code for DOM manipulation.__ Stop writing procedural JavaScript to manually update the DOM. Use declarative, HTML-based `data-*` attributes and fine-grained reactivity instead.
 2. __Reliance on state management libraries.__ Stop using complex state management tools for tracking global state. Use reactive signals that bind directly to the DOM instead.
-3. 
+3. __Putting state and logic in signals.__  Stop recreating the sins of SPAs by putting state and logic in signals. Signals should only exist for what users can interact with, and for sharing state with the backend.
 
 We're very confident that Datastar can do _anything_ that React, Vue.js, or Svelte can do, faster and with less code. We'll take on anyone that disagrees!
 
 When you embrace hypermedia, everything becomes much _less_ complicated. Put state in the right place, and it becomes a lot easier to reason about.
-
-## Simplicity
-
-At 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity and building on first principles, everything becomes leaner and cleaner.
-
-But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. And remember that Datastar is a framework, so while the [core plugins](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/core/attributes) are required, you can create [custom bundles](/bundler) and write your own plugins!
