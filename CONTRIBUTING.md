@@ -22,4 +22,4 @@ If you’re unsure about whether a pull request is within the scope of Datastar,
 
 ## Building
 
-Datastar comes with instructions for building, either manually or via docker Read the [Building Guidelines »](BUILDING.md)
+Datastar comes with instructions for building, either manually or via Docker. Read the [Building Guidelines »](BUILDING.md)
