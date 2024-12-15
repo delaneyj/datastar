@@ -25,7 +25,7 @@ import (
 )
 
 var (
-	datastarBundlerRegexp = regexp.MustCompile(`import { (?P<name>[^"]*) } from "(?P<path>[^"]*)";`)
+	datastarBundlerRegexp = regexp.MustCompile(`import { (?P<name>[^']*) } from '(?P<path>[^']*)'\n`)
 	pluginTypeRegexp      = regexp.MustCompile(`pluginType: "(?P<name>.*)",`)
 	nameRegexp            = regexp.MustCompile(`name: "(?P<name>.*)",`)
 	prefixRegexp          = regexp.MustCompile(`prefix: "(?P<name>.*)",`)
@@ -114,11 +114,11 @@ func setupBundler(router chi.Router) error {
 		name := match[1]
 		path := match[2]
 
-		if !strings.HasPrefix(path, "../plugins") {
+		if !strings.HasPrefix(path, "~/plugins") {
 			continue
 		}
 
-		tsRelpath := path[3:] + ".ts"
+		tsRelpath := path[2:] + ".ts"
 		tsSrcFilepath := filepath.Join("static", "librarySource", tsRelpath)
 		b, err := staticFS.ReadFile(tsSrcFilepath)
 		if err != nil {
