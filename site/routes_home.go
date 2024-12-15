@@ -95,7 +95,7 @@ func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Serve
 
 	chartWidth := 475
 	graph := chart.BarChart{
-		Title:  "File Size (Hello World) First Load",
+		Title:  "File Size Comparison",
 		Width:  chartWidth,
 		Height: chartWidth,
 		Background: chart.Style{
@@ -122,16 +122,19 @@ func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Serve
 			},
 			Range: &chart.ContinuousRange{
 				Min: 0.001,
-				Max: 90000,
+				Max: 42000,
 			},
 		},
+		// https://bundlephobia.com/package/@starfederation/datastar
+		// https://bundlephobia.com/package/htmx.org
+		// https://bundlephobia.com/package/alpinejs
+		// https://bundlephobia.com/package/hyperscript.org
 		Bars: []chart.Value{
-			{Label: "Next.js", Value: 86221},
-			{Label: "SvelteKit", Value: 25800},
-			{Label: "HTMX+\nhyperscript", Value: 54000},
-			{Label: "HTMX+\nAlpine", Value: 40300},
+			{Label: "HTMX+\nhyperscript", Value: 39900},
+			{Label: "HTMX+\nAlpine.js", Value: 30500},
+			{Label: "HTMX", Value: 15200},
+			{Label: "Alpine.js", Value: 15300},
 			{Label: "Datastar+\nPlugins", Value: float64(datastar.VersionClientByteSizeGzip)},
-			// https://bundlephobia.com/package/@starfederation/datastar
 			{Label: "Datastar Core", Value: 4200},
 		},
 	}
