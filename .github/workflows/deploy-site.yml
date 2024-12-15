@@ -15,10 +15,10 @@ jobs:
         run: |
           if [[ "$(git log -1 --pretty=%B)" == *"[deploy-site]"* ]]; then
             echo "Keyword found"
-            echo "run_action=true" >> $GITHUB_ENV
+            echo "::set-output name=run_action::true"
           else
             echo "No keyword found"
-            echo "run_action=false" >> $GITHUB_ENV
+            echo "::set-output name=run_action::false"
           fi
   deploy:
     name: Deploy app
