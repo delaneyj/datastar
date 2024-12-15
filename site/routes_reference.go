@@ -16,6 +16,14 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 		return err
 	}
 
+	legacyPages := map[string]bool{
+		"plugins_core":    true,
+		"plugins_dom":     true,
+		"plugins_browser": true,
+		"plugins_backend": true,
+		"plugins_logic":   true,
+	}
+
 	sidebarGroups := []*SidebarGroup{
 		{
 			Label: "Reference",
@@ -55,6 +63,12 @@ func setupReferenceRoutes(ctx context.Context, router chi.Router) error {
 
 		essaysRouter.Get("/{name}", func(w http.ResponseWriter, r *http.Request) {
 			name := chi.URLParam(r, "name")
+
+			// Redirect legacy pages to “Attribute Plugins”.
+			if legacyPages[name] {
+				http.Redirect(w, r, string(sidebarGroups[0].Links[0].URL), http.StatusMovedPermanently)
+			}
+
 			mdData, ok := mdDataset[name]
 			if !ok {
 				http.Error(w, "not found", http.StatusNotFound)
