@@ -145,9 +145,9 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
 
 Modifiers allow you to modify behavior when events are triggered. Some modifiers have tags to further modify the behavior.
 
-- `__once`\* - Only trigger the event listener once.
-- `__passive`\* - Do not call `preventDefault` on the event listener.
-- `__capture`\* - Use a capture event listener.
+- `__once` \* - Only trigger the event listener once.
+- `__passive` \* - Do not call `preventDefault` on the event listener.
+- `__capture` \* - Use a capture event listener.
 - `__debounce` - Debounce the event listener.
   - `.500ms` - Debounce for 500 milliseconds.
   - `.1s` - Debounce for 1 second.
@@ -162,7 +162,7 @@ Modifiers allow you to modify behavior when events are triggered. Some modifiers
 - `__prevent` - Calls `preventDefault` on the event listener.
 - `__stop` - Calls `stopPropagation` on the event listener.
 
-\*only works on native events.
+\* Only works on native events.
 
 ```html
 <div data-on-click__window__debounce.500ms.leading="foo.value = ''"></div>
@@ -215,6 +215,7 @@ Binds the text content of an element to an expression.
 ```html
 <div data-text="foo.value"></div>
 ```
+
 ## Browser Plugins
 
 [Source Code](https://github.com/starfederation/datastar/tree/main/library/src/plugins/official/browser/attributes)
