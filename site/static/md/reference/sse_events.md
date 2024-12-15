@@ -30,6 +30,8 @@ Additional `data` lines can be added to the response to override the default beh
 | `data: useViewTransition true`     | Whether to use view transitions when merging into the DOM. Defaults to `false`.                                         |
 | `data: fragments`                  | The HTML fragments to merge into the DOM.                                                                               |
 
+Sample output showing all options:
+
 ```
 event: datastar-merge-fragments
 data: selector: #foo
@@ -45,6 +47,8 @@ data: fragments </div>
 
 Updates the signals with new values. The `onlyIfMissing` line determines whether to update the signals with new values only if the key does not exist. The `signals` line should be a valid `data-signals` attribute. This will get merged into the signals.
 
+Sample output showing all options:
+
 ```
 event: datastar-merge-signals
 data: onlyIfMissing false
@@ -55,6 +59,8 @@ data: signals {foo: 1}
 
 Removes one or more HTML fragments that match the provided selector from the DOM.
 
+Sample output:
+
 ```
 event: datastar-remove-fragments
 data: selector #foo
@@ -63,6 +69,8 @@ data: selector #foo
 ### `datastar-remove-signals`
 
 Removes signals that match one or more provided paths.
+
+Sample output:
 
 ```
 event: datastar-remove-signals
@@ -73,6 +81,8 @@ data: paths baz
 ### `datastar-execute-script`
 
 Executes JavaScript in the browser. The `autoRemove` line determines whether to remove the script after execution. Each `attributes` line adds an attribute (in the format `name value`) to the `script` element. Each `script` line contains JavaScript to be executed by the browser.
+
+Sample output showing all options:
 
 ```
 event: datastar-execute-script
