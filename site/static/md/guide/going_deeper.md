@@ -43,7 +43,7 @@ Behind the scenes, Datastar converts `foo.value` to `ctx.signals.foo.value`, and
 
 ### 3. Nestable Signals
 
-Signals in Datastar have a superpower—they are nestable. This allows you to scope state as deeply as you like.
+Signals in Datastar have a superpower: they are nestable. This allows you to scope state as deeply as you like.
 
 ```html
 <div data-signals-foo.bar.baz="1"></div>
@@ -98,11 +98,11 @@ Every request is sent with a `{datastar: *}` object that includes all existing s
 
 ## Embracing Simplicity
 
-At only 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. The package size is not _just_ a vanity metric. By embracing simplicity, and building on first principles, everything becomes cleaner and leaner.
+At only 12 KiB, Datastar is smaller than Alpine.js and htmx, yet it provides the functionality of both libraries combined. 
 
-But don't take our word for it – [explore the source code](https://github.com/starfederation/datastar/tree/main/library) and make up your own mind. 
+The package size is not _just_ a vanity metric. By embracing simplicity, and building on first principles, everything becomes cleaner and leaner. But don't take our word for it—[explore the source code](https://github.com/starfederation/datastar/tree/main/library) and see for yourself! 
 
-Datastar is both a core library (4 KiB) and a “batteries included” framework (12 KiB), allowing you to create [custom bundles](/bundler) and write your own plugins!
+Datastar is both a core library (4 KiB) and a “batteries included” framework (12 KiB), allowing you to create [custom bundles](/bundler) and write your own plugins.
 
 ## Hypermedia First
 
