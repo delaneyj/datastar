@@ -12,7 +12,6 @@ To run the examples website you will need the following:
 
 - [Go](https://go.dev/)
 - [Taskfile](https://taskfile.dev/)
-- [Git-LFS](https://git-lfs.com/)
 
 To publish the library or if you're using a BSD operating system, you will also need:
 
