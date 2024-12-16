@@ -69,6 +69,18 @@ func RunBlocking(port int, readyCh chan struct{}) toolbelt.CtxErrFunc {
 func setupRoutes(ctx context.Context, router chi.Router) (err error) {
 	defer router.Handle("/static/*", hashfs.FileServer(staticSys))
 
+	// Redirect `datastar.fly.dev`
+	router.Use(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if r.Host == "datastar.fly.dev" {
+				target := "https://data-star.dev" + r.URL.Path
+				http.Redirect(w, r, target, http.StatusMovedPermanently)
+				return
+			}
+			next.ServeHTTP(w, r)
+		})
+	})
+
 	natsPort, err := toolbelt.FreePort()
 	if err != nil {
 		return fmt.Errorf("error getting free port: %w", err)
