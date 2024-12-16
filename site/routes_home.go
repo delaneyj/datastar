@@ -122,7 +122,7 @@ func setupHome(router chi.Router, signals sessions.Store, ns *embeddednats.Serve
 			},
 			Range: &chart.ContinuousRange{
 				Min: 0.001,
-				Max: 42000,
+				Max: 40000,
 			},
 		},
 		// https://bundlephobia.com/package/@starfederation/datastar
