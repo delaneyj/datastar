@@ -8,4 +8,4 @@
 
 ### Changed
 
-- The Datastar module is now exported, exposing a getter for signals ([#358](https://github.com/starfederation/datastar/issues/358)).
+- The Datastar module is now exported, exposing [public methods and properties](https://data-star.dev/reference/javascript_api) ([#358](https://github.com/starfederation/datastar/issues/358)).
