@@ -32,7 +32,7 @@ var (
 )
 
 type BundlerSignals struct {
-	IncludedPlugines map[string]bool `json:"includedPlugins"`
+	IncludedPlugins map[string]bool `json:"includedPlugins"`
 }
 
 type PluginDetails struct {
@@ -195,10 +195,10 @@ func setupBundler(router chi.Router) error {
 	router.Route("/bundler", func(bundlerRouter chi.Router) {
 		bundlerRouter.Get("/", func(w http.ResponseWriter, r *http.Request) {
 			signals := &BundlerSignals{
-				IncludedPlugines: map[string]bool{},
+				IncludedPlugins: map[string]bool{},
 			}
 			for _, plugin := range manifest.Plugins {
-				signals.IncludedPlugines[plugin.Key] = true
+				signals.IncludedPlugins[plugin.Key] = true
 			}
 			PageBundler(r, manifest, signals).Render(r.Context(), w)
 		})
@@ -216,7 +216,7 @@ func setupBundler(router chi.Router) error {
 				Version: manifest.Version,
 			}
 			for _, plugin := range manifest.Plugins {
-				if !signals.IncludedPlugines[plugin.Key] {
+				if !signals.IncludedPlugins[plugin.Key] {
 					continue
 				}
 
@@ -305,6 +305,9 @@ func bundlePlugins(tmpDir string, manifest PluginManifest) (results *BundleResul
 		return nil, fmt.Errorf("error writing bundle file: %w", err)
 	}
 
+	aliasMap := make(map[string]string, 1)
+	aliasMap["~"] = tmpDir
+
 	buildResult := api.Build(api.BuildOptions{
 		EntryPoints:       []string{bundleOutFile},
 		Outdir:            distDir,
@@ -316,6 +319,7 @@ func bundlePlugins(tmpDir string, manifest PluginManifest) (results *BundleResul
 		MinifySyntax:      true,
 		Sourcemap:         api.SourceMapLinked,
 		Target:            api.ES2023,
+		Alias:             aliasMap,
 	})
 
 	if len(buildResult.Errors) > 0 {
