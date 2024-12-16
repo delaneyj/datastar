@@ -11,3 +11,43 @@ For edge-cases where you find yourself having to change the DOM without involvin
     Datastar.apply(document.body)
 </script>
 ```
+
+## Public Methods
+
+The Datastar object exposes the following methods.
+
+### `apply()`
+
+Applies all plugins to the provided element and its children.
+
+```js
+Datastar.apply(document.body)
+```
+
+### `load()`
+
+Loads all plugins and applies them to the DOM.
+
+```js
+Datastar.load()
+```
+
+## Public Properties
+
+The Datastar object exposes the following properties.
+
+### `signals`
+
+The signal root, on which you can access signal methods. Beware that you should avoid using this for anything other than troubleshooting.
+
+```js
+Datastar.signals.values()
+```
+
+### `version`
+
+The current version number.
+
+```js
+Datastar.version
+```

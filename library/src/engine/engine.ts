@@ -30,6 +30,10 @@ export class Engine {
   #watchers: WatcherPlugin[] = []
   #removals = new Map<Element, RemovalEntry>()
 
+  get signals() {
+    return this.#signals
+  }
+
   get version() {
     return VERSION
   }
@@ -191,10 +195,6 @@ export class Engine {
         }
       })
     })
-  }
-
-  get signals() {
-    return this.#signals
   }
 
   #genRX(
