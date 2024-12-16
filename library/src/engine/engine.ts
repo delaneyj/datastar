@@ -81,6 +81,9 @@ export class Engine {
     const appliedMacros = new Set<MacroPlugin>()
     this.#plugins.forEach((p, pi) => {
       this.#walkDownDOM(rootElement, (el) => {
+        // Ignore this element if `data-star-ignore` exists on it
+        if ('starIgnore' in el.dataset) return
+        
         // Cleanup if not first plugin
         if (!pi) this.#cleanup(el)
 
