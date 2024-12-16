@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - develop
+    paths:
+      - '.github/workflows/deploy-site.yml'
 jobs:
   deploy:
     name: Deploy app
