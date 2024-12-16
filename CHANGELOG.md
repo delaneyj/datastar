@@ -8,4 +8,4 @@
 
 ### Changed
 
-- The Datastar module is now exported, exposing a `get()` method that returns all signals ([#358](https://github.com/starfederation/datastar/issues/358)).
+- The Datastar module is now exported, exposing a getter for signals ([#358](https://github.com/starfederation/datastar/issues/358)).
