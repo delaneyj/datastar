@@ -325,4 +325,10 @@ The signal name can be specified in the key (as above), or in the value (as belo
 
 ## Ignoring Elements
 
+### `data-star-ignore`
+
 Datastar walks the entire DOM and applies plugins to each element it encounters. It's possible to tell Datastar to ignore an element by placing a `data-star-ignore` attribute on it. This can be useful for preventing naming conflicts with third-party libraries.
+
+```html
+<div data-star-ignore></div>
+```
