@@ -140,7 +140,7 @@ An `evt` variable that represents the event object is available in the expressio
 The `data-on` attribute matches DOM events, however there are currently a few special cases for custom events.
 
 1. `data-on-load` is triggered when an element is loaded into the DOM.
-2. `data-on-signals-change` is triggered when any signal changes.
+2. `data-on-signals-change` is triggered when any signals change.
 3. `data-on-raf` is triggered on every `requestAnimationFrame` event.
 
 #### Modifiers
