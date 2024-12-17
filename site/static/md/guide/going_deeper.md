@@ -94,6 +94,12 @@ event: datastar-execute-script
 data: script console.log('Success!')
 ```
 
+Using one of the helper SDKs (currently available for [dotnet](https://github.com/starfederation/datastar/tree/main/sdk/dotnet), [Go](https://github.com/starfederation/datastar/tree/main/sdk/go), [PHP](https://github.com/starfederation/datastar/tree/main/sdk/php)) will help you get up and running faster. 
+
+Here is the backend code to produce the events above in each of the SDKs.
+
+!!!CODE_SNIPPET:going_deeper/multiple_events!!!
+
 Every request is sent with a `{datastar: *}` object that includes all existing signals (except for local signals whose keys begin with an underscore). This allows frontend state to be shared with the backend, and for the backend to “drive the frontend” (control its state and behavior dynamically).
 
 ## Embracing Simplicity
