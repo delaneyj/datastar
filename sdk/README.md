@@ -42,7 +42,7 @@ The core mechanics of Datastar's SSE support is
 
 ### Construction / Initialization
    1. ***There must*** be a way to create a new instance of this object based on the incoming `HTTP` Request and Response objects.
-   2. The `ServerSentEventGenerator` ***must*** default to a flusher interface that has the following response headers set by default
+   2. The `ServerSentEventGenerator` ***must*** use a response controller that has the following response headers set by default
       1. `Cache-Control = nocache`
       2. `Connection = keep-alive`
       3. `Content-Type = text/event-stream`
