@@ -25,7 +25,7 @@ The `sse()` action takes a second argument of options.
 - `method` - The HTTP method to use. Defaults to `get`.
 - `includeLocal` - Whether to include local signals (those beggining with an underscore) in the request. Defaults to `false`.
 - `headers` - An object containing headers to send with the request.
-- `openWhenHidden` - Whether to keep the connection open with the page is hidden. Defaults to `false`. Useful for dashboards but can cause a drain on battery life and other resources.
+- `openWhenHidden` - Whether to keep the connection open with the page is hidden. Useful for dashboards but can cause a drain on battery life and other resources when enabled. Defaults to `false`
 - `retryScaler` - A numeric multiplier applied to scale retry wait times. Defaults to `2`.
 - `retryMaxWaitMs` - The maximum allowable wait time in milliseconds between retries. Defaults to `30000` (30 seconds).
 - `retryMaxCount` - The maximum number of retry attempts. Defaults to `10`.
