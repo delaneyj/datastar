@@ -30,6 +30,10 @@ func NewSSE(w http.ResponseWriter, r *http.Request) *ServerSentEventGenerator {
 
 	// flush headers
 	if err := rc.Flush(); err != nil {
+		// Below panic is a deliberate choice as it should never occur and is an environment issue.
+		// https://crawshaw.io/blog/go-and-sqlite
+		// In Go, errors that are part of the standard operation of a program are returned as values.
+		// Programs are expected to handle errors.
 		panic(fmt.Sprintf("response writer failed to flush: %v", err))
 	}
 
