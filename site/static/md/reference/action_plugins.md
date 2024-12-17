@@ -26,9 +26,9 @@ The `sse()` action takes a second argument of options.
 - `includeLocal` - Whether to include local signals (those beggining with an underscore) in the request (defaults to `false`).
 - `headers` - An object containing headers to send with the request.
 - `openWhenHidden` - Whether to keep the connection open with the page is hidden (defaults to `false`). Useful for dashboards but can cause a drain on battery life and other resources.
-- `retryScaler` - A number that scales the retry time (defaults to `2`).
-- `retryMaxWaitMs` - The maximum wait time in milliseconds between retries (defaults to `30000`).
-- `retryMaxCount` - The maximum number of retries (defaults to `10`).
+- `retryScaler` - A numeric multiplier applied to scale retry wait times (defaults to `2`).
+- `retryMaxWaitMs` - The maximum allowable wait time in milliseconds between retries (defaults to `30000` or 30 seconds).
+- `retryMaxCount` - The maximum number of retry attempts (defaults to `10`).
 - `abort` - An [AbortSignal](https://developer.mozilla.org/en-US/docs/Web/API/AbortSignal) object that can be used to cancel the request.
 
 ```html
