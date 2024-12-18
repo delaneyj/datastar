@@ -146,6 +146,10 @@ export const SSE: ActionPlugin = {
           throw dsErr('ClosestFormNotFound')
         }
         formEl.addEventListener('submit', evt => evt.preventDefault())
+        if (!formEl.checkValidity()) {
+          formEl.reportValidity()
+          return
+        }
         const formData = new FormData(formEl)
         if (method === 'GET') {
           const formParams = new URLSearchParams(formData as any)
