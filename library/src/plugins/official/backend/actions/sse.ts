@@ -31,6 +31,7 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 export type SSEArgs = {
   method: METHOD
   headers?: Record<string, string>
+  form?: boolean
   includeLocal?: boolean
   openWhenHidden?: boolean
   retryScaler?: number
@@ -45,11 +46,13 @@ export const SSE: ActionPlugin = {
   fn: async (ctx, url: string, args: SSEArgs) => {
     const {
       el: { id: elId },
+      el,
       signals,
     } = ctx
     const {
       method: methodAnyCase,
       headers: userHeaders,
+      form,
       includeLocal,
       openWhenHidden,
       retryScaler,
@@ -60,6 +63,7 @@ export const SSE: ActionPlugin = {
       {
         method: 'GET',
         headers: {},
+        form: false,
         includeLocal: false,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
         retryScaler: 2, // the amount to multiply the retry interval by each time
@@ -78,7 +82,7 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': 'application/json',
+          'Content-Type': form ? 'multipart/form-data' : 'application/json',
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -134,13 +138,36 @@ export const SSE: ActionPlugin = {
       }
 
       const urlInstance = new URL(url, window.location.origin)
-      const json = signals.JSON(false, !includeLocal)
-      if (method === 'GET') {
-        const queryParams = new URLSearchParams(urlInstance.search)
-        queryParams.set(DATASTAR, json)
-        urlInstance.search = queryParams.toString()
+
+      if (form) {
+        let formEl = el.closest('form');
+        let formData
+        if (formEl === null) {
+          // Create a temporary form containing a deep clone of the body, to maintain state
+          const bodyClone = document.body.cloneNode(true)
+          const formEl = document.createElement('form')
+          formEl.appendChild(bodyClone)
+          document.body.appendChild(formEl);
+          formData = new FormData(formEl)
+          document.body.removeChild(formEl)
+        } else {
+          formData = new FormData(formEl)
+        }
+        if (method === 'GET') {
+          const queryParams = new URLSearchParams(formData as any)
+          urlInstance.search = queryParams.toString()
+        } else {
+          req.body = formData
+        }
       } else {
-        req.body = json
+        const json = signals.JSON(false, !includeLocal)
+        if (method === 'GET') {
+          const queryParams = new URLSearchParams(urlInstance.search)
+          queryParams.set(DATASTAR, json)
+          urlInstance.search = queryParams.toString()
+        } else {
+          req.body = json
+        }
       }
 
       try {
