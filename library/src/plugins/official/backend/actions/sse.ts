@@ -153,9 +153,9 @@ export const SSE: ActionPlugin = {
         const formData = new FormData(formEl)
         if (method === 'GET') {
           const formParams = new URLSearchParams(formData as any)
-          formParams.forEach((value, key) => {
+          for (const [key, value] of formParams){
             queryParams.set(key, value);
-          });
+          }
         } else {
           req.body = formData
         }
