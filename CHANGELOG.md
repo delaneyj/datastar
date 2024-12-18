@@ -2,6 +2,11 @@
 
 ## v0.21.4
 
+### Added
+
+- Added a `retryInterval` option to the `sse()` action, defaulting to 1 second.
+
+
 ### Fixed
 
 - Fixed a bug in which local signals were being unintentionally sent with requests ([#387](https://github.com/starfederation/datastar/issues/387)).
