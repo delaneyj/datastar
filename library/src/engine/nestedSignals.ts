@@ -184,7 +184,7 @@ export class SignalsRoot {
 
     const current = subSignals[last]
     if (!!current) {
-      if (current.value === null || current.value === undefined) {
+      if (current.value !== null && current.value !== undefined) {
         current.value = value
       }
       return current as Signal<T>
