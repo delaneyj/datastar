@@ -3,7 +3,13 @@
   "vcs": { "enabled": false, "clientKind": "git", "useIgnoreFile": false },
   "files": {
     "ignoreUnknown": false,
-    "ignore": ["**/*.js", "**/*.d.ts"]
+    "include": ["library/**/*.ts"],
+    "ignore": [
+      "library/**/*.js",
+      "library/**/*.d.ts",
+      "library/src/engine/version.ts",
+      "library/src/engine/consts.ts"
+    ]
   },
   "formatter": {
     "enabled": true,
