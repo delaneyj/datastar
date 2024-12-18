@@ -99,7 +99,7 @@ func setupExamples(ctx context.Context, router chi.Router, signals sessions.Stor
 				{ID: "python"},
 				{ID: "quick_primer_go", ShouldIncludeInspector: true},
 				{ID: "templ_counter"},
-				{ID: "form"},
+				{ID: "form_data"},
 			},
 		},
 	}

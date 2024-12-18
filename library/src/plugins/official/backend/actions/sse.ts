@@ -82,7 +82,7 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': form ? 'multipart/form-data' : 'application/json',
+          'Content-Type': form ? (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data') : 'application/json',
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -138,37 +138,33 @@ export const SSE: ActionPlugin = {
       }
 
       const urlInstance = new URL(url, window.location.origin)
-
+      const queryParams = new URLSearchParams(urlInstance.search)
+      
       if (form) {
-        let formEl = el.closest('form');
-        let formData
+        const formEl = el.closest('form');
         if (formEl === null) {
-          // Create a temporary form containing a deep clone of the body, to maintain state
-          const bodyClone = document.body.cloneNode(true)
-          const formEl = document.createElement('form')
-          formEl.appendChild(bodyClone)
-          document.body.appendChild(formEl);
-          formData = new FormData(formEl)
-          document.body.removeChild(formEl)
-        } else {
-          formData = new FormData(formEl)
+          throw dsErr('ClosestFormNotFound')
         }
+        formEl.addEventListener('submit', evt => evt.preventDefault())
+        const formData = new FormData(formEl)
         if (method === 'GET') {
-          const queryParams = new URLSearchParams(formData as any)
-          urlInstance.search = queryParams.toString()
+          const formParams = new URLSearchParams(formData as any)
+          formParams.forEach((value, key) => {
+            queryParams.set(key, value);
+          });
         } else {
           req.body = formData
         }
       } else {
         const json = signals.JSON(false, !includeLocal)
         if (method === 'GET') {
-          const queryParams = new URLSearchParams(urlInstance.search)
           queryParams.set(DATASTAR, json)
-          urlInstance.search = queryParams.toString()
         } else {
           req.body = json
         }
       }
+
+      urlInstance.search = queryParams.toString()
 
       try {
         await fetchEventSource(urlInstance.toString(), req)
