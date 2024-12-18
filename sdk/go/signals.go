@@ -6,7 +6,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -115,7 +114,6 @@ func ReadSignalsWithLimit(r *http.Request, signals any, limit int64) error {
 		return fmt.Errorf("not a datastar request")
 	}
 
-	log.Printf("XXXX YEEESH")
 	if r.Method == "GET" {
 		dsJSON := r.URL.Query().Get(DatastarKey)
 		if dsJSON == "" {
