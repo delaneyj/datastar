@@ -11,14 +11,12 @@ import (
 
 func setupExamplesForm(examplesRouter chi.Router) error {
 	examplesRouter.Get("/form_data/data", func(w http.ResponseWriter, r *http.Request) {
-		sse := datastar.NewSSE(w, r)
-		
 		err := r.ParseForm()
 		if err != nil {
 			http.Error(w, "Failed to parse form", http.StatusBadRequest)
 			return
 		}
-		
+
 		formData := r.Form
 		jsonData, err := json.Marshal(formData)
 		if err != nil {
@@ -26,18 +24,17 @@ func setupExamplesForm(examplesRouter chi.Router) error {
 			return
 		}
 
+		sse := datastar.NewSSE(w, r)
 		sse.ExecuteScript(fmt.Sprintf(`alert('Form data received via GET request: %s')`, jsonData))
 	})
 
 	examplesRouter.Post("/form_data/data", func(w http.ResponseWriter, r *http.Request) {
-		sse := datastar.NewSSE(w, r)
-		
 		err := r.ParseMultipartForm(1 << 20)
 		if err != nil {
 			http.Error(w, "Failed to parse multipart form", http.StatusBadRequest)
 			return
 		}
-		
+
 		formData := r.Form
 		jsonData, err := json.Marshal(formData)
 		if err != nil {
@@ -45,6 +42,7 @@ func setupExamplesForm(examplesRouter chi.Router) error {
 			return
 		}
 
+		sse := datastar.NewSSE(w, r)
 		sse.ExecuteScript(fmt.Sprintf(`alert('Form data received via POST request: %s')`, jsonData))
 	})
 

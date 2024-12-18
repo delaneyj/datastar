@@ -141,13 +141,28 @@ export const SSE: ActionPlugin = {
       const queryParams = new URLSearchParams(urlInstance.search)
       
       if (form) {
-        const formEl = form === true ? el.closest('form') : document.querySelector(form);
-        if (formEl === null) {
-          throw dsErr('FormNotFound', { form })
+        let formEl, isTempForm: boolean = false
+        if (form === true) {
+          formEl = el.closest('form')
+          if (formEl === null) {
+            // Create a temporary form containing a deep clone of the body, to maintain state
+            const bodyClone = document.body.cloneNode(true)
+            formEl = document.createElement('form')
+            formEl.appendChild(bodyClone)
+            document.body.appendChild(formEl)
+            isTempForm = true
+          }
+        } else {
+          formEl = document.querySelector(form);
+          if (formEl === null) {
+            throw dsErr('SseFormNotFound', { form })
+          }
         }
-        formEl.addEventListener('submit', evt => evt.preventDefault())
+        const preventSubmit = (evt: Event) => evt.preventDefault()
+        formEl.addEventListener('submit', preventSubmit)
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
+          if (isTempForm) document.body.removeChild(formEl)
           return
         }
         const formData = new FormData(formEl)
@@ -159,6 +174,8 @@ export const SSE: ActionPlugin = {
         } else {
           req.body = formData
         }
+        formEl.removeEventListener('submit', preventSubmit)
+        if (isTempForm) document.body.removeChild(formEl)
       } else {
         const json = signals.JSON(false, !includeLocal)
         if (method === 'GET') {

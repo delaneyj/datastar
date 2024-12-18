@@ -21,6 +21,16 @@
   Submit form from outside
 </button>
 
+<div class="space-y-8">
+  <label class="flex items-center gap-2 input input-bordered">
+    bar
+    <input name="bar" required class="grow"/>
+  </label>
+  <button data-on-click="sse('/examples/form_data/data', {form: true})" class="btn btn-primary">
+    Submit without a wrapping form
+  </button>
+</div>
+
 ## Explanation
 
 ```html
