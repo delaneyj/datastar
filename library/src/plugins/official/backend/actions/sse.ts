@@ -17,6 +17,7 @@ import {
 } from '../shared'
 
 type METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+type CONTENT_TYPE = 'json' | 'form'
 
 function dispatchSSE(type: string, argsRaw: Record<string, string>) {
   document.dispatchEvent(
@@ -30,8 +31,9 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 
 export type SSEArgs = {
   method: METHOD
+  contentType: CONTENT_TYPE
+  selector?: string
   headers?: Record<string, string>
-  form?: boolean|string
   includeLocal?: boolean
   openWhenHidden?: boolean
   retryScaler?: number
@@ -51,8 +53,9 @@ export const SSE: ActionPlugin = {
     } = ctx
     const {
       method: methodAnyCase,
+      contentType,
+      selector,
       headers: userHeaders,
-      form,
       includeLocal,
       openWhenHidden,
       retryScaler,
@@ -62,8 +65,9 @@ export const SSE: ActionPlugin = {
     } = Object.assign(
       {
         method: 'GET',
+        contentType: 'json',
+        selector: null,
         headers: {},
-        form: false,
         includeLocal: false,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
         retryScaler: 2, // the amount to multiply the retry interval by each time
@@ -82,7 +86,7 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': form ? (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data') : 'application/json',
+          'Content-Type': contentType === 'form' ? (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data') : 'application/json',
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -140,29 +144,26 @@ export const SSE: ActionPlugin = {
       const urlInstance = new URL(url, window.location.origin)
       const queryParams = new URLSearchParams(urlInstance.search)
       
-      if (form) {
-        let formEl, isTempForm: boolean = false
-        if (form === true) {
-          formEl = el.closest('form')
-          if (formEl === null) {
-            // Create a temporary form containing a deep clone of the body, to maintain state
-            const bodyClone = document.body.cloneNode(true)
-            formEl = document.createElement('form')
-            formEl.appendChild(bodyClone)
-            document.body.appendChild(formEl)
-            isTempForm = true
-          }
+      if (contentType === 'json') {
+        const json = signals.JSON(false, !includeLocal)
+        if (method === 'GET') {
+          queryParams.set(DATASTAR, json)
         } else {
-          formEl = document.querySelector(form);
-          if (formEl === null) {
-            throw dsErr('SseFormNotFound', { form })
+          req.body = json
+        }
+      } else if (contentType === 'form') {
+        const formEl = selector ? document.querySelector(selector) : el.closest('form');
+        if (formEl === null) {
+          if (selector) {
+            throw dsErr('SseFormNotFound', { selector })
+          } else {
+            throw dsErr('SseClosestFormNotFound')
           }
         }
         const preventSubmit = (evt: Event) => evt.preventDefault()
         formEl.addEventListener('submit', preventSubmit)
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
-          if (isTempForm) document.body.removeChild(formEl)
           return
         }
         const formData = new FormData(formEl)
@@ -175,14 +176,8 @@ export const SSE: ActionPlugin = {
           req.body = formData
         }
         formEl.removeEventListener('submit', preventSubmit)
-        if (isTempForm) document.body.removeChild(formEl)
       } else {
-        const json = signals.JSON(false, !includeLocal)
-        if (method === 'GET') {
-          queryParams.set(DATASTAR, json)
-        } else {
-          req.body = json
-        }
+        throw dsErr('SseInvalidContentType', { contentType })
       }
 
       urlInstance.search = queryParams.toString()
