@@ -96,7 +96,7 @@ data: script console.log('Success!')
 
 Using one of the helper SDKs (currently available for [dotnet](https://github.com/starfederation/datastar/tree/main/sdk/dotnet), [Go](https://github.com/starfederation/datastar/tree/main/sdk/go), [PHP](https://github.com/starfederation/datastar/tree/main/sdk/php)) will help you get up and running faster. 
 
-Here is the backend code to produce the events above in each of the SDKs.
+Here is all of the backend code required to produce the events above in each of the SDKs.
 
 !!!CODE_SNIPPET:going_deeper/multiple_events!!!
 
