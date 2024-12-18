@@ -2,7 +2,7 @@
 
 ## Demo
 
-<form class="space-y-8">
+<form id="myform" class="space-y-8">
   <label class="flex items-center gap-2 input input-bordered">
     foo
     <input name="foo" required class="grow"/>
@@ -17,6 +17,10 @@
   </div>
 </form>
 
+<button data-on-click="sse('/examples/form_data/data', {form: '#myform'})" class="btn btn-primary">
+  Submit form from outside
+</button>
+
 ## Explanation
 
 ```html
@@ -29,4 +33,8 @@
     Submit POST request
   </button>
 </form>
+
+<button data-on-click="sse('/endpoint', {form: '#myform'})">
+  Submit form from outside
+</button>
 ```

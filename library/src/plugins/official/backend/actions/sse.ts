@@ -31,7 +31,7 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 export type SSEArgs = {
   method: METHOD
   headers?: Record<string, string>
-  form?: boolean
+  form?: boolean|string
   includeLocal?: boolean
   openWhenHidden?: boolean
   retryScaler?: number
@@ -141,9 +141,9 @@ export const SSE: ActionPlugin = {
       const queryParams = new URLSearchParams(urlInstance.search)
       
       if (form) {
-        const formEl = el.closest('form');
+        const formEl = form === true ? el.closest('form') : document.querySelector(form);
         if (formEl === null) {
-          throw dsErr('ClosestFormNotFound')
+          throw dsErr('FormNotFound', { form })
         }
         formEl.addEventListener('submit', evt => evt.preventDefault())
         if (!formEl.checkValidity()) {
