@@ -36,6 +36,7 @@ export type SSEArgs = {
   headers?: Record<string, string>
   includeLocal?: boolean
   openWhenHidden?: boolean
+  retryInterval?: number
   retryScaler?: number
   retryMaxWaitMs?: number
   retryMaxCount?: number
@@ -58,6 +59,7 @@ export const SSE: ActionPlugin = {
       headers: userHeaders,
       includeLocal,
       openWhenHidden,
+      retryInterval,
       retryScaler,
       retryMaxWaitMs,
       retryMaxCount,
@@ -70,6 +72,7 @@ export const SSE: ActionPlugin = {
         headers: {},
         includeLocal: false,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
+        retryInterval: 1_000, // the retry interval in milliseconds
         retryScaler: 2, // the amount to multiply the retry interval by each time
         retryMaxWaitMs: 30_000, // the maximum retry interval in milliseconds
         retryMaxCount: 10, // the maximum number of retries before giving up
@@ -96,6 +99,7 @@ export const SSE: ActionPlugin = {
         method,
         headers,
         openWhenHidden,
+        retryInterval,
         retryScaler,
         retryMaxWaitMs,
         retryMaxCount,
