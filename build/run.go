@@ -64,7 +64,7 @@ func createBundles(version string) error {
 			"library/src/bundles/datastar.ts",
 		},
 		Banner: map[string]string{
-			"js": fmt.Sprintf("/**\n * Datastar v%s\n * https://data-star.dev/\n */", version),
+			"js": "// Datastar v" + version,
 		},
 		Outdir:            outDir,
 		Bundle:            true,
