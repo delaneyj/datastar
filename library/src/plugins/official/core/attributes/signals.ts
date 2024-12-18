@@ -1,6 +1,6 @@
 import {
-  AttributePlugin,
-  NestedValues,
+  type AttributePlugin,
+  type NestedValues,
   PluginType,
   Requirement,
 } from '~/engine/types'
@@ -13,7 +13,7 @@ export const Signals: AttributePlugin = {
   removeOnLoad: true,
   onLoad: (ctx) => {
     const { key, genRX, signals } = ctx
-    if (key != '') {
+    if (key !== '') {
       signals.setValue(key, genRX()())
     } else {
       const obj = jsStrToObject(ctx.value)
