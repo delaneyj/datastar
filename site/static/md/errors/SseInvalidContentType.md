@@ -1,6 +1,6 @@
 # Error: SseInvalidContentType
 
-An invalid value for the `contentType` option was passed into the `sse()` action. Acceptable content types are `json` (default) and `form`.
+An invalid option value `contentType: '{ contentType }'` was passed into the `sse()` action. Acceptable content types are `json` (default) and `form`.
 
 Example:
 
