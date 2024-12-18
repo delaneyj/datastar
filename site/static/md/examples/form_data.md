@@ -18,7 +18,7 @@
 </form>
 
 <button data-on-click="sse('/examples/form_data/data', {form: '#myform'})" class="btn btn-primary">
-  Submit form from outside
+  Submit GET request from outside the form
 </button>
 
 <div class="space-y-8">
