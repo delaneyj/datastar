@@ -101,7 +101,12 @@ export class Engine {
 
           const hasKey = key.length > 0
           if (hasKey) {
-            key = key[0].toLowerCase() + key.slice(1)
+            // Keys starting with an underscore are not converted to camel case in the dataset
+            if (key.startsWith('-_')) {
+              key = key.slice(1)
+            } else {
+              key = key[0].toLowerCase() + key.slice(1)
+            }
           }
           const rawValue = `${el.dataset[rawKey]}` || ''
           let value = rawValue
