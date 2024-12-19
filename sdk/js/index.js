@@ -1,3 +1,6 @@
+import url from "url";
+import querystring from "querystring";
+
 /**
  * ServerSentEventGenerator is responsible for initializing and handling
  * server-sent events (SSE) for different web frameworks.
@@ -9,10 +12,11 @@ export const ServerSentEventGenerator = {
    * @param {object} res - The response object from the framework.
    * @returns {Object} Methods for manipulating server-sent events.
    */
-  init: function (req, res) {
+  init: function (request, response) {
     return {
-      req: req,
-      res: res,
+      headersSent: false,
+      req: request,
+      res: response,
       /**
        * @typedef {Object} SendOptions
        * @property {?string} [eventId=null] - Event ID to attach.
@@ -34,21 +38,30 @@ export const ServerSentEventGenerator = {
           retryDuration: 1000,
         }
       ) {
+        //Prepare the message for sending.
         let data = dataLines.map((line) => `data: ${line}\n`).join("") + "\n";
-
-        this.res.setHeader("Cache-Control", "nocache");
-        this.res.setHeader("Connection", "keep-alive");
-        this.res.setHeader("Content-Type", "text/event-stream");
-
+        let eventString = "";
         if (sendOptions.eventId != null) {
-          this.res.write(`id: ${sendOptions.eventId}\n`);
+          eventString += `id: ${sendOptions.eventId}\n`;
         }
         if (eventType) {
-          this.res.write(`event: ${eventType}\n`);
+          eventString += `event: ${eventType}\n`;
         }
-        this.res.write(`retry: ${sendOptions.retryDuration}\n`);
-        this.res.write(data);
+        eventString += `retry: ${sendOptions.retryDuration}\n`;
+        eventString += data;
+
+        //Send Event
+        if (!this.headersSent) {
+          this.res.setHeader("Cache-Control", "nocache");
+          this.res.setHeader("Connection", "keep-alive");
+          this.res.setHeader("Content-Type", "text/event-stream");
+          this.headersSent = true;
+        }
+        this.res.write(eventString);
+
+        return eventString;
       },
+
       /**
        * Reads signals based on HTTP methods and merges them with provided signals.
        *
@@ -57,13 +70,37 @@ export const ServerSentEventGenerator = {
        */
       ReadSignals: async function (signals) {
         if (this.req.method === "GET") {
+          // Parse the URL
+          const parsedUrl = url.parse(this.req.url);
+          const parsedQuery = querystring.parse(parsedUrl.query);
+          const datastarParam = parsedQuery.datastar;
+
+          const query = JSON.parse(datastarParam);
           return {
             ...signals,
-            ...JSON.parse(this.req.query_parameters.datastar),
+            ...query,
           };
         } else {
-          const body = await this.req.json();
-          return { ...signals, ...body };
+          const body = await new Promise((resolve, reject) => {
+            let chunks = "";
+            this.req.on("data", (chunk) => {
+              chunks += chunk;
+            });
+            this.req.on("end", () => {
+              console.log("No more data in response.");
+              resolve(chunks);
+            });
+          });
+          let parsedBody = {};
+          try {
+            parsedBody = JSON.parse(body);
+          } catch (err) {
+            console.error(
+              "Problem reading signals, could not parse body as JSON."
+            );
+          }
+          console.log("parsed Body", parsedBody);
+          return { ...signals, ...parsedBody };
         }
       },
       /**
@@ -102,15 +139,25 @@ export const ServerSentEventGenerator = {
         if (options?.useViewTransition != null)
           dataLines.push(`useViewTransition ${options.useViewTransition}`);
         if (fragments) {
-          fragments.map((frag) => {
-            dataLines.push(`fragments ${frag.replace(/[\r\n]+/g, "")}`);
-          });
+          if (typeof fragments === "string") {
+            // Handle case where 'fragments' is a string
+            dataLines.push(`fragments ${fragments.replace(/[\r\n]+/g, "")}`);
+          } else if (Array.isArray(fragments)) {
+            // Handle case where 'fragments' is an array
+            fragments.forEach((frag) => {
+              dataLines.push(`fragments ${frag.replace(/[\r\n]+/g, "")}`);
+            });
+          } else {
+            throw Error(
+              "Invalid type for fragments. Expected string or array."
+            );
+          }
         } else {
-          throw Error("MergeFragments missing fragement(s).");
+          throw Error("MergeFragments missing fragment(s).");
         }
         return this._send("datastar-merge-fragments", dataLines, {
-          eventId: options.eventId,
-          retryDuration: options.retryDuration,
+          eventId: options?.eventId,
+          retryDuration: options?.retryDuration,
         });
       },
       /**
@@ -140,8 +187,8 @@ export const ServerSentEventGenerator = {
         if (options?.useViewTransition != null)
           dataLines.push(`useViewTransition ${options.useViewTransition}`);
         return this._send(`datastar-remove-fragments`, dataLines, {
-          eventId: options.eventId,
-          retryDuration: options.retryDuration,
+          eventId: options?.eventId,
+          retryDuration: options?.retryDuration,
         });
       },
       /**
@@ -169,8 +216,8 @@ export const ServerSentEventGenerator = {
           throw Error("MergeSignals missing signals.");
         }
         return this._send(`datastar-merge-signals`, dataLines, {
-          eventId: options.eventId,
-          retryDuration: options.retryDuration,
+          eventId: options?.eventId,
+          retryDuration: options?.retryDuration,
         });
       },
       /**
@@ -192,8 +239,8 @@ export const ServerSentEventGenerator = {
           throw Error("RemoveSignals missing paths");
         }
         return this._send(`datastar-remove-signals`, dataLines, {
-          eventId: options.eventId,
-          retryDuration: options.retryDuration,
+          eventId: options?.eventId,
+          retryDuration: options?.retryDuration,
         });
       },
       /**
@@ -217,8 +264,8 @@ export const ServerSentEventGenerator = {
           dataLines.push(`script ${script}`);
         }
         return this._send(`datastar-execute-script`, dataLines, {
-          eventId: options.eventId,
-          retryDuration: options.retryDuration,
+          eventId: options?.eventId,
+          retryDuration: options?.retryDuration,
         });
       },
     };

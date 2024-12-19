@@ -1,0 +1,6 @@
+{% import "github.com/delaneyj/toolbelt" %}
+
+{%- func jsConsts(data *ConstTemplateData) -%}
+export const datastarConstants = {}
+export default datastarConstants;
+{%- endfunc -%}

@@ -140,6 +140,7 @@ func writeOutConsts(version string) error {
 		"sdk/java/src/main/java/StarFederation/Datastar/Consts.java":                  javaConsts,
 		"sdk/java/src/main/java/StarFederation/Datastar/enums/EventType.java":         javaEventType,
 		"sdk/java/src/main/java/StarFederation/Datastar/enums/FragmentMergeMode.java": javaFragmentMergeMode,
+		"sdk/js/consts.js": jsConsts,
 	}
 
 	for path, tmplFn := range templates {
