@@ -1,5 +1,7 @@
 # Going Deeper
 
+Datastar's philosophy is: let the browser do what it does best—render HTML—while enabling declarative reactivity.
+
 At its core, Datastar makes __nestable signals declarative__. Let's unpack that.
 
 ### 1. Declarative
