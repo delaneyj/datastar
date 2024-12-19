@@ -168,6 +168,7 @@ export const SSE: ActionPlugin = {
         formEl.addEventListener('submit', preventSubmit)
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
+          formEl.removeEventListener('submit', preventSubmit)
           return
         }
         const formData = new FormData(formEl)
