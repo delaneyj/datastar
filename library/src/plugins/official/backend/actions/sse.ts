@@ -17,6 +17,7 @@ import {
 } from '../shared'
 
 type METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
+type CONTENT_TYPE = 'json' | 'form'
 
 function dispatchSSE(type: string, argsRaw: Record<string, string>) {
   document.dispatchEvent(
@@ -30,6 +31,8 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 
 export type SSEArgs = {
   method: METHOD
+  contentType: CONTENT_TYPE
+  selector?: string
   headers?: Record<string, string>
   includeLocal?: boolean
   openWhenHidden?: boolean
@@ -46,10 +49,13 @@ export const SSE: ActionPlugin = {
   fn: async (ctx, url: string, args: SSEArgs) => {
     const {
       el: { id: elId },
+      el,
       signals,
     } = ctx
     const {
       method: methodAnyCase,
+      contentType,
+      selector,
       headers: userHeaders,
       includeLocal,
       openWhenHidden,
@@ -61,6 +67,8 @@ export const SSE: ActionPlugin = {
     } = Object.assign(
       {
         method: 'GET',
+        contentType: 'json',
+        selector: null,
         headers: {},
         includeLocal: false,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
@@ -81,7 +89,7 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': 'application/json',
+          'Content-Type': contentType === 'form' ? (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data') : 'application/json',
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -138,14 +146,46 @@ export const SSE: ActionPlugin = {
       }
 
       const urlInstance = new URL(url, window.location.origin)
-      const json = signals.JSON(false, !includeLocal)
-      if (method === 'GET') {
-        const queryParams = new URLSearchParams(urlInstance.search)
-        queryParams.set(DATASTAR, json)
-        urlInstance.search = queryParams.toString()
+      const queryParams = new URLSearchParams(urlInstance.search)
+      
+      if (contentType === 'json') {
+        const json = signals.JSON(false, !includeLocal)
+        if (method === 'GET') {
+          queryParams.set(DATASTAR, json)
+        } else {
+          req.body = json
+        }
+      } else if (contentType === 'form') {
+        const formEl = selector ? document.querySelector(selector) : el.closest('form');
+        if (formEl === null) {
+          if (selector) {
+            throw dsErr('SseFormNotFound', { selector })
+          } else {
+            throw dsErr('SseClosestFormNotFound')
+          }
+        }
+        const preventSubmit = (evt: Event) => evt.preventDefault()
+        formEl.addEventListener('submit', preventSubmit)
+        if (!formEl.checkValidity()) {
+          formEl.reportValidity()
+          formEl.removeEventListener('submit', preventSubmit)
+          return
+        }
+        const formData = new FormData(formEl)
+        if (method === 'GET') {
+          const formParams = new URLSearchParams(formData as any)
+          for (const [key, value] of formParams){
+            queryParams.set(key, value);
+          }
+        } else {
+          req.body = formData
+        }
+        formEl.removeEventListener('submit', preventSubmit)
       } else {
-        req.body = json
+        throw dsErr('SseInvalidContentType', { contentType })
       }
+
+      urlInstance.search = queryParams.toString()
 
       try {
         await fetchEventSource(urlInstance.toString(), req)
