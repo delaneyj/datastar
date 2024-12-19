@@ -71,6 +71,10 @@ The signal name can be specified in the key (as above), or in the value (as belo
 
 The signal value can then be used to reference the element.
 
+```html
+`foo` holds a <span data-text="foo.value.tagName"></span> element.
+```
+
 ## DOM Plugins
 
 [Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/dom/attributes)
