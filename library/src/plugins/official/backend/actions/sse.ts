@@ -17,7 +17,6 @@ import {
 } from '../shared'
 
 type METHOD = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH'
-type CONTENT_TYPE = 'json' | 'form'
 
 function dispatchSSE(type: string, argsRaw: Record<string, string>) {
   document.dispatchEvent(
@@ -31,17 +30,20 @@ const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 
 export type SSEArgs = {
   method: METHOD
-  contentType: CONTENT_TYPE
-  selector?: string
   headers?: Record<string, string>
-  includeLocal?: boolean
   openWhenHidden?: boolean
   retryInterval?: number
   retryScaler?: number
   retryMaxWaitMs?: number
   retryMaxCount?: number
   abort?: AbortSignal
-}
+} & ({ 
+  contentType: 'json'
+  includeLocal?: boolean
+} | {
+  contentType: 'form'
+  selector?: string
+}) 
 
 export const SSE: ActionPlugin = {
   type: PluginType.Action,
@@ -54,10 +56,10 @@ export const SSE: ActionPlugin = {
     } = ctx
     const {
       method: methodAnyCase,
-      contentType,
-      selector,
       headers: userHeaders,
+      contentType,
       includeLocal,
+      selector,
       openWhenHidden,
       retryInterval,
       retryScaler,
@@ -67,10 +69,10 @@ export const SSE: ActionPlugin = {
     } = Object.assign(
       {
         method: 'GET',
-        contentType: 'json',
-        selector: null,
         headers: {},
+        contentType: 'json',
         includeLocal: false,
+        selector: null,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
         retryInterval: 1_000, // the retry interval in milliseconds
         retryScaler: 2, // the amount to multiply the retry interval by each time
@@ -89,7 +91,7 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': contentType === 'form' ? (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data') : 'application/json',
+          'Content-Type': contentType === 'json' ? 'application/json' : (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data'),
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -164,11 +166,9 @@ export const SSE: ActionPlugin = {
             throw dsErr('SseClosestFormNotFound')
           }
         }
-        const preventSubmit = (evt: Event) => evt.preventDefault()
-        formEl.addEventListener('submit', preventSubmit)
+        formEl.addEventListener('submit', evt => evt.preventDefault())
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
-          formEl.removeEventListener('submit', preventSubmit)
           return
         }
         const formData = new FormData(formEl)
@@ -180,7 +180,6 @@ export const SSE: ActionPlugin = {
         } else {
           req.body = formData
         }
-        formEl.removeEventListener('submit', preventSubmit)
       } else {
         throw dsErr('SseInvalidContentType', { contentType })
       }
