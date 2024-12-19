@@ -166,7 +166,10 @@ export const SSE: ActionPlugin = {
             throw dsErr('SseClosestFormNotFound')
           }
         }
-        formEl.addEventListener('submit', evt => evt.preventDefault())
+        if (el !== formEl) {
+          // TODO: remove the event listener on Datastar cleanup
+          formEl.addEventListener('submit', evt => evt.preventDefault())
+        }
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
           return

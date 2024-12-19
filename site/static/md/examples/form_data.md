@@ -21,6 +21,18 @@
   Submit GET request from outside the form
 </button>
 
+<form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})" class="space-y-8">
+  <label class="flex items-center gap-2 input input-bordered">
+    bar
+    <input name="bar" required class="grow"/>
+  </label>
+  <div class="space-x-4">
+    <button class="btn btn-primary">
+      Submit form
+    </button>
+  </div>
+</form>
+
 ## Explanation
 
 ```html
@@ -37,4 +49,13 @@
 <button data-on-click="sse('/endpoint', {contentType: 'form', selector: '#myform'})">
   Submit GET request from outside the form
 </button>
+```
+
+```html
+<form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})">
+  <input name="bar" required>
+  <button>
+      Submit form
+  </button>
+</form>
 ```
