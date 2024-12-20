@@ -86,7 +86,7 @@ export const SSE: ActionPlugin = {
       args,
     )
     const method = methodAnyCase.toUpperCase()
-    const cleanupFns: (() => void)[] = []
+    let cleanupFn = (): void => {}
     try {
       dispatchSSE(STARTED, { elId })
       if (!url?.length) {
@@ -175,12 +175,11 @@ export const SSE: ActionPlugin = {
         if (el !== formEl) {
           const preventDefault = (evt: Event) => evt.preventDefault()
           formEl.addEventListener('submit', preventDefault)
-          cleanupFns.push(() =>
-            formEl.removeEventListener('submit', preventDefault),
-          )
+          cleanupFn = (): void => formEl.removeEventListener('submit', preventDefault)
         }
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
+          cleanupFn()
           return
         }
         const formData = new FormData(formEl)
@@ -211,9 +210,7 @@ export const SSE: ActionPlugin = {
       }
     } finally {
       dispatchSSE(FINISHED, { elId })
-      for (const cleanupFn of cleanupFns) {
-        cleanupFn()
-      }
+      cleanupFn()
     }
   },
 }
