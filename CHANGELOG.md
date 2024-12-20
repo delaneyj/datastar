@@ -11,3 +11,4 @@
 ### Fixed
 
 - Fixed a bug in which local signals were being unintentionally sent with requests ([#387](https://github.com/starfederation/datastar/issues/387)).
+- Fixed a bug in which the bundler was not exporting Datastar ([#403](https://github.com/starfederation/datastar/issues/403)).
