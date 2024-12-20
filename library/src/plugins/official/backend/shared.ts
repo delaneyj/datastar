@@ -42,7 +42,7 @@ export function datastarSSEEventWatcher(
   document.addEventListener(
     DATASTAR_SSE_EVENT,
     (event: CustomEvent<DatastarSSEEvent>) => {
-      if (event.detail.type != eventType) return
+      if (event.detail.type !== eventType) return
       const { argsRaw } = event.detail
       fn(argsRaw)
     },
