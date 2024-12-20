@@ -37,13 +37,16 @@ export type SSEArgs = {
   retryMaxWaitMs?: number
   retryMaxCount?: number
   abort?: AbortSignal
-} & ({ 
-  contentType: 'json'
-  includeLocal?: boolean
-} | {
-  contentType: 'form'
-  selector?: string
-}) 
+} & (
+  | {
+      contentType: 'json'
+      includeLocal?: boolean
+    }
+  | {
+      contentType: 'form'
+      selector?: string
+    }
+)
 
 export const SSE: ActionPlugin = {
   type: PluginType.Action,
@@ -83,6 +86,7 @@ export const SSE: ActionPlugin = {
       args,
     )
     const method = methodAnyCase.toUpperCase()
+    const cleanupFns: (() => void)[] = []
     try {
       dispatchSSE(STARTED, { elId })
       if (!url?.length) {
@@ -91,7 +95,12 @@ export const SSE: ActionPlugin = {
 
       const headers = Object.assign(
         {
-          'Content-Type': contentType === 'json' ? 'application/json' : (method === 'GET' ? 'application/x-www-form-urlencoded' : 'multipart/form-data'),
+          'Content-Type':
+            contentType === 'json'
+              ? 'application/json'
+              : method === 'GET'
+                ? 'application/x-www-form-urlencoded'
+                : 'multipart/form-data',
           [DATASTAR_REQUEST]: true,
         },
         userHeaders,
@@ -149,7 +158,7 @@ export const SSE: ActionPlugin = {
 
       const urlInstance = new URL(url, window.location.origin)
       const queryParams = new URLSearchParams(urlInstance.search)
-      
+
       if (contentType === 'json') {
         const json = signals.JSON(false, !includeLocal)
         if (method === 'GET') {
@@ -158,17 +167,21 @@ export const SSE: ActionPlugin = {
           req.body = json
         }
       } else if (contentType === 'form') {
-        const formEl = selector ? document.querySelector(selector) : el.closest('form');
+        const formEl = selector
+          ? document.querySelector(selector)
+          : el.closest('form')
         if (formEl === null) {
           if (selector) {
             throw dsErr('SseFormNotFound', { selector })
-          } else {
-            throw dsErr('SseClosestFormNotFound')
           }
+          throw dsErr('SseClosestFormNotFound')
         }
         if (el !== formEl) {
-          // TODO: remove the event listener on Datastar cleanup
-          formEl.addEventListener('submit', evt => evt.preventDefault())
+          const preventDefault = (evt: Event) => evt.preventDefault()
+          formEl.addEventListener('submit', preventDefault)
+          cleanupFns.push(() =>
+            formEl.removeEventListener('submit', preventDefault),
+          )
         }
         if (!formEl.checkValidity()) {
           formEl.reportValidity()
@@ -177,8 +190,8 @@ export const SSE: ActionPlugin = {
         const formData = new FormData(formEl)
         if (method === 'GET') {
           const formParams = new URLSearchParams(formData as any)
-          for (const [key, value] of formParams){
-            queryParams.set(key, value);
+          for (const [key, value] of formParams) {
+            queryParams.set(key, value)
           }
         } else {
           req.body = formData
@@ -202,6 +215,9 @@ export const SSE: ActionPlugin = {
       }
     } finally {
       dispatchSSE(FINISHED, { elId })
+      for (const cleanupFn of cleanupFns) {
+        cleanupFn()
+      }
     }
   },
 }
