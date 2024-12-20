@@ -4,7 +4,7 @@
 // Description: This attribute scrolls the element into view.
 
 import { dsErr } from '~/engine/errors'
-import { type AttributePlugin, PluginType, Requirement } from '~/engine/types'
+import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
 
 const SMOOTH = 'smooth'
 const INSTANT = 'instant'

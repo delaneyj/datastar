@@ -1,13 +1,13 @@
-import type { EffectFn, Signal } from '~/vendored/preact-core'
-import type { SignalsRoot } from './nestedSignals'
+import { EffectFn, Signal } from '~/vendored/preact-core'
+import { SignalsRoot } from './nestedSignals'
 
 export type OnRemovalFn = () => void
 
 export enum PluginType {
-  Macro = 0,
-  Attribute = 1,
-  Watcher = 2,
-  Action = 3,
+  Macro,
+  Attribute,
+  Watcher,
+  Action,
 }
 
 export interface DatastarPlugin {

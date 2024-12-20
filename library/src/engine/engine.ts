@@ -5,21 +5,21 @@ import { VERSION } from './consts'
 import { dsErr } from './errors'
 import { SignalsRoot } from './nestedSignals'
 import {
-  type ActionPlugin,
-  type ActionPlugins,
-  type AttributePlugin,
-  type DatastarPlugin,
-  type GlobalInitializer,
-  type HTMLorSVGElement,
-  type MacroPlugin,
-  type Modifiers,
-  type OnRemovalFn,
+  ActionPlugin,
+  ActionPlugins,
+  AttributePlugin,
+  DatastarPlugin,
+  GlobalInitializer,
+  HTMLorSVGElement,
+  MacroPlugin,
+  Modifiers,
+  OnRemovalFn,
   PluginType,
-  type RemovalEntry,
+  RemovalEntry,
   Requirement,
-  type RuntimeContext,
-  type RuntimeExpressionFunction,
-  type WatcherPlugin,
+  RuntimeContext,
+  RuntimeExpressionFunction,
+  WatcherPlugin,
 } from './types'
 
 export class Engine {
@@ -39,35 +39,30 @@ export class Engine {
   }
 
   public load(...pluginsToLoad: DatastarPlugin[]) {
-    for (const plugin of pluginsToLoad) {
+    pluginsToLoad.forEach((plugin) => {
       let globalInitializer: GlobalInitializer | undefined
       switch (plugin.type) {
-        case PluginType.Macro: {
+        case PluginType.Macro:
           this.#macros.push(plugin as MacroPlugin)
           break
-        }
-        case PluginType.Watcher: {
+        case PluginType.Watcher:
           const wp = plugin as WatcherPlugin
           this.#watchers.push(wp)
           globalInitializer = wp.onGlobalInit
           break
-        }
-        case PluginType.Action: {
+        case PluginType.Action:
           this.#actions[plugin.name] = plugin as ActionPlugin
           break
-        }
-        case PluginType.Attribute: {
+        case PluginType.Attribute:
           const ap = plugin as AttributePlugin
           this.#plugins.push(ap)
           globalInitializer = ap.onGlobalInit
           break
-        }
-        default: {
+        default:
           throw dsErr('InvalidPluginType', {
             name: plugin.name,
             type: plugin.type,
           })
-        }
       }
       if (globalInitializer) {
         const that = this // I hate javascript
@@ -81,7 +76,7 @@ export class Engine {
           cleanup: this.#cleanup.bind(this),
         })
       }
-    }
+    })
     this.apply(document.body)
   }
 
@@ -92,7 +87,7 @@ export class Engine {
       this.#walkDownDOM(rootElement, (el) => {
         // Ignore this element if `data-star-ignore` exists on it
         if ('starIgnore' in el.dataset) return
-
+        
         // Cleanup if not first plugin
         if (!pi) this.#cleanup(el)
 
@@ -106,12 +101,7 @@ export class Engine {
 
           const hasKey = key.length > 0
           if (hasKey) {
-            // Keys starting with an underscore are not converted to camel case in the dataset
-            if (key.startsWith('-_')) {
-              key = key.slice(1)
-            } else {
-              key = key[0].toLowerCase() + key.slice(1)
-            }
+            key = key[0].toLowerCase() + key.slice(1)
           }
           const rawValue = `${el.dataset[rawKey]}` || ''
           let value = rawValue
@@ -121,18 +111,18 @@ export class Engine {
           const keyReq = p.keyReq || Requirement.Allowed
           if (hasKey) {
             if (keyReq === Requirement.Denied) {
-              throw dsErr(`${p.name}KeyNotAllowed`, { key })
+              throw dsErr(p.name + 'KeyNotAllowed', { key })
             }
           } else if (keyReq === Requirement.Must) {
-            throw dsErr(`${p.name}KeyRequired`)
+            throw dsErr(p.name + 'KeyRequired')
           }
           const valReq = p.valReq || Requirement.Allowed
           if (hasValue) {
             if (valReq === Requirement.Denied) {
-              throw dsErr(`${p.name}ValueNotAllowed`, { value })
+              throw dsErr(p.name + 'ValueNotAllowed', { value })
             }
           } else if (valReq === Requirement.Must) {
-            throw dsErr(`${p.name}ValueRequired`)
+            throw dsErr(p.name + 'ValueRequired')
           }
 
           // Check for exclusive requirements
@@ -141,10 +131,9 @@ export class Engine {
             valReq === Requirement.Exclusive
           ) {
             if (hasKey && hasValue) {
-              throw dsErr(`${p.name}KeyAndValueProvided`)
-            }
-            if (!hasKey && !hasValue) {
-              throw dsErr(`${p.name}KeyOrValueRequired`)
+              throw dsErr(p.name + 'KeyAndValueProvided')
+            } else if (!hasKey && !hasValue) {
+              throw dsErr(p.name + 'KeyOrValueRequired')
             }
           }
 
@@ -154,10 +143,10 @@ export class Engine {
           // Apply the macros
           appliedMacros.clear()
           const mods: Modifiers = new Map<string, Set<string>>()
-          for (const m of rawModifiers) {
+          rawModifiers.forEach((m) => {
             const [label, ...tags] = m.split('.')
             mods.set(camelize(label), new Set(tags.map((t) => t.toLowerCase())))
-          }
+          })
           const macros = [
             ...(p.macros?.pre || []),
             ...this.#macros,
@@ -171,7 +160,8 @@ export class Engine {
 
           // Create the runtime context
           const that = this // I hate javascript
-          const ctx = {
+          let ctx: RuntimeContext
+          ctx = {
             get signals() {
               return that.#signals
             },
@@ -197,11 +187,11 @@ export class Engine {
                 set: new Set(),
               })
             }
-            this.#removals.get(el)?.set.add(removal)
+            this.#removals.get(el)!.set.add(removal)
           }
 
           // Remove the attribute if required
-          if (p?.removeOnLoad) delete el.dataset[rawKey]
+          if (!!p?.removeOnLoad) delete el.dataset[rawKey]
         }
       })
     })
@@ -214,7 +204,7 @@ export class Engine {
     const stmts = ctx.value
       .split(/;|\n/)
       .map((s) => s.trim())
-      .filter((s) => s !== '')
+      .filter((s) => s != '')
     const lastIdx = stmts.length - 1
     const last = stmts[lastIdx]
     if (!last.startsWith('return')) {
@@ -236,9 +226,9 @@ export class Engine {
 
     // Add ctx to action calls
     let fnWithCtx = fnContent.trim()
-    for (const a of an) {
-      fnWithCtx = fnWithCtx.replaceAll(`${a}(`, `${a}(ctx,`)
-    }
+    an.forEach((a) => {
+      fnWithCtx = fnWithCtx.replaceAll(a + '(', a + '(ctx,')
+    })
 
     try {
       const argumentNames = argNames || []
@@ -262,10 +252,10 @@ export class Engine {
     )
       return null
     callback(element)
-    let el = element.firstElementChild
-    while (el) {
-      this.#walkDownDOM(el, callback)
-      el = el.nextElementSibling
+    element = element.firstElementChild
+    while (element) {
+      this.#walkDownDOM(element, callback)
+      element = element.nextElementSibling
     }
   }
 

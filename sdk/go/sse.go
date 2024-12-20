@@ -17,31 +17,30 @@ type ServerSentEventGenerator struct {
 	ctx             context.Context
 	mu              *sync.Mutex
 	w               http.ResponseWriter
-	rc              *http.ResponseController
+	flusher         http.Flusher
 	shouldLogPanics bool
 }
 
 func NewSSE(w http.ResponseWriter, r *http.Request) *ServerSentEventGenerator {
-	rc := http.NewResponseController(w)
+	flusher, ok := w.(http.Flusher)
+	if !ok {
+		// This is a deliberate choice as it should never occur and is an environment issue.
+		// https://crawshaw.io/blog/go-and-sqlite
+		// In Go, errors that are part of the standard operation of a program are returned as values.
+		// Programs are expected to handle errors.
+		panic("response writer does not support flushing")
+	}
 
 	w.Header().Set("Cache-Control", "no-cache")
 	w.Header().Set("Connection", "keep-alive")
 	w.Header().Set("Content-Type", "text/event-stream")
-
-	// flush headers
-	if err := rc.Flush(); err != nil {
-		// Below panic is a deliberate choice as it should never occur and is an environment issue.
-		// https://crawshaw.io/blog/go-and-sqlite
-		// In Go, errors that are part of the standard operation of a program are returned as values.
-		// Programs are expected to handle errors.
-		panic(fmt.Sprintf("response writer failed to flush: %v", err))
-	}
+	flusher.Flush()
 
 	sseHandler := &ServerSentEventGenerator{
 		ctx:             r.Context(),
 		mu:              &sync.Mutex{},
 		w:               w,
-		rc:              rc,
+		flusher:         flusher,
 		shouldLogPanics: true,
 	}
 	return sseHandler
@@ -157,10 +156,8 @@ func (sse *ServerSentEventGenerator) Send(eventType EventType, dataLines []strin
 		return fmt.Errorf("failed to write to response writer: %w", err)
 	}
 
-	// flush the buffer
-	if err := sse.rc.Flush(); err != nil {
-		return fmt.Errorf("failed to flush data: %w", err)
-	}
+	// flush the buffer to the client
+	sse.flusher.Flush()
 
 	// log.Print(NewLine + buf.String())
 

@@ -59,8 +59,7 @@ function morphNormalizedContent(
     // innerHTML, so we are only updating the children
     morphChildren(normalizedNewContent, oldNode, ctx)
     return oldNode.children
-  }
-  if (ctx.morphStyle === 'outerHTML' || ctx.morphStyle == null) {
+  } else if (ctx.morphStyle === 'outerHTML' || ctx.morphStyle == null) {
     // otherwise find the best element match in the new content, morph that, and merge its siblings
     // into either side of the best match
     const bestMatch = findBestNodeMatch(normalizedNewContent, oldNode, ctx)
@@ -82,12 +81,13 @@ function morphNormalizedContent(
       // if there was a best match, merge the siblings in too and return the
       // whole bunch
       return insertSiblings(previousSibling, morphedNode, nextSibling)
+    } else {
+      // otherwise nothing was added to the DOM
+      return []
     }
-
-    // otherwise nothing was added to the DOM
-    return []
+  } else {
+    throw dsErr('InvalidMorphStyle', { style: ctx.morphStyle })
   }
-  throw dsErr('InvalidMorphStyle', { style: ctx.morphStyle })
 }
 
 /**
@@ -163,7 +163,7 @@ function morphOldNodeTo(oldNode: Element, newContent: Element, ctx: any) {
 function morphChildren(newParent: Element, oldParent: Element, ctx: any) {
   let nextNewChild = newParent.firstChild as Element | null
   let insertionPoint = oldParent.firstChild as Element | null
-  let newChild: any
+  let newChild
 
   // run through all the new content
   while (nextNewChild) {
@@ -189,7 +189,7 @@ function morphChildren(newParent: Element, oldParent: Element, ctx: any) {
     }
 
     // otherwise search forward in the existing old children for an id set match
-    const idSetMatch = findIdSetMatch(
+    let idSetMatch = findIdSetMatch(
       newParent,
       oldParent,
       newChild,
@@ -206,7 +206,7 @@ function morphChildren(newParent: Element, oldParent: Element, ctx: any) {
     }
 
     // no id set match found, so scan forward for a soft match for the current node
-    const softMatch = findSoftMatch(newParent, newChild, insertionPoint, ctx)
+    let softMatch = findSoftMatch(newParent, newChild, insertionPoint, ctx)
 
     // if we found a soft match for the current node, morph
     if (softMatch) {
@@ -227,7 +227,7 @@ function morphChildren(newParent: Element, oldParent: Element, ctx: any) {
 
   // remove any remaining old nodes that didn't match up with new content
   while (insertionPoint !== null) {
-    const tempNode = insertionPoint
+    let tempNode = insertionPoint
     insertionPoint = insertionPoint.nextSibling as Element | null
     removeNode(tempNode, ctx)
   }
@@ -245,7 +245,7 @@ function morphChildren(newParent: Element, oldParent: Element, ctx: any) {
  * @param {Element} to the element to copy attributes & state to
  */
 function syncNodeFrom(from: Element, to: Element) {
-  const type = from.nodeType
+  let type = from.nodeType
 
   // if is an element type, sync the attributes from the
   // new node into the new node
@@ -341,9 +341,9 @@ function handleHeadElement(
   // for each elt in the current head
   for (const currentHeadElt of currentHead.children) {
     // If the current head element is in the map
-    const inNewContent = srcToNewHeadNodes.has(currentHeadElt.outerHTML)
-    const isReAppended = ctx.head.shouldReAppend(currentHeadElt)
-    const isPreserved = ctx.head.shouldPreserve(currentHeadElt)
+    let inNewContent = srcToNewHeadNodes.has(currentHeadElt.outerHTML)
+    let isReAppended = ctx.head.shouldReAppend(currentHeadElt)
+    let isPreserved = ctx.head.shouldPreserve(currentHeadElt)
     if (inNewContent || isPreserved) {
       if (isReAppended) {
         // remove the current version and let the new version replace it and re-execute
@@ -383,13 +383,13 @@ function handleHeadElement(
     if (!newElt) {
       throw dsErr('NewElementCouldNotBeCreated', { newNode })
     }
-    if (ctx.callbacks.beforeNodeAdded(newElt)) {
+    if (!!ctx.callbacks.beforeNodeAdded(newElt)) {
       if (newElt.hasAttribute('href') || newElt.hasAttribute('src')) {
         let resolver: (value: unknown) => void
         const promise = new Promise((resolve) => {
           resolver = resolve
         })
-        newElt.addEventListener('load', () => {
+        newElt.addEventListener('load', function () {
           resolver(undefined)
         })
         promises.push(promise)
@@ -614,27 +614,30 @@ function parseContent(newContent: string) {
     if (contentWithSvgsRemoved.match(/<\/html>/)) {
       generatedByIdiomorphId.add(content)
       return content
+    } else {
+      // otherwise return the html element as the parent container
+      let Element = content.firstChild
+      if (Element) {
+        generatedByIdiomorphId.add(Element)
+        return Element as Element
+      } else {
+        return null
+      }
     }
-    // otherwise return the html element as the parent container
-    const Element = content.firstChild
-    if (Element) {
-      generatedByIdiomorphId.add(Element)
-      return Element as Element
+  } else {
+    // if it is partial HTML, wrap it in a template tag to provide a parent element and also to help
+    // deal with touchy tags like tr, tbody, etc.
+    const responseDoc = parser.parseFromString(
+      `<body><template>${newContent}</template></body>`,
+      'text/html',
+    )
+    const content = responseDoc.body.querySelector('template')?.content
+    if (!content) {
+      throw dsErr('NoContentFound', { newContent })
     }
-    return null
+    generatedByIdiomorphId.add(content)
+    return content
   }
-  // if it is partial HTML, wrap it in a template tag to provide a parent element and also to help
-  // deal with touchy tags like tr, tbody, etc.
-  const responseDoc = parser.parseFromString(
-    `<body><template>${newContent}</template></body>`,
-    'text/html',
-  )
-  const content = responseDoc.body.querySelector('template')?.content
-  if (!content) {
-    throw dsErr('NoContentFound', { newContent })
-  }
-  generatedByIdiomorphId.add(content)
-  return content
 }
 
 function normalizeContent(newContent: Element) {
@@ -642,24 +645,23 @@ function normalizeContent(newContent: Element) {
     // noinspection UnnecessaryLocalVariableJS
     const dummyParent = document.createElement('div')
     return dummyParent
-  }
-  if (generatedByIdiomorphId.has(newContent)) {
+  } else if (generatedByIdiomorphId.has(newContent)) {
     // the template tag created by idiomorph parsing can serve as a dummy parent
     return newContent
-  }
-  if (newContent instanceof Node) {
+  } else if (newContent instanceof Node) {
     // a single node is added as a child to a dummy parent
     const dummyParent = document.createElement('div')
     dummyParent.append(newContent)
     return dummyParent
+  } else {
+    // all nodes in the array or Element collection are consolidated under
+    // a single dummy parent element
+    const dummyParent = document.createElement('div')
+    for (const elt of [...newContent]) {
+      dummyParent.append(elt)
+    }
+    return dummyParent
   }
-  // all nodes in the array or Element collection are consolidated under
-  // a single dummy parent element
-  const dummyParent = document.createElement('div')
-  for (const elt of [...newContent]) {
-    dummyParent.append(elt)
-  }
-  return dummyParent
 }
 
 function insertSiblings(
@@ -698,7 +700,7 @@ function findBestNodeMatch(newContent: Element, oldNode: Element, ctx: any) {
   let bestElement = currentElement
   let score = 0
   while (currentElement) {
-    const newScore = scoreElement(currentElement, oldNode, ctx)
+    let newScore = scoreElement(currentElement, oldNode, ctx)
     if (newScore > score) {
       bestElement = currentElement
       score = newScore

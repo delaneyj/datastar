@@ -23,7 +23,7 @@ func Build() error {
 
 	if err := errors.Join(
 		// createPluginManifest(),
-		createBundles(version),
+		createBundles(),
 		writeOutConsts(version),
 	); err != nil {
 		return fmt.Errorf("error creating bundles: %w", err)
@@ -51,7 +51,7 @@ func extractVersion() (string, error) {
 	return version, nil
 }
 
-func createBundles(version string) error {
+func createBundles() error {
 	log.Print("Creating bundles...")
 	defer log.Print("Bundles created!")
 
@@ -62,9 +62,6 @@ func createBundles(version string) error {
 		EntryPoints: []string{
 			"library/src/bundles/datastar-core.ts",
 			"library/src/bundles/datastar.ts",
-		},
-		Banner: map[string]string{
-			"js": "// Datastar v" + version,
 		},
 		Outdir:            outDir,
 		Bundle:            true,

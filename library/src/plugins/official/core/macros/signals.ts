@@ -1,4 +1,4 @@
-import { type MacroPlugin, PluginType } from '~/engine/types'
+import { MacroPlugin, PluginType } from '~/engine/types'
 
 export const SignalValueMacro: MacroPlugin = {
   name: 'signalValue',

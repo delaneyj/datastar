@@ -10,11 +10,7 @@ import {
   FragmentMergeModes,
 } from '~/engine/consts'
 import { dsErr } from '~/engine/errors'
-import {
-  type InitContext,
-  PluginType,
-  type WatcherPlugin,
-} from '~/engine/types'
+import { InitContext, PluginType, WatcherPlugin } from '~/engine/types'
 import { isBoolString } from '~/utils/text'
 import {
   docWithViewTransitionAPI,
@@ -22,9 +18,9 @@ import {
 } from '~/utils/view-transtions'
 import { idiomorph } from '~/vendored/idiomorph'
 import {
+  datastarSSEEventWatcher,
   SETTLING_CLASS,
   SWAPPING_CLASS,
-  datastarSSEEventWatcher,
 } from '../shared'
 
 export const MergeFragments: WatcherPlugin = {
@@ -43,12 +39,12 @@ export const MergeFragments: WatcherPlugin = {
         useViewTransition:
           useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
       }) => {
-        const settleDuration = Number.parseInt(settleDurationRaw)
+        const settleDuration = parseInt(settleDurationRaw)
         const useViewTransition = isBoolString(useViewTransitionRaw)
 
         fragmentContainer.innerHTML = fragmentsRaw.trim()
         const fragments = [...fragmentContainer.content.children]
-        for (const fragment of fragments) {
+        fragments.forEach((fragment) => {
           if (!(fragment instanceof Element)) {
             throw dsErr('NoFragmentsFound')
           }
@@ -66,7 +62,7 @@ export const MergeFragments: WatcherPlugin = {
           } else {
             applyToTargets(ctx, mergeMode, settleDuration, fragment, targets)
           }
-        }
+        })
       },
     )
   },
@@ -84,7 +80,7 @@ function applyToTargets(
     const originalHTML = initialTarget.outerHTML
     let modifiedTarget = initialTarget
     switch (mergeMode) {
-      case FragmentMergeModes.Morph: {
+      case FragmentMergeModes.Morph:
         const result = idiomorph(modifiedTarget, fragment, {
           callbacks: {
             beforeNodeRemoved: (oldNode: Element, _: Element) => {
@@ -98,7 +94,6 @@ function applyToTargets(
         }
         modifiedTarget = result[0] as Element
         break
-      }
       case FragmentMergeModes.Inner:
         // Replace the contents of the target element with the response
         modifiedTarget.innerHTML = fragment.innerHTML
@@ -125,10 +120,10 @@ function applyToTargets(
         break
       case FragmentMergeModes.UpsertAttributes:
         // Upsert the attributes of the target element
-        for (const attrName of fragment.getAttributeNames()) {
+        fragment.getAttributeNames().forEach((attrName) => {
           const value = fragment.getAttribute(attrName)!
           modifiedTarget.setAttribute(attrName, value)
-        }
+        })
         break
       default:
         throw dsErr('InvalidMergeMode', { mergeMode })

@@ -22,7 +22,7 @@ func streambundlerContent(qw422016 *qt422016.Writer, manifest PluginManifest) {
 //line site/routes_bundler.qtpl:1
 	qw422016.N().S(`
 
-import { Datastar as DS } from "../engine"
+import { Datastar } from "../engine";
 `)
 //line site/routes_bundler.qtpl:4
 	for _, p := range manifest.Plugins {
@@ -35,13 +35,13 @@ import { Datastar as DS } from "../engine"
 //line site/routes_bundler.qtpl:5
 		qw422016.E().S(p.Path)
 //line site/routes_bundler.qtpl:5
-		qw422016.N().S(`"
+		qw422016.N().S(`";
 `)
 //line site/routes_bundler.qtpl:6
 	}
 //line site/routes_bundler.qtpl:6
 	qw422016.N().S(`
-DS.load(
+Datastar.load(
 `)
 //line site/routes_bundler.qtpl:9
 	for _, p := range manifest.Plugins {
@@ -55,35 +55,33 @@ DS.load(
 //line site/routes_bundler.qtpl:11
 	}
 //line site/routes_bundler.qtpl:11
-	qw422016.N().S(`)
-
-export const Datastar = DS
+	qw422016.N().S(`);
 `)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 }
 
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 func writebundlerContent(qq422016 qtio422016.Writer, manifest PluginManifest) {
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	qw422016 := qt422016.AcquireWriter(qq422016)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	streambundlerContent(qw422016, manifest)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	qt422016.ReleaseWriter(qw422016)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 }
 
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 func bundlerContent(manifest PluginManifest) string {
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	qb422016 := qt422016.AcquireByteBuffer()
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	writebundlerContent(qb422016, manifest)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	qs422016 := string(qb422016.B)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	qt422016.ReleaseByteBuffer(qb422016)
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 	return qs422016
-//line site/routes_bundler.qtpl:15
+//line site/routes_bundler.qtpl:13
 }

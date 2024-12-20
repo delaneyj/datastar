@@ -3,7 +3,7 @@
 // Slug: Setup view transitions
 // Description: This attribute plugin sets up view transitions for the current view. This plugin requires the view transition API to be enabled in the browser. If the browser does not support view transitions, an error will be logged to the console.
 
-import { type AttributePlugin, PluginType, Requirement } from '~/engine/types'
+import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
 import { supportsViewTransitions } from '~/utils/view-transtions'
 
 const VIEW_TRANSITION = 'view-transition'
@@ -15,11 +15,11 @@ export const ViewTransition: AttributePlugin = {
   valReq: Requirement.Must,
   onGlobalInit() {
     let hasViewTransitionMeta = false
-    for (const node of document.head.childNodes) {
+    document.head.childNodes.forEach((node) => {
       if (node instanceof HTMLMetaElement && node.name === VIEW_TRANSITION) {
         hasViewTransitionMeta = true
       }
-    }
+    })
 
     if (!hasViewTransitionMeta) {
       const meta = document.createElement('meta')

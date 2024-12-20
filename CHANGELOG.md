@@ -1,13 +1,11 @@
 # WIP Release Notes for Datastar
 
-## v0.21.4
+## v0.21.3
 
 ### Added
 
-- Added a `retryInterval` option to the `sse()` action, defaulting to 1 second.
+- Added the ability to tell Datastar to ignore an element if `data-star-ignore` exists on it. Useful for preventing naming conflicts with third-party libraries.
 
+### Changed
 
-### Fixed
-
-- Fixed a bug in which local signals were being unintentionally sent with requests ([#387](https://github.com/starfederation/datastar/issues/387)).
-- Fixed a bug in which the bundler was not exporting Datastar ([#403](https://github.com/starfederation/datastar/issues/403)).
+- The Datastar module is now exported, exposing [public methods and properties](https://data-star.dev/reference/javascript_api) ([#358](https://github.com/starfederation/datastar/issues/358)).

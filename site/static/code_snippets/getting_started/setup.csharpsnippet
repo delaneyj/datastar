@@ -1,6 +1,6 @@
 using StarFederation.Datastar.DependencyInjection;
 
-// Adds Datastar as a service
+// add as a service
 builder.Services.AddDatastar();
 
 app.MapGet("/", async (IServerSentEventGenerator sse) =>

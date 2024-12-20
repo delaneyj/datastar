@@ -1,4 +1,4 @@
-import { type AttributePlugin, PluginType, Requirement } from '~/engine/types'
+import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
 
 export const Star: AttributePlugin = {
   type: PluginType.Attribute,

@@ -3,12 +3,11 @@ export function tagToMs(args: Set<string>) {
   for (const arg of args) {
     if (arg.endsWith('ms')) {
       return Number(arg.replace('ms', ''))
-    }
-    if (arg.endsWith('s')) {
+    } else if (arg.endsWith('s')) {
       return Number(arg.replace('s', '')) * 1000
     }
     try {
-      return Number.parseFloat(arg)
+      return parseFloat(arg)
     } catch (e) {}
   }
   return 0

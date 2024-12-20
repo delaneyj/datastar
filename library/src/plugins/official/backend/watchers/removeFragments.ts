@@ -8,13 +8,13 @@ import {
   EventTypes,
 } from '~/engine/consts'
 import { dsErr } from '~/engine/errors'
-import { PluginType, type WatcherPlugin } from '~/engine/types'
+import { PluginType, WatcherPlugin } from '~/engine/types'
 import { isBoolString } from '~/utils/text'
 import {
   docWithViewTransitionAPI,
   supportsViewTransitions,
 } from '~/utils/view-transtions'
-import { SWAPPING_CLASS, datastarSSEEventWatcher } from '../shared'
+import { datastarSSEEventWatcher, SWAPPING_CLASS } from '../shared'
 
 export const RemoveFragments: WatcherPlugin = {
   type: PluginType.Watcher,
@@ -29,11 +29,11 @@ export const RemoveFragments: WatcherPlugin = {
         useViewTransition:
           useViewTransitionRaw = `${DefaultFragmentsUseViewTransitions}`,
       }) => {
-        if (!selector.length) {
+        if (!!!selector.length) {
           throw dsErr('NoSelectorProvided')
         }
 
-        const settleDuration = Number.parseInt(settleDurationRaw)
+        const settleDuration = parseInt(settleDurationRaw)
         const useViewTransition = isBoolString(useViewTransitionRaw)
         const removeTargets = document.querySelectorAll(selector)
 

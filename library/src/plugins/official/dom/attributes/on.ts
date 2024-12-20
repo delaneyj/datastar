@@ -3,13 +3,13 @@
 // Slug: Add an event listener to an element
 // Description: This action adds an event listener to an element. The event listener can be triggered by a variety of events, such as clicks, keypresses, and more. The event listener can also be set to trigger only once, or to be passive or capture. The event listener can also be debounced or throttled. The event listener can also be set to trigger only when the event target is outside the element.
 
-import { type AttributePlugin, PluginType, Requirement } from '~/engine/types'
+import { AttributePlugin, PluginType, Requirement } from '~/engine/types'
 import { onElementRemoved } from '~/utils/dom'
 import { tagHas, tagToMs } from '~/utils/tags'
 import { kebabize } from '~/utils/text'
 import { debounce, throttle } from '~/utils/timing'
 
-const lastSignalsMarshalled = new Map<string, any>()
+let lastSignalsMarshalled = new Map<string, any>()
 
 const EVT = 'evt'
 export const On: AttributePlugin = {
@@ -80,12 +80,12 @@ export const On: AttributePlugin = {
 
     const eventName = kebabize(key).toLowerCase()
     switch (eventName) {
-      case 'load': {
+      case 'load':
         callback()
         delete el.dataset.onLoad
         return () => {}
-      }
-      case 'raf': {
+
+      case 'raf':
         let rafId: number | undefined
         const raf = () => {
           callback()
@@ -96,9 +96,8 @@ export const On: AttributePlugin = {
         return () => {
           if (rafId) cancelAnimationFrame(rafId)
         }
-      }
 
-      case 'signals-change': {
+      case 'signals-change':
         onElementRemoved(el, () => {
           lastSignalsMarshalled.delete(el.id)
         })
@@ -111,8 +110,8 @@ export const On: AttributePlugin = {
             callback()
           }
         })
-      }
-      default: {
+
+      default:
         const testOutside = mods.has('outside')
         if (testOutside) {
           target = document
@@ -137,7 +136,6 @@ export const On: AttributePlugin = {
         return () => {
           target.removeEventListener(eventName, callback)
         }
-      }
     }
   },
 }

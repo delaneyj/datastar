@@ -1,6 +1,6 @@
-import { type Computed, Signal, computed } from '~/vendored/preact-core'
+import { Computed, computed, Signal } from '~/vendored/preact-core'
 import { dsErr } from './errors'
-import type { NestedSignal, NestedValues } from './types'
+import { NestedSignal, NestedValues } from './types'
 
 // If onlyPublic is true, only signals not starting with an underscore are included
 function nestedValues(
@@ -9,12 +9,12 @@ function nestedValues(
 ): Record<string, any> {
   const kv: Record<string, any> = {}
   for (const key in signal) {
-    if (Object.hasOwn(signal, key)) {
-      if (onlyPublic && key.startsWith('_')) {
-        continue
-      }
+    if (signal.hasOwnProperty(key)) {
       const value = signal[key]
       if (value instanceof Signal) {
+        if (onlyPublic && key.startsWith('_')) {
+          continue
+        }
         kv[key] = value.value
       } else {
         kv[key] = nestedValues(value)
@@ -30,7 +30,7 @@ function mergeNested(
   onlyIfMissing = false,
 ): void {
   for (const key in values) {
-    if (Object.hasOwn(values, key)) {
+    if (values.hasOwnProperty(key)) {
       if (key.match(/\_\_+/)) {
         throw dsErr('InvalidSignalKey', { key })
       }
@@ -60,7 +60,7 @@ function walkNestedSignal(
   cb: (dotDeliminatedPath: string, signal: Signal<any>) => void,
 ): void {
   for (const key in signal) {
-    if (Object.hasOwn(signal, key)) {
+    if (signal.hasOwnProperty(key)) {
       const value = signal[key]
       if (value instanceof Signal) {
         cb(key, value)
@@ -103,7 +103,7 @@ export function walkNestedValues(
   cb: (path: string, value: any) => void,
 ) {
   for (const key in nv) {
-    if (Object.hasOwn(nv, key)) {
+    if (nv.hasOwnProperty(key)) {
       const value = nv[key]
       if (value instanceof Object && !Array.isArray(value)) {
         walkNestedValues(value, (path, value) => {
@@ -118,6 +118,8 @@ export function walkNestedValues(
 
 export class SignalsRoot {
   #signals: NestedSignal = {}
+
+  constructor() {}
 
   exists(dotDelimitedPath: string): boolean {
     return !!this.signal(dotDelimitedPath)
@@ -181,7 +183,7 @@ export class SignalsRoot {
     const last = parts[parts.length - 1]
 
     const current = subSignals[last]
-    if (current) {
+    if (!!current) {
       if (current.value === null || current.value === undefined) {
         current.value = value
       }

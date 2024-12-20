@@ -4,14 +4,14 @@
 
 import { DATASTAR, DATASTAR_REQUEST } from '~/engine/consts'
 import { dsErr } from '~/engine/errors'
-import { type ActionPlugin, PluginType } from '~/engine/types'
+import { ActionPlugin, PluginType } from '~/engine/types'
 import {
-  type FetchEventSourceInit,
   fetchEventSource,
+  FetchEventSourceInit,
 } from '~/vendored/fetch-event-source'
 import {
   DATASTAR_SSE_EVENT,
-  type DatastarSSEEvent,
+  DatastarSSEEvent,
   FINISHED,
   STARTED,
 } from '../shared'
@@ -26,14 +26,13 @@ function dispatchSSE(type: string, argsRaw: Record<string, string>) {
   )
 }
 
-const isWrongContent = (err: any) => `${err}`.includes('text/event-stream')
+const isWrongContent = (err: any) => `${err}`.includes(`text/event-stream`)
 
 export type SSEArgs = {
   method: METHOD
   headers?: Record<string, string>
   includeLocal?: boolean
   openWhenHidden?: boolean
-  retryInterval?: number
   retryScaler?: number
   retryMaxWaitMs?: number
   retryMaxCount?: number
@@ -53,7 +52,6 @@ export const SSE: ActionPlugin = {
       headers: userHeaders,
       includeLocal,
       openWhenHidden,
-      retryInterval,
       retryScaler,
       retryMaxWaitMs,
       retryMaxCount,
@@ -64,7 +62,6 @@ export const SSE: ActionPlugin = {
         headers: {},
         includeLocal: false,
         openWhenHidden: false, // will keep the request open even if the document is hidden.
-        retryInterval: 1_000, // the retry interval in milliseconds
         retryScaler: 2, // the amount to multiply the retry interval by each time
         retryMaxWaitMs: 30_000, // the maximum retry interval in milliseconds
         retryMaxCount: 10, // the maximum number of retries before giving up
@@ -75,7 +72,7 @@ export const SSE: ActionPlugin = {
     const method = methodAnyCase.toUpperCase()
     try {
       dispatchSSE(STARTED, { elId })
-      if (!url?.length) {
+      if (!!!url?.length) {
         throw dsErr('NoUrlProvided')
       }
 
@@ -91,7 +88,6 @@ export const SSE: ActionPlugin = {
         method,
         headers,
         openWhenHidden,
-        retryInterval,
         retryScaler,
         retryMaxWaitMs,
         retryMaxCount,
