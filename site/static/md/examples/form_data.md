@@ -4,8 +4,7 @@
 
 <form id="myform" class="space-y-8">
   <label class="flex items-center gap-2 input input-bordered">
-    foo
-    <input name="foo" required class="grow"/>
+    <input name="foo" required class="grow" placeholder="Type foo contents"/>
   </label>
   <div class="space-x-4">
     <button data-on-click="sse('/examples/form_data/data', {contentType: 'form'})" class="btn btn-primary">
@@ -23,8 +22,7 @@
 
 <form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})" class="space-y-8">
   <label class="flex items-center gap-2 input input-bordered">
-    bar
-    <input name="bar" required class="grow"/>
+    <input name="bar" required class="grow" placeholder="Type bar contents"/>
   </label>
   <div class="space-x-4">
     <button class="btn btn-primary">
@@ -37,7 +35,7 @@
 
 ```html
 <form>
-  <input name="foo" required>
+  <input name="foo" required placeholder="Type foo contents">
   <button data-on-click="sse('/endpoint', {contentType: 'form'})">
     Submit GET request
   </button>
@@ -53,7 +51,7 @@
 
 ```html
 <form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})">
-  <input name="bar" required>
+  <input name="bar" placeholder="Type bar contents" required>
   <button>
       Submit form
   </button>

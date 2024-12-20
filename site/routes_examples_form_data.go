@@ -29,21 +29,19 @@ func setupExamplesForm(examplesRouter chi.Router) error {
 	})
 
 	examplesRouter.Post("/form_data/data", func(w http.ResponseWriter, r *http.Request) {
-		err := r.ParseMultipartForm(1 << 20)
-		if err != nil {
+		if err := r.ParseMultipartForm(1 << 20); err != nil {
 			http.Error(w, "Failed to parse multipart form", http.StatusBadRequest)
 			return
 		}
 
-		formData := r.Form
-		jsonData, err := json.Marshal(formData)
+		b, err := json.Marshal(r.Form)
 		if err != nil {
 			http.Error(w, "Failed to encode form data as JSON", http.StatusInternalServerError)
 			return
 		}
 
 		sse := datastar.NewSSE(w, r)
-		sse.ExecuteScript(fmt.Sprintf(`alert('Form data received via POST request: %s')`, jsonData))
+		sse.ExecuteScript(fmt.Sprintf(`alert('Form data received via POST request: %s')`, string(b)))
 	})
 
 	return nil

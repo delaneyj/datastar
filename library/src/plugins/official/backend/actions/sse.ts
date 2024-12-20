@@ -93,18 +93,14 @@ export const SSE: ActionPlugin = {
         throw dsErr('NoUrlProvided')
       }
 
-      const headers = Object.assign(
-        {
-          'Content-Type':
-            contentType === 'json'
-              ? 'application/json'
-              : method === 'GET'
-                ? 'application/x-www-form-urlencoded'
-                : 'multipart/form-data',
-          [DATASTAR_REQUEST]: true,
-        },
-        userHeaders,
-      )
+      const initialHeaders = new Headers()
+      initialHeaders.set(DATASTAR_REQUEST, 'true')
+      // We ignore the content-type header if using form data
+      // if missing the boundary will be set automatically
+      if (contentType === 'json') {
+        initialHeaders.set('Content-Type', 'application/json')
+      }
+      const headers = Object.assign({}, initialHeaders, userHeaders)
 
       const req: FetchEventSourceInit = {
         method,
