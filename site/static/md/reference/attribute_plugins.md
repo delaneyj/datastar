@@ -26,6 +26,8 @@ The `data-signals` attribute can also be used to merge multiple signals using a 
 <div data-signals="{foo: {bar: 1, baz: 2}}"></div>
 ```
 
+The value above is written in Javascript object notation, but JSON, which is a subset and which most templating languages have built-in support for, is also allowed.
+
 Note that `data-*` attributes are case-insensitive. If you want to use uppercase characters in signal names, you’ll need to kebabize them or use the object syntax. So the signal name `mySignal` must be written as `data-signals-my-signal` or `data-signals="{mySignal: 1}"`.
 
 #### Modifiers
@@ -68,6 +70,10 @@ The signal name can be specified in the key (as above), or in the value (as belo
 ```
 
 The signal value can then be used to reference the element.
+
+```html
+`foo` holds a <span data-text="foo.value.tagName"></span> element.
+```
 
 ## DOM Plugins
 
@@ -138,7 +144,7 @@ An `evt` variable that represents the event object is available in the expressio
 The `data-on` attribute matches DOM events, however there are currently a few special cases for custom events.
 
 1. `data-on-load` is triggered when an element is loaded into the DOM.
-2. `data-on-signals-change` is triggered when any signal changes.
+2. `data-on-signals-change` is triggered when any signals change.
 3. `data-on-raf` is triggered on every `requestAnimationFrame` event.
 
 #### Modifiers

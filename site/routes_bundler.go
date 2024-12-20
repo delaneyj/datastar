@@ -310,6 +310,9 @@ func bundlePlugins(tmpDir string, manifest PluginManifest) (results *BundleResul
 
 	buildResult := api.Build(api.BuildOptions{
 		EntryPoints:       []string{bundleOutFile},
+		Banner: map[string]string{
+			"js": "// Datastar v" + manifest.Version,
+		},
 		Outdir:            distDir,
 		Bundle:            true,
 		Write:             true,
@@ -317,6 +320,7 @@ func bundlePlugins(tmpDir string, manifest PluginManifest) (results *BundleResul
 		MinifyWhitespace:  true,
 		MinifyIdentifiers: true,
 		MinifySyntax:      true,
+		Format:            api.FormatESModule,
 		Sourcemap:         api.SourceMapLinked,
 		Target:            api.ES2023,
 		Alias:             aliasMap,

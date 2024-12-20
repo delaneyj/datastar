@@ -195,7 +195,6 @@ function newMessage(): EventSourceMessage {
 
 export const EventStreamContentType = 'text/event-stream'
 
-const DefaultRetryInterval = 1000
 const LastEventId = 'last-event-id'
 
 export interface FetchEventSourceInit extends RequestInit {
@@ -245,6 +244,9 @@ export interface FetchEventSourceInit extends RequestInit {
   /** The Fetch function to use. Defaults to window.fetch */
   fetch?: typeof fetch
 
+  /** The retry interval in milliseconds. Defaults to 1_000 */
+  retryInterval?: number
+
   /** The scaler for the retry interval. Defaults to 2 */
   retryScaler?: number
 
@@ -266,6 +268,7 @@ export function fetchEventSource(
     onerror,
     openWhenHidden,
     fetch: inputFetch,
+    retryInterval = 1_000,
     retryScaler = 2,
     retryMaxWaitMs = 30_000,
     retryMaxCount = 10,
@@ -293,7 +296,6 @@ export function fetchEventSource(
       document.addEventListener('visibilitychange', onVisibilityChange)
     }
 
-    let retryInterval = DefaultRetryInterval
     let retryTimer = 0
     function dispose() {
       document.removeEventListener('visibilitychange', onVisibilityChange)

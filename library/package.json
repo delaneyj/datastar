@@ -13,7 +13,9 @@
   "bugs": {
     "url": "https://github.com/starfederation/datastar/issues"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
