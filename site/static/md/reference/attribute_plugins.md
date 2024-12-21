@@ -147,6 +147,8 @@ The `data-on` attribute matches DOM events, however there are currently a few sp
 2. `data-on-signals-change` is triggered when any signals change.
 3. `data-on-raf` is triggered on every `requestAnimationFrame` event.
 
+Note that the `data-on-submit` event listener now prevents the default submission behavior of forms.
+
 #### Modifiers
 
 Modifiers allow you to modify behavior when events are triggered. Some modifiers have tags to further modify the behavior.
