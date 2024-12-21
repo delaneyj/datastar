@@ -20,18 +20,9 @@
   Submit GET request from outside the form
 </button>
 
-<form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})" class="space-y-8">
-  <label class="flex items-center gap-2 input input-bordered">
-    <input name="bar" required class="grow" placeholder="Type bar contents"/>
-  </label>
-  <div class="space-x-4">
-    <button class="btn btn-primary">
-      Submit form
-    </button>
-  </div>
-</form>
-
 ## Explanation
+
+Setting the `contentType` option to `form` tells the `sse()` action to look for the closest form, perform validation on it, and send all form elements within it to the backend. A `selector` option can be provided to specify a form element. No signals are sent to the backend in this type of request.
 
 ```html
 <form>
@@ -48,6 +39,23 @@
   Submit GET request from outside the form
 </button>
 ```
+
+## Demo
+
+<form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})" class="space-y-8">
+  <label class="flex items-center gap-2 input input-bordered">
+    <input name="bar" required class="grow" placeholder="Type bar contents"/>
+  </label>
+  <div class="space-x-4">
+    <button class="btn btn-primary">
+      Submit form
+    </button>
+  </div>
+</form>
+
+## Explanation
+
+In this example, the `sse()` action is placed on the form itself using `data-on-submit`.
 
 ```html
 <form data-on-submit="sse('/examples/form_data/data', {contentType: 'form'})">
