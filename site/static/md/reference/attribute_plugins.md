@@ -1,5 +1,14 @@
 # Attribute Plugins
 
+Datastar provides the following [`data-*`](https://developer.mozilla.org/en-US/docs/Learn/HTML/Howto/Use_data_attributes) attributes.
+
+<div class="alert alert-info">
+    <iconify-icon icon="simple-icons:rocket"></iconify-icon>
+    <div>
+        The Datastar <a href="https://marketplace.visualstudio.com/items?itemName=starfederation.datastar-vscode">VSCode extension</a> and <a href="https://plugins.jetbrains.com/plugin/26072-datastar-support">IntelliJ plugin</a> provided autocompletion for all <code>data-*</code> attributes.
+    </div>
+</div>
+
 ## Core Plugins
 
 [Source Code](https://github.com/starfederation/datastar/blob/main/library/src/plugins/official/core/attributes)
