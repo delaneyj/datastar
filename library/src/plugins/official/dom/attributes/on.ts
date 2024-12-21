@@ -47,7 +47,8 @@ export const On: AttributePlugin = {
 
     let callback = (evt?: Event) => {
       if (evt) {
-        if (mods.has('prevent')) evt.preventDefault()
+        // Always prevent default on submit events (because forms)
+        if (mods.has('prevent') || key === 'submit') evt.preventDefault()
         if (mods.has('stop')) evt.stopPropagation()
       }
       rx(evt)
